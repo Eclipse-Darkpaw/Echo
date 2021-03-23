@@ -5,7 +5,7 @@ from keep_alive import keep_alive
 
 prefix = '>'
 client = discord.Client()
-Eclipse_Darkpaw_ID = int(os.getenv('Eclipse_Darkpaw_ID'))
+Eclipse_Darkpaw_ID = int(os.getenv('ECLIPSE-DARKPAW-ID'))
 cmdlog = 'messages.txt'
 game = discord.Game(prefix + "help for commands")
 
@@ -244,4 +244,4 @@ async def on_message(message):
 
 print('Starting Bot')
 keep_alive()
-client.run(os.getenv('TOKEN'))
+client.run(os.getenv('TEST-TOKEN'))
