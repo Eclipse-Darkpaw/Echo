@@ -7,8 +7,6 @@ prefix = '>'
 client = discord.Client()
 Eclipse_Darkpaw_ID = int(os.getenv('Eclipse_Darkpaw_ID'))
 cmdlog = 'messages.txt'
-warn1 = None
-warn2 = None
 game = discord.Game(prefix + "help for commands")
 
 
