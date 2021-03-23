@@ -229,6 +229,18 @@ async def on_message(message):
             await ban(message)
         elif command[0] == 'join':
             join(message)
+        elif command[0] == 'prefix':
+            prefix = command[1]
+            file = open('main.py', 'r')
+            lines = file.readlines()
+            file.close()
+            lines[5] = 'prefix = ' + prefix + '\n'
+            file = open('main.py', 'w')
+            file.writelines(lines)
+            file.close()
+        else:
+            pass
+
 
 print('Starting Bot')
 keep_alive()
