@@ -1,15 +1,13 @@
 import discord
 import os
 import sys
-from keep_alive import keep_alive
+#from keep_alive import keep_alive
 
 prefix = '>'
 client = discord.Client()
-Eclipse_Darkpaw_ID = int(os.getenv('ECLIPSE-DARKPAW-ID'))
+Eclipse_Darkpaw_ID = int(os.getenv('ECLIPSE_DARKPAW_ID'))
 cmdlog = 'messages.txt'
 game = discord.Game(prefix + "help for commands")
-
-
 
 application_channel = None
 new_member_channel = None
@@ -69,9 +67,6 @@ async def help(message):
         await message.channel.send('`>help {command}` - thats this command.\n`>repeat [phrase]` - repeats the user input\n`>connect4` - plays connect 4')
     else:
         pass
-
-async def command(command, parameters = None):
-    pass
 
 async def verify(message):
     application = []
@@ -214,15 +209,6 @@ async def on_message(message):
             verify(message)
         elif command[0] == 'warn':
             warn(message)
-        elif command[0] == 'set':
-            if command[1] == 'application':
-                if application_channel == None:
-                    application_channel = message.channel
-                    await message.channel.send('Applications will be sent here now!')
-                else:
-                    message.channel.send('This has already been set!')
-            elif command[1] == 'new members' and new_member_channel == None:
-                new_member_channel = message.channel
         elif command[0] == 'kick':
             await kick(message)
         elif command[0] == 'ban':
@@ -243,5 +229,5 @@ async def on_message(message):
 
 
 print('Starting Bot')
-keep_alive()
-client.run(os.getenv('TEST-TOKEN'))
+#keep_alive()
+client.run(os.getenv('TEST_TOKEN'))
