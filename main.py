@@ -1,13 +1,12 @@
 import discord
 import os
 import sys
-#from keep_alive import keep_alive
 
-name = None
-prefix = None
+prefix = '>'
+guild = None
 client = discord.Client()
-Eclipse_Darkpaw_ID = int(os.getenv('ECLIPSE_DARKPAW_ID'))
 cmdlog = 'messages.txt'
+game = discord.Game(prefix + "help for commands")
 
 async def displayMessage(channel, message):
     if not len(message) > 0:
@@ -49,24 +48,19 @@ async def readInt(channel, client, prompt=None,target=None):
     return num
 
 def log(message):
-    file = open(cmdlog, 'a')
-    file.write('[' + str(message.created_at) + '] #' 
-    + str(message.channel.name) + ' in ' 
-    + str(message.guild.name) + ' \n@'
-    + str(message.author) + ' said ' 
-    + message.content + '\n')
+    file = open('command.log', 'a')
+    to_log ='[' + str(message.created_at) + '] #' + str(message.channel.name) + ' in ' + str(message.guild.name) + ' \n@'+ str(message.author) + ' said ' + message.content + '\n'
+    file.write(to_log)
     file.close()
+    print(to_log)
 
-def join(message):
-    pass
-
-async def help(self, message):
+async def help(message, prefix = prefix):
     """
     Effectively the docutmentation for all methods and functions
     :param message:
     :return:
     """
-    command = message.content[len(self._prefix):].split()
+    command = message.content[len(prefix):].split()
     if len(command) == 1:
         await message.channel.send('`help {command}` - thats this command.\n'
                                    '`repeat [phrase]` - repeats the user input\n'
@@ -76,8 +70,9 @@ async def help(self, message):
     else:
         pass
 
-'''
-async def verify(self, message):
+async def verify(message):
+	pass
+	'''
     application = []
     application.append(message.author)
     application.append(message.channel)
@@ -114,10 +109,9 @@ async def verify(self, message):
         message.channel.send('')
     elif str(reaction.emoji) == '❗':
         pass
-'''
+	'''
 
-#
-async def quit(self, message):
+async def quit(message):
     if message.author.guild_permissions.administrator:
         print('quitting program')
         await message.channel.send('Goodbye :wave:')
@@ -125,7 +119,7 @@ async def quit(self, message):
     else:
         await displayMessage(message.channel, 'You do not have permission to turn me off!')
 
-async def warn(self, message):
+async def warn(message):
     command = message.content[1:].lower().split(' ', 3)
     if message.author.guild_permissions.kick_members:
         target = message.mentions[0]
@@ -133,7 +127,7 @@ async def warn(self, message):
             await message.channel.send('null target')
             return
         elif message.author == target:
-            await message.channel.send('You cannot kick yourself')
+            await message.channel.send('You cannot warn yourself')
             return
 
         await message.channel.send(target + ' was not warned. Unable to comply')
@@ -141,7 +135,7 @@ async def warn(self, message):
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
-async def kick(self, message):
+async def kick(message):
     command = message.content[1:].lower().split(' ', 2)
     if message.author.guild_permissions.kick_members:
         target = message.mentions[0]
@@ -155,20 +149,16 @@ async def kick(self, message):
         elif client.user == target:
             await message.channel.send('You cannot kick me like this!')
             return
-        try:
-            await target.kick(command[2])
-            await message.channel.send(target + ' was kicked.\n Reason: ' + command[2])
-        except IndexError:
-            await target.kick()
-            await message.channel.send(str(target) + ' was kicked.')
-        else:
-            await message.channel.send('An Error occured.')
+        if len(command) == 2:
+            command.append('No reason given')
+        await target.kick(command[2])
+        await message.channel.send(target + ' was kicked.\n Reason: ' + command[2])
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
-async def ban(self, message):
+async def ban(message):
     command = message.content[1:].lower().split(' ', 2)
-    if message.author.guild_permissions.ban_members:
+    if message.author.guild_permissions.ban_members or message.author.guild_permissions.administrator:
         target = message.mentions[0]
         print(target)
         if target == None:
@@ -180,12 +170,11 @@ async def ban(self, message):
         elif client.user == target:
             await message.channel.send('You cannot ban me like this!')
             return
-        try:
-            await target.ban(command[2])
-            await message.channel.send(target + ' was banned.\n Reason: ' + command[2])
-        except:
-            await target.ban()
-            await message.channel.send(str(target) + ' was banned.')
+        if len(command) == 2:
+            command.append('No reason given.')
+
+        await target.ban()
+        await message.channel.send(target + ' was banned.\n Reason: ' + command[2])
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
@@ -195,7 +184,7 @@ async def on_ready():
     await client.change_presence(activity=game)
 
 @client.event
-async def on_message(message):
+async def on_message(message, prefix=prefix):
     if message.author == client.user:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
@@ -207,6 +196,8 @@ async def on_message(message):
             await help(message)
         elif command[0] == 'test':
             await message.reply('I am online')
+        elif command[0] == 'version':
+            await message.reply('0.1.0')
         elif command[0] == 'repeat':
             await message.channel.send(command[1])
         elif command[0] == 'quit':
@@ -227,7 +218,7 @@ async def on_message(message):
             file = open('main.py', 'r')
             lines = file.readlines()
             file.close()
-            lines[5] = 'prefix = ' + prefix + '\n'
+            lines[4] = 'prefix = ' + prefix + '\n'
             file = open('main.py', 'w')
             file.writelines(lines)
             file.close()
@@ -239,26 +230,5 @@ async def on_member_join(member):
     DM = member.create_DM()
     displayMessage(DM, 'Hello, and welcome to the server! Please read over the rules before verifying yourself!')
 
-def export_to_file(name, prefix):
-    """
-    Exports the bot to a file that can it can be loaded from again
-
-    :return:
-    """
-    file = open(name + '.bot', 'w')
-    lines = [name, prefix]
-    file.writelines(lines)
-    file.close()
-
-def import_from_file(file_name):
-    bot = open(file_name, 'r')
-    lines = bot.readlines()
-    return lines[0], lines[1]
-
-
-if __name__ == '__main__':
-    print('Starting Bot')
-    import_from_file('echo.bot')
-    game = discord.Game(prefix + "help for commands")
-    #keep_alive()
-    client.run(os.getenv('TEST_TOKEN'))
+print('Starting Bot')
+client.run('ODI0MDMyOTc5MzgyNjk4MDU1.YFpehA.l8pmm5JcivyZoSvDtRleCbDh0pE')
