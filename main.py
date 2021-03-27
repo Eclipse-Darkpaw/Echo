@@ -20,8 +20,6 @@ application_channel = None
 verified_role = None
 questioning_role = None
 
-
-
 async def displayMessage(channel, message):
     if not len(message) > 0:
         return
