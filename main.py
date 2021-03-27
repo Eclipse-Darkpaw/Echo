@@ -76,7 +76,7 @@ async def readInt(channel, client, prompt=None,target=None):
 def log(message):
     global cmdlog
     to_log ='[' + str(message.created_at) + '] #' + str(message.channel.name) + ' in ' + str(message.guild.name) + ' \n@'+ str(message.author) + ' said ' + message.content + '\n'
-    with open(cmdlog, 'w') as file:
+    with open('messages.txt', 'a') as file:
         file.write(to_log)
         file.close()
     print(to_log)
@@ -135,6 +135,9 @@ class Application:
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
 
 async def verify(message):
+    if verified_role in message.author.roles:
+        await message.reply('You are already verified')
+        return
     application = Application(message.author, message.channel, message.guild)
     await message.delete()
 
@@ -156,6 +159,7 @@ async def verify(message):
     if str(reaction.emoji) == '✅':
         await application.applicant.add_roles(message.guild.get_role(int(os.getenv('VERIFIED_ROLE_ID'))))
         await message.author.send('You have been approved.')
+        await application.applicant.remove_roles(message.guild.get_role(int(os.getenv('QUESTIONING_ROLE_ID'))))
     elif str(reaction.emoji) == '❓':
         await application.applicant.add_roles(message.guild.get_role(int(os.getenv('QUESTIONING_ROLE_ID'))))
         await message.author.send('You have been pulled into questioning.')
@@ -179,10 +183,15 @@ async def suspend(message):
     pass
 
 async def warn(message):
-    command = message.content[1:].lower().split(' ', 3)
+    try:
+        command = message.content[1:].lower().split(' ', 3)
+    except:
+        await message.channel.send('Improper formatting. Use `>warn <Member/ID> <rule> [reason]`')
+
     # warn <member> <rule> reason
     # take id too
-    if message.author.guild_permissions.kick_members:
+    perms = message.author.guild_permissions
+    if perms.kick_members and perms.manage_roles and perms.ban_members:
         target = message.mentions[0]
         if target == None:
             await message.channel.send('null target')
@@ -190,25 +199,56 @@ async def warn(message):
         elif message.author == target:
             await message.channel.send('You cannot warn yourself')
             return
+
+        if not command[3]:
+            command[3] = 'No reason given'
         for role in warn_roles:
             if role not in target.roles:
                 await target.add_roles(role)
                 if role == warn_roles[2]:
-                    suspend(message)
+                    await suspend(message)
+                    await target.add_roles(guild.get_role(int(os.getenv('SUSPENDED_ID'))))
+                    embed = discord.Embed(title='Warn & Suspension | Case #' + str(cases))
+                    embed.set_author(name=target.name, icon_url=target.avatar_url)
+                    embed.add_field(name='Rule broken', value=str(command[2]))
+                    embed.add_field(name='Comments', value=str(command[3]))
+                    embed.add_field(name='User ID', value=str(target.id), inline=False)
+                    await warn_log_channel.send(embed=embed)
+                    reason = str(target) + ' suspended for ' + command[3]
+                    await message.channel.send(reason)
+                    return
                 elif role == warn_roles[3]:
-                    kick(message)
+                    await target.kick()
+                    embed = discord.Embed(title='Warn & Kick | Case #' + str(cases))
+                    embed.set_author(name=target.name, icon_url=target.avatar_url)
+                    embed.add_field(name='Rule broken', value=str(command[2]))
+                    embed.add_field(name='Comments', value=str(command[3]))
+                    embed.add_field(name='User ID', value=str(target.id), inline=False)
+                    await warn_log_channel.send(embed=embed)
+                    reason = str(target) + ' kicked for ' + command[3]
+                    await message.channel.send(reason)
+                    return
                 elif role == warn_roles[4]:
-                    ban(message)
+                    await target.ban()
+                    embed = discord.Embed(title='Banned | Case #' + str(cases))
+                    embed.set_author(name=target.name, icon_url=target.avatar_url)
+                    embed.add_field(name='Rule broken', value=str(command[2]))
+                    embed.add_field(name='Comments', value=str(command[3]))
+                    embed.add_field(name='User ID', value=str(target.id), inline=False)
+                    await warn_log_channel.send(embed=embed)
+                    reason = str(target) + ' banned for ' + command[3]
+                    await message.channel.send(reason)
+                    return
                 else:
-                    if not command[3]:
-                        command[3] = 'No reason given'
                     embed = discord.Embed(title='Warn | Case #' + str(cases))
                     embed.set_author(name=target.name, icon_url=target.avatar_url)
                     embed.add_field(name='Rule broken', value=str(command[2]))
                     embed.add_field(name='Comments', value=str(command[3]))
                     embed.add_field(name='User ID', value=str(target.id), inline=False)
-
-                    return embed
+                    await warn_log_channel.send(embed=embed)
+                    reason = str(target) + ' warn for ' + command[3]
+                    await message.channel.send(reason)
+                    return
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
@@ -325,7 +365,6 @@ async def on_message(message):
 async def on_member_join(member):
     DM = member.create_DM()
     displayMessage(DM, 'Hello, and welcome to the server! Please read over the rules before verifying yourself!')
-
 
 print('Starting Bot')
 client.run(os.getenv('TEST_TOKEN'))
