@@ -19,6 +19,9 @@ guild = None
 application_channel = None
 verified_role = None
 questioning_role = None
+warn_log_channel = None
+warn_roles = []
+cases = 0
 
 async def displayMessage(channel, message):
     if not len(message) > 0:
@@ -85,6 +88,7 @@ async def help(message):
     :param message:
     :return:
     """
+    embed = discord.Embed()
     command = message.content[len(prefix):].split()
     if len(command) == 1:
         await message.channel.send('`help {command}` - thats this command.\n'
@@ -171,8 +175,12 @@ async def quit(message):
     else:
         await displayMessage(message.channel, 'You do not have permission to turn me off!')
 
+async def suspend(message):
+    pass
+
 async def warn(message):
     command = message.content[1:].lower().split(' ', 3)
+    # warn <member> <rule> reason
     # take id too
     if message.author.guild_permissions.kick_members:
         target = message.mentions[0]
@@ -182,9 +190,25 @@ async def warn(message):
         elif message.author == target:
             await message.channel.send('You cannot warn yourself')
             return
+        for role in warn_roles:
+            if role not in target.roles:
+                await target.add_roles(role)
+                if role == warn_roles[2]:
+                    suspend(message)
+                elif role == warn_roles[3]:
+                    kick(message)
+                elif role == warn_roles[4]:
+                    ban(message)
+                else:
+                    if not command[3]:
+                        command[3] = 'No reason given'
+                    embed = discord.Embed(title='Warn | Case #' + str(cases))
+                    embed.set_author(name=target.name, icon_url=target.avatar_url)
+                    embed.add_field(name='Rule broken', value=str(command[2]))
+                    embed.add_field(name='Comments', value=str(command[3]))
+                    embed.add_field(name='User ID', value=str(target.id), inline=False)
 
-        await message.channel.send(target + ' was not warned. Unable to comply')
-
+                    return embed
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
@@ -237,6 +261,8 @@ async def on_ready():
     global application_channel
     global verified_role
     global questioning_role
+    global warn_log_channel
+    global warn_roles
 
     print('We have logged in as {0.user}'.format(client))
 
@@ -244,8 +270,10 @@ async def on_ready():
     application_channel = guild.get_channel(int(os.getenv('APPLICATION_CHANNEL_ID')))
     verified_role = guild.get_role(int(os.getenv('VERIFIED_ROLE_ID')))
     questioning_role = guild.get_role(int(os.getenv('QUESTIONING_ROLE_ID')))
+    for i in range(1,6):
+        warn_roles.append(guild.get_role(int(os.getenv('WARN_'+str(i)+'_ID'))))
     await client.change_presence(activity=game)
-
+    warn_log_channel = guild.get_channel(int(os.getenv('WARN_LOG_CHANNEL_ID')))
 
 @client.event
 async def on_message(message):
