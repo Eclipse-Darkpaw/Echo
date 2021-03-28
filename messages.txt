@@ -1,0 +1,198 @@
+[2021-03-27 20:00:54.339000] #general in Echo Testing Server
+@Jam blue berry#5529 said >warn <@!434119116094439424>
+[2021-03-27 20:26:08.087000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test2
+[2021-03-27 20:27:09.551000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test3
+[2021-03-27 20:28:55.418000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 20:34:25.769000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >repeat <#825248118705750067>
+[2021-03-27 20:39:14.278000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424>
+[2021-03-27 20:39:57.099000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 20:45:11.909000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 you exist
+[2021-03-27 20:45:57.967000] #general in Echo Testing Server
+@LeMoonStar#0001 said >warn <@!272084288621641728> hi there
+[2021-03-27 20:53:55.577000] #echo-commands in Echo Testing Server
+@Jam blue berry#5529 said >test
+[2021-03-27 20:58:46.369000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >verify
+[2021-03-27 20:58:54.223000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 20:59:18.473000] #general in Echo Testing Server
+@Chad Kimberly#8985 said >verify
+[2021-03-27 20:59:18.680000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >verify
+[2021-03-27 20:59:27.614000] #general in Echo Testing Server
+@LeMoonStar#0001 said >verify
+[2021-03-27 20:59:28.627000] #general in Echo Testing Server
+@Jam blue berry#5529 said >verify
+[2021-03-27 20:59:47.746000] #general in Echo Testing Server
+@Jam blue berry#5529 said >unverify
+[2021-03-27 21:00:24.742000] #general in Echo Testing Server
+@Jam blue berry#5529 said >Delate systum 32
+[2021-03-27 21:31:38.502000] #groovy-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >repeat -help
+[2021-03-27 21:32:07.776000] #groovy-commands in Echo Testing Server
+@Chad Kimberly#8985 said >repeat haha funny bot can't command pfffft
+[2021-03-27 21:34:29.391000] #groovy-commands in Echo Testing Server
+@Jam blue berry#5529 said >repeat /help
+[2021-03-27 21:36:08.060000] #groovy-commands in Echo Testing Server
+@Chad Kimberly#8985 said >repeat /play help
+[2021-03-27 21:36:33.356000] #groovy-commands in Echo Testing Server
+@LeMoonStar#0001 said >repeat -help
+[2021-03-27 21:37:28.132000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test lmao
+[2021-03-27 21:37:41.757000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 21:40:22.057000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424>  0 test lmao
+[2021-03-27 21:40:47.952000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 21:41:14.707000] #general in Echo Testing Server
+@LeMoonStar#0001 said >help
+[2021-03-27 22:01:09.162000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 22:03:23.555000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 ban test
+[2021-03-27 22:04:48.834000] #general in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 ban test
+[2021-03-27 22:04:57.615000] #general in Echo Testing Server
+@_MARTER_#4345 said >test
+[2021-03-27 22:05:40.460000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 ban test
+[2021-03-27 22:06:12.174000] #echo-commands in Echo Testing Server
+@Jam blue berry#5529 said >warn <@!434119116094439424>
+[2021-03-27 22:06:24.376000] #echo-commands in Echo Testing Server
+@Chad Kimberly#8985 said >warn <@!434119116094439424> hi
+[2021-03-27 22:06:42.033000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >warn 451302166208970762 aeiojgea
+[2021-03-27 22:06:52.489000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >devlog
+[2021-03-27 22:09:38.814000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 ban test
+[2021-03-27 22:09:57.853000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help
+[2021-03-27 22:10:02.203000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help
+[2021-03-27 22:10:03.523000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help
+[2021-03-27 22:10:04.849000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help
+[2021-03-27 22:10:05.927000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help
+[2021-03-27 22:10:07.254000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help
+[2021-03-27 22:10:08.497000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help
+[2021-03-27 22:10:17.502000] #echo-commands in Echo Testing Server
+@_MARTER_#4345 said >help call the ambulence
+[2021-03-27 22:10:55.352000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 22:11:09.811000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 ban test
+[2021-03-27 22:11:22.539000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 ban test
+[2021-03-27 22:12:06.770000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 ban test
+[2021-03-27 22:14:03.755000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:15:01.054000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:15:09.534000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:15:11.841000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:15:14.755000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:16:08.565000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 22:16:25.020000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:17:18.039000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:20:38.668000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:20:52.807000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:21:49.791000] #echo-commands in Echo Testing Server
+@Chad Kimberly#8985 said >ban <@!434119116094439424> blagkbb
+[2021-03-27 22:23:01.532000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:24:34.125000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:25:12.319000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:29:33.948000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:29:39.222000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:29:42.715000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:35:05.199000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:36:24.913000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:36:28.273000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:36:49.682000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 22:37:07.048000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:38:11.403000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:39:13.625000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:39:16.083000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:39:18.716000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:39:39.033000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-27 22:40:01.035000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:40:15.996000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:40:17.921000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:40:19.890000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:40:27.403000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:41:05.182000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-27 22:41:14.805000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >warn <@!434119116094439424> 0 test
+[2021-03-28 04:10:00.794000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >TEST
+[2021-03-28 04:10:06.185000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >test
+[2021-03-28 04:11:53.852000] #echo-commands in Echo Testing Server
+@Jam blue berry#5529 said >tEsT
+[2021-03-28 04:19:04.091000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >test
+[2021-03-28 04:34:34.285000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >test
+[2021-03-28 04:34:48.749000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >test
+[2021-03-28 04:34:51.773000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >log
+[2021-03-28 04:36:03.245000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-28 04:37:22.712000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >log
+[2021-03-28 04:37:39.697000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >log
+[2021-03-28 04:38:02.919000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >log
+[2021-03-28 04:38:49.643000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >log
+[2021-03-28 04:41:48.553000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >log
+[2021-03-28 04:42:10.343000] #echo-commands in Echo Testing Server
+@Eclipse_Darkpaw#0306 said >quit
+[2021-03-28 05:14:40.947000] #general in Echo Testing Server 
+@Eclipse_Darkpaw#0306 said >test

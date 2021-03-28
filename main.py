@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 prefix = '>'
-cmdlog = 'messages.txt'
+cmdlog = 'Echo/command.log'
+version = '0.1.3'
 
 game = discord.Game(prefix + "help for commands")
 client = discord.Client()
@@ -74,11 +75,12 @@ async def readInt(channel, client, prompt=None,target=None):
     return num
 
 def log(message):
-    global cmdlog
-    to_log ='[' + str(message.created_at) + '] #' + str(message.channel.name) + ' in ' + str(message.guild.name) + ' \n@'+ str(message.author) + ' said ' + message.content + '\n'
-    with open('messages.txt', 'a') as file:
-        file.write(to_log)
-        file.close()
+    to_log ='[' + str(message.created_at) + 'Z] ' + str(message.guild) +\
+            '\n' + message.content +'\n'+\
+            'channel ID:' + str(message.channel.id) +' Author ID:'+ str(message.author.id)+'\n\n'
+    file = open(cmdlog, 'a')
+    file.write(to_log)
+    file.close()
     print(to_log)
 
 async def help(message):
@@ -321,6 +323,7 @@ async def on_message(message):
     global application_channel
     global verified_role
     global questioning_role
+
     if message.author == client.user:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
@@ -349,15 +352,12 @@ async def on_message(message):
             await ban(message)
         elif command[0] == 'prefix':
             prefix = command[1]
-            file = open('main.py', 'r')
-            lines = file.readlines()
+        elif command[0] == 'log':
+            file = open('test.txt', 'a')
+            file.write('test')
             file.close()
-            lines[4] = 'prefix = ' + prefix + '\n'
-            file = open('main.py', 'w')
-            file.writelines(lines)
-            file.close()
-        elif command[0] == 'set':
-            application_channel = message.channel
+            file = open('test.txt')
+            print(file.readlines())
         else:
             pass
 
@@ -365,6 +365,23 @@ async def on_message(message):
 async def on_member_join(member):
     DM = member.create_DM()
     displayMessage(DM, 'Hello, and welcome to the server! Please read over the rules before verifying yourself!')
+
+
+@client.event
+async def on_member_leave(member):
+    file = open('member_leave.log','a')
+    to_log = str(member.id)+', ['
+    roles = member.roles
+    for i in range(len(roles)):
+        if i == 0:
+            to_log += str(guild.id)
+        else:
+            to_log += str(roles[i])
+        if i < (len(roles) - 1):
+            to_log+=', '
+    to_log += ']'
+    file.write(to_log)
+    file.close()
 
 print('Starting Bot')
 client.run(os.getenv('TEST_TOKEN'))
