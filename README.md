@@ -1,6 +1,7 @@
 # Echo v0.1.2
-Echo is a bot I've made for my discord servers I 
-moderate
+Echo is a bot I've made for my discord servers I moderate
+
+If you want a discord bot, please do not use this. Use a better bot, bc this is just to show I can actually do this
 
 ## Features
 ### General use
