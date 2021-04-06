@@ -48,7 +48,10 @@ async def readLine(channel, client, prompt, target, delete_prompt=True,delete_re
     msg = await client.wait_for('message',check=check)
 
     if delete_response:
-        await msg.delete()
+        try:
+            await msg.delete()
+        finally:
+            pass
     if delete_prompt:
         await show.delete()
 
@@ -84,24 +87,6 @@ def log(message):
     file.write(to_log)
     file.close()
 
-async def help(message):
-    global prefix
-    """
-    Effectively the docutmentation for all methods and functions
-    :param message:
-    :return:
-    """
-    embed = discord.Embed()
-    command = message.content[len(prefix):].split()
-    if len(command) == 1:
-        await message.channel.send('`help {command}` - thats this command.\n'
-                                   '`repeat [phrase]` - repeats the user input\n'
-                                   '***__Moderator Commands__***'
-                                   '`quit` - quits the bot\n'
-                                   '`ban [member] - bans a member`')
-    else:
-        pass
-
 counter = 0
 questions = ['What is your name?','How old are you?','Where did you get the link from?','Why do you want to join?']
 class Application:
@@ -117,10 +102,12 @@ class Application:
     async def question(self):
         global questions
         global client
+        DM = self.applicant.create_dm()
         for question in questions:
             question = '<@!' + str(self.applicant.id)  + '> ' + question
-            response = await readLine(await self.applicant.create_dm(),client,question,self.applicant,delete_prompt=False,delete_response=False)
+            response = await readLine(await DM,client,question,self.applicant,delete_prompt=False,delete_response=False)
             self.responses.append(response.content)
+        await displayMessage(DM, 'Please wait while your application is reviewed')
 
     def gen_embed(self):
         global application_channel
@@ -323,13 +310,16 @@ async def ban(message):
 
 async def modmail(message):
     sender = message.author
-    DM = sender.create_DM()
-    subject = 'Modmail|' + await readLine(DM, client,'Subject Line:', sender)
-    body = await readLine(DM, client, 'Subject Line:', sender)
-    mail = discord.embed(title=subject)
+    DM = await sender.create_dm()
+    subject = await readLine(DM, client, 'Subject Line:', sender,delete_prompt=False,delete_response=False)
+    subject = 'Modmail | ' + subject.content
+    body = await readLine(DM, client, 'Body:', sender,delete_prompt=False,delete_response=False)
+    await DM.send('Your message has been sent')
+
+    mail = discord.Embed(title=subject)
     mail.set_author(name=sender.name,icon_url=sender.avatar_url)
-    mail.add_field(value=body)
-    mail_inbox.send(embed=mail)
+    mail.add_field(name='Message',value=body.content)
+    await mail_inbox.send(embed=mail)
     
 async def help(message):
     message
@@ -426,11 +416,11 @@ async def on_message(message):
             log(message)
             file = open(cmdlog, 'rb')
             await message.channel.send(file=discord.File(file))
-        elif command[0] == 'set':
-            application_channel = message.channel
         elif command[0] == 'modmail':
-            message.delete()
-            modmail(message)
+            try:
+                await message.delete()
+            finally:
+                await modmail(message)
         else:
             pass
 
@@ -442,7 +432,6 @@ async def on_member_join(member):
     embed = discord.Embed(title='Member Join')
     embed.set_author(name=member.name,icon_url=member.avatar_url)
     age = str(member.created_at)
-    embed.add_field(title='Account age',value=age)
     embed.set_footer(text=str(member.id))
     await join_leave_log.send(embed=embed)
 
@@ -468,14 +457,16 @@ async def on_member_remove(member):
         if i == 0:
             pass
         else:
-            role_tags += str(roles[i])
+            role_tags += '<@&' + str(roles[i]) + '>'
     footer = 'ID:' + str(member.id)
     #•
-    embed = discord.Embed(title='Member Leave')
-    embed.set_author(name=member.name,icon_url=member.avatar_url)
-    embed.add_field(name='Roles',value=role_tags)
-    embed.set_footer(text=str(member.id))
-    await join_leave_log.send(embed=embed)
+    leave = discord.Embed(title='Member Leave')
+    leave.set_author(name=member.name,icon_url=member.avatar_url)
+    if len(role_tags) == 0:
+        role_tags = 'None'
+    leave.add_field(name='Roles',value=role_tags)
+    leave.set_footer(text=footer)
+    await join_leave_log.send(embed=leave)
 
 print('Starting Bot')
 client.run(os.getenv('TEST_TOKEN'))
