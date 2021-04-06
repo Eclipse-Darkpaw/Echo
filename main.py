@@ -1,26 +1,27 @@
 import discord
 import os
 import sys
+import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
 prefix = '>'
 cmdlog = 'Echo/command.log'
 version = '0.1.3'
+log_leave = True
+
+intents = discord.Intents.default()
+intents.members = True
 
 game = discord.Game(prefix + "help for commands")
-client = discord.Client()
-
-@client.event
-async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
-    await client.change_presence(activity=game)
+client = discord.Client(intents=intents)
 
 guild = None
 application_channel = None
 verified_role = None
 questioning_role = None
 warn_log_channel = None
+join_leave_log = None
 warn_roles = []
 cases = 0
 
@@ -81,7 +82,6 @@ def log(message):
     file = open(cmdlog, 'a')
     file.write(to_log)
     file.close()
-    print(to_log)
 
 async def help(message):
     global prefix
@@ -102,7 +102,7 @@ async def help(message):
         pass
 
 counter = 0
-questions = ['Where did you get the link from?','How old are you?']
+questions = ['What is your name?','How old are you?','Where did you get the link from?','Why do you want to join?']
 class Application:
     def __init__(self, applicant, channel, guild):
         global counter
@@ -138,7 +138,7 @@ class Application:
 
 async def verify(message):
     if verified_role in message.author.roles:
-        await message.reply('You are already verified')
+        await message.channel.send('You are already verified')
         return
     application = Application(message.author, message.channel, message.guild)
     await message.delete()
@@ -182,9 +182,31 @@ async def quit(message):
         await displayMessage(message.channel, 'You do not have permission to turn me off!')
 
 async def suspend(message):
+    command = message.content[1:].lower().split(' ', 2)
+    if message.author.guild_permissions.ban_members or message.author.guild_permissions.administrator:
+        target = message.mentions[0]
+        print(target)
+        if target == None:
+            await message.channel.send('null target')
+            return
+        if message.author == target:
+            await message.channel.send('You cannot suspend yourself')
+            return
+        elif client.user == target:
+            await message.channel.send('You cannot suspend me!')
+            return
+        if len(command) == 2:
+            command.append('No reason given.')
+
+        await target.add_roles(role)
+        await message.channel.send(target + ' was suspended.\n Reason: ' + command[2])
+    else:
+        await message.channel.send('You do not have the permissions to do that.')
     pass
 
 async def warn(message):
+    global cases
+
     try:
         command = message.content[1:].lower().split(' ', 3)
     except:
@@ -201,6 +223,7 @@ async def warn(message):
         elif message.author == target:
             await message.channel.send('You cannot warn yourself')
             return
+        cases += 1
 
         if not command[3]:
             command[3] = 'No reason given'
@@ -270,7 +293,7 @@ async def kick(message):
             return
         if len(command) == 2:
             command.append('No reason given')
-        await target.kick(command[2])
+            await target.kick(command[2])
         await message.channel.send(target + ' was kicked.\n Reason: ' + command[2])
     else:
         await message.channel.send('You do not have the permissions to do that.')
@@ -297,6 +320,17 @@ async def ban(message):
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
+async def help(message):
+    message
+
+@client.event
+async def on_connect():
+    print('Connected to Discord!')
+
+@client.event
+async def on_disconnect():
+    print('Disconnected from Discord')
+
 @client.event
 async def on_ready():
     global guild
@@ -304,6 +338,7 @@ async def on_ready():
     global verified_role
     global questioning_role
     global warn_log_channel
+    global join_leave_log
     global warn_roles
 
     print('We have logged in as {0.user}'.format(client))
@@ -316,6 +351,8 @@ async def on_ready():
         warn_roles.append(guild.get_role(int(os.getenv('WARN_'+str(i)+'_ID'))))
     await client.change_presence(activity=game)
     warn_log_channel = guild.get_channel(int(os.getenv('WARN_LOG_CHANNEL_ID')))
+    join_leave_log = guild.get_channel(int(os.getenv('JOIN_LEAVE_LOG')))
+    print('All ready to run!')
 
 @client.event
 async def on_message(message):
@@ -330,58 +367,97 @@ async def on_message(message):
         return
     if message.content.startswith(prefix):
         command = message.content[1:].split(' ', 1)
-        log(message)
         if command[0] == 'help':
+            log(message)
             await message.channel.send('To be worked on')
         elif command[0] == 'test':
-            await message.reply('I am online')
+            log(message)
+            await message.channel.send('I am online')
         elif command[0] == 'version':
-            await message.reply('I am currently running Echo 0.1.1')
+            log(message)
+            await message.channel  .send('I am currently running Echo ' + version)
         elif command[0] == 'repeat':
-            await message.channel.send(command[1])
+            try:
+                await message.channel.send(command[1])
+                print(command[1])
+            except IndexError:
+                await message.channel.send('You need to say something I can repeat!')
+        elif command[0] == 'repeatq':
+            try:
+                await message.channel.send(command[1])
+                await message.delete()
+                print(command[1])
+                log(message)
+            except IndexError:
+                await message.channel.send('You need to say something I can repeat!')
         elif command[0] == 'quit':
             print('quit command recieved')
+            log(message)
             await quit(message)
         elif command[0] == 'verify':
+            log(message)
             await verify(message)
         elif command[0] == 'warn':
+            log(message)
             await warn(message)
         elif command[0] == 'kick':
+            log(message)
             await kick(message)
         elif command[0] == 'ban':
+            log(message)
             await ban(message)
         elif command[0] == 'prefix':
+            log(message)
             prefix = command[1]
         elif command[0] == 'log':
-            file = open('test.txt', 'a')
-            file.write('test')
-            file.close()
-            file = open('test.txt')
-            print(file.readlines())
+            log(message)
+            file = open(cmdlog, 'rb')
+            await message.channel.send(file=discord.File(file))
         else:
             pass
 
 @client.event
 async def on_member_join(member):
-    DM = member.create_DM()
-    displayMessage(DM, 'Hello, and welcome to the server! Please read over the rules before verifying yourself!')
-
+    file = open('join-leave.log','a')
+    file.write('->' + str(member.name))
+    await displayMessage(member, 'Hello, and welcome to the server! Please read over the rules before verifying yourself!')
+    embed = discord.Embed(title='Member Join')
+    embed.set_author(name=member.name,icon_url=member.avatar_url)
+    age = str(member.created_at)
+    embed.add_field(title='Account age',value=age)
+    embed.set_footer(text=str(member.id))
+    await join_leave_log.send(embed=embed)
 
 @client.event
-async def on_member_leave(member):
-    file = open('member_leave.log','a')
+async def on_member_remove(member):
+    print(str(member) + ' left the server')
+    file = open('Echo/member_leave.log','a')
     to_log = str(member.id)+', ['
     roles = member.roles
     for i in range(len(roles)):
         if i == 0:
             to_log += str(guild.id)
         else:
-            to_log += str(roles[i])
+            to_log += str(roles[i].id)
         if i < (len(roles) - 1):
             to_log+=', '
-    to_log += ']'
+    to_log += ']\n'
     file.write(to_log)
     file.close()
+    print(to_log)
+    role_tags = ''
+    for i in range(len(roles)):
+        if i == 0:
+            pass
+        else:
+            role_tags += str(roles[i])
+    footer = 'ID:' + str(member.id)
+    #•
+    embed = discord.Embed(title='Member Leave')
+    embed.set_author(name=member.name,icon_url=member.avatar_url)
+    embed.add_field(name='Roles',value=role_tags)
+    embed.set_footer(text=str(member.id))
+    await join_leave_log.send(embed=embed)
 
 print('Starting Bot')
 client.run(os.getenv('TEST_TOKEN'))

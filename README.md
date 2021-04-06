@@ -14,7 +14,9 @@ If you want a discord bot, please do not use this. Use a better bot, bc this is 
 
 ##Change Log
 ###0.1.x
+#####
 ####0.1.3
+* Fixed `log()` function and created `command.log`
 * Fixed `>warn`
 * altered `>verify` to remove the Questioning role upon membership approval
 * altered `>verify` to not verify users who are already verified
