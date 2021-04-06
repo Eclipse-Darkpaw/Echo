@@ -316,13 +316,24 @@ async def modmail(message):
     body = await readLine(DM, client, 'Body:', sender,delete_prompt=False,delete_response=False)
     await DM.send('Your message has been sent')
 
-    mail = discord.Embed(title=subject)
+    mail = discord.Embed(title=subject,color=0xadd8ff)
     mail.set_author(name=sender.name,icon_url=sender.avatar_url)
     mail.add_field(name='Message',value=body.content)
     await mail_inbox.send(embed=mail)
     
 async def help(message):
-    message
+    sender = message
+    help = discord.Embed(title="Echo Command list",color=0x45FFFF)
+    help.set_author(name=client.user.name,icon_url=client.user.avatar_url)
+    help.add_field(name='`>help`',value='Thats this command!',inline = False)
+    help.add_field(name='`>verify`',value='Verifies an un verified member.',inline=False)
+    help.add_field(name='`>modmail`',value='Sends a private message to the moderators.',inline=False)
+    help.add_field(name='Moderator Commands',value='Comands that only mods can use',inline=False)
+    help.add_field(name='`>warn <MemberTagged> <rule#> [reason]`',value='Warns a member for a rule and logs it',inline=False)
+    help.add_field(name='`>kick <MemberTagged> <rule#> [reason]`',value='Kicks a member for a rule and logs it',inline=False)
+    help.add_field(name='`>ban <MemberTagged> <rule#> [reason]`',value='Bans a member for a rule and logs it.',inline=False)
+    help.add_field(name='`>quit`',value='quits the bot',inline=False)
+    await message.channel.send(embed=help)
 
 @client.event
 async def on_connect():
@@ -372,11 +383,13 @@ async def on_message(message):
         command = message.content[1:].split(' ', 1)
         if command[0] == 'help':
             log(message)
-            await message.channel.send('To be worked on')
+            await help(message)
         elif command[0] == 'test':
             log(message)
             await message.channel.send('I am online')
         elif command[0] == 'version':
+            embed = discord.Embed(title='test')
+            await message.channel.send(embed=embed)
             log(message)
             await message.channel  .send('I am currently running Echo ' + version)
         elif command[0] == 'repeat':
