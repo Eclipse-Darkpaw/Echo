@@ -485,4 +485,4 @@ async def on_member_remove(member):
     await join_leave_log.send(embed=leave)
 
 print('Starting Bot')
-client.run(os.getenv('TEST_TOKEN'))
+client.run(os.getenv('TOKEN'))
