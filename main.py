@@ -24,6 +24,9 @@ join_leave_log = None
 warn_roles = []
 cases = 0
 mail_inbox = None
+rules=None
+num_rules=0
+rule_lst=[]
 
 async def displayMessage(channel, message):
     if not len(message) > 0:
@@ -334,6 +337,25 @@ async def help(message):
     help.add_field(name='`>quit`',value='quits the bot',inline=False)
     await message.channel.send(embed=help)
 
+async def rule_new(rule):
+    num_rules += 1
+    rule = str(num_rules) +'. ' + rule
+    id = await rules.send(rule).id
+    rule_lst.append(id)
+
+async def rule_edit(rule, new_wording):
+    message = rules.get_message(rule_lst[rule - 1])
+    number = message.content.split('. ', 1)[0]
+    await message.edit(number + '. ' + new_wording)
+
+async def rule_delete(rule):
+    num_rules -= 1
+    await rules.get_message(rule_lst[rule-1]).delete()
+    for i in range(rule,len(rule_lst)):
+        message = rules.get_message(rule_lst[i - 1])
+        number = message.content.split('. ', 1)
+        await message.edit(str(int(number[0])-1) + '. ' + number[1])
+
 @client.event
 async def on_connect():
     print('Connected to Discord!')
@@ -352,6 +374,7 @@ async def on_ready():
     global join_leave_log
     global warn_roles
     global mail_inbox
+    global rules
 
     print('We have logged in as {0.user}'.format(client))
 
@@ -365,6 +388,7 @@ async def on_ready():
     warn_log_channel = guild.get_channel(int(os.getenv('WARN_LOG_CHANNEL_ID')))
     join_leave_log = guild.get_channel(int(os.getenv('JOIN_LEAVE_LOG')))
     mail_inbox = guild.get_channel(int(os.getenv('MAIL_INBOX')))
+    rules = guild.get_channel(int(os.getenve('TEST_RULES')))
     print('All ready to run!')
 
 @client.event
@@ -406,7 +430,7 @@ async def on_message(message):
                 log(message)
             except IndexError:
                 await message.channel.send('You need to say something I can repeat!')
-                '''
+            '''
         elif command[0] == 'quit':
             print('quit command recieved')
             log(message)
@@ -437,6 +461,15 @@ async def on_message(message):
                 await message.delete()
             finally:
                 await modmail(message)
+        elif command[0] == 'rule':
+            command = message.content.split(' ',2)
+            if command[1] == 'new':
+                rule_new(command[2])
+            elif command[1] == 'edit':
+                rule = command[2].split(' ',1)
+                rule_edit(rule[0], rule[1])
+            elif command[1] == 'delete':
+                rule_delete(int(command[2]))
         else:
             pass
 
@@ -485,4 +518,4 @@ async def on_member_remove(member):
     await join_leave_log.send(embed=leave)
 
 print('Starting Bot')
-client.run(os.getenv('TOKEN'))
+client.run(os.getenv('TEST_TOKEN'))
