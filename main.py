@@ -1,13 +1,12 @@
 import discord
 import os
 import sys
-import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
 prefix = '>'
 cmdlog = 'Echo/command.log'
-version = '0.1.3'
+version = '1.1.0'
 log_leave = True
 
 intents = discord.Intents.default()
@@ -384,6 +383,7 @@ async def on_message(message):
         if command[0] == 'help':
             log(message)
             await help(message)
+            '''
         elif command[0] == 'test':
             log(message)
             await message.channel.send('I am online')
@@ -406,6 +406,7 @@ async def on_message(message):
                 log(message)
             except IndexError:
                 await message.channel.send('You need to say something I can repeat!')
+                '''
         elif command[0] == 'quit':
             print('quit command recieved')
             log(message)
@@ -422,9 +423,11 @@ async def on_message(message):
         elif command[0] == 'ban':
             log(message)
             await ban(message)
+            '''
         elif command[0] == 'prefix':
             log(message)
             prefix = command[1]
+            '''
         elif command[0] == 'log':
             log(message)
             file = open(cmdlog, 'rb')

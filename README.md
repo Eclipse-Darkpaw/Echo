@@ -15,6 +15,9 @@ If you want a discord bot, please do not use this. Use a better bot, bc this is 
 ##Change Log
 ###0.1.x
 #####
+####1.0.0
+* Finalized `>help`
+* removed `>repeat` and `>repeatq`
 ####0.1.3
 * Fixed `log()` function and created `command.log`
 * Fixed `>warn`
