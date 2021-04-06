@@ -24,6 +24,7 @@ warn_log_channel = None
 join_leave_log = None
 warn_roles = []
 cases = 0
+mail_inbox = None
 
 async def displayMessage(channel, message):
     if not len(message) > 0:
@@ -320,6 +321,16 @@ async def ban(message):
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
+async def modmail(message):
+    sender = message.author
+    DM = sender.create_DM()
+    subject = 'Modmail|' + await readLine(DM, client,'Subject Line:', sender)
+    body = await readLine(DM, client, 'Subject Line:', sender)
+    mail = discord.embed(title=subject)
+    mail.set_author(name=sender.name,icon_url=sender.avatar_url)
+    mail.add_field(value=body)
+    mail_inbox.send(embed=mail)
+    
 async def help(message):
     message
 
@@ -340,6 +351,7 @@ async def on_ready():
     global warn_log_channel
     global join_leave_log
     global warn_roles
+    global mail_inbox
 
     print('We have logged in as {0.user}'.format(client))
 
@@ -352,6 +364,7 @@ async def on_ready():
     await client.change_presence(activity=game)
     warn_log_channel = guild.get_channel(int(os.getenv('WARN_LOG_CHANNEL_ID')))
     join_leave_log = guild.get_channel(int(os.getenv('JOIN_LEAVE_LOG')))
+    mail_inbox = guild.get_channel(int(os.getenv('MAIL_INBOX')))
     print('All ready to run!')
 
 @client.event
@@ -413,6 +426,11 @@ async def on_message(message):
             log(message)
             file = open(cmdlog, 'rb')
             await message.channel.send(file=discord.File(file))
+        elif command[0] == 'set':
+            application_channel = message.channel
+        elif command[0] == 'modmail':
+            message.delete()
+            modmail(message)
         else:
             pass
 
