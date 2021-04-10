@@ -7,7 +7,6 @@ load_dotenv()
 prefix = '>'
 cmdlog = 'Echo/command.log'
 version = '1.1.0'
-log_leave = True
 
 intents = discord.Intents.default()
 intents.members = True
@@ -338,6 +337,8 @@ async def help(message):
     await message.channel.send(embed=help)
 
 async def rule_new(rule):
+    global num_rules
+
     num_rules += 1
     rule = str(num_rules) +'. ' + rule
     id = await rules.send(rule).id
@@ -349,6 +350,8 @@ async def rule_edit(rule, new_wording):
     await message.edit(number + '. ' + new_wording)
 
 async def rule_delete(rule):
+    global num_rules
+
     num_rules -= 1
     await rules.get_message(rule_lst[rule-1]).delete()
     for i in range(rule,len(rule_lst)):
@@ -388,7 +391,7 @@ async def on_ready():
     warn_log_channel = guild.get_channel(int(os.getenv('WARN_LOG_CHANNEL_ID')))
     join_leave_log = guild.get_channel(int(os.getenv('JOIN_LEAVE_LOG')))
     mail_inbox = guild.get_channel(int(os.getenv('MAIL_INBOX')))
-    rules = guild.get_channel(int(os.getenve('TEST_RULES')))
+    rules = guild.get_channel(int(os.getenv('TEST_RULES')))
     print('All ready to run!')
 
 @client.event
@@ -464,12 +467,12 @@ async def on_message(message):
         elif command[0] == 'rule':
             command = message.content.split(' ',2)
             if command[1] == 'new':
-                rule_new(command[2])
+                await rule_new(command[2])
             elif command[1] == 'edit':
                 rule = command[2].split(' ',1)
-                rule_edit(rule[0], rule[1])
+                await rule_edit(rule[0], rule[1])
             elif command[1] == 'delete':
-                rule_delete(int(command[2]))
+                await rule_delete(int(command[2]))
         else:
             pass
 
