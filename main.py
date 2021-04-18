@@ -1,3 +1,4 @@
+import time
 import discord
 import os
 import sys
@@ -5,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 prefix = '>'
-cmdlog = 'Echo/command.log'
+cmdlog = 'command.log'
 version = '1.1.0'
 log_leave = True
 
@@ -101,10 +102,10 @@ class Application:
     async def question(self):
         global questions
         global client
-        DM = self.applicant.create_dm()
+        DM = await self.applicant.create_dm()
         for question in questions:
             question = '<@!' + str(self.applicant.id)  + '> ' + question
-            response = await readLine(await DM,client,question,self.applicant,delete_prompt=False,delete_response=False)
+            response = await readLine(DM,client,question,self.applicant,delete_prompt=False,delete_response=False)
             self.responses.append(response.content)
         await displayMessage(DM, 'Please wait while your application is reviewed')
 
@@ -124,11 +125,10 @@ class Application:
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
 
 async def verify(message):
-    if verified_role in message.author.roles:
+    if verified_role in guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified')
         return
     application = Application(message.author, message.channel, message.guild)
-    await message.delete()
 
     await application.question()
 
@@ -137,13 +137,10 @@ async def verify(message):
     for emoji in emojis:
         await applied.add_reaction(emoji)
 
-    print('check')
     def check(reaction, user):
         return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis
 
-    print('Waiting for user reaction')
     reaction, user = await client.wait_for('reaction_add',check=check)
-    print('user reacted ' + str(user) + str(reaction.emoji))
 
     if str(reaction.emoji) == '✅':
         await application.applicant.add_roles(message.guild.get_role(int(os.getenv('VERIFIED_ROLE_ID'))))
@@ -319,14 +316,15 @@ async def modmail(message):
     mail.set_author(name=sender.name,icon_url=sender.avatar_url)
     mail.add_field(name='Message',value=body.content)
     await mail_inbox.send(embed=mail)
-    
+
 async def help(message):
-    sender = message
     help = discord.Embed(title="Echo Command list",color=0x45FFFF)
     help.set_author(name=client.user.name,icon_url=client.user.avatar_url)
     help.add_field(name='`>help`',value='Thats this command!',inline = False)
     help.add_field(name='`>verify`',value='Verifies an un verified member.',inline=False)
     help.add_field(name='`>modmail`',value='Sends a private message to the moderators.',inline=False)
+    help.add_field(name='`>test`',value='Tests if the bot is online',inline=False)
+    help.add_field(name='`>version`', value='What version Echo is currently on')
     help.add_field(name='Moderator Commands',value='Comands that only mods can use',inline=False)
     help.add_field(name='`>warn <MemberTagged> <rule#> [reason]`',value='Warns a member for a rule and logs it',inline=False)
     help.add_field(name='`>kick <MemberTagged> <rule#> [reason]`',value='Kicks a member for a rule and logs it',inline=False)
@@ -387,11 +385,17 @@ async def on_message(message):
         elif command[0] == 'test':
             log(message)
             await message.channel.send('I am online')
+            '''
+        elif command[0] == 'ping':
+            start = time.time()
+            x = await message.channel.send('Pong!')
+            ping = time.time() - start
+            edit = x.content + ' '  + str(ping*1000) + 'ms'
+            await x.edit(content=edit)
         elif command[0] == 'version':
-            embed = discord.Embed(title='test')
-            await message.channel.send(embed=embed)
             log(message)
             await message.channel  .send('I am currently running Echo ' + version)
+            ''' 0    
         elif command[0] == 'repeat':
             try:
                 await message.channel.send(command[1])
@@ -433,9 +437,7 @@ async def on_message(message):
             file = open(cmdlog, 'rb')
             await message.channel.send(file=discord.File(file))
         elif command[0] == 'modmail':
-            try:
                 await message.delete()
-            finally:
                 await modmail(message)
         else:
             pass
@@ -450,6 +452,7 @@ async def on_member_join(member):
     age = str(member.created_at)
     embed.set_footer(text=str(member.id))
     await join_leave_log.send(embed=embed)
+
 
 @client.event
 async def on_member_remove(member):
@@ -473,7 +476,7 @@ async def on_member_remove(member):
         if i == 0:
             pass
         else:
-            role_tags += '<@&' + str(roles[i]) + '>'
+            role_tags += '<@&' + str(roles[i].id) + '>'
     footer = 'ID:' + str(member.id)
     #•
     leave = discord.Embed(title='Member Leave')
