@@ -76,15 +76,15 @@ class Leaderboard:
         self.leaderboard.buildheap(self.leaderboard.heap)
         print(persons)
 
-
     def get_leader(self):
         return self.leaderboard.getMax()
 
-    def show_leaderboard(self):
+    async def show_leaderboard(self, message):
         embed = Embed(title='Most Active Users')
         board = MaxHeap(self.leaderboard.heap.copy())
         for i in range(10):
             member = board.extractMax()
             embed.add_field(name='<@'+str(member.id)+'>', value=member.score)
+        await message.channel.send(embed=embed)
 
 
