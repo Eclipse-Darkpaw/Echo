@@ -74,3 +74,9 @@ class MaxHeap:
 
     def getMax(self):
         return self.heap[0]
+
+    def __contains__(self, item):
+        return self.heap.__contains__(item)
+
+    def __len__(self):
+        return len(self.heap)

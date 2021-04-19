@@ -3,11 +3,12 @@ import discord
 import os
 import sys
 from dotenv import load_dotenv
+from leaderboard import Leaderboard
 load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'
-version = '1.1.0'
+version = '1.1.1 alpha'
 
 intents = discord.Intents.default()
 intents.members = True
@@ -24,9 +25,11 @@ join_leave_log = None
 warn_roles = []
 cases = 0
 mail_inbox = None
-rules=None
-num_rules=0
-rule_lst=[]
+rules = None
+num_rules = 0
+rule_lst = []
+
+leaderboard =
 
 async def displayMessage(channel, message):
     if not len(message) > 0:
@@ -376,6 +379,7 @@ async def on_ready():
     global warn_roles
     global mail_inbox
     global rules
+    global leaderboard
 
     print('We have logged in as {0.user}'.format(client))
 
@@ -390,6 +394,7 @@ async def on_ready():
     join_leave_log = guild.get_channel(int(os.getenv('JOIN_LEAVE_LOG')))
     mail_inbox = guild.get_channel(int(os.getenv('MAIL_INBOX')))
     rules = guild.get_channel(int(os.getenv('TEST_RULES')))
+    leaderboard = Leaderboard()
     print('All ready to run!')
 
 @client.event
@@ -489,7 +494,6 @@ async def on_member_join(member):
     embed.set_footer(text=str(member.id))
     await join_leave_log.send(embed=embed)
 
-
 @client.event
 async def on_member_remove(member):
     print(str(member) + ' left the server')
@@ -523,5 +527,9 @@ async def on_member_remove(member):
     leave.set_footer(text=footer)
     await join_leave_log.send(embed=leave)
 
-print('Starting Bot')
-client.run(os.getenv('TEST_TOKEN'))
+if __name__ == '__main__':
+    token = os.getenv('TEST_TOKEN')
+    print('Starting Bot')
+    client.run(token)
+    if token == os.getenv('TEST_TOKEN'):
+        prefix = 't>'
