@@ -1,6 +1,9 @@
-from discord import Embed
+import discord
 from datetime import datetime, timedelta
+from maxHeap import MaxHeap
 
+# a dictionary storing all people on the leaderboard
+# member id:person object
 persons = {}
 
 
@@ -60,27 +63,28 @@ class Person:
 
 
 class Leaderboard:
-    def __init__(self):
-        self.persons
-        self.leaderboard = []
-        # assuming theres not a previous leaderboard
-
-    def add_score(self, member, message):
-        if member.id not in self.persons:
-            self.persons[member.id] = Person(member, message.created_at)
-        else:
-            self.persons[member.id].score()
+    def __init__(self, lst=None):
+        #stores the person objects and sorts them as a heap
+        self.leaderboard = MaxHeap(lst)
 
     def score(self, message):
         if message.author.id not in persons:
-            self.persons =
+            self.leaderboard.insert(Person(message))
+        else:
+            persons[message.author.id].score(message)
+
+        self.leaderboard.buildheap(self.leaderboard.heap)
+        print(persons)
 
 
     def get_leader(self):
-        return self.leaderboard[0]
-
-    def top_ten(self):
-        pass
+        return self.leaderboard.getMax()
 
     def show_leaderboard(self):
         embed = Embed(title='Most Active Users')
+        board = MaxHeap(self.leaderboard.heap.copy())
+        for i in range(10):
+            member = board.extractMax()
+            embed.add_field(name='<@'+str(member.id)+'>', value=member.score)
+
+
