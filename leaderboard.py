@@ -69,7 +69,8 @@ class Leaderboard:
         self.leaderboard = MaxHeap(lst)
 
     def score(self, message):
-        if message.author.guild_permissions.change_nickname or message.channel.id == 764998372070916106 :
+        id = message.author.id
+        if message.guild.get_member(id).guild_permissions.change_nickname or message.channel.id == 764998372070916106 or message.author.bot:
             return
         if message.author.id not in persons:
             self.leaderboard.insert(Person(message))
@@ -81,6 +82,7 @@ class Leaderboard:
         return self.leaderboard.getMax()
 
     async def show_leaderboard(self, message):
+
         embed = discord.Embed(title='Most Active Users')
         board = MaxHeap(self.leaderboard.heap.copy())
         x = 10
@@ -89,7 +91,7 @@ class Leaderboard:
         for i in range(x):
             member = board.extractMax()
             if member is not None:
-                embed.add_field(name='<@!'+str(member.member.nickname)+'>', value=member.get_score(), inline=False)
+                embed.add_field(name='@'+str(member.member.display_name), value=member.get_score(), inline=False)
         await message.channel.send(embed=embed)
 
     async def award_leaderboard(self, message):
@@ -102,9 +104,10 @@ class Leaderboard:
             if member is not None:
                 await member.add_roles(message.guild.get_role(833911100147761152))
 
-    def reset_leaderboard(self, message):
+    async def reset_leaderboard(self, message):
         global persons
         self.leaderboard = MaxHeap()
         persons = {}
+        await message.channel.send('Leaderboard Reset')
 
 

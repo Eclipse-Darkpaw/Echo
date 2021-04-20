@@ -489,6 +489,11 @@ async def on_message(message):
                 await rule_delete(int(command[2]))
         elif command[0] == 'leaderboard' and message.author.guild_permissions.administrator:
             await leaderboard.show_leaderboard(message)
+        elif command[0] == 'resetlb' and message.author.guild_permissions.administrator:
+            await leaderboard.reset_leaderboard(message)
+        elif command[0] == 'print':
+            print(message.content)
+
     leaderboard.score(message)
 
 @client.event
