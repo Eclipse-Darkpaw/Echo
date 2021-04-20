@@ -11,6 +11,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'
+version = '1.2.1'
 
 intents = discord.Intents.default()
 intents.members = True
@@ -547,4 +548,3 @@ async def on_member_remove(member):
 
 
 token = os.getenv('TOKEN')
-f
