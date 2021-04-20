@@ -69,8 +69,7 @@ class Leaderboard:
         self.leaderboard = MaxHeap(lst)
 
     def score(self, message):
-        id = message.author.id
-        if message.guild.get_member(id).guild_permissions.change_nickname or message.channel.id == 764998372070916106 or message.author.bot:
+        if message.author.guild_permissions.change_nickname or message.channel.id == 764998372070916106:
             return
         if message.author.id not in persons:
             self.leaderboard.insert(Person(message))
@@ -82,7 +81,6 @@ class Leaderboard:
         return self.leaderboard.getMax()
 
     async def show_leaderboard(self, message):
-
         embed = discord.Embed(title='Most Active Users')
         board = MaxHeap(self.leaderboard.heap.copy())
         x = 10
