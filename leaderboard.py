@@ -92,7 +92,6 @@ class Leaderboard:
             print(member)
             if member is not None:
                 embed.add_field(name='<@!'+str(member.member.id)+'>', value=member.get_score(), inline=False)
-                await
         await message.channel.send(embed=embed)
 
     def print(self):
