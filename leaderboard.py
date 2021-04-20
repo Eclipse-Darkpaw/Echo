@@ -20,7 +20,7 @@ class Person:
         self.member = message.author
         self._score = 1
         self.last_time = message.created_at
-        persons[member.id] = self
+        persons[message.author.id] = self
 
     def get_member(self):
         return self.member
@@ -29,9 +29,10 @@ class Person:
         return self._score
 
     def score(self, message):
+
         if message.author != self.member:
             raise Exception("This message was not writen by this person.")
-        if self.last_time + anti_spam < message.created_at:
+        if self.last_time + self.__anti_spam < message.created_at:
             self._score += 1
             self.last_time = message.created_at
 
@@ -41,7 +42,7 @@ class Person:
     '''
 
     def __str__(self):
-        return str(self.member.id + ',' + self.last_time)
+        return str(self.member.id) + ',' + str(self.last_time)
 
     def __lt__(self, other):
         return self._score < other.get_score()
@@ -63,28 +64,36 @@ class Person:
 
 
 class Leaderboard:
-    def __init__(self, lst=None):
+    def __init__(self, lst=[]):
         #stores the person objects and sorts them as a heap
         self.leaderboard = MaxHeap(lst)
 
     def score(self, message):
         if message.author.id not in persons:
             self.leaderboard.insert(Person(message))
+            print('Added to the leaderboard')
+            print(self.leaderboard)
         else:
             persons[message.author.id].score(message)
-
-        self.leaderboard.buildheap(self.leaderboard.heap)
-        print(persons)
+            self.leaderboard.buildheap(self.leaderboard.heap)
 
     def get_leader(self):
         return self.leaderboard.getMax()
 
     async def show_leaderboard(self, message):
-        embed = Embed(title='Most Active Users')
+        embed = discord.Embed(title='Most Active Users')
         board = MaxHeap(self.leaderboard.heap.copy())
-        for i in range(10):
+        x = 10
+        if len(board) < x:
+            x = len(board)
+        for i in range(x):
             member = board.extractMax()
-            embed.add_field(name='<@'+str(member.id)+'>', value=member.score)
+            print(type(member))
+            print(member)
+            if member is not None:
+                embed.add_field(name='<@!'+str(member.member.id)+'>', value=member.get_score(), inline=False)
+                await
         await message.channel.send(embed=embed)
 
-
+    def print(self):
+        print(self.leaderboard.getMax())

@@ -1,4 +1,6 @@
 import time
+from datetime import datetime
+
 import discord
 import os
 import sys
@@ -8,8 +10,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'
-version = '1.1.1 alpha'
-
+#switch ={}
 intents = discord.Intents.default()
 intents.members = True
 
@@ -30,7 +31,7 @@ rules = None
 num_rules = 0
 rule_lst = []
 
-leaderboard = None
+leaderboard = Leaderboard()
 
 async def displayMessage(channel, message):
     if not len(message) > 0:
@@ -382,13 +383,15 @@ async def on_ready():
     global rules
     global leaderboard
 
+    leaderboard = Leaderboard()
+
     print('We have logged in as {0.user}'.format(client))
 
     guild = client.get_guild(int(os.getenv('GUILD')))
     application_channel = guild.get_channel(int(os.getenv('APPLICATION_CHANNEL_ID')))
     verified_role = guild.get_role(int(os.getenv('VERIFIED_ROLE_ID')))
     questioning_role = guild.get_role(int(os.getenv('QUESTIONING_ROLE_ID')))
-    suspended_role = guild.get_role(int(os.getenv('SUSPENDED_ROLE_ID')))
+    suspended_role = guild.get_role(int(os.getenv('SUSPENDED_ID')))
     for i in range(1,6):
         warn_roles.append(guild.get_role(int(os.getenv('WARN_'+str(i)+'_ID'))))
     await client.change_presence(activity=game)
@@ -407,10 +410,9 @@ async def on_message(message):
     global questioning_role
     global leaderboard
 
-    leaderboard
-
     if message.author == client.user:
         return
+
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         return
     if message.content.startswith(prefix):
@@ -427,7 +429,7 @@ async def on_message(message):
             start = time.time()
             x = await message.channel.send('Pong!')
             ping = time.time() - start
-            edit = x.content + ' '  + str(ping*1000) + 'ms'
+            edit = x.content + ' '  + str(int(ping*1000)) + 'ms'
             await x.edit(content=edit)
         elif command[0] == 'version':
             log(message)
@@ -486,9 +488,9 @@ async def on_message(message):
             elif command[1] == 'delete':
                 await rule_delete(int(command[2]))
         elif command[0] == 'leaderboard':
+            print(leaderboard)
             await leaderboard.show_leaderboard(message)
-        else:
-            pass
+    leaderboard.score(message)
 
 @client.event
 async def on_member_join(member):
@@ -534,9 +536,9 @@ async def on_member_remove(member):
     leave.set_footer(text=footer)
     await join_leave_log.send(embed=leave)
 
-if __name__ == '__main__':
-    token = os.getenv('TEST_TOKEN')
-    print('Starting Bot')
-    client.run(token)
-    if token == os.getenv('TEST_TOKEN'):
-        prefix = 't>'
+
+token = os.getenv('TOKEN')
+print('Starting Bot')
+client.run(token)
+if token == os.getenv('TEST_TOKEN'):
+    prefix = 't>'
