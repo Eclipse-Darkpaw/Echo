@@ -69,10 +69,10 @@ class Leaderboard:
         self.leaderboard = MaxHeap(lst)
 
     def score(self, message):
+        if message.author.guild_permissions.change_nickname or message.channel.id ==:
+            return
         if message.author.id not in persons:
             self.leaderboard.insert(Person(message))
-            print('Added to the leaderboard')
-            print(self.leaderboard)
         else:
             persons[message.author.id].score(message)
             self.leaderboard.buildheap(self.leaderboard.heap)
@@ -88,11 +88,23 @@ class Leaderboard:
             x = len(board)
         for i in range(x):
             member = board.extractMax()
-            print(type(member))
-            print(member)
             if member is not None:
-                embed.add_field(name='<@!'+str(member.member.id)+'>', value=member.get_score(), inline=False)
+                embed.add_field(name='<@!'+str(member.member.nickname)+'>', value=member.get_score(), inline=False)
         await message.channel.send(embed=embed)
 
-    def print(self):
-        print(self.leaderboard.getMax())
+    async def award_leaderboard(self, message):
+        board = MaxHeap(self.leaderboard.heap.copy())
+        x = 10
+        if len(board) < x:
+            x = len(board)
+        for i in range(x):
+            member = board.extractMax()
+            if member is not None:
+                await member.add_roles(message.guild.get_role(833911100147761152))
+
+    def reset_leaderboard(self, message):
+        global persons
+        self.leaderboard = MaxHeap()
+        persons = {}
+
+

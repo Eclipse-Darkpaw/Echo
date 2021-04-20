@@ -487,8 +487,7 @@ async def on_message(message):
                 await rule_edit(rule[0], rule[1])
             elif command[1] == 'delete':
                 await rule_delete(int(command[2]))
-        elif command[0] == 'leaderboard':
-            print(leaderboard)
+        elif command[0] == 'leaderboard' and message.author.guild_permissions.administrator:
             await leaderboard.show_leaderboard(message)
     leaderboard.score(message)
 
