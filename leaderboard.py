@@ -69,7 +69,7 @@ class Leaderboard:
         self.leaderboard = MaxHeap(lst)
 
     def score(self, message):
-        if message.author.guild_permissions.change_nickname or message.channel.id ==:
+        if message.author.guild_permissions.change_nickname or message.channel.id == 764998372070916106 :
             return
         if message.author.id not in persons:
             self.leaderboard.insert(Person(message))
