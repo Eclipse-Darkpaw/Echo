@@ -69,7 +69,7 @@ class Leaderboard:
         self.leaderboard = MaxHeap(lst)
 
     def score(self, message):
-        if message.author.guild_permissions.change_nickname or message.channel.id == 764998372070916106 :
+        if message.author.guild_permissions.change_nickname or message.channel.id == 764998372070916106:
             return
         if message.author.id not in persons:
             self.leaderboard.insert(Person(message))
@@ -89,7 +89,7 @@ class Leaderboard:
         for i in range(x):
             member = board.extractMax()
             if member is not None:
-                embed.add_field(name='<@!'+str(member.member.nickname)+'>', value=member.get_score(), inline=False)
+                embed.add_field(name='<@!'+str(member.member.display_name)+'>', value=member.get_score(), inline=False)
         await message.channel.send(embed=embed)
 
     async def award_leaderboard(self, message):
