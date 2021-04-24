@@ -194,7 +194,7 @@ async def version(message):
 async def quit(message):
     global game
     log(message)
-    if message.author.guild_permissions.administrator:
+    if message.author.guild_permissions.administrator or message.author.id == 440232487738671124:
         print('quitting program')
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
@@ -460,7 +460,7 @@ async def on_ready():
 
 
 switcher = {'help': help, 'ping': ping, 'version': version, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard}
+            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard,}
 #private = {'print': print}
 
 
@@ -481,8 +481,10 @@ async def on_message(message):
         try:
             method = switcher[command[0]]
             await method(message)
-        except:
-            message.channel.send("That's not a valid command")
+        except KeyError:
+            await message.channel.send("That's not a valid command")
+        if command[0] == 'print':
+            print('/n/n/n/n'+message.content)
         '''
         elif command[0] == 'rule':
             command = message.content.split(' ',2)
@@ -497,7 +499,7 @@ async def on_message(message):
             print(message.content)
         '''
 
-    leaderboard.score(message)
+    #leaderboard.score(message)
 
 
 @client.event
@@ -548,3 +550,4 @@ async def on_member_remove(member):
 
 
 token = os.getenv('TOKEN')
+client.run(token)
