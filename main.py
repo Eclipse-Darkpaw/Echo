@@ -11,7 +11,9 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'
-version = '1.2.1'
+version_num = '1.2.1'
+
+eclipse_id = 440232487738671124
 
 intents = discord.Intents.default()
 intents.members = True
@@ -33,16 +35,18 @@ rules = None
 num_rules = 0
 rule_lst = []
 
+ignore = []
+
 leaderboard = Leaderboard()
 
 
-async def displayMessage(channel, message):
+async def display_message(channel, message):
     if not len(message) > 0:
         return
     return await channel.send(message)
 
 
-async def readMessage(channel, client, prompt=None, delete_prompt=True, delete_response=True):
+async def read_message(channel, prompt=None, delete_prompt=True, delete_response=True):
     show = await displayMessage(channel, prompt)
     message = await client.wait_for('message', timeout=120.0)
     if delete_response:
@@ -52,7 +56,7 @@ async def readMessage(channel, client, prompt=None, delete_prompt=True, delete_r
     return message
 
 
-async def readLine(channel, client, prompt, target, delete_prompt=True, delete_response=True):
+async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
     show = await displayMessage(channel, prompt)
 
     def check(msg):
@@ -71,15 +75,15 @@ async def readLine(channel, client, prompt, target, delete_prompt=True, delete_r
     return msg
 
 
-async def readUser(channel, client, key=None, prompt=None):
+async def read_user(channel, key=None, prompt=None):
     await channel.send(prompt)
-    while (True):
+    while True:
         msg = await client.wait_for('message', timeout=120.0)
         if msg and msg.content == key and msg.channel == channel:
             return msg.author
 
 
-async def readInt(channel, client, prompt=None, target=None):
+async def read_int(channel, prompt=None, target=None):
     num = 0
     parsed = False
 
@@ -90,7 +94,7 @@ async def readInt(channel, client, prompt=None, target=None):
             num = int(line)
             parsed = True
         except:
-            await displayMessage(channel, "Thats not a valid number! Try again!")
+            await displayMessage(channel, "That's not a valid number! Try again!")
             parsed = False
     return num
 
@@ -121,12 +125,12 @@ class Application:
     async def question(self):
         global questions
         global client
-        DM = await self.applicant.create_dm()
+        dm = await self.applicant.create_dm()
         for question in questions:
             question = '<@!' + str(self.applicant.id) + '> ' + question
-            response = await readLine(DM, client, question, self.applicant, delete_prompt=False, delete_response=False)
+            response = await readLine(dm, client, question, self.applicant, delete_prompt=False, delete_response=False)
             self.responses.append(response.content)
-        await displayMessage(DM, 'Please wait while your application is reviewed')
+        await displayMessage(dm, 'Please wait while your application is reviewed')
 
     def gen_embed(self):
         global application_channel
@@ -164,11 +168,11 @@ async def verify(message):
     reaction, user = await client.wait_for('reaction_add', check=check)
 
     if str(reaction.emoji) == '✅':
-        await application.applicant.add_roles(message.guild.get_role(int(os.getenv('VERIFIED_ROLE_ID'))))
+        await application.applicant.add_roles(message.guild.get_role(verified_role))
         await message.author.send('You have been approved.')
-        await application.applicant.remove_roles(message.guild.get_role(int(os.getenv('QUESTIONING_ROLE_ID'))))
+        await application.applicant.remove_roles(message.guild.get_role(questioning_role))
     elif str(reaction.emoji) == '❓':
-        await application.applicant.add_roles(message.guild.get_role(int(os.getenv('QUESTIONING_ROLE_ID'))))
+        await application.applicant.add_roles(message.guild.get_role(questioning_role))
         await message.author.send('You have been pulled into questioning.')
     elif str(reaction.emoji) == '🚫':
         reason = await readLine(application_channel, client, 'Why was this user denied?', user)
@@ -188,13 +192,13 @@ async def ping(message):
 
 async def version(message):
     log(message)
-    await message.channel.send('I am currently running Echo ' + version)
+    await message.channel.send('I am currently running Echo ' + version_num)
 
 
 async def quit(message):
     global game
     log(message)
-    if message.author.guild_permissions.administrator or message.author.id == 440232487738671124:
+    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         print('quitting program')
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
@@ -236,63 +240,6 @@ async def suspend(message):
     pass
 
 
-async def warn(message):
-    global cases
-
-    try:
-        command = message.content[1:].lower().split(' ', 3)
-    except:
-        await message.channel.send('Improper formatting. Use `>warn <Member/ID> <rule> [reason]`')
-
-    # warn <member> <rule> reason
-    # take id too
-    perms = message.author.guild_permissions
-    if perms.kick_members and perms.manage_roles and perms.ban_members:
-        target = message.mentions[0]
-        if target == None:
-            await message.channel.send('null target')
-            return
-        elif message.author == target:
-            await message.channel.send('You cannot warn yourself')
-            return
-        cases += 1
-
-        if not command[3]:
-            command[3] = 'No reason given'
-        for role in warn_roles:
-            if role not in target.roles:
-                await target.add_roles(role)
-                if role == warn_roles[2]:
-                    await suspend(message)
-                    return
-                elif role == warn_roles[3]:
-                    await target.kick()
-                    return
-                elif role == warn_roles[4]:
-                    await target.ban()
-                    embed = discord.Embed(title='Banned | Case #' + str(cases))
-                    embed.set_author(name=target.name, icon_url=target.avatar_url)
-                    embed.add_field(name='Rule broken', value=str(command[2]))
-                    embed.add_field(name='Comments', value=str(command[3]))
-                    embed.add_field(name='User ID', value=str(target.id), inline=False)
-                    await warn_log_channel.send(embed=embed)
-                    reason = str(target) + ' banned for ' + command[3]
-                    await message.channel.send(reason)
-                    return
-                else:
-                    embed = discord.Embed(title='Warn | Case #' + str(cases))
-                    embed.set_author(name=target.name, icon_url=target.avatar_url)
-                    embed.add_field(name='Rule broken', value=str(command[2]))
-                    embed.add_field(name='Comments', value=str(command[3]))
-                    embed.add_field(name='User ID', value=str(target.id), inline=False)
-                    await warn_log_channel.send(embed=embed)
-                    reason = str(target) + ' warn for ' + command[3]
-                    await message.channel.send(reason)
-                    return
-    else:
-        await message.channel.send('You do not have the permissions to do that.')
-
-
 async def kick(message):
     command = message.content[1:].lower().split(' ', 2)
     if message.author.guild_permissions.kick_members:
@@ -324,7 +271,7 @@ async def kick(message):
 
 async def ban(message):
     command = message.content[1:].lower().split(' ', 2)
-    if message.author.guild_permissions.ban_members or message.author.guild_permissions.administrator:
+    if message.author.guild_permissions.ban_members:
         target = message.mentions[0]
         print(target)
         if target == None:
@@ -338,20 +285,75 @@ async def ban(message):
             return
         if len(command) == 2:
             command.append('No reason given.')
-
-        await target.ban()
+        embed = discord.Embed(title='Banned | Case #' + str(cases))
+        embed.set_author(name=target.name, icon_url=target.avatar_url)
+        embed.add_field(name='Rule broken', value=str(command[2]))
+        embed.add_field(name='Comments', value=str(command[3]))
+        embed.add_field(name='User ID', value=str(target.id), inline=False)
+        await warn_log_channel.send(embed=embed)
+        reason = str(target) + ' banned for ' + command[3]
+        await message.channel.send(reason)
         await message.channel.send(target + ' was banned.\n Reason: ' + command[2])
+    else:
+        await message.channel.send('You do not have the permissions to do that.')
+
+
+async def warn(message):
+    global cases
+
+    try:
+        command = message.content[1:].lower().split(' ', 3)
+    except:
+        await message.channel.send('Improper formatting. Use `>warn <Member/ID> <rule> [reason]`')
+
+    # warn <member> <rule> reason
+    # take id too
+    perms = message.author.guild_permissions
+    if perms.kick_members and perms.manage_roles and perms.ban_members:
+        target = message.mentions[0]
+        if target is None:
+            await message.channel.send('null target')
+            return
+        elif message.author == target:
+            await message.channel.send('You cannot warn yourself')
+            return
+        cases += 1
+
+        if not command[3]:
+            command[3] = 'No reason given'
+        for role in warn_roles:
+            if role not in target.roles:
+                await target.add_roles(role)
+                if role == warn_roles[2]:
+                    await suspend(message)
+                    return
+                elif role == warn_roles[3]:
+                    await kick(message)
+                    return
+                elif role == warn_roles[4]:
+                    await ban(message)
+                    return
+                else:
+                    embed = discord.Embed(title='Warn | Case #' + str(cases))
+                    embed.set_author(name=target.name, icon_url=target.avatar_url)
+                    embed.add_field(name='Rule broken', value=str(command[2]))
+                    embed.add_field(name='Comments', value=str(command[3]))
+                    embed.add_field(name='User ID', value=str(target.id), inline=False)
+                    await warn_log_channel.send(embed=embed)
+                    reason = str(target) + ' warn for ' + command[3]
+                    await message.channel.send(reason)
+                    return
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
 
 async def modmail(message):
     sender = message.author
-    DM = await sender.create_dm()
-    subject = await readLine(DM, client, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
+    dm = await sender.create_dm()
+    subject = await readLine(dm, client, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
     subject = 'Modmail | ' + subject.content
-    body = await readLine(DM, client, 'Body:', sender, delete_prompt=False, delete_response=False)
-    await DM.send('Your message has been sent')
+    body = await readLine(dm, client, 'Body:', sender, delete_prompt=False, delete_response=False)
+    await dm.send('Your message has been sent')
 
     mail = discord.Embed(title=subject, color=0xadd8ff)
     mail.set_author(name=sender.name, icon_url=sender.avatar_url)
@@ -360,22 +362,22 @@ async def modmail(message):
 
 
 async def help(message):
-    help = discord.Embed(title="Echo Command list", color=0x45FFFF)
-    help.set_author(name=client.user.name, icon_url=client.user.avatar_url)
-    help.add_field(name='`>help`', value="That's this command!", inline=False)
-    help.add_field(name='`>verify`', value='Verifies an un verified member.', inline=False)
-    help.add_field(name='`>modmail`', value='Sends a private message to the moderators.', inline=False)
-    help.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
-    help.add_field(name='`>version`', value='What version Echo is currently on')
-    help.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
-    help.add_field(name='`>warn <MemberTagged> <rule#> [reason]`', value='Warns a member for a rule and logs it',
-                   inline=False)
-    help.add_field(name='`>kick <MemberTagged> <rule#> [reason]`', value='Kicks a member for a rule and logs it',
-                   inline=False)
-    help.add_field(name='`>ban <MemberTagged> <rule#> [reason]`', value='Bans a member for a rule and logs it.',
-                   inline=False)
-    help.add_field(name='`>quit`', value='quits the bot', inline=False)
-    await message.channel.send(embed=help)
+    embed = discord.Embed(title="Echo Command list", color=0x45FFFF)
+    embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+    embed.add_field(name='`>help`', value="That's this command!", inline=False)
+    embed.add_field(name='`>verify`', value='Verifies an un verified member.', inline=False)
+    embed.add_field(name='`>modmail`', value='Sends a private message to the moderators.', inline=False)
+    embed.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
+    embed.add_field(name='`>version_num`', value='What version_num Echo is currently on')
+    embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
+    embed.add_field(name='`>warn <MemberTagged> <rule#> [reason]`', value='Warns a member for a rule and logs it',
+                    inline=False)
+    embed.add_field(name='`>kick <MemberTagged> <rule#> [reason]`', value='Kicks a member for a rule and logs it',
+                    inline=False)
+    embed.add_field(name='`>ban <MemberTagged> <rule#> [reason]`', value='Bans a member for a rule and logs it.',
+                    inline=False)
+    embed.add_field(name='`>quit`', value='quits the bot', inline=False)
+    await message.channel.send(embed=embed)
 
 
 # TODO: make a separate rule class
@@ -410,7 +412,7 @@ async def rule_delete(rule):
 
 
 async def leaderboard(message):
-    command = message[1:].split(' ', 2)
+    command = message.content[1:].split(' ', 2)
     if not message.author.guild_permissions.administrator:
         await message.channel.send('Insufficient permissions.')
     elif command[1] == 'show':
@@ -418,6 +420,10 @@ async def leaderboard(message):
     elif command[1] == 'reset':
         await leaderboard.reset_leaderboard(message)
 
+async def display
+
+async def profile(message):
+    command = message.content[1:].split(' ', 2)
 
 @client.event
 async def on_connect():
@@ -456,11 +462,12 @@ async def on_ready():
     join_leave_log = guild.get_channel(813794437347147856)
     mail_inbox = guild.get_channel(828862015056379915)
     rules = guild.get_channel(758482322647023637)
+    guild.get_member(eclipse_id).send('🌹')
     print('All ready to run!')
 
 
-switcher = {'help': help, 'ping': ping, 'version': version, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard,}
+switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
+            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile':profile}
 #private = {'print': print}
 
 
