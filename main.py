@@ -2,7 +2,6 @@ import time
 import discord
 import os
 import sys
-from datetime import datetime
 from dotenv import load_dotenv
 from leaderboard import Leaderboard
 
@@ -48,7 +47,7 @@ async def display_message(channel, message):
 
 
 async def read_message(channel, prompt=None, delete_prompt=True, delete_response=True):
-    show = await displayMessage(channel, prompt)
+    show = await display_message(channel, prompt)
     message = await client.wait_for('message', timeout=120.0)
     if delete_response:
         await message.delete()
@@ -58,7 +57,7 @@ async def read_message(channel, prompt=None, delete_prompt=True, delete_response
 
 
 async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
-    show = await displayMessage(channel, prompt)
+    show = await display_message(channel, prompt)
 
     def check(msg):
         return msg.author != client.user and (msg.author == target or msg.channel == channel)
@@ -89,7 +88,7 @@ async def read_int(channel, prompt=None, target=None):
     parsed = False
 
     while not parsed:
-        line = await read_line(channel, client, prompt, target)
+        line = await read_line(channel, prompt, target)
 
         try:
             num = int(line)
@@ -129,7 +128,7 @@ class Application:
         dm = await self.applicant.create_dm()
         for question in questions:
             question = '<@!' + str(self.applicant.id) + '> ' + question
-            response = await read_line(dm, client, question, self.applicant, delete_prompt=False, delete_response=False)
+            response = await read_line(dm, question, self.applicant, delete_prompt=False, delete_response=False)
             self.responses.append(response.content)
         await display_message(dm, 'Please wait while your application is reviewed')
 
@@ -151,14 +150,15 @@ class Application:
 
 async def verify(message):
     log(message)
-    if verified_role in message.guild.get_member(message.author.id).roles:
+    if verified_role in guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified')
         return
-    application = Application(message.author, message.channel, message.guild)
+    applicant = guild.get_member(message.author.id)
+    application = Application(applicant, message.channel, message.guild)
 
     await application.question()
 
-    applied = await application_channel.send(embed=application.gen_embed())
+    applied = await guild.get_channel(application_channel).send(embed=application.gen_embed())
     emojis = ['✅', '❓', '🚫', '❗']
     for emoji in emojis:
         await applied.add_reaction(emoji)
@@ -169,18 +169,18 @@ async def verify(message):
     reaction, user = await client.wait_for('reaction_add', check=check)
 
     if str(reaction.emoji) == '✅':
-        await application.applicant.add_roles(message.guild.get_role(verified_role))
+        await application.applicant.add_roles(guild.get_role(verified_role))
         await message.author.send('You have been approved.')
-        await application.applicant.remove_roles(message.guild.get_role(questioning_role))
-        await application.applicant.remove_roles(message.guild.get_role(unverified))
+        await application.applicant.remove_roles(guild.get_role(questioning_role))
+        await application.applicant.remove_roles(guild.get_role(unverified))
     elif str(reaction.emoji) == '❓':
-        await application.applicant.add_roles(message.guild.get_role(questioning_role))
+        await application.applicant.add_roles(guild.get_role(questioning_role))
         await message.author.send('You have been pulled into questioning.')
     elif str(reaction.emoji) == '🚫':
-        reason = await read_line(application_channel, client, 'Why was this user denied?', user)
-        await message.author.send('Your application denied for:' + reason.content)
+        reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
+        await message.author.send('Your application denied for:\n> ' + reason.content)
     elif str(reaction.emoji) == '❗':
-        await application.applicant.add_roles(message.guild.get_role(suspended_role))
+        await application.applicant.add_roles(guild.get_role(suspended_role))
         await guild.get_channel(application_channel).send('Member Suspended')
 
 
@@ -295,7 +295,7 @@ async def ban(message):
             return
         if len(command) == 2:
             command.append('No reason given.')
-        await member.ban(command[2])
+        await target.ban(command[2])
         embed = discord.Embed(title='Banned | Case #' + str(cases))
         embed.set_author(name=target.name, icon_url=target.avatar_url)
         embed.add_field(name='Rule broken', value=str(command[2]))
@@ -435,7 +435,7 @@ profiles = []
 async def display_profile(member, channel, profile):
 
     embed = discord.Embed(title=member)
-    embed.set_author(name=target.name, icon_url=target.avatar_url)
+    embed.set_author(name=member.name, icon_url=member.avatar_url)
 
     embed.add_field(name='Bio', value=profile.bio, inline=False)
     embed.add_field(name='Join Date', value=member.joined_at)
@@ -478,7 +478,7 @@ async def on_ready():
     guild = client.get_guild(758472902197772318)
     await client.change_presence(activity=game)
 
-    guild.get_member(eclipse_id).send('Running, and active')
+    await guild.get_member(eclipse_id).send('Running, and active')
     print('All ready to run!')
 
 
