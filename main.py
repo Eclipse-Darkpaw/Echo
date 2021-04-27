@@ -1,9 +1,8 @@
 import time
-from datetime import datetime
-
 import discord
 import os
 import sys
+from datetime import datetime
 from dotenv import load_dotenv
 from leaderboard import Leaderboard
 
@@ -22,13 +21,15 @@ game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 guild = None
-application_channel = None
-verified_role = None
-questioning_role = None
-warn_log_channel = None
-join_leave_log = None
-warn_roles = []
-suspended_role = None
+application_channel = 813991832593367051
+unverified = 813996107126276127
+verified_role = 758487413257011271
+questioning_role = 813798884173414451
+suspended_role = 773401156935352390
+warn_roles = [758497391955017728, 758497457444356147, 819264514334654465, 819264556265898044, 819264588339478540]
+
+warn_log_channel = 771519147808653322
+join_leave_log = 813794437347147856
 cases = 0
 mail_inbox = None
 rules = None
@@ -37,7 +38,7 @@ rule_lst = []
 
 ignore = []
 
-leaderboard = Leaderboard()
+most_active = Leaderboard()
 
 
 async def display_message(channel, message):
@@ -150,7 +151,7 @@ class Application:
 
 async def verify(message):
     log(message)
-    if verified_role in guild.get_member(message.author.id).roles:
+    if verified_role in message.guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified')
         return
     application = Application(message.author, message.channel, message.guild)
@@ -171,14 +172,16 @@ async def verify(message):
         await application.applicant.add_roles(message.guild.get_role(verified_role))
         await message.author.send('You have been approved.')
         await application.applicant.remove_roles(message.guild.get_role(questioning_role))
+        await application.applicant.remove_roles(message.guild.get_role(unverified))
     elif str(reaction.emoji) == '❓':
         await application.applicant.add_roles(message.guild.get_role(questioning_role))
         await message.author.send('You have been pulled into questioning.')
     elif str(reaction.emoji) == '🚫':
-        reason = await readLine(application_channel, client, 'Why was this user denied?', user)
+        reason = await read_line(application_channel, client, 'Why was this user denied?', user)
         await message.author.send('Your application denied for:' + reason.content)
     elif str(reaction.emoji) == '❗':
-        await application.applicant.add_roles(message.guild.get_role(int(os.getenv('SUSPENDED_ID'))))
+        await application.applicant.add_roles(message.guild.get_role(suspended_role))
+        await guild.get_channel(application_channel).send('Member Suspended')
 
 
 async def ping(message):
@@ -204,7 +207,15 @@ async def quit(message):
         await client.change_presence(activity=discord.Game('Going offline'))
         sys.exit()
     else:
-        await displayMessage(message.channel, 'You do not have permission to turn me off!')
+        await message.channel.send('You do not have permission to turn me off!')
+
+
+async def restart(message):
+    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+        os.execv(__file__, sys.argv)
+        quit(message)
+    else:
+        await message.channel.send('You do not have permission to turn me off!')
 
 
 async def suspend(message):
@@ -224,7 +235,7 @@ async def suspend(message):
         if len(command) == 2:
             command.append('No reason given.')
 
-        await target.add_roles(suspended_role)
+        await target.add_roles(message.guild.get_role(suspended_role))
         await message.channel.send(target + ' was suspended.\n Reason: ' + command[2])
         await target.add_roles()
         embed = discord.Embed(title='Suspension | Case #' + str(cases))
@@ -416,14 +427,38 @@ async def leaderboard(message):
     if not message.author.guild_permissions.administrator:
         await message.channel.send('Insufficient permissions.')
     elif command[1] == 'show':
-        await leaderboard.show_leaderboard(message)
+        await most_active.show_leaderboard(message)
     elif command[1] == 'reset':
-        await leaderboard.reset_leaderboard(message)
+        await most_active.reset_leaderboard(message)
 
-async def display
+profiles = []
+async def display_profile(member, channel, profile):
+
+    embed = discord.Embed(title=member)
+    embed.set_author(name=target.name, icon_url=target.avatar_url)
+
+    embed.add_field(name='Bio', value=profile.bio, inline=False)
+    embed.add_field(name='Join Date', value=member.joined_at)
+
+    await channel.send(embed=embed)
+
+
+async def edit_profile(member, new_bio):
+    if len(new_bio) > 1024:
+        raise RuntimeError('Field value exceeds maximum len')
+
+    file_name = str(member.id) + '/.profile'
+    with open(file_name) as file:
+        lines = file.readLines()
+
 
 async def profile(message):
     command = message.content[1:].split(' ', 2)
+    if len(command) == 1:
+        await display_profile(message.author, message.channel)
+    elif command[1] == 'edit':
+        edit_profile(message.author)
+
 
 @client.event
 async def on_connect():
@@ -437,28 +472,19 @@ async def on_disconnect():
 
 @client.event
 async def on_ready():
-    global guild
-    global application_channel
     global verified_role
     global questioning_role
     global warn_log_channel
-    global suspended_role
     global join_leave_log
-    global warn_roles
     global mail_inbox
     global rules
 
     print('We have logged in as {0.user}'.format(client))
 
     guild = client.get_guild(758472902197772318)
-    application_channel = guild.get_channel(813991832593367051)
-    verified_role = guild.get_role(758487413257011271)
-    questioning_role = guild.get_role(813798884173414451)
-    suspended_role = guild.get_role(773401156935352390)
-    for i in [758497391955017728, 758497457444356147, 819264514334654465, 819264556265898044, 819264588339478540]:
-        warn_roles.append(guild.get_role(i))
     await client.change_presence(activity=game)
-    warn_log_channel = guild.get_channel(771519147808653322)
+
+    warn_log_channel = guild.get_channel()
     join_leave_log = guild.get_channel(813794437347147856)
     mail_inbox = guild.get_channel(828862015056379915)
     rules = guild.get_channel(758482322647023637)
@@ -467,8 +493,8 @@ async def on_ready():
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile':profile}
-#private = {'print': print}
+            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart}
+# private = {'print': print}
 
 
 @client.event
@@ -476,11 +502,13 @@ async def on_message(message):
     global application_channel
     global verified_role
     global questioning_role
-    global leaderboard
+    global most_active
 
     if message.author.bot:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
+        return
+    if len(message.content) < 3 or message.content[1] == ' ':
         return
     if message.content.startswith(prefix):
         command = message.content[1:].split(' ', 1)
@@ -530,7 +558,7 @@ async def on_member_remove(member):
     roles = member.roles
     for i in range(len(roles)):
         if i == 0:
-            to_log += str(guild.id)
+            to_log += str(member.guild.id)
         else:
             to_log += str(roles[i].id)
         if i < (len(roles) - 1):
