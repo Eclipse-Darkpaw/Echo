@@ -2,6 +2,7 @@ import discord
 from datetime import datetime, timedelta
 from maxHeap import MaxHeap
 
+# TODO: implement heapq and make the values negative for MaxHeap
 # a dictionary storing all people on the leaderboard
 # member id:person object
 persons = {}

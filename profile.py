@@ -26,5 +26,3 @@ class Profile:
 
     def award(self, badge):
         self.badges = self.badges.append(badge)
-
-    def
