@@ -31,7 +31,7 @@ warn_roles = [758497391955017728, 758497457444356147, 819264514334654465, 819264
 warn_log_channel = 771519147808653322
 join_leave_log = 813794437347147856
 cases = 0
-mail_inbox = None
+mail_inbox = 828862015056379915
 rules = None
 num_rules = 0
 rule_lst = []
@@ -89,13 +89,13 @@ async def read_int(channel, prompt=None, target=None):
     parsed = False
 
     while not parsed:
-        line = await readLine(channel, client, prompt, target)
+        line = await read_line(channel, client, prompt, target)
 
         try:
             num = int(line)
             parsed = True
         except:
-            await displayMessage(channel, "That's not a valid number! Try again!")
+            await channel.send("That's not a valid number! Try again!")
             parsed = False
     return num
 
@@ -129,9 +129,9 @@ class Application:
         dm = await self.applicant.create_dm()
         for question in questions:
             question = '<@!' + str(self.applicant.id) + '> ' + question
-            response = await readLine(dm, client, question, self.applicant, delete_prompt=False, delete_response=False)
+            response = await read_line(dm, client, question, self.applicant, delete_prompt=False, delete_response=False)
             self.responses.append(response.content)
-        await displayMessage(dm, 'Please wait while your application is reviewed')
+        await display_message(dm, 'Please wait while your application is reviewed')
 
     def gen_embed(self):
         global application_channel
@@ -213,7 +213,6 @@ async def quit(message):
 async def restart(message):
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         os.execv(__file__, sys.argv)
-        quit(message)
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
@@ -296,6 +295,7 @@ async def ban(message):
             return
         if len(command) == 2:
             command.append('No reason given.')
+        await member.ban(command[2])
         embed = discord.Embed(title='Banned | Case #' + str(cases))
         embed.set_author(name=target.name, icon_url=target.avatar_url)
         embed.add_field(name='Rule broken', value=str(command[2]))
@@ -361,9 +361,9 @@ async def warn(message):
 async def modmail(message):
     sender = message.author
     dm = await sender.create_dm()
-    subject = await readLine(dm, client, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
+    subject = await read_line(dm, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
     subject = 'Modmail | ' + subject.content
-    body = await readLine(dm, client, 'Body:', sender, delete_prompt=False, delete_response=False)
+    body = await read_line(dm, 'Body:', sender, delete_prompt=False, delete_response=False)
     await dm.send('Your message has been sent')
 
     mail = discord.Embed(title=subject, color=0xadd8ff)
@@ -472,29 +472,18 @@ async def on_disconnect():
 
 @client.event
 async def on_ready():
-    global verified_role
-    global questioning_role
-    global warn_log_channel
-    global join_leave_log
-    global mail_inbox
-    global rules
-
+    global guild
     print('We have logged in as {0.user}'.format(client))
 
     guild = client.get_guild(758472902197772318)
     await client.change_presence(activity=game)
 
-    warn_log_channel = guild.get_channel()
-    join_leave_log = guild.get_channel(813794437347147856)
-    mail_inbox = guild.get_channel(828862015056379915)
-    rules = guild.get_channel(758482322647023637)
-    guild.get_member(eclipse_id).send('🌹')
+    guild.get_member(eclipse_id).send('Running, and active')
     print('All ready to run!')
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
             'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart}
-# private = {'print': print}
 
 
 @client.event
@@ -541,8 +530,7 @@ async def on_message(message):
 async def on_member_join(member):
     file = open('join-leave.log', 'a')
     file.write('->' + str(member.name))
-    await displayMessage(member,
-                         'Hello, and welcome to the server! Please read over the rules before verifying yourself!')
+    await member.send('Hello, and welcome to the server! Please read over the rules before verifying yourself!')
     embed = discord.Embed(title='Member Join')
     embed.set_author(name=member.name, icon_url=member.avatar_url)
     age = str(member.created_at)
@@ -552,6 +540,9 @@ async def on_member_join(member):
 
 @client.event
 async def on_member_remove(member):
+    filename = member.id + '/.profile'
+    with open(filename) as file:
+        pass
     print(str(member) + ' left the server')
     file = open('Echo/member_leave.log', 'a')
     to_log = str(member.id) + ', ['
