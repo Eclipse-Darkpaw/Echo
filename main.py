@@ -316,6 +316,7 @@ async def warn(message):
         command = message.content[1:].lower().split(' ', 3)
     except:
         await message.channel.send('Improper formatting. Use `>warn <Member/ID> <rule> [reason]`')
+        return
 
     # warn <member> <rule> reason
     # take id too
@@ -432,7 +433,7 @@ async def leaderboard(message):
         await most_active.reset_leaderboard(message)
 
 profiles = []
-async def display_profile(member, channel, profile):
+async def display_profile(member, channel):
 
     embed = discord.Embed(title=member)
     embed.set_author(name=member.name, icon_url=member.avatar_url)
@@ -457,7 +458,7 @@ async def profile(message):
     if len(command) == 1:
         await display_profile(message.author, message.channel)
     elif command[1] == 'edit':
-        edit_profile(message.author)
+        edit_profile(message.author, command.bio)
 
 
 @client.event
@@ -523,7 +524,7 @@ async def on_message(message):
             print(message.content)
         '''
 
-    #leaderboard.score(message)
+    #most_active.score(message)
 
 
 @client.event
