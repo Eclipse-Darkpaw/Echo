@@ -395,6 +395,8 @@ async def help(message):
     embed.add_field(name='`>modmail`', value='Sends a private message to the moderators.', inline=False)
     embed.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
     embed.add_field(name='`>version_num`', value='What version_num Echo is currently on')
+    embed.add_field(name='`>save`', value='Saves all important files')
+
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
     embed.add_field(name='`>warn <MemberTagged> <rule#> [reason]`', value='Warns a member for a rule and logs it',
                     inline=False)
@@ -445,6 +447,10 @@ async def leaderboard(message):
         await most_active.show_leaderboard(message)
     elif command[1] == 'reset':
         await most_active.reset_leaderboard(message)
+    elif command[1] == 'save':
+        most_active.save_leaderboard(message)
+    elif command[1] == 'load':
+        most_active.load_leaderboard(message)
 
 profiles = []
 async def display_profile(member, channel):
@@ -500,7 +506,8 @@ async def on_ready():
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart}
+            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart,
+            'save': save}
 
 
 @client.event
