@@ -103,9 +103,19 @@ def log(message):
     to_log = '[' + str(message.created_at) + 'Z] ' + str(message.guild) + \
              '\n' + message.content + '\n' + \
              'channel ID:' + str(message.channel.id) + ' Author ID:' + str(message.author.id) + '\n\n'
-    file = open(cmdlog, 'a')
-    file.write(to_log)
-    file.close()
+    with open(cmdlog, 'a') as file:
+        file.write(to_log)
+
+
+def save(message):
+    print('Saving')
+    most_active.save_leaderboard(message)
+
+
+def load(message):
+    print('Loading')
+    most_active.load_leaderboard(message)
+    pring('Done')
 
 
 counter = 0
@@ -201,16 +211,20 @@ async def version(message):
 async def quit(message):
     global game
     log(message)
+    save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         print('quitting program')
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
+        save()
         sys.exit()
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
 
 async def restart(message):
+    log(message)
+    save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         os.execv(__file__, sys.argv)
     else:
@@ -381,6 +395,8 @@ async def help(message):
     embed.add_field(name='`>modmail`', value='Sends a private message to the moderators.', inline=False)
     embed.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
     embed.add_field(name='`>version_num`', value='What version_num Echo is currently on')
+    embed.add_field(name='`>save`', value='Saves all important files')
+
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
     embed.add_field(name='`>warn <MemberTagged> <rule#> [reason]`', value='Warns a member for a rule and logs it',
                     inline=False)
@@ -427,10 +443,14 @@ async def leaderboard(message):
     command = message.content[1:].split(' ', 2)
     if not message.author.guild_permissions.administrator:
         await message.channel.send('Insufficient permissions.')
-    elif command[1] == 'show':
+    elif len(command) == 1 or command[1] == 'show':
         await most_active.show_leaderboard(message)
     elif command[1] == 'reset':
         await most_active.reset_leaderboard(message)
+    elif command[1] == 'save':
+        most_active.save_leaderboard(message)
+    elif command[1] == 'load':
+        most_active.load_leaderboard(message)
 
 profiles = []
 async def display_profile(member, channel):
@@ -474,17 +494,20 @@ async def on_disconnect():
 @client.event
 async def on_ready():
     global guild
+
     print('We have logged in as {0.user}'.format(client))
 
     guild = client.get_guild(758472902197772318)
     await client.change_presence(activity=game)
+    most_active.load_leaderboard(message)
 
     await guild.get_member(eclipse_id).send('Running, and active')
     print('All ready to run!')
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart}
+            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart,
+            'save': save}
 
 
 @client.event
