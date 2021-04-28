@@ -521,7 +521,7 @@ async def on_message(message):
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         return
-    if len(message.content) < 3 or message.content[1] == ' ':
+    if len(message.content) < 5 or message.content[1] == ' ':
         return
     if message.content.startswith(prefix):
         command = message.content[1:].split(' ', 1)
@@ -547,7 +547,7 @@ async def on_message(message):
             print(message.content)
         '''
 
-    #most_active.score(message)
+    most_active.score(message)
 
 
 @client.event
