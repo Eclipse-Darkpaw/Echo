@@ -278,9 +278,9 @@ async def kick(message):
         if target == None:
             await message.channel.send('null target')
             return
-        # if message.author == target:
-        # await message.channel.send('You cannot kick yourself')
-        # return
+        if message.author == target:
+            await message.channel.send('You cannot kick yourself')
+            return
         elif client.user == target:
             await message.channel.send('You cannot kick me like this!')
             return
@@ -470,7 +470,8 @@ async def display_profile(member, channel):
     await channel.send(embed=embed)
 
 
-async def edit_profile(member, new_bio):
+async def edit_profile(message):
+
     if len(new_bio) > 1024:
         raise RuntimeError('Field value exceeds maximum len')
 
@@ -485,6 +486,10 @@ async def profile(message):
         await display_profile(message.author, message.channel)
     elif command[1] == 'edit':
         edit_profile(message.author, command.bio)
+
+
+async def set_ref(message):
+    print(message.attachments[0].content_type)
 
 
 @client.event
@@ -512,7 +517,7 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
             'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
-            'save': save, 'load': load}
+            'save': save, 'load': load, 'setref': set_ref, 'ref'}
 
 
 @client.event
@@ -535,20 +540,7 @@ async def on_message(message):
         except KeyError:
             pass
         if command[0] == 'print':
-            print('/n/n/n/n'+message.content)
-        '''
-        elif command[0] == 'rule':
-            command = message.content.split(' ',2)
-            if command[1] == 'new':
-                await rule_new(command[2])
-            elif command[1] == 'edit':
-                rule = command[2].split(' ',1)
-                await rule_edit(rule[0], rule[1])
-            elif command[1] == 'delete':
-                await rule_delete(int(command[2]))
-        elif command[0] == 'print':
             print(message.content)
-        '''
     most_active.score(message)
 
 
@@ -559,7 +551,7 @@ async def on_member_join(member):
     await member.send('Hello, and welcome to the server! Please read over the rules before verifying yourself!')
     embed = discord.Embed(title='Member Join')
     embed.set_author(name=member.name, icon_url=member.avatar_url)
-    age = str(member.created_at)
+    embed.add_field(name='Created at', value=member.created_at)
     embed.set_footer(text=str(member.id))
     await join_leave_log.send(embed=embed)
 
