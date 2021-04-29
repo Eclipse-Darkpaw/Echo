@@ -16,6 +16,9 @@ class Badge:
     def get_explanation(self):
         return self.__explanation
 
+    def save_string(self):
+
+
 
 class Profile:
     all_badges = []
