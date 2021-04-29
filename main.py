@@ -107,15 +107,22 @@ def log(message):
         file.write(to_log)
 
 
-def save(message):
-    print('Saving')
-    most_active.save_leaderboard(message)
+async def save(message):
+    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+        msg = await message.channel.send('Saving')
+        print('Saving')
+        most_active.save_leaderboard(message)
+        print('Saved')
+        await msg.edit(content='Saved!')
 
 
-def load(message):
-    print('Loading')
-    most_active.load_leaderboard(message)
-    pring('Done')
+async def load(message):
+    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+        msg = await message.channel.send('Loading')
+        print('Loading')
+        most_active.load_leaderboard(message)
+        print('Done')
+        await msg.edit(content='Done')
 
 
 counter = 0
@@ -211,12 +218,11 @@ async def version(message):
 async def quit(message):
     global game
     log(message)
-    save(message)
+    await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         print('quitting program')
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
-        save()
         sys.exit()
     else:
         await message.channel.send('You do not have permission to turn me off!')
@@ -224,9 +230,9 @@ async def quit(message):
 
 async def restart(message):
     log(message)
-    save(message)
+    await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execv(__file__, sys.argv)
+        os.execl(sys.executable,__file__,'main.py')
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
@@ -272,9 +278,9 @@ async def kick(message):
         if target == None:
             await message.channel.send('null target')
             return
-        # if message.author == target:
-        # await message.channel.send('You cannot kick yourself')
-        # return
+        if message.author == target:
+            await message.channel.send('You cannot kick yourself')
+            return
         elif client.user == target:
             await message.channel.send('You cannot kick me like this!')
             return
@@ -464,11 +470,12 @@ async def display_profile(member, channel):
     await channel.send(embed=embed)
 
 
-async def edit_profile(member, new_bio):
+async def edit_profile(message):
+    null, null, new_bio = message.content[1:].splice(' ',2)
     if len(new_bio) > 1024:
         raise RuntimeError('Field value exceeds maximum len')
 
-    file_name = str(member.id) + '/.profile'
+    file_name = str(message.author.id) + '/.profile'
     with open(file_name) as file:
         lines = file.readLines()
 
@@ -479,6 +486,10 @@ async def profile(message):
         await display_profile(message.author, message.channel)
     elif command[1] == 'edit':
         edit_profile(message.author, command.bio)
+
+
+async def set_ref(message):
+    print(message.attachments[0].content_type)
 
 
 @client.event
@@ -499,15 +510,14 @@ async def on_ready():
 
     guild = client.get_guild(758472902197772318)
     await client.change_presence(activity=game)
-    most_active.load_leaderboard(message)
 
     await guild.get_member(eclipse_id).send('Running, and active')
     print('All ready to run!')
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart,
-            'save': save}
+            'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
+            'save': save, 'load': load, 'setref': set_ref, 'ref': ref}
 
 
 @client.event
@@ -520,9 +530,7 @@ async def on_message(message):
     if message.author.bot:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
-        return
-    if len(message.content) < 3 or message.content[1] == ' ':
-        return
+        pass
     if message.content.startswith(prefix):
         command = message.content[1:].split(' ', 1)
 
@@ -530,24 +538,10 @@ async def on_message(message):
             method = switcher[command[0]]
             await method(message)
         except KeyError:
-            await message.channel.send("That's not a valid command")
+            pass
         if command[0] == 'print':
-            print('/n/n/n/n'+message.content)
-        '''
-        elif command[0] == 'rule':
-            command = message.content.split(' ',2)
-            if command[1] == 'new':
-                await rule_new(command[2])
-            elif command[1] == 'edit':
-                rule = command[2].split(' ',1)
-                await rule_edit(rule[0], rule[1])
-            elif command[1] == 'delete':
-                await rule_delete(int(command[2]))
-        elif command[0] == 'print':
             print(message.content)
-        '''
-
-    #most_active.score(message)
+    most_active.score(message)
 
 
 @client.event
@@ -557,7 +551,7 @@ async def on_member_join(member):
     await member.send('Hello, and welcome to the server! Please read over the rules before verifying yourself!')
     embed = discord.Embed(title='Member Join')
     embed.set_author(name=member.name, icon_url=member.avatar_url)
-    age = str(member.created_at)
+    embed.add_field(name='Created at', value=member.created_at)
     embed.set_footer(text=str(member.id))
     await join_leave_log.send(embed=embed)
 
