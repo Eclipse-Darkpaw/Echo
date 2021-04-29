@@ -28,18 +28,18 @@ class Person:
 
     def score(self, message):
 
-        if message.author != self.member:
+        if message.author.id != self.member:
             raise Exception("This message was not writen by this person.")
         if self.last_time + self.__anti_spam < message.created_at:
             self._score -= 1
             self.last_time = message.created_at
 
     def save_string(self):
-        return str(self.member.id) + ',' + str(self._score) + '\n'
+        return str(self.member) + ',' + str(self._score) + '\n'
 
 
     def __str__(self):
-        return str(self.member.id) + ',' + str(self.last_time)
+        return str(self.member) + ',' + str(self.last_time)
 
     def __lt__(self, other):
         return self._score < other.get_score()
@@ -63,22 +63,23 @@ class Person:
         self.member = member
 
     def set_score(self, score):
-        self._score = score
+        self._score += score
 
 
 
 class Leaderboard:
     def __init__(self, lst=[]):
+        #stores the person objects and sorts them as a heap
         self.leaderboard = lst
 
     def score(self, message):
         if message.author.guild_permissions.change_nickname or message.channel.id == 764998372070916106 or message.channel.id == 808964881167679529:
             return
         if message.author.id not in persons:
-            self.leaderboard.heappush(Person(message))
+            heapq.heappush(self.leaderboard, Person(message))
         else:
             persons[message.author.id].score(message)
-            self.leaderboard.buildheap(self.leaderboard.heap)
+            heapq.heapify(self.leaderboard)
 
     def get_leader(self):
         return self.leaderboard[0]
@@ -92,11 +93,11 @@ class Leaderboard:
         for i in range(x):
             member = heapq.heappop(board)
             if member is not None:
-                embed.add_field(name='@'+str(member.member.display_name), value=member.get_score(), inline=False)
+                embed.add_field(name='@'+str(message.guild.get_member(member.member).display_name), value=member.get_score()*-1, inline=False)
         await message.channel.send(embed=embed)
 
     async def award_leaderboard(self, message):
-        board = MaxHeap(self.leaderboard.copy())
+        board = self.leaderboard.copy()
         x = 10
         if len(board) < x:
             x = len(board)
@@ -107,7 +108,7 @@ class Leaderboard:
 
     async def reset_leaderboard(self, message):
         global persons
-        self.leaderboard = MaxHeap()
+        self.leaderboard = []
         persons = {}
         await message.channel.send('Leaderboard Reset')
 
@@ -115,19 +116,24 @@ class Leaderboard:
         #saved as id,score
         filename = str(message.guild.id) + '.leaderboard'
         with open(filename,'w') as file:
-            for i in range(len(leaderboard)):
-                person = self.heapq.heappop(leaderboard)
+            for person in self.leaderboard:
                 out = person.save_string()
                 file.write(out)
 
     def load_leaderboard(self, message):
+        print('loading leaderboard')
         filename = str(message.guild.id) + '.leaderboard'
         with open(filename) as file:
             lines = file.readlines()
             for line in lines:
                 arg = line.split(',')
-                person = Person(message)
-                person.set_member(arg[0])
-                person.set_score(arg[1])
+                try:
+                    person = persons[int(arg[0])]
+                except KeyError:
+                    person = Person(message)
+                persons[int(arg[0])] = person
+                person.set_score(1)
+                person.set_member(int(arg[0]))
+                person.set_score(int(arg[1]))
                 person.last_time = datetime.now()
                 heapq.heappush(self.leaderboard, person)
