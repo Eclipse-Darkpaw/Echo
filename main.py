@@ -103,9 +103,26 @@ def log(message):
     to_log = '[' + str(message.created_at) + 'Z] ' + str(message.guild) + \
              '\n' + message.content + '\n' + \
              'channel ID:' + str(message.channel.id) + ' Author ID:' + str(message.author.id) + '\n\n'
-    file = open(cmdlog, 'a')
-    file.write(to_log)
-    file.close()
+    with open(cmdlog, 'a') as file:
+        file.write(to_log)
+
+
+async def save(message):
+    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+        msg = await message.channel.send('Saving')
+        print('Saving')
+        most_active.save_leaderboard(message)
+        print('Saved')
+        await msg.edit(content='Saved!')
+
+
+async def load(message):
+    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+        msg = await message.channel.send('Loading')
+        print('Loading')
+        most_active.load_leaderboard(message)
+        print('Done')
+        await msg.edit(content='Done')
 
 
 counter = 0
@@ -201,6 +218,7 @@ async def version(message):
 async def quit(message):
     global game
     log(message)
+    await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         print('quitting program')
         await message.channel.send('Goodbye :wave:')
@@ -211,8 +229,10 @@ async def quit(message):
 
 
 async def restart(message):
+    log(message)
+    await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execv(__file__, sys.argv)
+        os.execl(sys.executable,__file__,'main.py')
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
@@ -381,6 +401,8 @@ async def help(message):
     embed.add_field(name='`>modmail`', value='Sends a private message to the moderators.', inline=False)
     embed.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
     embed.add_field(name='`>version_num`', value='What version_num Echo is currently on')
+    embed.add_field(name='`>save`', value='Saves all important files')
+
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
     embed.add_field(name='`>warn <MemberTagged> <rule#> [reason]`', value='Warns a member for a rule and logs it',
                     inline=False)
@@ -427,10 +449,14 @@ async def leaderboard(message):
     command = message.content[1:].split(' ', 2)
     if not message.author.guild_permissions.administrator:
         await message.channel.send('Insufficient permissions.')
-    elif command[1] == 'show':
+    elif len(command) == 1 or command[1] == 'show':
         await most_active.show_leaderboard(message)
     elif command[1] == 'reset':
         await most_active.reset_leaderboard(message)
+    elif command[1] == 'save':
+        most_active.save_leaderboard(message)
+    elif command[1] == 'load':
+        most_active.load_leaderboard(message)
 
 profiles = []
 async def display_profile(member, channel):
@@ -474,6 +500,7 @@ async def on_disconnect():
 @client.event
 async def on_ready():
     global guild
+
     print('We have logged in as {0.user}'.format(client))
 
     guild = client.get_guild(758472902197772318)
@@ -484,7 +511,8 @@ async def on_ready():
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'leaderboard': leaderboard, 'profile': profile, 'restart': restart}
+            'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
+            'save': save, 'load': load}
 
 
 @client.event
@@ -497,9 +525,7 @@ async def on_message(message):
     if message.author.bot:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
-        return
-    if len(message.content) < 3 or message.content[1] == ' ':
-        return
+        pass
     if message.content.startswith(prefix):
         command = message.content[1:].split(' ', 1)
 
@@ -507,7 +533,7 @@ async def on_message(message):
             method = switcher[command[0]]
             await method(message)
         except KeyError:
-            await message.channel.send("That's not a valid command")
+            pass
         if command[0] == 'print':
             print('/n/n/n/n'+message.content)
         '''
@@ -523,8 +549,7 @@ async def on_message(message):
         elif command[0] == 'print':
             print(message.content)
         '''
-
-    #most_active.score(message)
+    most_active.score(message)
 
 
 @client.event
