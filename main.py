@@ -3,7 +3,7 @@ import discord
 import os
 import sys
 from dotenv import load_dotenv
-from leaderboard import Leaderboard
+from leaderboard import Leaderboard 
 
 load_dotenv()
 
@@ -592,6 +592,19 @@ async def on_member_remove(member):
     leave.set_footer(text=footer)
     await join_leave_log.send(embed=leave)
 
+#TODO: add a member update to detect when a member changes their name
+@client.event
+async def on_member_update(before, after):
+    pass
+
+
+@client.event
+async def on_user_update(before, after):
+    pass
+
 
 token = os.getenv('TOKEN')
 client.run(token)
+'''
+
+'''
