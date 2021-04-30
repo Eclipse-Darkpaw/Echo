@@ -14,7 +14,6 @@ class Person:
     """
     __anti_spam = timedelta(seconds=15)
 
-    # (member, score, last message time)
     def __init__(self, message):
         global persons
 
@@ -27,7 +26,6 @@ class Person:
         return self._score
 
     def score(self, message):
-
         if message.author.id != self.member:
             raise Exception("This message was not writen by this person.")
         if self.last_time + self.__anti_spam < message.created_at:
@@ -36,7 +34,6 @@ class Person:
 
     def save_string(self):
         return str(self.member) + ',' + str(self._score) + '\n'
-
 
     def __str__(self):
         return str(self.member) + ',' + str(self.last_time)
@@ -64,7 +61,6 @@ class Person:
 
     def set_score(self, score):
         self._score += score
-
 
 
 class Leaderboard:
@@ -96,7 +92,8 @@ class Leaderboard:
         await message.channel.send(embed=embed)
 
     async def award_leaderboard(self, message):
-        board = MaxHeap(self.leaderboard.copy())
+        board = self.leaderboard.copy()
+
         x = 10
         if len(board) < x:
             x = len(board)
