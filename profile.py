@@ -25,7 +25,7 @@ class Badge:
 
 # name, join date, bio, icon
 def profile_path(filename):
-    return 'C:/Users/leebe/Desktop/profiles/'+str(filename)+'.profile'
+    return 'C:\\Users\\leebe\\Desktop\\profile\\'+str(filename)+'.profile'
 
 async def create_profile(member, message):
     try:
@@ -50,7 +50,7 @@ def set_bio(member, bio):
     with open(profile_path(str(member)),'w') as profile:
         for line in lines:
             profile.write(line)
-
+ 
 
 def name_change(member):
     with open(profile_path(str(member.id))) as profile:
