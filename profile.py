@@ -26,55 +26,67 @@ class Badge:
 # name, join date, bio, icon
 
 
-def create_profile(message):
-    member = message.author
+async def create_profile(member, message):
     try:
-        open(member.id+'.profile','x')
+        open('profile\\'+str(member.id)+'.profile','x')
     except FileExistsError:
         await message.channel.send('You already have a profile!')
         return
-    bio = 'This user has not set a bio yet'
-    name_history = member.name
-    ref_location = ''
+    bio = 'This user has not set a bio yet\n'
+    name_history = member.name+'\n'
     badges = ''
-    lines = [bio,name_history,0,ref_location,badges]
-    with open(member.id+'.profile','w') as profile:
-        profile.writelines(lines)
+    lines = [bio,name_history,'0',badges]
+    with open('profile/'+str(member.id)+'.profile','w') as profile:
+        for line in lines:
+            profile.write(line)
 
 
 def set_bio(member, bio):
-    with open(member+'.profile') as profile:
+    with open('profile/'+member+'.profile') as profile:
         lines = profile.readlines()
-    lines[0] = bio
-    with open(member+'.profile','w') as profile:
+    lines[0] = bio+'\n'
+    with open('profile/'+member+'.profile','w') as profile:
         for line in lines:
             profile.write(line)
 
 
 def name_change(member):
-    with open(member.id+'.profile') as profile:
+    with open('profile/'+member.id+'.profile') as profile:
         lines = profile.readlines()
     lines[1] = lines[1] + '->' + member.name
-    with open(member+'.profile','w') as profile:
+    with open('profile/'+member+'.profile','w') as profile:
         for line in lines:
             profile.write(line)
 
 
 def member_leave(member):
-    with open(member.id+'.profile') as profile:
+    with open('profile/'+str(member.id)+'.profile') as profile:
         lines = profile.readlines()
     lines[2] = str(int(lines[2]) + 1)
-    with open(member+'.profile','w') as profile:
+    with open('profile/'+str(member.id)+'.profile','w') as profile:
         for line in lines:
             profile.write(line)
 
-
-def set_ref(message):
-    raise NotImplementedError('Figure out how to save a file as a specific name')
-
-def display_profile(member):
-    embed = discord.Embed()
-    embed.set_author(name=member.name)
+async def display_profile(message, member=None):
+    if member is None:
+        member = message.author
+    try:
+        file = open('profile/'+str(member.id)+'.profile')
+        file.close()
+    except FileNotFoundError:
+        await create_profile(member, message)
+    with open('profile/'+str(member.id)+'.profile') as file:
+        lines = file.readlines()
+        if len(lines) == 3:
+            lines.append('None')
+        embed = discord.Embed()
+        embed.set_author(name=member.name,icon_url=member.avatar_url)
+        embed.color = member.color
+        embed.add_field(name='Bio',value=lines[0],inline=False)
+        embed.add_field(name='Name History',value=lines[1])
+        embed.add_field(name='Times Left',value=lines[2])
+        embed.add_field(name='Badges',value=lines[3])
+        await message.channel.send(embed=embed)
 
 def member_leave(member):
     pass

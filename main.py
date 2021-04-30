@@ -3,7 +3,7 @@ import discord
 import os
 import sys
 from dotenv import load_dotenv
-from leaderboard import Leaderboard 
+from leaderboard import Leaderboard
 
 load_dotenv()
 
@@ -458,38 +458,28 @@ async def leaderboard(message):
     elif command[1] == 'load':
         most_active.load_leaderboard(message)
 
-profiles = []
-async def display_profile(member, channel):
-
-    embed = discord.Embed(title=member)
-    embed.set_author(name=member.name, icon_url=member.avatar_url)
-
-    embed.add_field(name='Bio', value=profile.bio, inline=False)
-    embed.add_field(name='Join Date', value=member.joined_at)
-
-    await channel.send(embed=embed)
-
-
-async def edit_profile(message):
-    null, null, new_bio = message.content[1:].splice(' ',2)
-    if len(new_bio) > 1024:
-        raise RuntimeError('Field value exceeds maximum len')
-
-    file_name = str(message.author.id) + '/.profile'
-    with open(file_name) as file:
-        lines = file.readLines()
-
-
+from profile import display_profile, set_bio
 async def profile(message):
     command = message.content[1:].split(' ', 2)
     if len(command) == 1:
-        await display_profile(message.author, message.channel)
+        await display_profile(message)
     elif command[1] == 'edit':
-        edit_profile(message.author, command.bio)
+        set_bio(str(message.author.id), command[2])
+        await message.channel.send('Bio set')
+    else:
+        if len(command[1]) <= 18:
+            target = message.guild.get_member(int(command[1]))
+        else:
+            target = message.mentions[0]
+        await display_profile(message, target)
 
 
 async def set_ref(message):
     print(message.attachments[0].content_type)
+
+
+async def ref(message):
+    await message.channel.sent('Not implemented')
 
 
 @client.event
