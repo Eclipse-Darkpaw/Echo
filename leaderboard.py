@@ -69,7 +69,7 @@ class Leaderboard:
         self.leaderboard = lst
 
     def score(self, message):
-        if message.author.guild_permissions.change_nickname or message.channel.id == 764998372070916106 or message.channel.id == 808964881167679529:
+        if (message.author.guild_permissions.change_nickname and message.guild.get_role(833910819983982592) not in message.author.roles) or message.channel.id == 764998372070916106 or message.channel.id == 808964881167679529:
             return
         if message.author.id not in persons:
             heapq.heappush(self.leaderboard, Person(message))
