@@ -458,7 +458,7 @@ async def leaderboard(message):
     elif command[1] == 'load':
         most_active.load_leaderboard(message)
     elif command[1] == 'award':
-        most_active.award_leaderboard(message)
+        await most_active.award_leaderboard(message)
 
 
 async def awardlb(message):
