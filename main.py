@@ -10,7 +10,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'
-version_num = '1.2.1'
+version_num = '1.3.1'
 
 eclipse_id = 440232487738671124
 
@@ -40,22 +40,6 @@ ignore = []
 
 most_active = Leaderboard()
 
-# depreciate
-async def display_message(channel, message):
-    if not len(message) > 0:
-        return None
-    return await channel.send(message)
-
-# depreciate
-async def read_message(channel, prompt=None, delete_prompt=True, delete_response=True):
-    show = await channel.send(prompt)
-    message = await client.wait_for('message', timeout=120.0)
-    if delete_response:
-        await message.delete()
-    if delete_prompt:
-        await show.delete()
-    return message
-
 
 async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
     show = await channel.send(prompt)
@@ -76,14 +60,6 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
     return msg
 
 
-async def read_user(channel, key=None, prompt=None):
-    await channel.send(prompt)
-    while True:
-        msg = await client.wait_for('message', timeout=120.0)
-        if msg and msg.content == key and msg.channel == channel:
-            return msg.author
-
-
 async def read_int(channel, prompt=None, target=None):
     num = 0
     parsed = False
@@ -98,6 +74,19 @@ async def read_int(channel, prompt=None, target=None):
             await channel.send("That's not a valid number! Try again!")
             parsed = False
     return num
+
+
+def get_user_id(message):
+    command = message.content.split()
+    if len(command) == 1:
+        return message.author.id
+    elif len(command[1]) == 18:
+        return int(command[1])
+    elif len(command[1]) == 21:
+        return int(command[2:-2])
+    elif len(command[1]) == 22:
+        return int(command[3:-2])
+    raise discord.InvalidArgument('Not a valid user!')
 
 
 def log(message):
@@ -127,7 +116,7 @@ async def load(message):
 
 
 counter = 0
-questions = ['What is your name?', 'How old are you?', 'Where did you get the link from?', 'Why do you want to join?']
+questions = ['What is your name?', 'How old are you?', 'Where did you get the link from? If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
@@ -524,6 +513,11 @@ async def ref(message):
         await message.channel.send('User has not set their ref.')
 
 
+async def mute(message):
+    target = get_user_id(message)
+    await message.guild.get_member(target).add_roles(message.guild.get_role(813806878403461181))
+
+
 @client.event
 async def on_connect():
     print('Connected to Discord!')
@@ -547,7 +541,7 @@ async def on_ready():
     print('All ready to run!')
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'warn': warn,
             'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
             'save': save, 'load': load, 'setref': set_ref, 'ref': ref, 'awardlb': awardlb}
 

@@ -21,10 +21,13 @@ Echo is a bot I've made for my discord servers I moderate. Most values are hard 
 `quit` - quits the program
 
 ##Change Log
+###
 
 ###1.2.0
-
 * added the leaderboard functionality
+* added profile functionality
+* added `>ref` and `>setref` functionality
+
 ###1.1.0
 
 * Finalized `>help`
