@@ -403,6 +403,10 @@ async def help(message):
     embed.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
     embed.add_field(name='`>version_num`', value='What version_num Echo is currently on')
     embed.add_field(name='`>save`', value='Saves all important files')
+    embed.add_field(name='`>profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
+    embed.add_field(name='`>edit`', value='Saves all important files')
+    embed.add_field(name='`>ref [member tag/member id]`', value="gets a user's ref sheet")
+    embed.add_field(name='`>set_ref`', value="Sets a user's ref")
 
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
     embed.add_field(name='`>warn <MemberTagged> <rule#> [reason]`', value='Warns a member for a rule and logs it',
