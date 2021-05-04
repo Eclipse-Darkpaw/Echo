@@ -4,6 +4,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from leaderboard import Leaderboard
+from profile import display_profile, set_bio
 
 load_dotenv()
 
@@ -39,15 +40,15 @@ ignore = []
 
 most_active = Leaderboard()
 
-
+# depreciate
 async def display_message(channel, message):
     if not len(message) > 0:
-        return
+        return None
     return await channel.send(message)
 
-
+# depreciate
 async def read_message(channel, prompt=None, delete_prompt=True, delete_response=True):
-    show = await display_message(channel, prompt)
+    show = await channel.send(prompt)
     message = await client.wait_for('message', timeout=120.0)
     if delete_response:
         await message.delete()
@@ -57,7 +58,7 @@ async def read_message(channel, prompt=None, delete_prompt=True, delete_response
 
 
 async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
-    show = await display_message(channel, prompt)
+    show = await channel.send(prompt)
 
     def check(msg):
         return msg.author != client.user and (msg.author == target or msg.channel == channel)
@@ -147,7 +148,7 @@ class Application:
             question = '<@!' + str(self.applicant.id) + '> ' + question
             response = await read_line(dm, question, self.applicant, delete_prompt=False, delete_response=False)
             self.responses.append(response.content)
-        await display_message(dm, 'Please wait while your application is reviewed')
+        await dm.send('Please wait while your application is reviewed')
 
     def gen_embed(self):
         global application_channel
@@ -414,7 +415,6 @@ async def help(message):
     await message.channel.send(embed=embed)
 
 
-# TODO: make a separate rule class
 async def rule(message):
     pass
 
@@ -457,8 +457,14 @@ async def leaderboard(message):
         most_active.save_leaderboard(message)
     elif command[1] == 'load':
         most_active.load_leaderboard(message)
+    elif command[1] == 'award':
+        most_active.award_leaderboard(message)
 
-from profile import display_profile, set_bio
+
+async def awardlb(message):
+    await most_active.award_leaderboard(message)
+
+
 async def profile(message):
     command = message.content[1:].split(' ', 2)
     if len(command) == 1:
@@ -474,12 +480,43 @@ async def profile(message):
         await display_profile(message, target)
 
 
+def ref_path(filename):
+    return 'C:\\Users\\leebe\\Desktop\\refs\\' + str(filename) + '.png'
+
+
 async def set_ref(message):
-    print(message.attachments[0].content_type)
+    try:
+        ref_sheet = message.attachments[0]
+        path = ref_path(message.author.id)
+        await ref_sheet.save(fp=path)
+        await message.channel.send(content='Ref set!', file=ref_sheet.to_file())
+    except IndexError:
+        await message.channel.send('No ref_sheet attached!')
 
 
 async def ref(message):
-    await message.channel.sent('Not implemented')
+    command = message.content.split()
+    try:
+        if len(command) == 1:
+            target = message.author.id
+        elif len(command[1]) == 18:
+            target = int(command[1])
+        elif len(command[1]) == 21:
+            target = int(command[2:-2])
+        elif len(command[1]) == 22:
+            target = int(command[3:-2])
+        else:
+            await message.channel.send('Not a valid user!')
+            return
+    except ValueError:
+        await message.channel.send('Invalid user')
+        return
+
+    try:
+        with open(ref_path(target)) as ref_sheet:
+            message.channel.send(file=ref_sheet)
+    except FileNotFoundError:
+        await message.channel.send('User has not set their ref.')
 
 
 @client.event
@@ -507,7 +544,7 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
             'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
-            'save': save, 'load': load, 'setref': set_ref, 'ref': ref}
+            'save': save, 'load': load, 'setref': set_ref, 'ref': ref, ''}
 
 
 @client.event
