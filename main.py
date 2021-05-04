@@ -489,7 +489,8 @@ async def set_ref(message):
         ref_sheet = message.attachments[0]
         path = ref_path(message.author.id)
         await ref_sheet.save(fp=path)
-        await message.channel.send(content='Ref set!', file=ref_sheet.to_file())
+        file = await ref_sheet.to_file()
+        await message.channel.send(content='Ref set!', file=file)
     except IndexError:
         await message.channel.send('No ref_sheet attached!')
 
@@ -511,10 +512,10 @@ async def ref(message):
     except ValueError:
         await message.channel.send('Invalid user')
         return
-
     try:
-        with open(ref_path(target)) as ref_sheet:
-            message.channel.send(file=ref_sheet)
+        ref_sheet = open(ref_path(target), 'rb')
+        file = discord.File(ref_sheet)
+        await message.channel.send(file=file)
     except FileNotFoundError:
         await message.channel.send('User has not set their ref.')
 
@@ -544,7 +545,7 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version_num, 'verify': verify, 'modmail': modmail, 'warn': warn,
             'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
-            'save': save, 'load': load, 'setref': set_ref, 'ref': ref, ''}
+            'save': save, 'load': load, 'setref': set_ref, 'ref': ref, 'awardlb': awardlb}
 
 
 @client.event

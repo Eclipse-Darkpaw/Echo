@@ -60,7 +60,7 @@ class Person:
         self.member = member
 
     def set_score(self, score):
-        self._score += score
+        self._score = score
 
 
 class Leaderboard:
@@ -98,9 +98,11 @@ class Leaderboard:
         if len(board) < x:
             x = len(board)
         for i in range(x):
-            member = heapq.heappop(board)
+            member = heapq.heappop(board).member
             if member is not None:
-                await member.add_roles(message.guild.get_role(833911100147761152))
+                role = message.guild.get_role(833910819983982592)
+                print(type(role))
+                await message.guild.get_member(member).add_roles(role)
 
     async def reset_leaderboard(self, message):
         global persons
@@ -123,10 +125,7 @@ class Leaderboard:
             lines = file.readlines()
             for line in lines:
                 arg = line.split(',')
-                try:
-                    person = persons[int(arg[0])]
-                except KeyError:
-                    person = Person(message)
+                person = Person(message)
                 persons[int(arg[0])] = person
                 person.set_score(1)
                 person.set_member(int(arg[0]))
