@@ -5,12 +5,16 @@ import sys
 from dotenv import load_dotenv
 from leaderboard import Leaderboard
 from profile import display_profile, set_bio
-
+'''TODO:
+* move member_leave.log to a separate file
+* move commmand.log to a separate file
+* update to not use .env file
+* move leaderboard out of project files'''
 load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'
-version_num = '1.3.1'
+version_num = '1.3.2'
 
 eclipse_id = 440232487738671124
 
@@ -60,22 +64,6 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
     return msg
 
 
-async def read_int(channel, prompt=None, target=None):
-    num = 0
-    parsed = False
-
-    while not parsed:
-        line = await read_line(channel, prompt, target)
-
-        try:
-            num = int(line)
-            parsed = True
-        except:
-            await channel.send("That's not a valid number! Try again!")
-            parsed = False
-    return num
-
-
 def get_user_id(message):
     command = message.content.split()
     if len(command) == 1:
@@ -116,7 +104,7 @@ async def load(message):
 
 
 counter = 0
-questions = ['What is your name?', 'How old are you?', 'Where did you get the link from? If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+questions = ['Password?','What is your name?', 'How old are you?', 'Where did you get the link from? If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
@@ -369,6 +357,11 @@ async def warn(message):
         await message.channel.send('You do not have the permissions to do that.')
 
 
+async def mute(message):
+    target = get_user_id(message)
+    await message.guild.get_member(target).add_roles(message.guild.get_role(813806878403461181))
+
+
 async def modmail(message):
     sender = message.author
     dm = await sender.create_dm()
@@ -407,37 +400,7 @@ async def help(message):
     embed.add_field(name='`>quit`', value='quits the bot', inline=False)
     await message.channel.send(embed=embed)
 
-
-async def rule(message):
-    pass
-
-
-async def rule_new(rule):
-    global num_rules
-
-    num_rules += 1
-    rule = str(num_rules) + '. ' + rule
-    id = await rules.send(rule).id
-    rule_lst.append(id)
-
-
-async def rule_edit(rule, new_wording):
-    message = rules.get_message(rule_lst[rule - 1])
-    number = message.content.split('. ', 1)[0]
-    await message.edit(number + '. ' + new_wording)
-
-
-async def rule_delete(rule):
-    global num_rules
-
-    num_rules -= 1
-    await rules.get_message(rule_lst[rule - 1]).delete()
-    for i in range(rule, len(rule_lst)):
-        message = rules.get_message(rule_lst[i - 1])
-        number = message.content.split('. ', 1)
-        await message.edit(str(int(number[0]) - 1) + '. ' + number[1])
-
-
+# TODO: Implement a switch case
 async def leaderboard(message):
     command = message.content[1:].split(' ', 2)
     if not message.author.guild_permissions.administrator:
@@ -452,10 +415,6 @@ async def leaderboard(message):
         most_active.load_leaderboard(message)
     elif command[1] == 'award':
         await most_active.award_leaderboard(message)
-
-
-async def awardlb(message):
-    await most_active.award_leaderboard(message)
 
 
 async def profile(message):
@@ -513,11 +472,6 @@ async def ref(message):
         await message.channel.send('User has not set their ref.')
 
 
-async def mute(message):
-    target = get_user_id(message)
-    await message.guild.get_member(target).add_roles(message.guild.get_role(813806878403461181))
-
-
 @client.event
 async def on_connect():
     print('Connected to Discord!')
@@ -543,7 +497,7 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'warn': warn,
             'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
-            'save': save, 'load': load, 'setref': set_ref, 'ref': ref, 'awardlb': awardlb}
+            'save': save, 'load': load, 'setref': set_ref, 'ref': ref}
 
 
 @client.event
