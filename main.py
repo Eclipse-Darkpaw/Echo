@@ -5,6 +5,7 @@ import sys
 from dotenv import load_dotenv
 from leaderboard import Leaderboard
 from profile import display_profile, set_bio
+from fileManagement import ref_path, joinleave_path, profile_path
 '''TODO:
 * move member_leave.log to a separate file
 * move commmand.log to a separate file
@@ -432,10 +433,6 @@ async def profile(message):
         await display_profile(message, target)
 
 
-def ref_path(filename):
-    return 'C:\\Users\\leebe\\Desktop\\refs\\' + str(filename) + '.png'
-
-
 async def set_ref(message):
     try:
         ref_sheet = message.attachments[0]
@@ -473,16 +470,6 @@ async def ref(message):
 
 
 @client.event
-async def on_connect():
-    print('Connected to Discord!')
-
-
-@client.event
-async def on_disconnect():
-    print('Disconnected from Discord')
-
-
-@client.event
 async def on_ready():
     global guild
 
@@ -513,7 +500,6 @@ async def on_message(message):
         pass
     if message.content.startswith(prefix):
         command = message.content[1:].split(' ', 1)
-
         try:
             method = switcher[command[0]]
             await method(message)
@@ -526,7 +512,7 @@ async def on_message(message):
 
 @client.event
 async def on_member_join(member):
-    file = open('join-leave.log', 'a')
+    file = open(joinleave_path(member), 'a')
     file.write('->' + str(member.name))
     await member.send('Hello, and welcome to the server! Please read over the rules before verifying yourself!')
     embed = discord.Embed(title='Member Join')
@@ -538,8 +524,7 @@ async def on_member_join(member):
 
 @client.event
 async def on_member_remove(member):
-    filename = member.id + '/.profile'
-    with open(filename) as file:
+    with open(profile_path(member.id)) as file:
         pass
     print(str(member) + ' left the server')
     file = open('Echo/member_leave.log', 'a')
@@ -572,19 +557,6 @@ async def on_member_remove(member):
     leave.set_footer(text=footer)
     await join_leave_log.send(embed=leave)
 
-#TODO: add a member update to detect when a member changes their name
-@client.event
-async def on_member_update(before, after):
-    pass
-
-
-@client.event
-async def on_user_update(before, after):
-    pass
-
-
-token = os.getenv('TOKEN')
-client.run(token)
-'''
-
-'''
+if __name__ == '__main_':
+    token = os.getenv('TOKEN')
+    client.run(token)
