@@ -8,12 +8,12 @@ from profile import display_profile, set_bio
 from fileManagement import ref_path, joinleave_path, profile_path
 '''TODO:
 * move member_leave.log to a separate file
-* move commmand.log to a separate file
+* move command.log to a separate file
 * update to not use .env file
 * move leaderboard out of project files'''
 load_dotenv()
 
-prefix = '>'
+prefix = '}'
 cmdlog = 'command.log'
 version_num = '1.3.2'
 
@@ -26,20 +26,17 @@ game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 guild = None
-application_channel = 813991832593367051
+application_channel = 813991832593367051   # where finished applications go
 unverified = 813996107126276127
-verified_role = 758487413257011271
-questioning_role = 813798884173414451
-suspended_role = 773401156935352390
+verified_role = 758487413257011271         # role to assign members who verify successfully
+questioning_role = 813798884173414451      # Role to assign when users
+suspended_role = 773401156935352390        # role to suspend users
 warn_roles = [758497391955017728, 758497457444356147, 819264514334654465, 819264556265898044, 819264588339478540]
 
-warn_log_channel = 771519147808653322
-join_leave_log = 813794437347147856
+warn_log_channel = 771519147808653322      # channel to log warns
+join_leave_log = 813794437347147856        # channel to log member join and leave
 cases = 0
-mail_inbox = 828862015056379915
-rules = None
-num_rules = 0
-rule_lst = []
+mail_inbox = 828862015056379915            # modmail inbox
 
 ignore = []
 
@@ -89,18 +86,14 @@ def log(message):
 async def save(message):
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         msg = await message.channel.send('Saving')
-        print('Saving')
         most_active.save_leaderboard(message)
-        print('Saved')
         await msg.edit(content='Saved!')
 
 
-async def load(message):
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+async def load(message, guild=message.guild):
+    if message.author.id == eclipse_id or message.author.guild_permissions.administrator:
         msg = await message.channel.send('Loading')
-        print('Loading')
         most_active.load_leaderboard(message)
-        print('Done')
         await msg.edit(content='Done')
 
 
@@ -129,7 +122,6 @@ class Application:
         await dm.send('Please wait while your application is reviewed')
 
     def gen_embed(self):
-        global application_channel
         global questions
 
         embed = discord.Embed(title='Application #' + str(self.count))
@@ -199,7 +191,6 @@ async def quit(message):
     log(message)
     await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        print('quitting program')
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
         sys.exit()
@@ -215,7 +206,7 @@ async def restart(message):
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
-
+# May remove depending on needs
 async def suspend(message):
     command = message.content[1:].lower().split(' ', 2)
     if message.author.guild_permissions.ban_members or message.author.guild_permissions.administrator:
@@ -361,6 +352,7 @@ async def warn(message):
 async def mute(message):
     target = get_user_id(message)
     await message.guild.get_member(target).add_roles(message.guild.get_role(813806878403461181))
+    await message.channel.send(content='<@!'+target+'> was muted.' ''',file=open('resources\\mute.jpg','rb')''')
 
 
 async def modmail(message):
@@ -476,10 +468,8 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
 
     guild = client.get_guild(758472902197772318)
-    await client.change_presence(activity=game)
-
+    await client.change_presence(activity=game,status=discord.Status.invisible)
     await guild.get_member(eclipse_id).send('Running, and active')
-    print('All ready to run!')
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'warn': warn,
@@ -508,8 +498,9 @@ async def on_message(message):
         if command[0] == 'print':
             print(message.content)
     most_active.score(message)
+    # todo: add a warn check feature to see when a warn can be removed
 
-
+'''
 @client.event
 async def on_member_join(member):
     file = open(joinleave_path(member), 'a')
@@ -556,7 +547,10 @@ async def on_member_remove(member):
     leave.add_field(name='Roles', value=role_tags)
     leave.set_footer(text=footer)
     await join_leave_log.send(embed=leave)
+'''
 
 if __name__ == '__main_':
     token = os.getenv('TOKEN')
     client.run(token)
+'''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
+add each int and mod '''
