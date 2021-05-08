@@ -26,21 +26,20 @@ game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 guild = None
-application_channel = 813991832593367051   # where finished applications go
-unverified = 813996107126276127
-verified_role = 758487413257011271         # role to assign members who verify successfully
-questioning_role = 813798884173414451      # Role to assign when users
-suspended_role = 773401156935352390        # role to suspend users
+application_channel = 819223217281302598   # channel where finished applications go
+unverified = 840626588390522920
+verified_role = 840626588390522920         # role to assign members who verify successfully
+questioning_role = 840626588390522920      # Role to assign when users
+suspended_role =  None       # role to suspend users
+'''
 warn_roles = [758497391955017728, 758497457444356147, 819264514334654465, 819264556265898044, 819264588339478540]
-
 warn_log_channel = 771519147808653322      # channel to log warns
 join_leave_log = 813794437347147856        # channel to log member join and leave
-cases = 0
-mail_inbox = 828862015056379915            # modmail inbox
+'''
+mail_inbox = None            # modmail inbox
+# ignore = []
 
-ignore = []
-
-most_active = Leaderboard()
+# most_active = Leaderboard()  # Deactivated for Riko's server
 
 
 async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
@@ -82,7 +81,7 @@ def log(message):
     with open(cmdlog, 'a') as file:
         file.write(to_log)
 
-
+'''
 async def save(message):
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         msg = await message.channel.send('Saving')
@@ -95,10 +94,10 @@ async def load(message, guild=message.guild):
         msg = await message.channel.send('Loading')
         most_active.load_leaderboard(message)
         await msg.edit(content='Done')
-
+'''
 
 counter = 0
-questions = ['Password?','What is your name?', 'How old are you?', 'Where did you get the link from? If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+questions = ['Password?','What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
@@ -143,10 +142,11 @@ async def verify(message):
         return
     applicant = guild.get_member(message.author.id)
     application = Application(applicant, message.channel, message.guild)
+    channel = guild.get_channel(application_channel)
 
     await application.question()
 
-    applied = await guild.get_channel(application_channel).send(embed=application.gen_embed())
+    applied = await channel.send(embed=application.gen_embed())
     emojis = ['✅', '❓', '🚫', '❗']
     for emoji in emojis:
         await applied.add_reaction(emoji)
@@ -154,22 +154,25 @@ async def verify(message):
     def check(reaction, user):
         return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis
 
-    reaction, user = await client.wait_for('reaction_add', check=check)
+    while True:
+        reaction, user = await client.wait_for('reaction_add', check=check)
 
-    if str(reaction.emoji) == '✅':
-        await application.applicant.add_roles(guild.get_role(verified_role))
-        await message.author.send('You have been approved.')
-        await application.applicant.remove_roles(guild.get_role(questioning_role))
-        await application.applicant.remove_roles(guild.get_role(unverified))
-    elif str(reaction.emoji) == '❓':
-        await application.applicant.add_roles(guild.get_role(questioning_role))
-        await message.author.send('You have been pulled into questioning.')
-    elif str(reaction.emoji) == '🚫':
-        reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
-        await message.author.send('Your application denied for:\n> ' + reason.content)
-    elif str(reaction.emoji) == '❗':
-        await application.applicant.add_roles(guild.get_role(suspended_role))
-        await guild.get_channel(application_channel).send('Member Suspended')
+        if str(reaction.emoji) == '✅':
+            await application.applicant.add_roles(guild.get_role(verified_role))
+            await message.author.send('You have been approved.')
+            await application.applicant.remove_roles(guild.get_role(questioning_role))
+            await application.applicant.remove_roles(guild.get_role(unverified))
+            await channel.send('Member approved')
+            break
+        elif str(reaction.emoji) == '❓':
+            await application.applicant.add_roles(guild.get_role(questioning_role))
+            await channel.send('Member is being questioned')
+            await message.author.send('You have been pulled into questioning.')
+        elif str(reaction.emoji) == '🚫':
+            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
+            await message.author.send('Your application denied for:\n> ' + reason.content)
+            await channel.send('Member was denied for:\n> '+reason.content)
+            break
 
 
 async def ping(message):
@@ -207,6 +210,7 @@ async def restart(message):
         await message.channel.send('You do not have permission to turn me off!')
 
 # May remove depending on needs
+''' Removed for Riko's Server
 async def suspend(message):
     command = message.content[1:].lower().split(' ', 2)
     if message.author.guild_permissions.ban_members or message.author.guild_permissions.administrator:
@@ -352,8 +356,8 @@ async def warn(message):
 async def mute(message):
     target = get_user_id(message)
     await message.guild.get_member(target).add_roles(message.guild.get_role(813806878403461181))
-    await message.channel.send(content='<@!'+target+'> was muted.' ''',file=open('resources\\mute.jpg','rb')''')
-
+    await message.channel.send(content='<@!'+target+'> was muted.' '',file=open('resources\\mute.jpg','rb')'')
+'''
 
 async def modmail(message):
     sender = message.author
@@ -370,30 +374,23 @@ async def modmail(message):
 
 
 async def help(message):
-    embed = discord.Embed(title="Echo Command list", color=0x45FFFF)
+    embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
     embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
     embed.add_field(name='`>help`', value="That's this command!", inline=False)
     embed.add_field(name='`>verify`', value='Verifies an un verified member.', inline=False)
     embed.add_field(name='`>modmail`', value='Sends a private message to the moderators.', inline=False)
     embed.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
-    embed.add_field(name='`>version_num`', value='What version_num Echo is currently on')
-    embed.add_field(name='`>save`', value='Saves all important files')
+    embed.add_field(name='`>version_num`', value='What version the bot is currently on')
     embed.add_field(name='`>profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
     embed.add_field(name='`>edit`', value='Saves all important files')
     embed.add_field(name='`>ref [member tag/member id]`', value="gets a user's ref sheet")
     embed.add_field(name='`>set_ref`', value="Sets a user's ref")
 
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
-    embed.add_field(name='`>warn <MemberTagged> <rule#> [reason]`', value='Warns a member for a rule and logs it',
-                    inline=False)
-    embed.add_field(name='`>kick <MemberTagged> <rule#> [reason]`', value='Kicks a member for a rule and logs it',
-                    inline=False)
-    embed.add_field(name='`>ban <MemberTagged> <rule#> [reason]`', value='Bans a member for a rule and logs it.',
-                    inline=False)
     embed.add_field(name='`>quit`', value='quits the bot', inline=False)
     await message.channel.send(embed=embed)
 
-# TODO: Implement a switch case
+'''# TODO: Implement a switch case
 async def leaderboard(message):
     command = message.content[1:].split(' ', 2)
     if not message.author.guild_permissions.administrator:
@@ -408,7 +405,7 @@ async def leaderboard(message):
         most_active.load_leaderboard(message)
     elif command[1] == 'award':
         await most_active.award_leaderboard(message)
-
+'''
 
 async def profile(message):
     command = message.content[1:].split(' ', 2)
@@ -467,14 +464,13 @@ async def on_ready():
 
     print('We have logged in as {0.user}'.format(client))
 
-    guild = client.get_guild(758472902197772318)
-    await client.change_presence(activity=game,status=discord.Status.invisible)
+    guild = client.get_guild(612550152514961408)
+    await client.change_presence(activity=game)
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'warn': warn,
-            'kick': kick, 'ban': ban, 'quit': quit, 'lb': leaderboard, 'profile': profile, 'restart': restart,
-            'save': save, 'load': load, 'setref': set_ref, 'ref': ref}
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,
+            'quit': quit, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref}
 
 
 @client.event
@@ -550,7 +546,7 @@ async def on_member_remove(member):
 '''
 
 if __name__ == '__main_':
-    token = os.getenv('TOKEN')
+    token = os.getenv('SUNREEK')
     client.run(token)
 '''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
 add each int and mod '''
