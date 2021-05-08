@@ -15,7 +15,7 @@ load_dotenv()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.3.2'
+version_num = '1.4.1'
 
 eclipse_id = 440232487738671124
 
@@ -192,7 +192,7 @@ async def version(message):
 async def quit(message):
     global game
     log(message)
-    await save(message)
+    # await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
@@ -203,7 +203,7 @@ async def quit(message):
 
 async def restart(message):
     log(message)
-    await save(message)
+    # await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         os.execl(sys.executable,__file__,'main.py')
     else:
@@ -493,7 +493,7 @@ async def on_message(message):
             pass
         if command[0] == 'print':
             print(message.content)
-    most_active.score(message)
+    # most_active.score(message)
     # todo: add a warn check feature to see when a warn can be removed
 
 '''
@@ -545,8 +545,7 @@ async def on_member_remove(member):
     await join_leave_log.send(embed=leave)
 '''
 
-if __name__ == '__main_':
-    token = os.getenv('SUNREEK')
-    client.run(token)
+token = os.getenv('SUNREEK')
+client.run(token)
 '''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
 add each int and mod '''
