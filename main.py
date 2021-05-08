@@ -15,7 +15,7 @@ load_dotenv()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.4.3'
+version_num = '1.4.4'
 
 eclipse_id = 440232487738671124
 
@@ -147,7 +147,7 @@ async def verify(message):
     await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫', '❗']
+    emojis = ['✅', '❓', '🚫']
     for emoji in emojis:
         await applied.add_reaction(emoji)
 
@@ -428,7 +428,7 @@ async def set_ref(message):
         path = ref_path(message.author.id)
         await ref_sheet.save(fp=path)
         file = await ref_sheet.to_file()
-        await message.channel.send(content='Ref set!', file=file)
+        await message.channel.send(content='Ref set!')
     except IndexError:
         await message.channel.send('No ref_sheet attached!')
 
