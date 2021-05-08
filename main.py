@@ -15,7 +15,7 @@ load_dotenv()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.4.1'
+version_num = '1.4.3'
 
 eclipse_id = 440232487738671124
 
@@ -27,9 +27,9 @@ client = discord.Client(intents=intents)
 
 guild = None
 application_channel = 819223217281302598   # channel where finished applications go
-unverified = 840626588390522920
-verified_role = 840626588390522920         # role to assign members who verify successfully
-questioning_role = 840626588390522920      # Role to assign when users
+unverified = 612958044132737025
+verified_role = 811522721824374834         # role to assign members who verify successfully
+questioning_role = 819238442931716137      # Role to assign when users
 suspended_role =  None       # role to suspend users
 '''
 warn_roles = [758497391955017728, 758497457444356147, 819264514334654465, 819264556265898044, 819264588339478540]
