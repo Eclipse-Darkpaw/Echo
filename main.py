@@ -36,7 +36,7 @@ warn_roles = [758497391955017728, 758497457444356147, 819264514334654465, 819264
 warn_log_channel = 771519147808653322      # channel to log warns
 join_leave_log = 813794437347147856        # channel to log member join and leave
 '''
-mail_inbox = None            # modmail inbox
+mail_inbox = 840753555609878528            # modmail inbox
 # ignore = []
 
 # most_active = Leaderboard()  # Deactivated for Riko's server
