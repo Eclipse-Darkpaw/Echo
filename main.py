@@ -15,7 +15,7 @@ load_dotenv()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.4.4'
+version_num = '1.4.5'
 
 eclipse_id = 440232487738671124
 
@@ -370,7 +370,7 @@ async def modmail(message):
     mail = discord.Embed(title=subject, color=0xadd8ff)
     mail.set_author(name=sender.name, icon_url=sender.avatar_url)
     mail.add_field(name='Message', value=body.content)
-    await mail_inbox.send(embed=mail)
+    await  guild.get_channel(mail_inbox).send(embed=mail)
 
 
 async def help(message):
