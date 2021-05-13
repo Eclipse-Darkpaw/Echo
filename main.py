@@ -5,7 +5,8 @@ import sys
 from dotenv import load_dotenv
 from leaderboard import Leaderboard
 from profile import display_profile, set_bio
-from fileManagement import ref_path, joinleave_path, profile_path
+from fileManagement import joinleave_path, profile_path
+from refManagement import ref, set_ref
 '''TODO:
 * move member_leave.log to a separate file
 * move command.log to a separate file
@@ -15,7 +16,7 @@ load_dotenv()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.4.5'
+version_num = '1.5.1'
 
 eclipse_id = 440232487738671124
 
@@ -186,7 +187,7 @@ async def ping(message):
 
 async def version(message):
     log(message)
-    await message.channel.send('I am currently running Echo ' + version_num)
+    await message.channel.send('I am currently running version ' + version_num)
 
 
 async def quit(message):
@@ -420,42 +421,6 @@ async def profile(message):
         else:
             target = message.mentions[0]
         await display_profile(message, target)
-
-
-async def set_ref(message):
-    try:
-        ref_sheet = message.attachments[0]
-        path = ref_path(message.author.id)
-        await ref_sheet.save(fp=path)
-        file = await ref_sheet.to_file()
-        await message.channel.send(content='Ref set!')
-    except IndexError:
-        await message.channel.send('No ref_sheet attached!')
-
-
-async def ref(message):
-    command = message.content.split()
-    try:
-        if len(command) == 1:
-            target = message.author.id
-        elif len(command[1]) == 18:
-            target = int(command[1])
-        elif len(command[1]) == 21:
-            target = int(command[2:-2])
-        elif len(command[1]) == 22:
-            target = int(command[3:-2])
-        else:
-            await message.channel.send('Not a valid user!')
-            return
-    except ValueError:
-        await message.channel.send('Invalid user')
-        return
-    try:
-        ref_sheet = open(ref_path(target), 'rb')
-        file = discord.File(ref_sheet)
-        await message.channel.send(file=file)
-    except FileNotFoundError:
-        await message.channel.send('User has not set their ref.')
 
 
 @client.event
