@@ -211,14 +211,14 @@ async def restart(message):
         await message.channel.send('You do not have permission to turn me off!')
 
 # May remove depending on needs
-''' Removed for Riko's Server
+'''
 async def suspend(message):
     command = message.content[1:].lower().split(' ', 2)
     if message.author.guild_permissions.ban_members or message.author.guild_permissions.administrator:
         target = message.mentions[0]
         print(target)
         if target == None:
-            await message.channel.send('null target')
+            await message.channel.send('No target')
             return
         if message.author == target:
             await message.channel.send('You cannot suspend yourself')
@@ -243,7 +243,7 @@ async def suspend(message):
     else:
         await message.channel.send('You do not have the permissions to do that.')
     pass
-
+'''
 
 async def kick(message):
     command = message.content[1:].lower().split(' ', 2)
@@ -262,12 +262,12 @@ async def kick(message):
         if len(command) == 2:
             command.append('No reason given')
             await target.kick(command[2])
-        embed = discord.Embed(title='Warn & Kick | Case #' + str(cases))
+        embed = discord.Embed(title='Kick')
         embed.set_author(name=target.name, icon_url=target.avatar_url)
         embed.add_field(name='Rule broken', value=str(command[2]))
         embed.add_field(name='Comments', value=str(command[3]))
         embed.add_field(name='User ID', value=str(target.id), inline=False)
-        await warn_log_channel.send(embed=embed)
+        await message.guild.get_channel(819234197063467058).send(embed=embed)
         reason = str(target) + ' kicked for ' + command[3]
         await message.channel.send(reason)
     else:
@@ -280,7 +280,7 @@ async def ban(message):
         target = message.mentions[0]
         print(target)
         if target == None:
-            await message.channel.send('null target')
+            await message.channel.send('No target')
             return
         if message.author == target:
             await message.channel.send('You cannot ban yourself')
@@ -291,19 +291,19 @@ async def ban(message):
         if len(command) == 2:
             command.append('No reason given.')
         await target.ban(command[2])
-        embed = discord.Embed(title='Banned | Case #' + str(cases))
+        embed = discord.Embed(title='Banned')
         embed.set_author(name=target.name, icon_url=target.avatar_url)
         embed.add_field(name='Rule broken', value=str(command[2]))
         embed.add_field(name='Comments', value=str(command[3]))
         embed.add_field(name='User ID', value=str(target.id), inline=False)
-        await warn_log_channel.send(embed=embed)
+        await message.guild.get_channel(819234197063467058).send(embed=embed)
         reason = str(target) + ' banned for ' + command[3]
         await message.channel.send(reason)
         await message.channel.send(target + ' was banned.\n Reason: ' + command[2])
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
-
+'''
 async def warn(message):
     global cases
 
