@@ -141,9 +141,13 @@ async def verify(message):
     if verified_role in guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified')
         return
-    applicant = guild.get_member(message.author.id)
-    application = Application(applicant, message.channel, message.guild)
-    channel = guild.get_channel(application_channel)
+    try:
+        applicant = guild.get_member(message.author.id)
+        application = Application(applicant, message.channel, message.guild)
+        channel = guild.get_channel(application_channel)
+    except discord.errors.Forbidden:
+        message.reply('I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
+        return
 
     await application.question()
 
