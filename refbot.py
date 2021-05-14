@@ -16,7 +16,7 @@ version_num = '1.5.1'
 
 eclipse_id = 440232487738671124
 game = discord.Game(prefix + "help for commands")
-client = discord.Client(intents=intents)
+client = discord.Client()
 guild = None
 
 
@@ -39,7 +39,7 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
     return msg
 
 
-def get_user_id(message, id):
+def get_user_id(message):
     command = message.content.split()
     if len(command) == 1:
         return message.author.id
@@ -53,7 +53,7 @@ def get_user_id(message, id):
 
 
 def log(message):
-    to_log = '[' + str(message.created_at) + 'Z] ' + str(message.guild) + \
+    to_log = '[' + str(message.created_at) + 'Z] ' + str(message.guild.id) + \
              '\n' + message.content + '\n' + \
              'channel ID:' + str(message.channel.id) + ' Author ID:' + str(message.author.id) + '\n\n'
     with open(cmdlog, 'a') as file:
@@ -61,23 +61,20 @@ def log(message):
 
 
 async def ping(message):
-    log(message)
     start = time.time()
     x = await message.channel.send('Pong!')
     ping = time.time() - start
     edit = x.content + ' ' + str(int(ping * 1000)) + 'ms'
-    await x.edit(content=edit)
+    await x.edit(content=edit       )
 
 
 async def version(message):
-    log(message)
     await message.channel.send('I am currently running version ' + version_num)
 
 
 async def quit(message):
     global game
-    log(message)
-    # await save(message)
+    # await save (message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
@@ -116,14 +113,28 @@ async def profile(message):
     if len(command) == 1:
         await display_profile(message)
     elif command[1] == 'edit':
-        set_bio(str(message.author.id), command[2])
-        await message.channel.send('Bio set')
+        try:
+            set_bio(str(message.author.id), command[2])
+            await message.channel.send('Bio set')
+        except Exception:
+            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
     else:
-        if len(command[1]) == 18:
-            target = message.guild.get_member(int(command[1]))
-        else:
-            target = message.mentions[0]
-        await display_profile(message, target)
+        try:
+            if len(command) == 1:
+                target = message.author.id
+            elif len(command[1]) == 18:
+                target = message.guild.int(command[1])
+            elif len(message.mentions) == 1:
+                target = int(command[2:-2])
+            elif len(command[1]) == 22:
+                target = int(command[3:-2])
+            else:
+                await message.channel.send('Not a valid user!')
+                return
+        except ValueError:
+            await message.channel.send('Invalid user')
+            return
+        await display_profile(message, message.guild.get_member(target))
 
 
 @client.event
@@ -132,9 +143,9 @@ async def on_ready():
 
     print('We have logged in as {0.user}'.format(client))
 
-    guild = client.guilds[0]
+    # guild = client.guilds[0]
     await client.change_presence(activity=game)
-    await guild.get_member(eclipse_id).send('Running, and active')
+    # await guild.get_member(eclipse_id).send('Running, and active')
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version,
@@ -158,54 +169,6 @@ async def on_message(message):
             print(message.content)
     # most_active.score(message)
 
-'''
-@client.event
-async def on_member_join(member):
-    file = open(joinleave_path(member), 'a')
-    file.write('->' + str(member.name))
-    await member.send('Hello, and welcome to the server! Please read over the rules before verifying yourself!')
-    embed = discord.Embed(title='Member Join')
-    embed.set_author(name=member.name, icon_url=member.avatar_url)
-    embed.add_field(name='Created at', value=member.created_at)
-    embed.set_footer(text=str(member.id))
-    await join_leave_log.send(embed=embed)
-
-
-@client.event
-async def on_member_remove(member):
-    with open(profile_path(member.id)) as file:
-        pass
-    print(str(member) + ' left the server')
-    file = open('Echo/member_leave.log', 'a')
-    to_log = str(member.id) + ', ['
-    roles = member.roles
-    for i in range(len(roles)):
-        if i == 0:
-            to_log += str(member.guild.id)
-        else:
-            to_log += str(roles[i].id)
-        if i < (len(roles) - 1):
-            to_log += ', '
-    to_log += ']\n'
-    file.write(to_log)
-    file.close()
-    print(to_log)
-    role_tags = ''
-    for i in range(len(roles)):
-        if i == 0:
-            pass
-        else:
-            role_tags += '<@&' + str(roles[i].id) + '>'
-    footer = 'ID:' + str(member.id)
-    # •
-    leave = discord.Embed(title='Member Leave')
-    leave.set_author(name=member.name, icon_url=member.avatar_url)
-    if len(role_tags) == 0:
-        role_tags = 'None'
-    leave.add_field(name='Roles', value=role_tags)
-    leave.set_footer(text=footer)
-    await join_leave_log.send(embed=leave)
-'''
 
 token = os.getenv('REFBOT')
 client.run(token)
