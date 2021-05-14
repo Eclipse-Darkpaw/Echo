@@ -1,3 +1,4 @@
+import discord
 from fileManagement import ref_path
 async def set_ref(message):
     try:
@@ -16,7 +17,7 @@ async def ref(message):
             target = message.author.id
         elif len(command[1]) == 18:
             target = int(command[1])
-        elif len(command[1]) == 21:
+        elif len(message.mentions) == 1:
             target = int(command[2:-2])
         elif len(command[1]) == 22:
             target = int(command[3:-2])
