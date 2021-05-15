@@ -157,26 +157,26 @@ async def verify(message):
         await applied.add_reaction(emoji)
 
     def check(reaction, user):
-        return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis
+        return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and reaction.message == applied
 
     while True:
         reaction, user = await client.wait_for('reaction_add', check=check)
-
+        #todo: allow multiple mods to react at once
         if str(reaction.emoji) == '✅':
             await application.applicant.add_roles(guild.get_role(verified_role))
             await message.author.send('You have been approved.')
             await application.applicant.remove_roles(guild.get_role(questioning_role))
             await application.applicant.remove_roles(guild.get_role(unverified))
-            await channel.send('Member approved')
+            await channel.send('<@!'+str(message.author.id)+'> approved')
             break
         elif str(reaction.emoji) == '❓':
             await application.applicant.add_roles(guild.get_role(questioning_role))
-            await channel.send('Member is being questioned')
+            await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
         elif str(reaction.emoji) == '🚫':
             reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
             await message.author.send('Your application denied for:\n> ' + reason.content)
-            await channel.send('Member was denied for:\n> '+reason.content)
+            await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
 
 
@@ -269,7 +269,7 @@ async def kick(message):
         embed = discord.Embed(title='Kick')
         embed.set_author(name=target.name, icon_url=target.avatar_url)
         embed.add_field(name='Rule broken', value=str(command[2]))
-        embed.add_field(name='Comments', value=str(command[3]))
+        embed.add_field( name='Comments', value=str(command[3]))
         embed.add_field(name='User ID', value=str(target.id), inline=False)
         await message.guild.get_channel(819234197063467058).send(embed=embed)
         reason = str(target) + ' kicked for ' + command[3]
@@ -381,18 +381,18 @@ async def modmail(message):
 async def help(message):
     embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
     embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
-    embed.add_field(name='`>help`', value="That's this command!", inline=False)
-    embed.add_field(name='`>verify`', value='Verifies an un verified member.', inline=False)
-    embed.add_field(name='`>modmail`', value='Sends a private message to the moderators.', inline=False)
-    embed.add_field(name='`>test`', value='Tests if the bot is online', inline=False)
-    embed.add_field(name='`>version_num`', value='What version the bot is currently on')
-    embed.add_field(name='`>profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
-    embed.add_field(name='`>edit`', value='Saves all important files')
-    embed.add_field(name='`>ref [member tag/member id]`', value="gets a user's ref sheet")
-    embed.add_field(name='`>set_ref`', value="Sets a user's ref")
+    embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
+    embed.add_field(name='`'+prefix+'verify`', value='Verifies an un verified member.', inline=False)
+    embed.add_field(name='`'+prefix+'modmail`', value='Sends a private message to the moderators.', inline=False)
+    embed.add_field(name='`'+prefix+'test`', value='Tests if the bot is online', inline=False)
+    embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on')
+    embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
+    embed.add_field(name='`'+prefix+'edit`', value='Saves all important files')
+    embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet")
+    embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref")
 
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
-    embed.add_field(name='`>quit`', value='quits the bot', inline=False)
+    embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
     await message.channel.send(embed=embed)
 
 '''# TODO: Implement a switch case
@@ -438,8 +438,8 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,
-            'quit': quit, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref}
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
+            'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'kick':kick, 'ban':ban}
 
 
 @client.event
