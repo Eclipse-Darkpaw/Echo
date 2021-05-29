@@ -12,12 +12,13 @@ async def set_ref(message):
         ref_sheet = message.attachments[0]
         path = ref_path(message.author.id)
         await ref_sheet.save(fp=path)
-        await message.channel.send(content='Ref set!')
+        await message.reply(content='Ref set!')
     except IndexError:
         await message.channel.send('No ref_sheet attached!')
 
 
 async def ref(message):
+    # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
     command = message.content.split()
     try:
         if len(command) == 1:
@@ -25,26 +26,26 @@ async def ref(message):
         elif len(command[1]) == 18:
             target = int(command[1])
         elif len(message.mentions) == 1:
-            target = int(command[2:-2])
-        elif len(command[1]) == 22:
-            target = int(command[3:-2])
+            target = message.mentions[0].id
         else:
             # TODO: Allow users to search by name
-            target = message.guild.get_member_named(command[1]).id
+            print(command[1])
+            target = message.guild.get_member_named(command[1])
+            print(target)
+
             if target == None:
-                await message.channel.send('Not a valid user!')
+                await message.channel.send('User not found.')
                 return
+            else:
+                target = target.id
     except ValueError:
         await message.channel.send('Invalid user')
         return
-    msg = message.channel.send('Finding ref, please wait')
+    msg = await message.channel.send('Finding ref, please wait')
     try:
         ref_sheet = open(ref_path(target), 'rb')
         file = discord.File(ref_sheet)
-        await message.channel.send(file=file)
+        await msg.edit(content='Ref Found! Uploading, Please wait!')
+        await message.reply(file=file)
     except FileNotFoundError:
-        await message.channel.send('User has not set their ref.')
-
-
-
-
+        await msg.edit(content='User has not set their ref.')
