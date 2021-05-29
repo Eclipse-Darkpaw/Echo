@@ -3,10 +3,10 @@ import discord
 import os
 import sys
 from dotenv import load_dotenv
-from leaderboard import Leaderboard
-from profile import display_profile, set_bio
-from fileManagement import joinleave_path, profile_path
-from refManagement import ref, set_ref
+#from leaderboard import Leaderboard
+#from profile import display_profile, set_bio
+#from fileManagement import joinleave_path, profile_path
+#from refManagement import ref, set_ref
 '''TODO:
 * move member_leave.log to a separate file
 * move command.log to a separate file
