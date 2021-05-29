@@ -16,8 +16,13 @@ version_num = '1.5.1'
 
 
 eclipse_id = 440232487738671124
+
+intents = discord.Intents.default()
+intents.members = True
+
 game = discord.Game(prefix + "help for commands")
-client = discord.Client()
+client = discord.Client(intents=intents)
+
 guild = None
 
 
@@ -147,7 +152,7 @@ async def on_ready():
 
     # guild = client.guilds[0]
     await client.change_presence(activity=game)
-    # await guild.get_member(eclipse_id).send('Running, and active')
+    await guild.get_member(eclipse_id).send('Running, and active')
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version,
