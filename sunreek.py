@@ -1,5 +1,3 @@
-#from applications import
-
 import time
 import discord
 import os
@@ -9,11 +7,7 @@ from leaderboard import Leaderboard
 from profile import display_profile, set_bio
 from fileManagement import joinleave_path, profile_path
 from refManagement import ref, set_ref
-'''TODO:
-* move member_leave.log to a separate file
-* move command.log to a separate file
-* update to not use .env file
-* move leaderboard out of project files'''
+
 load_dotenv()
 start_time = time.time()
 # todo: add uptime feature
@@ -66,16 +60,17 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
 
 
 def get_user_id(message):
-    command = message.content.split()
+    command = message.content.split(1)
     if len(command) == 1:
-        return message.author.id
+        target = message.author.id
     elif len(command[1]) == 18:
-        return int(command[1])
-    elif len(command[1]) == 21:
-        return int(command[2:-2])
-    elif len(command[1]) == 22:
-        return int(command[3:-2])
-    raise discord.InvalidArgument('Not a valid user!')
+        target = int(command[1])
+    elif len(message.mentions) == 1:
+        target = message.mentions[0].id
+    else:
+        target = message.guild.get_member_named(command[1])
+
+    return target
 
 
 def log(message):
@@ -272,8 +267,10 @@ async def ban(message):
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
-
+'''
 async def warn(message):
+    global cases
+
     try:
         command = message.content[1:].lower().split(' ', 3)
     except:
@@ -291,6 +288,7 @@ async def warn(message):
         elif message.author == target:
             await message.channel.send('You cannot warn yourself')
             return
+        cases += 1
 
         if not command[3]:
             command[3] = 'No reason given'
@@ -307,7 +305,7 @@ async def warn(message):
                     await ban(message)
                     return
                 else:
-                    embed = discord.Embed(title='Warn')
+                    embed = discord.Embed(title='Warn | Case #' + str(cases))
                     embed.set_author(name=target.name, icon_url=target.avatar_url)
                     embed.add_field(name='Rule broken', value=str(command[2]))
                     embed.add_field(name='Comments', value=str(command[3]))
@@ -319,6 +317,12 @@ async def warn(message):
     else:
         await message.channel.send('You do not have the permissions to do that.')
 
+
+async def mute(message):
+    target = get_user_id(message)
+    await message.guild.get_member(target).add_roles(message.guild.get_role(813806878403461181))
+    await message.channel.send(content='<@!'+target+'> was muted.' '',file=open('resources\\mute.jpg','rb')'')
+'''
 
 async def modmail(message):
     sender = message.author
@@ -344,7 +348,7 @@ async def help(message):
     embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on')
     embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
     embed.add_field(name='`'+prefix+'edit`', value='Saves all important files')
-    embed.add_field(name='`'+prefix+'ref [member tag/member id/Nickname/username]`', value="gets a user's ref sheet")
+    embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet")
     embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref")
 
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
@@ -420,6 +424,55 @@ async def on_message(message):
             print(message.content)
     # most_active.score(message)
 
+
+'''
+@client.event
+async def on_member_join(member):
+    file = open(joinleave_path(member), 'a')
+    file.write('->' + str(member.name))
+    await member.send('Hello, and welcome to the server! Please read over the rules before verifying yourself!')
+    embed = discord.Embed(title='Member Join')
+    embed.set_author(name=member.name, icon_url=member.avatar_url)
+    embed.add_field(name='Created at', value=member.created_at)
+    embed.set_footer(text=str(member.id))
+    await join_leave_log.send(embed=embed)
+
+
+@client.event
+async def on_member_remove(member):
+    with open(profile_path(member.id)) as file:
+        pass
+    print(str(member) + ' left the server')
+    file = open('Echo/member_leave.log', 'a')
+    to_log = str(member.id) + ', ['
+    roles = member.roles
+    for i in range(len(roles)):
+        if i == 0:
+            to_log += str(member.guild.id)
+        else:
+            to_log += str(roles[i].id)
+        if i < (len(roles) - 1):
+            to_log += ', '
+    to_log += ']\n'
+    file.write(to_log)
+    file.close()
+    print(to_log)
+    role_tags = ''
+    for i in range(len(roles)):
+        if i == 0:
+            pass
+        else:
+            role_tags += '<@&' + str(roles[i].id) + '>'
+    footer = 'ID:' + str(member.id)
+    # •
+    leave = discord.Embed(title='Member Leave')
+    leave.set_author(name=member.name, icon_url=member.avatar_url)
+    if len(role_tags) == 0:
+        role_tags = 'None'
+    leave.add_field(name='Roles', value=role_tags)
+    leave.set_footer(text=footer)
+    await join_leave_log.send(embed=leave)
+'''
 
 token = os.getenv('SUNREEK')
 client.run(token)
