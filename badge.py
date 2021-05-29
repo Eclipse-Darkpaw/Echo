@@ -1,6 +1,8 @@
 from disord import Embed
 from fileManagement import guild_badges_path, member_badges_path
 
+# STAT: DEPRECIATED. WILL NOT BE USED.
+# REQ: DISCONNECT AND DELETE FILE.
 
 class Badge:
     def __init__(self, icon, name, explanation, message):
