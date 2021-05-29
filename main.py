@@ -63,7 +63,7 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
     return msg
 
 
-def get_user_id(messsage):
+def get_user_id(message):
     command = message.content.split(1)
     if len(command) == 1:
         target = message.author.id
