@@ -2,15 +2,13 @@ import discord
 from fileManagement import profile_path, member_badges_path
 
 
-
 # name, join date, bio, icon
 
 
-async def create_profile(member, message):
+def create_profile(member):
     try:
         open(profile_path(str(member.id)), 'x')
     except FileExistsError:
-        await message.channel.send('You already have a profile!')
         return
     bio = 'This user has not set a bio yet\n'
     lines = [bio]
@@ -23,7 +21,10 @@ def set_bio(member, bio):
     error = False
     bio = bio.replace('\n','/n')
     try:
-
+        file = open(profile_path(str(member)))
+        file.close()
+    except FileNotFoundError:
+        create_profile(member)
     with open(profile_path(str(member))) as profile:
         lines = profile.readlines()
     lines[0] = bio+'\n'
@@ -54,7 +55,7 @@ async def display_profile(message):
         file = open(profile_path(str(member)))
         file.close()
     except FileNotFoundError:
-        await create_profile(member, message)
+        create_profile(member)
     with open(profile_path(str(member.id))) as file:
         lines = file.readlines()
 
