@@ -6,11 +6,12 @@ from dotenv import load_dotenv
 from profile import display_profile, set_bio
 from fileManagement import joinleave_path, profile_path
 from refManagement import ref, set_ref
+
 load_dotenv()
 
 
 prefix = '>'
-cmdlog = 'command.log'
+cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
 version_num = '1.5.1'
 
 
@@ -91,7 +92,7 @@ async def restart(message):
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
-
+# TODO: update to be refbot specific
 async def help(message):
     embed = discord.Embed(title="Refbot Command list", color=0x45FFFF)
     embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
@@ -107,7 +108,8 @@ async def help(message):
     embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
     await message.channel.send(embed=embed)
 
-
+# FIXME: Allow users to search for other users profiles. Feature is not working properly
+# TODO: update to handle emojis properly
 async def profile(message):
     command = message.content[1:].split(' ', 2)
     if len(command) == 1:
