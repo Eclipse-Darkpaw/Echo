@@ -22,6 +22,8 @@ async def create_profile(member, message):
 def set_bio(member, bio):
     error = False
     bio = bio.replace('\n','/n')
+    try:
+
     with open(profile_path(str(member))) as profile:
         lines = profile.readlines()
     lines[0] = bio+'\n'
@@ -46,21 +48,10 @@ def name_change(member):
         for line in lines:
             profile.write(line)
 
-# Todo: remove feature
-def member_leave(member):
-    with open(profile_path(str(member.id))) as profile:
-        lines = profile.readlines()
-        lines[2] = str(int(lines[2]) + 1) + '\n'
-    with open(profile_path(str(member.id)), 'w') as profile:
-        for line in lines:
-            profile.write(line)
-
-
-async def display_profile(message, member=None):
-    if member is None:
-        member = message.author
+async def display_profile(message):
+    member = get_member_id(message)
     try:
-        file = open(profile_path(str(member.id)))
+        file = open(profile_path(str(member)))
         file.close()
     except FileNotFoundError:
         await create_profile(member, message)
@@ -72,7 +63,4 @@ async def display_profile(message, member=None):
         embed.set_author(name=member.name,icon_url=member.avatar_url)
         embed.color = member.color
         embed.add_field(name='Bio',value=lines[0],inline=False)
-        #embed.add_field(name='Name History',value=lines[1])
-        #embed.add_field(name='Times Left',value=lines[2])
-        #embed.add_field(name='Badges',value=badges)
         await message.channel.send(embed=embed)

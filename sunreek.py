@@ -344,7 +344,7 @@ async def help(message):
     embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on')
     embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
     embed.add_field(name='`'+prefix+'edit`', value='Saves all important files')
-    embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet")
+    embed.add_field(name='`'+prefix+'ref [member tag/member id/Nickname/username]`', value="gets a user's ref sheet")
     embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref")
 
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
