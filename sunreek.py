@@ -1,4 +1,4 @@
-from applications import
+#from applications import
 
 import time
 import discord
