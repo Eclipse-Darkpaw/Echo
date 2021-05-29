@@ -63,17 +63,18 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
     return msg
 
 
-def get_user_id(message):
-    command = message.content.split()
+def get_user_id(messsage):
+    command = message.content.split(1)
     if len(command) == 1:
-        return message.author.id
+        target = message.author.id
     elif len(command[1]) == 18:
-        return int(command[1])
-    elif len(command[1]) == 21:
-        return int(command[2:-2])
-    elif len(command[1]) == 22:
-        return int(command[3:-2])
-    raise discord.InvalidArgument('Not a valid user!')
+        target = int(command[1])
+    elif len(message.mentions) == 1:
+        target = message.mentions[0].id
+    else:
+        target = message.guild.get_member_named(command[1])
+
+    return target
 
 
 def log(message):
