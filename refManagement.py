@@ -9,29 +9,36 @@ from main import get_user_id
 
 async def set_ref(message):
     try:
-        command = message.split('\n')
-        command.pop(0)
+        trim = message.content[8:]
+        command = trim.split('\n')
 
         with open(ref_path(message.author.id), 'w') as refs:
             for line in command:
-                refs.write(line + '\n')
+                try:
+                    refs.write(line + '\n')
+                except UnicodeEncodeError:
+                    await message.channel.send('Line failed to save. Please use ASCII characters\n> ' + line)
             for ref in message.attachments:
                 refs.write(ref.url + '\n')
-        await message.reply(content='Refs set!')
+        await message.reply(content='Refs set! Do not delete that message or the refs wont appear!' )
     except IndexError:
         await message.channel.send('No ref_sheet attached!')
 
+
 async def add_ref(message):
     try:
-        command = message.split('\n')
-        command.pop(0)
+        trim = message.content[8:]
+        command = trim.split('\n')
 
         with open(ref_path(message.author.id), 'a') as refs:
             for line in command:
-                refs.write(line + '\n')
+                try:
+                    refs.write(line + '\n')
+                except UnicodeEncodeError:
+                    await message.channel.send('Line failed to save. Please use ASCII characters\n> ' + line)
             for ref in message.attachments:
                 refs.write(ref.url + '\n')
-        await message.reply(content='Refs set!')
+        await message.reply(content='Refs added!')
     except IndexError:
         await message.channel.send('No ref_sheet attached!')
 

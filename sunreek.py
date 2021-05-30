@@ -383,7 +383,7 @@ async def profile(message):
         except Exception:
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
     else:
-        await display_profile(message)n
+        await display_profile(message)
 
 
 @client.event
@@ -392,14 +392,14 @@ async def on_ready():
 
     print('We have logged in as {0.user}'.format(client))
 
-    guild = client.get_guild(612550152514961408)
+    guild = client.get_guild(840181552016261170)
     await client.change_presence(activity=game)
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'kick':kick, 'ban':ban,
-            'addref': add_ref()}
+            'addref': add_ref}
 
 
 @client.event

@@ -128,14 +128,13 @@ async def profile(message):
     else:
         await display_profile(message)
 
-
 @client.event
 async def on_ready():
     global guild
 
     print('We have logged in as {0.user}'.format(client))
 
-    # guild = client.guilds[0]
+    guild = client.get_guild(840181552016261170)
     await client.change_presence(activity=game)
     await guild.get_member(eclipse_id).send('Running, and active')
 
