@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.5.1'
+version_num = '1.6.6'
 
 
 eclipse_id = 440232487738671124
@@ -126,22 +126,7 @@ async def profile(message):
         except Exception:
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
     else:
-        try:
-            if len(command) == 1:
-                target = message.author.id
-            elif len(command[1]) == 18:
-                target = message.guild.int(command[1])
-            elif len(message.mentions) == 1:
-                target = int(command[2:-2])
-            elif len(command[1]) == 22:
-                target = int(command[3:-2])
-            else:
-                await message.channel.send('Not a valid user!')
-                return
-        except ValueError:
-            await message.channel.send('Invalid user')
-            return
-        await display_profile(message, message.guild.get_member(target))
+        await display_profile(message)
 
 
 @client.event
