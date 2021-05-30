@@ -100,48 +100,6 @@ async def load(message, guild=message.guild):
 '''
 
 
-async def verify(message):
-    log(message)
-    if verified_role in guild.get_member(message.author.id).roles:
-        await message.channel.send('You are already verified')
-        return
-    try:
-        applicant = guild.get_member(message.author.id)
-        application = Application(applicant, message.channel, message.guild)
-        channel = guild.get_channel(application_channel)
-    except discord.errors.Forbidden:
-        message.reply('I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
-        return
-
-    await application.question()
-
-    applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫']
-    for emoji in emojis:
-        await applied.add_reaction(emoji)
-
-    def check(reaction, user):
-        return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and reaction.message == applied
-
-    while True:
-        reaction, user = await client.wait_for('reaction_add', check=check)
-        #todo: allow multiple mods to react at once
-        if str(reaction.emoji) == '✅':
-            await application.applicant.add_roles(guild.get_role(verified_role))
-            await message.author.send('You have been approved.')
-            await application.applicant.remove_roles(guild.get_role(questioning_role))
-            await application.applicant.remove_roles(guild.get_role(unverified))
-            await channel.send('<@!'+str(message.author.id)+'> approved')
-            break
-        elif str(reaction.emoji) == '❓':
-            await application.applicant.add_roles(guild.get_role(questioning_role))
-            await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
-            await message.author.send('You have been pulled into questioning.')
-        elif str(reaction.emoji) == '🚫':
-            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
-            await message.author.send('Your application denied for:\n> ' + reason.content)
-            await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
-            break
 
 
 async def ping(message):
@@ -327,21 +285,6 @@ async def mute(message):
     await message.guild.get_member(target).add_roles(message.guild.get_role(813806878403461181))
     await message.channel.send(content='<@!'+target+'> was muted.' '',file=open('resources\\mute.jpg','rb')'')
 '''
-
-async def modmail(message):
-    sender = message.author
-    dm = await sender.create_dm()
-    subject = await read_line(dm, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
-    subject = 'Modmail | ' + subject.content
-    body = await read_line(dm, 'Body:', sender, delete_prompt=False, delete_response=False)
-    await dm.send('Your message has been sent')
-
-    mail = discord.Embed(title=subject, color=0xadd8ff)
-    mail.set_author(name=sender.name, icon_url=sender.avatar_url)
-    mail.add_field(name='Message', value=body.content)
-    await  guild.get_channel(mail_inbox).send(embed=mail)
-
-
 async def help(message):
     embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
     embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
@@ -374,7 +317,7 @@ async def leaderboard(message):
         most_active.load_leaderboard(message)
     elif command[1] == 'award':
         await most_active.award_leaderboard(message)
-'''
+
 
 async def profile(message):
     command = message.content[1:].split(' ', 2)
@@ -389,6 +332,6 @@ async def profile(message):
         else:
             target = message.mentions[0]
         await display_profile(message)
-
+'''
 '''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
 add each int and mod '''
