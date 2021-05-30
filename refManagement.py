@@ -9,10 +9,10 @@ from main import get_user_id
 
 async def set_ref(message):
     try:
-        ref_sheet = message.attachments[0]
-        path = ref_path(message.author.id)
-        await ref_sheet.save(fp=path)
-        await message.reply(content='Ref set!')
+        with open(ref_path(message.author.id), 'w') as refs:
+            for ref in message.attachments:
+                refs.write(ref.url + '\n')
+        await message.reply(content='Refs set!')
     except IndexError:
         await message.channel.send('No ref_sheet attached!')
 
@@ -28,9 +28,9 @@ async def ref(message):
     target = target.id
     msg = await message.channel.send('Finding ref, please wait')
     try:
-        ref_sheet = open(ref_path(target), 'rb')
-        file = discord.File(ref_sheet)
+        ref_sheet = open(ref_path(target))
         await msg.edit(content='Ref Found! Uploading, Please wait!')
-        await message.reply(file=file)
+        await message.reply(content=ref_sheet.read())
+        # await message.reply(file=file)      # old system
     except FileNotFoundError:
         await msg.edit(content='User has not set their ref.')
