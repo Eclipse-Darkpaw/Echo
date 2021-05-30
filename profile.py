@@ -1,5 +1,6 @@
 import discord
-from fileManagement import profile_path, member_badges_path
+from fileManagement import profile_path
+from main import get_user_id
 
 
 # name, join date, bio, icon
@@ -50,7 +51,7 @@ def name_change(member):
             profile.write(line)
 
 async def display_profile(message):
-    member = get_member_id(message)
+    member = message.guild.get_member(get_user_id(message))
     try:
         file = open(profile_path(str(member)))
         file.close()

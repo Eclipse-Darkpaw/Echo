@@ -377,14 +377,13 @@ async def profile(message):
     if len(command) == 1:
         await display_profile(message)
     elif command[1] == 'edit':
-        set_bio(str(message.author.id), command[2])
-        await message.channel.send('Bio set')
+        try:
+            set_bio(str(message.author.id), command[2])
+            await message.channel.send('Bio set')
+        except Exception:
+            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
     else:
-        if len(command[1]) <= 18:
-            target = message.guild.get_member(int(command[1]))
-        else:
-            target = message.mentions[0]
-        await display_profile(message, target)
+        await display_profile(message)n
 
 
 @client.event
