@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from leaderboard import Leaderboard
 from profile import display_profile, set_bio
 from fileManagement import joinleave_path, profile_path
-from refManagement import ref, set_ref
+from refManagement import ref, set_ref, add_ref
 
 load_dotenv()
 start_time = time.time()
@@ -398,7 +398,8 @@ async def on_ready():
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
-            'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'kick':kick, 'ban':ban}
+            'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'kick':kick, 'ban':ban,
+            'addref': add_ref()}
 
 
 @client.event
