@@ -25,12 +25,10 @@ async def ref(message):
         await message.channel.send('User not found.')
         return
 
-    target = target.id
     msg = await message.channel.send('Finding ref, please wait')
     try:
         ref_sheet = open(ref_path(target))
         await msg.edit(content='Ref Found! Uploading, Please wait!')
         await message.reply(content=ref_sheet.read())
-        # await message.reply(file=file)      # old system
     except FileNotFoundError:
         await msg.edit(content='User has not set their ref.')
