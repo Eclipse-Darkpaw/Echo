@@ -62,7 +62,7 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
 
     return msg
 
-
+# NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
 def get_user_id(message):
     command = message.content.split(maxsplit=1)
     if len(command) == 1:
@@ -388,18 +388,7 @@ async def profile(message):
             target = message.guild.get_member(int(command[1]))
         else:
             target = message.mentions[0]
-        await display_profile(message, target)
-
-
-@client.event
-async def on_ready():
-    global guild
-
-    print('We have logged in as {0.user}'.format(client))
-
-    guild = client.get_guild(612550152514961408)
-    await client.change_presence(activity=game)
-    await guild.get_member(eclipse_id).send('Running, and active')
+        await display_profile(message)
 
 '''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
 add each int and mod '''
