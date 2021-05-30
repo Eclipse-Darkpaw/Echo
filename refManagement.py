@@ -9,7 +9,26 @@ from main import get_user_id
 
 async def set_ref(message):
     try:
+        command = message.split('\n')
+        command.pop(0)
+
         with open(ref_path(message.author.id), 'w') as refs:
+            for line in command:
+                refs.write(line + '\n')
+            for ref in message.attachments:
+                refs.write(ref.url + '\n')
+        await message.reply(content='Refs set!')
+    except IndexError:
+        await message.channel.send('No ref_sheet attached!')
+
+async def add_ref(message):
+    try:
+        command = message.split('\n')
+        command.pop(0)
+
+        with open(ref_path(message.author.id), 'a') as refs:
+            for line in command:
+                refs.write(line + '\n')
             for ref in message.attachments:
                 refs.write(ref.url + '\n')
         await message.reply(content='Refs set!')

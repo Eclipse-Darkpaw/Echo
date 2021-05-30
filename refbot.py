@@ -5,14 +5,14 @@ import sys
 from dotenv import load_dotenv
 from profile import display_profile, set_bio
 from fileManagement import joinleave_path, profile_path
-from refManagement import ref, set_ref
+from refManagement import ref, set_ref, add_ref
 
 load_dotenv()
 
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.6.6'
+version_num = '1.6.8'
 
 
 eclipse_id = 440232487738671124
@@ -140,8 +140,8 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version,
-            'quit': quit, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref}
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'restart': restart,
+            'setref': set_ref, 'ref': ref, 'addref': add_ref}
 
 
 @client.event
