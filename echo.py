@@ -9,8 +9,8 @@ from refManagement import ref, set_ref, add_ref
 load_dotenv()
 
 
-prefix = '>'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.1.0'
+prefix = '>'
+version_num = '1.1.2'
 
 
 eclipse_id = 440232487738671124
@@ -39,7 +39,7 @@ async def version(message):
 async def quit(message):
     global game
     # await save (message)
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+    if message.author.id == eclipse_id or message.author.guild_permissions.administrator:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
         sys.exit()
@@ -118,7 +118,7 @@ async def on_message(message):
             pass
         if command[0] == 'print':
             print(message.content)
-    most_active.score(message)
+    # most_active.score(message)
 
 
 token = os.getenv('ECHO')
