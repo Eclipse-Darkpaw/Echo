@@ -6,13 +6,11 @@ from dotenv import load_dotenv
 from profile import display_profile, set_bio
 from fileManagement import joinleave_path, profile_path
 from refManagement import ref, set_ref, add_ref
-
 load_dotenv()
 
 
-prefix = '>'
-cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.6.8'
+prefix = '>'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
+version_num = '1.1.0'
 
 
 eclipse_id = 440232487738671124
@@ -26,52 +24,12 @@ client = discord.Client(intents=intents)
 guild = None
 
 
-async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
-    show = await channel.send(prompt)
-
-    def check(msg):
-        return msg.author != client.user and (msg.author == target or msg.channel == channel)
-
-    msg = await client.wait_for('message', check=check)
-
-    if delete_response:
-        try:
-            await msg.delete()
-        finally:
-            pass
-    if delete_prompt:
-        await show.delete()
-
-    return msg
-
-
-def get_user_id(message):
-    command = message.content.split()
-    if len(command) == 1:
-        return message.author.id
-    elif len(command[1]) == 18:
-        return int(command[1])
-    elif len(command[1]) == 21:
-        return int(command[2:-2])
-    elif len(command[1]) == 22:
-        return int(command[3:-2])
-    raise discord.InvalidArgument('Not a valid user!')
-
-
-def log(message):
-    to_log = '[' + str(message.created_at) + 'Z] ' + str(message.guild.id) + \
-             '\n' + message.content + '\n' + \
-             'channel ID:' + str(message.channel.id) + ' Author ID:' + str(message.author.id) + '\n\n'
-    with open(cmdlog, 'a') as file:
-        file.write(to_log)
-
-
 async def ping(message):
     start = time.time()
     x = await message.channel.send('Pong!')
     ping = time.time() - start
     edit = x.content + ' ' + str(int(ping * 1000)) + 'ms'
-    await x.edit(content=edit       )
+    await x.edit(content=edit)
 
 
 async def version(message):
@@ -97,9 +55,9 @@ async def restart(message):
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
-# TODO: update to be refbot specific
+# TODO: update to be Echo specific
 async def help(message):
-    embed = discord.Embed(title="Refbot Command list", color=0x45FFFF)
+    embed = discord.Embed(title="Echo Command list", color=0x45FFFF)
     embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
     embed.add_field(name='Prefix', value=prefix, inline=False)
     embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
@@ -142,8 +100,7 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'restart': restart,
-            'setref': set_ref, 'ref': ref, 'addref': add_ref}
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'setref': set_ref, 'ref': ref, 'addref': add_ref}
 
 
 @client.event
@@ -161,10 +118,8 @@ async def on_message(message):
             pass
         if command[0] == 'print':
             print(message.content)
-    # most_active.score(message)
+    most_active.score(message)
 
 
-token = os.getenv('REFBOT')
+token = os.getenv('ECHO')
 client.run(token)
-'''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
-add each int and mod '''

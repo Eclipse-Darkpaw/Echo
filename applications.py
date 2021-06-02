@@ -35,3 +35,45 @@ class Application:
 
     def __str__(self):
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
+
+async def verify(message):
+    if verified_role in message.guild.get_member(message.author.id).roles:
+        await message.channel.send('You are already verified')
+        return
+    try:
+        applicant = guild.get_member(message.author.id)
+        application = Application(applicant, message.channel, message.guild)
+        channel = guild.get_channel(application_channel)
+    except discord.errors.Forbidden:
+        message.reply('I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
+        return
+
+    await application.question()
+
+    applied = await channel.send(embed=application.gen_embed())
+    emojis = ['✅', '❓', '🚫']
+    for emoji in emojis:
+        await applied.add_reaction(emoji)
+
+    def check(reaction, user):
+        return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and reaction.message == applied
+
+    while True:
+        reaction, user = await client.wait_for('reaction_add', check=check)
+        #todo: allow multiple mods to react at once
+        if str(reaction.emoji) == '✅':
+            await application.applicant.add_roles(guild.get_role(verified_role))
+            await message.author.send('You have been approved.')
+            await application.applicant.remove_roles(guild.get_role(questioning_role))
+            await application.applicant.remove_roles(guild.get_role(unverified))
+            await channel.send('<@!'+str(message.author.id)+'> approved')
+            break
+        elif str(reaction.emoji) == '❓':
+            await application.applicant.add_roles(guild.get_role(questioning_role))
+            await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
+            await message.author.send('You have been pulled into questioning.')
+        elif str(reaction.emoji) == '🚫':
+            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
+            await message.author.send('Your application denied for:\n> ' + reason.content)
+            await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
+            break
