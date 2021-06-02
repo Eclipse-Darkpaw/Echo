@@ -35,7 +35,11 @@ async def add_ref(message):
                 try:
                     refs.write(line + '\n')
                 except UnicodeEncodeError:
-                    await message.channel.send('Line failed to save. Please use ASCII characters\n> ' + line)
+                    for char in line:
+                        try:
+                            refs.write(char)
+                        except UnicodeEncodeError:
+                            await message.channel.send('Line failed to save. Please use ASCII characters\n> ' + char)
             for ref in message.attachments:
                 refs.write(ref.url + '\n')
         await message.reply(content='Refs added!')

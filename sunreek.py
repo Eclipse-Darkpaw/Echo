@@ -8,6 +8,7 @@ from profile import display_profile, set_bio
 from fileManagement import joinleave_path, profile_path
 from refManagement import ref, set_ref, add_ref
 
+
 load_dotenv()
 start_time = time.time()
 # todo: add uptime feature
@@ -30,114 +31,7 @@ application_channel = 819223217281302598   # channel where finished applications
 unverified = 612958044132737025
 verified_role = 811522721824374834         # role to assign members who verify successfully
 questioning_role = 819238442931716137      # Role to assign when users
-suspended_role =  None       # role to suspend users
-'''
-warn_roles = [758497391955017728, 758497457444356147, 819264514334654465, 819264556265898044, 819264588339478540]
-warn_log_channel = 771519147808653322      # channel to log warns
-join_leave_log = 813794437347147856        # channel to log member join and leave
-'''
-mail_inbox = 840753555609878528            # modmail inbox
-
-
-
-async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
-    show = await channel.send(prompt)
-
-    def check(msg):
-        return msg.author != client.user and (msg.author == target or msg.channel == channel)
-
-    msg = await client.wait_for('message', check=check)
-
-    if delete_response:
-        try:
-            await msg.delete()
-        finally:
-            pass
-    if delete_prompt:
-        await show.delete()
-
-    return msg
-
-
-def get_user_id(message):
-    command = message.content.split(1)
-    if len(command) == 1:
-        target = message.author.id
-    elif len(command[1]) == 18:
-        target = int(command[1])
-    elif len(message.mentions) == 1:
-        target = message.mentions[0].id
-    else:
-        target = message.guild.get_member_named(command[1])
-
-    return target
-
-
-def log(message):
-    to_log = '[' + str(message.created_at) + 'Z] ' + str(message.guild) + \
-             '\n' + message.content + '\n' + \
-             'channel ID:' + str(message.channel.id) + ' Author ID:' + str(message.author.id) + '\n\n'
-    with open(cmdlog, 'a') as file:
-        file.write(to_log)
-
-'''
-async def save(message):
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        msg = await message.channel.send('Saving')
-        most_active.save_leaderboard(message)
-        await msg.edit(content='Saved!')
-
-
-async def load(message, guild=message.guild):
-    if message.author.id == eclipse_id or message.author.guild_permissions.administrator:
-        msg = await message.channel.send('Loading')
-        most_active.load_leaderboard(message)
-        await msg.edit(content='Done')
-'''
-
-
-async def verify(message):
-    log(message)
-    if verified_role in guild.get_member(message.author.id).roles:
-        await message.channel.send('You are already verified')
-        return
-    try:
-        applicant = guild.get_member(message.author.id)
-        application = Application(applicant, message.channel, message.guild)
-        channel = guild.get_channel(application_channel)
-    except discord.errors.Forbidden:
-        message.reply('I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
-        return
-
-    await application.question()
-
-    applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫']
-    for emoji in emojis:
-        await applied.add_reaction(emoji)
-
-    def check(reaction, user):
-        return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and reaction.message == applied
-
-    while True:
-        reaction, user = await client.wait_for('reaction_add', check=check)
-        #todo: allow multiple mods to react at once
-        if str(reaction.emoji) == '✅':
-            await application.applicant.add_roles(guild.get_role(verified_role))
-            await message.author.send('You have been approved.')
-            await application.applicant.remove_roles(guild.get_role(questioning_role))
-            await application.applicant.remove_roles(guild.get_role(unverified))
-            await channel.send('<@!'+str(message.author.id)+'> approved')
-            break
-        elif str(reaction.emoji) == '❓':
-            await application.applicant.add_roles(guild.get_role(questioning_role))
-            await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
-            await message.author.send('You have been pulled into questioning.')
-        elif str(reaction.emoji) == '🚫':
-            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
-            await message.author.send('Your application denied for:\n> ' + reason.content)
-            await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
-            break
+mail_inbox = 840753555609878528            # modmail inbox channel
 
 
 async def ping(message):
