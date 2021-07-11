@@ -377,6 +377,8 @@ cursed_role_id = 863652702676320286
 
 
 async def cursed_keys(message):
+    global cursed_keys_running
+
     command = message.content[1:].split(' ')
     command[1]
     if command[1] == 'join':
@@ -392,7 +394,6 @@ async def cursed_keys(message):
     elif command[1] == 'set':
         await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
     elif command[1] == 'start':
-        global cursed_keys_running
         cursed_keys_running = True
         if len(crsd_keys) == 0:
             await message.reply('Unable to start game! No Cursed Keys set!')
@@ -429,7 +430,7 @@ async def cursed_keys(message):
     #trim -removes all users who have not spoken from the competition
 
 
-await crsdky(message)
+# await crsdky(message)
 
 
 @client.event
