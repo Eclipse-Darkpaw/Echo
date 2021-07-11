@@ -1,7 +1,7 @@
 import discord
 from datetime import datetime, timedelta
 import heapq
-
+from fileManagement import get_leaderboard_path
 # TODO: implement heapq and make the values negative for MaxHeap
 # a dictionary storing all people on the leaderboard
 # member id:person object
@@ -112,7 +112,7 @@ class Leaderboard:
 
     def save_leaderboard(self, message):
         #saved as id,score
-        filename = str(message.guild.id) + '.leaderboard'
+        filename = get_leaderboard_path(message)
         with open(filename,'w') as file:
             for person in self.leaderboard:
                 out = person.save_string()
@@ -120,7 +120,7 @@ class Leaderboard:
 
     def load_leaderboard(self, message):
         print('loading leaderboard')
-        filename = str(message.guild.id) + '.leaderboard'
+        filename = get_leaderboard_path(message)
         with open(filename) as file:
             lines = file.readlines()
             for line in lines:
