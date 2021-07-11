@@ -100,7 +100,8 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'setref': set_ref, 'ref': ref, 'addref': add_ref}
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile,
+            'setref': set_ref, 'ref': ref, 'addref': add_ref}
 
 
 @client.event
@@ -122,4 +123,4 @@ async def on_message(message):
 
 
 token = os.getenv('ECHO')
-client.run(token)
+client.run(token) 

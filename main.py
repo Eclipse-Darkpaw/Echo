@@ -8,7 +8,7 @@ start_time = time.time()
 # todo: add uptime feature
 # todo: add a master prefix only applicable to you as a back door
 
-async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
+async def read_line(client, channel, prompt, target, delete_prompt=True, delete_response=True):
     show = await channel.send(prompt)
 
     def check(msg):
