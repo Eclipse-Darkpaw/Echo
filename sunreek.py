@@ -314,23 +314,31 @@ async def modmail(message):
     mail.add_field(name='Message', value=body.content)
     await  guild.get_channel(mail_inbox).send(embed=mail)
 
-
+#TODO: UPDATE THIS FOR GODS SAKE. ITS OUT OF DATE
 async def help(message):
-    embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
-    embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
-    embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
-    embed.add_field(name='`'+prefix+'verify`', value='Verifies an un verified member.', inline=False)
-    embed.add_field(name='`'+prefix+'modmail`', value='Sends a private message to the moderators.', inline=False)
-    embed.add_field(name='`'+prefix+'test`', value='Tests if the bot is online', inline=False)
-    embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on')
-    embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
-    embed.add_field(name='`'+prefix+'edit`', value='Saves all important files')
-    embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet")
-    embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref")
+    command = message.content[1:].split(' ')
+    if len(command) == 1:
+        embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
+        embed.add_field(name='`'+prefix+'verify`', value='Verifies an un verified member.', inline=False)
+        embed.add_field(name='`'+prefix+'modmail`', value='Sends a private message to the moderators.', inline=False)
+        embed.add_field(name='`'+prefix+'test`', value='Tests if the bot is online', inline=False)
+        embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on', inline=False)
+        embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile", inline=False)
+        embed.add_field(name='`'+prefix+'edit`', value='Saves all important files', inline=False)
+        embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet", inline=False)
+        embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref", inline=False)
+        embed.add_field(name='`'+prefix+'crsdky`', value='commands for the CursedKeys game', inline=False)
 
-    embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
-    embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
-    await message.channel.send(embed=embed)
+        embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
+        embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
+        await message.channel.send(embed=embed)
+    elif command[1] == 'help':
+        embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
+
 
 '''# TODO: Implement a switch case
 async def leaderboard(message):
@@ -362,6 +370,67 @@ async def profile(message):
     else:
         await display_profile(message)
 
+cursed_keys_running = False
+crsd_keys = []
+player_role_id = 863630913686077450
+cursed_role_id = 863652702676320286
+
+
+async def cursed_keys(message):
+    command = message.content[1:].split(' ')
+    command[1]
+    if command[1] == 'join':
+        # either by command or by some other mechanism
+        if not cursed_keys_running:
+            if message.guild.get_role(player_role_id) in message.author.roles:
+                await message.reply('You are already a part of this game!')
+            else:
+                await message.author.add_role(message.guild.get_role(player_role_id))
+                await message.reply('Joined the game!')
+        else:
+            await message.reply("Unable to join. a game is already running")
+    elif command[1] == 'set':
+        await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
+    elif command[1] == 'start':
+        global cursed_keys_running
+        cursed_keys_running = True
+        if len(crsd_keys) == 0:
+            await message.reply('Unable to start game! No Cursed Keys set!')
+        else:
+            await message.reply('<@!863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
+    elif command[1] == 'auto-enroll':
+        if manage_roles in message.author.guild_permissions:
+            if command[2] == all:
+                for member in message.guild.members:
+                    await member.add_roles(player_role_id)
+            else:
+                roles = message.role_mentions
+                for role in roles:
+                    for member in role.members:
+                        await member.add_roles(player_role_id)
+                await message.reply('members added')
+        else:
+            await message.reply('invalid permissions')
+    elif command[1] == 'resetPlayers':
+        if manage_roles in message.author.guild_permissions:
+            for member in message.guild.get_role(player_role_id).members:
+                await member.remove_role(message.guild.get_role(player_role_id))
+    elif command[1] == 'trim':
+        await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
+    elif command[1] == 'end':
+        await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
+
+
+
+
+    #start -starts the competition.
+    #join -
+    #auto-enroll -automatically enroles all guild members
+    #trim -removes all users who have not spoken from the competition
+
+
+await crsdky(message)
+
 
 @client.event
 async def on_ready():
@@ -376,11 +445,12 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'kick':kick, 'ban':ban,
-            'addref': add_ref}
+            'addref': add_ref, 'crsdky': cursed_keys}
 
 
 @client.event
 async def on_message(message):
+
     global application_channel
     global verified_role
     global questioning_role
@@ -400,6 +470,14 @@ async def on_message(message):
         if command[0] == 'print':
             print(message.content)
     # most_active.score(message)
+    if cursed_keys_running:
+        if message.guild.get_role(863630913686077450) in message.author.roles:
+            for key in cursed_keys:
+                if key in message.content:
+                    await member.add_roles(message.guild.get_role(863652702676320286))
+                    break
+                    # assign a cursed role
+
 
 
 '''
