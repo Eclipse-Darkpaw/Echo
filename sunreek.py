@@ -483,10 +483,12 @@ async def on_message(message):
     # most_active.score(message)
     if cursed_keys_running:
         if message.guild.get_role(863630913686077450) in message.author.roles:
-            for key in cursed_keys:
+            for key in crsd_keys:
                 if key in message.content:
                     await member.add_roles(message.guild.get_role(863652702676320286))
+                    await message.reply('You have been cursed for using the key: ' + key)
                     break
+
                     # assign a cursed role
 
 
