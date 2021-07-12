@@ -383,7 +383,7 @@ async def cursed_keys(message):
     command[1]
     if len(command) == 1:
         message.reply('cursed keys are: '+str(crsd_keys))
-    if command[1] == 'join':
+    elif command[1] == 'join':
         # either by command or by some other mechanism
         if not cursed_keys_running:
             if message.guild.get_role(player_role_id) in message.author.roles:
