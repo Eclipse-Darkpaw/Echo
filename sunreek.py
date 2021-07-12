@@ -380,7 +380,6 @@ async def cursed_keys(message):
     global cursed_keys_running
 
     command = message.content[1:].split(' ',2)
-    command[1]
     if len(command) == 1:
         if len(crsd_keys) == 0:
             await message.reply('there are no cursed keys')
@@ -488,7 +487,7 @@ async def on_message(message):
         if message.guild.get_role(player_role_id) in message.author.roles and not message.guild.get_role(cursed_role_id) in message.author.roles:
             for key in crsd_keys:
                 if key in message.content:
-                    await member.add_roles(message.guild.get_role(cursed_role_id))
+                    await message.author.add_roles(message.guild.get_role(cursed_role_id))
                     await message.reply('You have been cursed for using the key: ' + key)
                     break
 
