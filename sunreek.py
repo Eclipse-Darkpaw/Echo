@@ -379,6 +379,7 @@ player_num = 0
 async def cursed_keys(message):
     global cursed_keys_running
     global player_num
+    global crsd_keys
 
     command = message.content[1:].split(' ',2)
     if len(command) == 1:
