@@ -501,7 +501,6 @@ async def on_message(message):
                     if player_num == 1:
                         cursed_keys_running = False
                         await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) + '> wins the game!')
-
                     break
 
 
