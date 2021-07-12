@@ -407,7 +407,7 @@ async def cursed_keys(message):
         if len(crsd_keys) == 0:
             await message.reply('Unable to start game! No Cursed Keys set!')
         else:
-            await message.reply('<@!863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
+            await message.reply('<@&863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
     elif command[1] == 'auto-enroll':
         if message.author.guild_permissions.manage_roles:
             if command[2] == all:
