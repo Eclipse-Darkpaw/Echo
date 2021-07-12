@@ -380,7 +380,6 @@ async def cursed_keys(message):
     global cursed_keys_running
 
     command = message.content[1:].split(' ',2)
-    command[1]
     if len(command) == 1:
         if len(crsd_keys) == 0:
             await message.reply('there are no cursed keys')
