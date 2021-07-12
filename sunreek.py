@@ -373,7 +373,6 @@ async def profile(message):
 cursed_keys_running = False
 crsd_keys = []
 player_role_id = 863630913686077450
-cursed_role_id = 863652702676320286
 
 
 async def cursed_keys(message):
@@ -395,13 +394,18 @@ async def cursed_keys(message):
                 await message.reply('Joined the game!')
         else:
              await message.reply("Unable to join. a game is already running")
+    elif command[1] == 'leave':
+        await message.author.remove_roles(player_role_id)
+        await message.reply('You have been removed from the game')
     elif command[1] == 'set':
         chars = command[2].split(' ')
+        keys = []
         for char in chars:
             if len(char) > 1:
                 pass
             else:
-                crsd_keys.append(char)
+                keys.append(char)
+                crsd_keys = keys
         await message.reply('Cursed Keys set: '+ str(crsd_keys))
 
     elif command[1] == 'start':
@@ -430,8 +434,9 @@ async def cursed_keys(message):
         await message.reply('Players reset')
     elif command[1] == 'trim':
         await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
-    elif command[1] == 'end':
-        await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
+    elif command[1] == 'stop':
+        cursed_keys_running = False
+        await message.reply('Game Stopped')
 
 
 
