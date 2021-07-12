@@ -379,7 +379,7 @@ cursed_role_id = 863652702676320286
 async def cursed_keys(message):
     global cursed_keys_running
 
-    command = message.content[1:].split(' ')
+    command = message.content[1:].split(' ',2)
     command[1]
     if command[1] == 'join':
         # either by command or by some other mechanism
@@ -392,7 +392,13 @@ async def cursed_keys(message):
         else:
              await message.reply("Unable to join. a game is already running")
     elif command[1] == 'set':
-        await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
+        chars = command[2].split(' ')
+        for char in chars:
+            if len(char) > 1:
+                pass
+            else:
+                crsd_keys.append(char)
+
     elif command[1] == 'start':
         cursed_keys_running = True
         if len(crsd_keys) == 0:
