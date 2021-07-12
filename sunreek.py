@@ -382,7 +382,10 @@ async def cursed_keys(message):
     command = message.content[1:].split(' ',2)
     command[1]
     if len(command) == 1:
-        message.reply('cursed keys are: '+str(crsd_keys))
+        if len(crsd_keys) == 0:
+            await message.reply('there are no cursed keys')
+        else:
+            await message.reply('cursed keys are: '+str(crsd_keys))
     elif command[1] == 'join':
         # either by command or by some other mechanism
         if not cursed_keys_running:
