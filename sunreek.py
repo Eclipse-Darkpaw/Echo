@@ -398,6 +398,7 @@ async def cursed_keys(message):
                 pass
             else:
                 crsd_keys.append(char)
+        await message.reply('Cursed Keys set: '+ str(crsd_keys))
 
     elif command[1] == 'start':
         cursed_keys_running = True
