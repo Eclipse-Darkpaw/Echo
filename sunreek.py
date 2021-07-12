@@ -373,10 +373,12 @@ async def profile(message):
 cursed_keys_running = False
 crsd_keys = []
 player_role_id = 863630913686077450
+player_num = 0
 
 
 async def cursed_keys(message):
     global cursed_keys_running
+    global player_num
 
     command = message.content[1:].split(' ',2)
     if len(command) == 1:
@@ -392,11 +394,13 @@ async def cursed_keys(message):
             else:
                 await message.author.add_roles (message.guild.get_role(player_role_id))
                 await message.reply('Joined the game!')
+                player_num += 1
         else:
              await message.reply("Unable to join. a game is already running")
     elif command[1] == 'leave':
         await message.author.remove_roles(player_role_id)
         await message.reply('You have been removed from the game')
+        player_num -= 1
     elif command[1] == 'set':
         chars = command[2].split(' ')
         keys = []
@@ -468,7 +472,7 @@ switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify
 
 @client.event
 async def on_message(message):
-
+    global cursed_keys_running
     global application_channel
     global verified_role
     global questioning_role
@@ -493,6 +497,11 @@ async def on_message(message):
                 if key in message.content:
                     await message.author.remove_roles(message.guild.get_role(player_role_id))
                     await message.reply('You have been cursed for using the key: ' + key)
+                    player_num -= 1
+                    if player_num == 1:
+                        cursed_keys_running = False
+                        await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) + '> wins the game!')
+
                     break
 
 
