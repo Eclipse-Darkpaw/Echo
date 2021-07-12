@@ -377,6 +377,7 @@ player_role_id = 863630913686077450
 
 async def cursed_keys(message):
     global cursed_keys_running
+    global crsd_keys
 
     command = message.content[1:].split(' ',2)
     if len(command) == 1:
@@ -487,7 +488,7 @@ async def on_message(message):
             pass
         if command[0] == 'print':
             print(message.content)
-    if cursed_keys_running:
+    elif cursed_keys_running:
         if message.guild.get_role(player_role_id) in message.author.roles:
             for key in crsd_keys:
                 if key in message.content:
