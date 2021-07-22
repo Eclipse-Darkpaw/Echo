@@ -404,7 +404,7 @@ async def cursed_keys(message):
     elif command[1] == 'set':
         chars = command[2].split(' ')
         keys = []
-        for char in chars:
+        for char in chars.lower():
             if len(char) > 1:
                 pass
             else:
@@ -491,10 +491,10 @@ async def on_message(message):
             pass
         if command[0] == 'print':
             print(message.content)
-    if cursed_keys_running:
+    elif cursed_keys_running:
         if message.guild.get_role(player_role_id) in message.author.roles:
             for key in crsd_keys:
-                if key in message.content:
+                if key in message.content.lower():
                     await message.author.remove_roles(message.guild.get_role(player_role_id))
                     await message.reply('You have been cursed for using the key: ' + key)
                     player_num -= 1
