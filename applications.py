@@ -54,7 +54,7 @@ async def verify(message):
     await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫','❕']
+    emojis = ['✅', '❓', '🚫','❌']
     for emoji in emojis:
         await applied.add_reaction(emoji)
 
@@ -81,7 +81,7 @@ async def verify(message):
             await message.author.send('Your application denied for:\n> ' + reason.content)
             await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
-        elif str(reaction.emoji) == '❕':
+        elif str(reaction.emoji) == '❌':
             reason = await read_line(guild.get_channel(application_channel), 'Why was this user banned?', user,
                                      delete_prompt=False, delete_response=False)
             if reason == 'cancel':
