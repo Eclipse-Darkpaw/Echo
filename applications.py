@@ -2,7 +2,7 @@ import discord
 counter = 0
 questions = ['Password?','What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
-
+# !!!: THIS CLASS DOESNT DO ANYTHING YET UPDATE verify() IN sunreek.py TO MAKE CHANGES
 class Application:
     def __init__(self, applicant, channel, guild):
         global counter
@@ -54,7 +54,7 @@ async def verify(message):
     await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '❌', '🚫']
+    emojis = ['✅', '❓', '🚫', '❗']
     for emoji in emojis:
         await applied.add_reaction(emoji)
 
@@ -81,7 +81,7 @@ async def verify(message):
             await message.author.send('Your application denied for:\n> ' + reason.content)
             await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
-        elif str(reaction.emoji) == '❌':
+        elif str(reaction.emoji) == '❗':
             reason = await read_line(guild.get_channel(application_channel), 'Why was this user banned?', user,
                                      delete_prompt=False, delete_response=False)
             if reason == 'cancel':
