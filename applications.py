@@ -54,7 +54,7 @@ async def verify(message):
     await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫','❌']
+    emojis = ['✅', '❓', '❌', '🚫']
     for emoji in emojis:
         await applied.add_reaction(emoji)
 
