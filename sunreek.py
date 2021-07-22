@@ -412,7 +412,7 @@ async def cursed_keys(message):
         player_num -= 1
     elif command[1] == 'set':
         chars = command[2].split(' ')
-        keys = []
+        keys = ['e']
         for char in chars.lower():
             if len(char) > 1:
                 pass
@@ -422,11 +422,14 @@ async def cursed_keys(message):
         await message.reply('Cursed Keys set: '+ str(crsd_keys))
 
     elif command[1] == 'start':
-        cursed_keys_running = True
-        if len(crsd_keys) == 0:
-            await message.reply('Unable to start game! No Cursed Keys set!')
+        if message.author.guild_permissions.manage_roles:
+            cursed_keys_running = True
+            if len(crsd_keys) == 0:
+                await message.reply('Unable to start game! No Cursed Keys set!')
+            else:
+                await message.reply('<@&863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
         else:
-            await message.reply('<@&863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
+            await message.reply('Invalid permissions')
     elif command[1] == 'auto-enroll':
         if message.author.guild_permissions.manage_roles:
             if command[2] == all:
@@ -448,8 +451,14 @@ async def cursed_keys(message):
     elif command[1] == 'trim':
         await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
     elif command[1] == 'stop':
-        cursed_keys_running = False
-        await message.reply('Game Stopped')
+        if message.author.guild_permissions.manage_roles:
+            cursed_keys_running = False
+            await message.reply('Game Stopped')
+        else:
+            await message.reply('Invalid Permissions')
+    elif command[1] == 'numleft':
+        await message.reply(str(len(message.guild.get_role(player_role_id).members)))
+
 
 
 
