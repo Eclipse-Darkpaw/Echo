@@ -54,7 +54,7 @@ async def verify(message):
     await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫']
+    emojis = ['✅', '❓', '🚫','❕']
     for emoji in emojis:
         await applied.add_reaction(emoji)
 
@@ -63,7 +63,7 @@ async def verify(message):
 
     while True:
         reaction, user = await client.wait_for('reaction_add', check=check)
-        #todo: allow multiple mods to react at once
+        # TODO: allow multiple mods to react at once
         if str(reaction.emoji) == '✅':
             await application.applicant.add_roles(guild.get_role(verified_role))
             await message.author.send('You have been approved.')
@@ -76,7 +76,16 @@ async def verify(message):
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
         elif str(reaction.emoji) == '🚫':
-            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user, delete_prompt=False, delete_response=False)
+            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user,
+                                     delete_prompt=False, delete_response=False)
             await message.author.send('Your application denied for:\n> ' + reason.content)
             await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
+        elif str(reaction.emoji) == '❕':
+            reason = await read_line(guild.get_channel(application_channel), 'Why was this user banned?', user,
+                                     delete_prompt=False, delete_response=False)
+            if reason == 'cancel':
+                await channel.send('Ban cancelled')
+            else:
+                await message.guild.ban(application.applicant, reason)
+                await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
