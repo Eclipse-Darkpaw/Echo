@@ -16,7 +16,7 @@ start_time = time.time()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.5.1'
+version_num = '1.6.3'
 
 eclipse_id = 440232487738671124
 
@@ -34,7 +34,7 @@ questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 
 counter = 0
-questions = ['Password?','What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+questions = ['Password?', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
@@ -70,6 +70,7 @@ class Application:
 
     def __str__(self):
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
+
 
 async def verify(message):
     guild = message.guild
@@ -131,7 +132,6 @@ async def verify(message):
                     await channel.send('Ban failed. Please try again, by reacting to the message again.')
                 except discord.Forbidden:
                     await channel.send('Error 403: Forbidden. Insufficient permissions.')
-
 
 
 async def ping(message):
@@ -202,6 +202,7 @@ async def suspend(message):
         await message.channel.send('You do not have the permissions to do that.')
     pass
 '''
+
 
 async def kick(message):
     command = message.content[1:].lower().split(' ', 2)
@@ -318,6 +319,7 @@ async def mute(message):
     await message.channel.send(content='<@!'+target+'> was muted.' '',file=open('resources\\mute.jpg','rb')'')
 '''
 
+
 async def modmail(message):
     sender = message.author
     dm = await sender.create_dm()
@@ -329,32 +331,57 @@ async def modmail(message):
     mail = discord.Embed(title=subject, color=0xadd8ff)
     mail.set_author(name=sender.name, icon_url=sender.avatar_url)
     mail.add_field(name='Message', value=body.content)
-    await  guild.get_channel(mail_inbox).send(embed=mail)
+    await guild.get_channel(mail_inbox).send(embed=mail)
 
-#TODO: UPDATE THIS FOR GODS SAKE. ITS OUT OF DATE
+
 async def help(message):
+    # square brackets are optional arguments, angle brackets are required
     command = message.content[1:].split(' ')
     if len(command) == 1:
-        embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        embed = discord.Embed(title="SunReek Command list", description='Square brackets are optional arguments. Angle brackets are required arguments', color=0x45FFFF)
         embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
         embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
         embed.add_field(name='`'+prefix+'verify`', value='Verifies an un verified member.', inline=False)
         embed.add_field(name='`'+prefix+'modmail`', value='Sends a private message to the moderators.', inline=False)
-        embed.add_field(name='`'+prefix+'test`', value='Tests if the bot is online', inline=False)
         embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on', inline=False)
         embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile", inline=False)
-        embed.add_field(name='`'+prefix+'edit`', value='Saves all important files', inline=False)
         embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet", inline=False)
-        embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref", inline=False)
-        embed.add_field(name='`'+prefix+'crsdky`', value='commands for the CursedKeys game', inline=False)
-
+        embed.add_field(name='`'+prefix+'setref <attachment>`', value="Sets a user's ref. Overwrites all current ref data", inline=False)
+        embed.add_field(name='`'+prefix+'addref <attachment>`', value="Adds another ref to your file.", inline=False)
+        embed.add_field(name='`'+prefix+'crsdky [arguments]`', value='commands for the CursedKeys game. will show the list of cursed keys if argument is left off', inline=False)
         embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
-        embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
-        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
-        embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
+        help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        help_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
+        await message.channel.send(embed=help_embed)
+    elif command[1] == 'profile':
+        profile_embed = discord.Embed(title='Profile Command list',description='Displays a users profile', color=0x45FFFF,)
+        profile_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        profile_embed.add_field(name='No argument', value='Displays your profile', inline=False)
+        profile_embed.add_field(name='`User ID/Tagged User/Nickname`', value='Searches for a user\'s profile. Tagging the desired user, or using their member ID yeilds the most accurate results.', inline=False)
+        profile_embed.add_field(name='`edit <string>`', value='Changes your profile to say what you want. Only emotes from this server can be used.', inline=False)
+        await message.channel.send(embed=profile_embed)
+    elif command[1] == 'crsdky':
+        crsdky_embed = discord.Embed(title="`}crsdky Command list", color=0x45FFFF)
+        crsdky_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        crsdky_embed.add_field(name='Notes', value='Used by going `}crsdky [argument]`, ', inline=False)
+        crsdky_embed.add_field(name='`join`', value='Joins the game of crsdky. Users cannot join after the game starts.', inline=False)
+        crsdky_embed.add_field(name='`leave`', value='leaves the game of crsdky', inline=False)
+        crsdky_embed.add_field(name='`numleft`', value='', inline=False)
+        embeds = [crsdky_embed]
+        if message.author.guild_permissions.manage_roles:
+            mod_crsdky_embed = discord.Embed(title='`}crsdky` Mod Commands',color=message.author.color)
+            mod_crsdky_embed.add_field(name='Notes', value='All these commands require the user to have moderator permissions.', inline=False)
+            mod_crsdky_embed.add_field(name='`set <char list>`', value='Sets the cursed keys. Takes lowercase letters and symbols.', inline=False)
+            mod_crsdky_embed.add_field(name='`start`', value='Starts the round, and prevents new players from joining', inline=False)
+            mod_crsdky_embed.add_field(name='`stop`', value='Pauses the round until the `start` command is recieved', inline=False)
+            mod_crsdky_embed.add_field(name='`resetPlayer`', value='Removes all players from the game', inline=False)
+            embeds.append(mod_crsdky_embed)
+        await message.channel.send(embed=embeds)
+
 
 
 '''# TODO: Implement a switch case
@@ -373,6 +400,7 @@ async def leaderboard(message):
     elif command[1] == 'award':
         await most_active.award_leaderboard(message)
 '''
+
 
 async def profile(message):
     command = message.content[1:].split(' ', 2)
@@ -461,10 +489,6 @@ async def cursed_keys(message):
             await message.reply('Invalid Permissions')
     elif command[1] == 'numleft':
         await message.reply(str(len(message.guild.get_role(player_role_id).members)))
-
-
-
-# await crsdky(message)
 
 
 @client.event
