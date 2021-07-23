@@ -88,7 +88,7 @@ async def verify(message):
     await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫']
+    emojis = ['✅', '❓', '🚫', '❗']
     for emoji in emojis:
         await applied.add_reaction(emoji)
 
@@ -97,7 +97,7 @@ async def verify(message):
 
     while True:
         reaction, user = await client.wait_for('reaction_add', check=check)
-        #todo: allow multiple mods to react at once
+        # TODO: allow multiple mods to react at once
         if str(reaction.emoji) == '✅':
             await application.applicant.add_roles(guild.get_role(verified_role))
             await message.author.send('You have been approved.')
@@ -115,6 +115,23 @@ async def verify(message):
             await message.author.send('Your application denied for:\n> ' + reason.content)
             await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
+        elif str(reaction.emoji) == '❗':
+            reason = await read_line(client, guild.get_channel(application_channel), 'Why was this user banned?', user,
+                                     delete_prompt=False, delete_response=False)
+            reason = reason.content
+            if reason == 'cancel':
+                await channel.send('Ban cancelled')
+
+            else:
+                try:
+                    await message.guild.ban(user=application.applicant,reason=reason)
+                    await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
+                    break
+                except discord.HTTPException:
+                    await channel.send('Ban failed. Please try again, by reacting to the message again.')
+                except discord.Forbidden:
+                    await channel.send('Error 403: Forbidden. Insufficient permissions.')
+
 
 
 async def ping(message):
@@ -314,23 +331,31 @@ async def modmail(message):
     mail.add_field(name='Message', value=body.content)
     await  guild.get_channel(mail_inbox).send(embed=mail)
 
-
+#TODO: UPDATE THIS FOR GODS SAKE. ITS OUT OF DATE
 async def help(message):
-    embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
-    embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
-    embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
-    embed.add_field(name='`'+prefix+'verify`', value='Verifies an un verified member.', inline=False)
-    embed.add_field(name='`'+prefix+'modmail`', value='Sends a private message to the moderators.', inline=False)
-    embed.add_field(name='`'+prefix+'test`', value='Tests if the bot is online', inline=False)
-    embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on')
-    embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile")
-    embed.add_field(name='`'+prefix+'edit`', value='Saves all important files')
-    embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet")
-    embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref")
+    command = message.content[1:].split(' ')
+    if len(command) == 1:
+        embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
+        embed.add_field(name='`'+prefix+'verify`', value='Verifies an un verified member.', inline=False)
+        embed.add_field(name='`'+prefix+'modmail`', value='Sends a private message to the moderators.', inline=False)
+        embed.add_field(name='`'+prefix+'test`', value='Tests if the bot is online', inline=False)
+        embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on', inline=False)
+        embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`', value="Gets a tagged user's profile or your profile", inline=False)
+        embed.add_field(name='`'+prefix+'edit`', value='Saves all important files', inline=False)
+        embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet", inline=False)
+        embed.add_field(name='`'+prefix+'set_ref <attachment>`', value="Sets a user's ref", inline=False)
+        embed.add_field(name='`'+prefix+'crsdky`', value='commands for the CursedKeys game', inline=False)
 
-    embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
-    embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
-    await message.channel.send(embed=embed)
+        embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
+        embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
+        await message.channel.send(embed=embed)
+    elif command[1] == 'help':
+        embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
+
 
 '''# TODO: Implement a switch case
 async def leaderboard(message):
@@ -362,6 +387,99 @@ async def profile(message):
     else:
         await display_profile(message)
 
+cursed_keys_running = False
+crsd_keys = []
+player_role_id = 863630913686077450
+player_num = 0
+
+
+async def cursed_keys(message):
+    global cursed_keys_running
+    global player_num
+    global crsd_keys
+
+    command = message.content[1:].split(' ',2)
+    if len(command) == 1:
+        if len(crsd_keys) == 0:
+            await message.reply('there are no cursed keys')
+        else:
+            await message.reply('cursed keys are: '+str(crsd_keys))
+    elif command[1] == 'join':
+        # either by command or by some other mechanism
+        if not cursed_keys_running:
+            if message.guild.get_role(player_role_id) in message.author.roles:
+                await message.reply('You are already a part of this game!')
+            else:
+                await message.author.add_roles (message.guild.get_role(player_role_id))
+                await message.reply('Joined the game!')
+                player_num += 1
+        else:
+             await message.reply("Unable to join. a game is already running")
+    elif command[1] == 'leave':
+        await message.author.remove_roles(player_role_id)
+        await message.reply('You have been removed from the game')
+        player_num -= 1
+    elif command[1] == 'set':
+        chars = command[2].split(' ')
+        keys = []
+        for char in chars:
+            if len(char) > 1:
+                pass
+            else:
+                keys.append(char.lower())
+                crsd_keys = keys
+        await message.reply('Cursed Keys set: '+ str(crsd_keys))
+
+    elif command[1] == 'start':
+        if message.author.guild_permissions.manage_roles:
+            cursed_keys_running = True
+            if len(crsd_keys) == 0:
+                await message.reply('Unable to start game! No Cursed Keys set!')
+            else:
+                await message.reply('<@&863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
+        else:
+            await message.reply('Invalid permissions')
+    elif command[1] == 'auto-enroll':
+        if message.author.guild_permissions.manage_roles:
+            if command[2] == all:
+                for member in message.guild.members:
+                    await member.add_roles(player_role_id)
+            else:
+                roles = message.role_mentions
+                for role in roles:
+                    for member in role.members:
+                        await member.add_roles(player_role_id)
+                await message.reply('members added')
+        else:
+            await message.reply('invalid permissions')
+    elif command[1] == 'resetPlayers':
+        if message.author.guild_permissions.manage_roles:
+            for member in message.guild.get_role(player_role_id).members:
+                await member.remove_roles(message.guild.get_role(player_role_id))
+        await message.reply('Players reset')
+    elif command[1] == 'trim':
+        await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
+    elif command[1] == 'stop':
+        if message.author.guild_permissions.manage_roles:
+            cursed_keys_running = False
+            await message.reply('Game Stopped')
+        else:
+            await message.reply('Invalid Permissions')
+    elif command[1] == 'numleft':
+        await message.reply(str(len(message.guild.get_role(player_role_id).members)))
+
+
+
+
+
+    #start -starts the competition.
+    #join -
+    #auto-enroll -automatically enroles all guild members
+    #trim -removes all users who have not spoken from the competition
+
+
+# await crsdky(message)
+
 
 @client.event
 async def on_ready():
@@ -376,11 +494,12 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'kick':kick, 'ban':ban,
-            'addref': add_ref}
+            'addref': add_ref, 'crsdky': cursed_keys}
 
 
 @client.event
 async def on_message(message):
+    global cursed_keys_running
     global application_channel
     global verified_role
     global questioning_role
@@ -399,7 +518,18 @@ async def on_message(message):
             pass
         if command[0] == 'print':
             print(message.content)
-    # most_active.score(message)
+    elif cursed_keys_running:
+        if message.guild.get_role(player_role_id) in message.author.roles:
+            for key in crsd_keys:
+                if key in message.content.lower():
+                    await message.author.remove_roles(message.guild.get_role(player_role_id))
+                    await message.reply('You have been cursed for using the key: ' + key)
+                    player_num -= 1
+                    if player_num == 1:
+                        cursed_keys_running = False
+                        await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) + '> wins the game!')
+                    break
+
 
 
 '''
