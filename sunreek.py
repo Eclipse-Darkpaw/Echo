@@ -398,7 +398,7 @@ async def cursed_keys(message):
     global player_num
     global crsd_keys
 
-    command = message.content[1:].split(' ',2)
+    command = message.content[1:].split(' ', 2)
     if len(command) == 1:
         if len(crsd_keys) == 0:
             await message.reply('there are no cursed keys')
@@ -414,7 +414,7 @@ async def cursed_keys(message):
                 await message.reply('Joined the game!')
                 player_num += 1
         else:
-             await message.reply("Unable to join. a game is already running")
+            await message.reply("Unable to join. a game is already running")
     elif command[1] == 'leave':
         await message.author.remove_roles(player_role_id)
         await message.reply('You have been removed from the game')
@@ -429,7 +429,6 @@ async def cursed_keys(message):
                 keys.append(char.lower())
                 crsd_keys = keys
         await message.reply('Cursed Keys set: '+ str(crsd_keys))
-
     elif command[1] == 'start':
         if message.author.guild_permissions.manage_roles:
             cursed_keys_running = True
@@ -457,8 +456,6 @@ async def cursed_keys(message):
             for member in message.guild.get_role(player_role_id).members:
                 await member.remove_roles(message.guild.get_role(player_role_id))
         await message.reply('Players reset')
-    elif command[1] == 'trim':
-        await message.reply('not implemented yet. <@!440232487738671124> please fix this issue')
     elif command[1] == 'stop':
         if message.author.guild_permissions.manage_roles:
             cursed_keys_running = False
