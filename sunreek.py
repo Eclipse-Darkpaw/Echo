@@ -416,7 +416,7 @@ async def cursed_keys(message):
         else:
             await message.reply("Unable to join. a game is already running")
     elif command[1] == 'leave':
-        await message.author.remove_roles(player_role_id)
+        await message.author.remove_roles([player_role_id])
         await message.reply('You have been removed from the game')
         player_num -= 1
     elif command[1] == 'set':
