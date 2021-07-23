@@ -110,19 +110,28 @@ async def verify(message):
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
         elif str(reaction.emoji) == '🚫':
-            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user,
+            reason = await read_line(client, guild.get_channel(application_channel), 'Why was this user denied?', user,
                                      delete_prompt=False, delete_response=False)
             await message.author.send('Your application denied for:\n> ' + reason.content)
             await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
         elif str(reaction.emoji) == '❗':
-            reason = await read_line(guild.get_channel(application_channel), 'Why was this user banned?', user,
+            reason = await read_line(client, guild.get_channel(application_channel), 'Why was this user banned?', user,
                                      delete_prompt=False, delete_response=False)
+            reason = reason.content
             if reason == 'cancel':
                 await channel.send('Ban cancelled')
+
             else:
-                await message.guild.ban(application.applicant, reason)
-                await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
+                try:
+                    await message.guild.ban(user=application.applicant,reason=reason)
+                    await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
+                    break
+                except discord.HTTPException:
+                    await channel.send('Ban failed. Please try again, by reacting to the message again.')
+                except discord.Forbidden:
+                    await channel.send('Error 403: Forbidden. Insufficient permissions.')
+
 
 
 async def ping(message):
@@ -412,12 +421,12 @@ async def cursed_keys(message):
         player_num -= 1
     elif command[1] == 'set':
         chars = command[2].split(' ')
-        keys = ['e']
-        for char in chars.lower():
+        keys = []
+        for char in chars:
             if len(char) > 1:
                 pass
             else:
-                keys.append(char)
+                keys.append(char.lower())
                 crsd_keys = keys
         await message.reply('Cursed Keys set: '+ str(crsd_keys))
 
