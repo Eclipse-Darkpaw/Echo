@@ -371,7 +371,7 @@ async def help(message):
         crsdky_embed.add_field(name='`join`', value='Joins the game of crsdky. Users cannot join after the game starts.', inline=False)
         crsdky_embed.add_field(name='`leave`', value='leaves the game of crsdky', inline=False)
         crsdky_embed.add_field(name='`numleft`', value='', inline=False)
-        await message.channel.send(embed=crsdky_embed)
+        #await message.channel.send(embed=crsdky_embed)
         if message.author.guild_permissions.manage_roles:
             mod_crsdky_embed = discord.Embed(title='`}crsdky` Mod Commands',color=message.author.color)
             mod_crsdky_embed.add_field(name='Notes', value='All these commands require the user to have moderator permissions.', inline=False)
