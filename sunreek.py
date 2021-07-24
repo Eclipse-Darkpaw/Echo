@@ -16,7 +16,7 @@ start_time = time.time()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.6.3'
+version_num = '1.7.1'
 
 eclipse_id = 440232487738671124
 
@@ -380,6 +380,13 @@ async def help(message):
             mod_crsdky_embed.add_field(name='`stop`', value='Pauses the round until the `start` command is recieved', inline=False)
             mod_crsdky_embed.add_field(name='`resetPlayer`', value='Removes all players from the game', inline=False)
             await message.channel.send(embed=mod_crsdky_embed)
+    elif command[1] == 'ref':
+        ref_embed = discord.Embed(title='`'+prefix+'ref` Command List', description='Displays a users primary ref.', color=0x45FFFF)
+        ref_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        ref_embed.add_field(name='No argument', value='Displays your ref', inline=False)
+        ref_embed.add_field(name='`User ID/Tagged User/Nickname`', value='Searches for a user\'s profile. Tagging the desired user, or using their member ID yeilds the most accurate results.', inline=False)
+        ref_embed.add_field(name='`set <string/ref>`', value='Changes your ref to say what you want. Only emotes from this server can be used.', inline=False)
+        await message.channel.send(embed=profile_embed)
 
 
 
