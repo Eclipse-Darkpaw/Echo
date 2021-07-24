@@ -49,16 +49,22 @@ async def add_ref(message):
 
 async def ref(message):
     # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
-    target = get_user_id(message)
+    command = message.content[2:].split(' ')
+    if command[1] == 'set':
+        set_ref(message)
+    elif command[1] == 'add':
+        add_ref()
+    else:
+        target = get_user_id(message)
 
-    if target == None:
-        await message.channel.send('User not found.')
-        return
+        if target == None:
+            await message.channel.send('User not found.')
+            return
 
-    msg = await message.channel.send('Finding ref, please wait')
-    try:
-        ref_sheet = open(ref_path(target))
-        await msg.edit(content='Ref Found! Uploading, Please wait!')
-        await message.reply(content=ref_sheet.read())
-    except FileNotFoundError:
-        await msg.edit(content='User has not set their ref.')
+        msg = await message.channel.send('Finding ref, please wait')
+        try:
+            ref_sheet = open(ref_path(target))
+            await msg.edit(content='Ref Found! Uploading, Please wait!')
+            await message.reply(content=ref_sheet.read())
+        except FileNotFoundError:
+            await msg.edit(content='User has not set their ref.')
