@@ -43,7 +43,7 @@ def set_bio(member, bio):
 
 
 async def display_profile(message):
-    member = message.guild.get_member(get_user_id(message))
+    member = message.guild.get_member(get_user_id(message)) #what the fuck is this?
     try:
         file = open(profile_path(str(member)))
         file.close()
