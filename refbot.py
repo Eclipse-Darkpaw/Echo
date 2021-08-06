@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.8.5'
+version_num = '1.8.6'
 
 
 eclipse_id = 440232487738671124
@@ -141,7 +141,7 @@ async def help(message):
 # FIXME: Allow users to search for other users profiles. Feature is not working properly
 # TODO: update to handle emojis properly
 async def profile(message):
-    command = message.content[1:].split(' ', 2)
+    command = message.content.split(' ', 2)
     if len(command) == 1:
         await display_profile(message)
     elif command[1] == 'edit':

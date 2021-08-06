@@ -16,7 +16,7 @@ start_time = time.time()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.8.5'
+version_num = '1.8.6'
 
 eclipse_id = 440232487738671124
 
@@ -409,7 +409,7 @@ async def leaderboard(message):
 
 
 async def profile(message):
-    command = message.content[1:].split(' ', 2)
+    command = message.content.split(' ', 2)
     if len(command) == 1:
         await display_profile(message)
     elif command[1] == 'edit':
