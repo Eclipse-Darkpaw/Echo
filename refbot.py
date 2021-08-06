@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.8.3'
+version_num = '1.8.4'
 
 
 eclipse_id = 440232487738671124
@@ -146,7 +146,7 @@ async def profile(message):
         await display_profile(message)
     elif command[1] == 'edit':
         try:
-            set_bio(str(message.author.id), command[2])
+            set_bio(message.author, command[2])
             await message.channel.send('Bio set')
         except ValueError:
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
