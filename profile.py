@@ -19,7 +19,7 @@ def create_profile(member):
 
 
 def set_bio(member, bio):
-    error = False
+    error = 0
     bio = bio.replace('\n','/n')
     try:
         file = open(profile_path(str(member)))
@@ -37,18 +37,10 @@ def set_bio(member, bio):
             except UnicodeEncodeError: 
                 profile.write('null\n')
                 print(line)
-                error = True
-    if error:
-        raise Exception('Operation failed')
+                error = 1
+    if error > 0:
+        raise ValueError('Operation failed')
 
-
-def name_change(member):
-    with open(profile_path(str(member.id))) as profile:
-        lines = profile.readlines()
-    lines[1] = lines[1] + '->' + member.name
-    with open(profile_path(str(member.id)), 'w') as profile:
-        for line in lines:
-            profile.write(line)
 
 async def display_profile(message):
     member = message.guild.get_member(get_user_id(message))

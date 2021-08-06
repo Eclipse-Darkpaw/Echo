@@ -1,10 +1,8 @@
 import discord
+import os
 from fileManagement import ref_path
 from main import get_user_id
-# FIXME: increase speed of retrieving a ref. Current operation takes more than ten seconds per ref
-# TODO: allow multiple refs.
 # TODO: allow for multiple OCs
-# CANCELLED: Add a loading animation to show it actually is working. make it a simple spinner using  -/|\
 
 
 async def set_ref(message):
@@ -47,9 +45,21 @@ async def add_ref(message):
         await message.channel.send('No ref_sheet attached!')
 
 
+async def add_char(message):
+    #>OC add_char <name> [file path] <description/ref>
+    command = message.content.split(' ',3)
+    os.mkdir(command[2],)
+
+
+async def list_chars_in_dir(message):
+    # shows a list of the chars/folders in the current directory
+    # >OC
+    pass
+
+
 async def ref(message):
     # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
-    command = message.content[2:].split(' ')
+    command = message.content.split(' ', 2)
     if command[1] == 'set':
         set_ref(message)
     elif command[1] == 'add':
@@ -68,3 +78,13 @@ async def ref(message):
             await message.reply(content=ref_sheet.read())
         except FileNotFoundError:
             await msg.edit(content='User has not set their ref.')
+
+
+async def create_folder(message):
+    #>OC create_folder <folder> <name> <path>
+    command = message.content.split(' ',4)
+    os.mkdir()
+
+
+async def file_tree(message):
+    root = 'C:\\Users\\leebe\\Desktop\\Bot-files\\' + str(message.author.id)
