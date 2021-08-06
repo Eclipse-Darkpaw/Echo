@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.8.1'
+version_num = '1.8.2'
 
 
 eclipse_id = 440232487738671124

@@ -6,6 +6,10 @@ def profile_path(target_id):
     return 'C:\\Users\\leebe\\Desktop\\Bot-files\\profile\\' + str(target_id) + '.profile'
 
 
+def ref_path(target_id):
+    return 'C:\\Users\\leebe\\Desktop\\Bot-files\\refs\\' + str(target_id) + '.refs'
+
+
 def sona_path(target_id):
     return 'C:\\Users\\leebe\\Desktop\\Bot-files\\refs\\' + str(target_id) + '\\00.refs'
 

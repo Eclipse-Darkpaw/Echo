@@ -16,7 +16,7 @@ start_time = time.time()
 
 prefix = '}'
 cmdlog = 'command.log'
-version_num = '1.7.1'
+version_num = '1.8.2'
 
 eclipse_id = 440232487738671124
 
