@@ -22,7 +22,7 @@ def set_bio(member, bio):
     error = 0
     bio = bio.replace('\n','/n')
     try:
-        file = open(profile_path(str(member)))
+        file = open(profile_path(str(member.id)))
         file.close()
     except FileNotFoundError:
         create_profile(member)
