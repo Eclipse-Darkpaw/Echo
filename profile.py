@@ -26,7 +26,7 @@ def set_bio(member, bio):
         file.close()
     except FileNotFoundError:
         create_profile(member)
-    with open(profile_path(str(member))) as profile:
+    with open(profile_path(str(member.id))) as profile:
         lines = profile.readlines()
     lines[0] = bio+'\n'
     with open(profile_path(str(member)), 'w') as profile:
@@ -45,7 +45,7 @@ def set_bio(member, bio):
 async def display_profile(message):
     member = message.guild.get_member(get_user_id(message)) #what the fuck is this?
     try:
-        file = open(profile_path(str(member)))
+        file = open(profile_path(str(member.id)))
         file.close()
     except FileNotFoundError:
         create_profile(member)
