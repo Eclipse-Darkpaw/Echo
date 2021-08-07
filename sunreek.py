@@ -2,7 +2,6 @@ import time
 import discord
 import os
 import sys
-from applications import Application, verify
 from dotenv import load_dotenv
 from profile import display_profile, set_bio
 from fileManagement import profile_path
@@ -15,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.9.4'
+version_num = '1.9.5'
 
 eclipse_id = 440232487738671124
 
