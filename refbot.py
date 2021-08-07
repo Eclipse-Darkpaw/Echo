@@ -12,8 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.8.7'
-
+version_num = '1.9.0'
 
 eclipse_id = 440232487738671124
 
@@ -41,7 +40,6 @@ async def read_line(channel, prompt, target, delete_prompt=True, delete_response
             pass
     if delete_prompt:
         await show.delete()
-
     return msg
 
 
@@ -69,9 +67,9 @@ def log(message):
 async def ping(message):
     start = time.time()
     x = await message.channel.send('Pong!')
-    ping = time.time() - start
-    edit = x.content + ' ' + str(int(ping * 1000)) + 'ms'
-    await x.edit(content=edit       )
+    ping_time = time.time() - start
+    edit = x.content + ' ' + str(int(ping_time * 1000)) + 'ms'
+    await x.edit(content=edit)
 
 
 async def version(message):
@@ -80,7 +78,6 @@ async def version(message):
 
 async def quit(message):
     global game
-    # await save (message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
@@ -97,7 +94,7 @@ async def restart(message):
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
-# TODO: update to be refbot specific
+
 async def help(message):
     # square brackets are optional arguments, angle brackets are required
     command = message.content[1:].split(' ')
@@ -138,8 +135,6 @@ async def help(message):
         await message.channel.send(embed=profile_embed)
 
 
-# FIXME: Allow users to search for other users profiles. Feature is not working properly
-# TODO: update to handle emojis properly
 async def profile(message):
     command = message.content.split(' ', 2)
     if len(command) == 1:
@@ -152,6 +147,7 @@ async def profile(message):
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
     else:
         await display_profile(message)
+
 
 @client.event
 async def on_ready():
@@ -183,10 +179,7 @@ async def on_message(message):
             pass
         if command[0] == 'print':
             print(message.content)
-    # most_active.score(message)
 
 
 token = os.getenv('REFBOT')
 client.run(token)
-'''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
-add each int and mod '''
