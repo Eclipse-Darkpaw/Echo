@@ -1,8 +1,9 @@
 import discord
-counter = 0
-questions = ['Password?','What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
-# !!!: THIS CLASS DOESNT DO ANYTHING YET UPDATE verify() IN sunreek.py TO MAKE CHANGES
+counter = 0
+questions = ['Password?', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+
+
 class Application:
     def __init__(self, applicant, channel, guild):
         global counter
@@ -19,7 +20,7 @@ class Application:
         dm = await self.applicant.create_dm()
         for question in questions:
             question = '<@!' + str(self.applicant.id) + '> ' + question
-            response = await read_line(dm, question, self.applicant, delete_prompt=False, delete_response=False)
+            response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed')
 
@@ -36,6 +37,7 @@ class Application:
 
     def __str__(self):
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
+
 
 async def verify(message):
     guild = message.guild
@@ -76,16 +78,24 @@ async def verify(message):
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
         elif str(reaction.emoji) == '🚫':
-            reason = await read_line(guild.get_channel(application_channel), 'Why was this user denied?', user,
+            reason = await read_line(client, guild.get_channel(application_channel), 'Why was this user denied?', user,
                                      delete_prompt=False, delete_response=False)
             await message.author.send('Your application denied for:\n> ' + reason.content)
             await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
         elif str(reaction.emoji) == '❗':
-            reason = await read_line(guild.get_channel(application_channel), 'Why was this user banned?', user,
+            reason = await read_line(client, guild.get_channel(application_channel), 'Why was this user banned?', user,
                                      delete_prompt=False, delete_response=False)
+            reason = reason.content
             if reason == 'cancel':
                 await channel.send('Ban cancelled')
+
             else:
-                await message.guild.ban(application.applicant, reason)
-                await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
+                try:
+                    await message.guild.ban(user=application.applicant,reason=reason)
+                    await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
+                    break
+                except discord.HTTPException:
+                    await channel.send('Ban failed. Please try again, by reacting to the message again.')
+                except discord.Forbidden:
+                    await channel.send('Error 403: Forbidden. Insufficient permissions.')

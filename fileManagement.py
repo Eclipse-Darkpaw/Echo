@@ -21,13 +21,10 @@ def char_path(target_id, char):
 def folder_path(target_id, folder):
     return 'C:\\Users\\leebe\\Desktop\\Bot-files\\' + str(target_id) + '\\' + folder
 
-def joinleave_path(guild_id):
-    return 'C:\\Users\\leebe\\Desktop\\Guild-files\\' + str(guild_id.guild.id) + '\\.joinleave'
-
 
 def member_badges_path(guild_id, target_id):
     return 'C:\\Users\\leebe\\Desktop\\Guild-files\\' + str(guild_id) + '\\'+ str(target_id) + '.badges'
 
 
 def guild_badges_path(guild_id):
-    return 'C:\\Users\\leebe\\Desktop\\Guild-files\\' + str(guild_id) + '\\.badges' 
+    return 'C:\\Users\\leebe\\Desktop\\Guild-files\\' + str(guild_id) + '\\.badges'
