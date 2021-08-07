@@ -4,7 +4,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from profile import display_profile, set_bio
-from fileManagement import joinleave_path, profile_path
+from fileManagement import profile_path
 from refManagement import ref, set_ref, add_ref
 
 load_dotenv()
@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.9.0'
+version_num = '1.9.1'
 
 eclipse_id = 440232487738671124
 
