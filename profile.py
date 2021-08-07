@@ -6,12 +6,11 @@ from main import get_user_id
 # name, join date, bio, icon
 
 
-def create_profile(member):
+def create_profile(member,bio='This user has not set a bio yet\n'):
     try:
         open(profile_path(str(member.id)), 'x')
     except FileExistsError:
         return
-    bio = 'This user has not set a bio yet\n'
     lines = [bio]
     with open(profile_path(str(member.id)), 'w') as profile:
         for line in lines:
@@ -19,14 +18,16 @@ def create_profile(member):
 
 
 def set_bio(member, bio):
-    error = False
+    """Sets a member's bio"""
+    status = 0
     bio = bio.replace('\n','/n')
     try:
-        file = open(profile_path(str(member)))
+        file = open(profile_path(str(member.id)))
         file.close()
     except FileNotFoundError:
-        create_profile(member)
-    with open(profile_path(str(member))) as profile:
+        create_profile(member, bio)
+        return
+    with open(profile_path(str(member.id))) as profile:
         lines = profile.readlines()
     lines[0] = bio+'\n'
     with open(profile_path(str(member)), 'w') as profile:
@@ -37,23 +38,15 @@ def set_bio(member, bio):
             except UnicodeEncodeError: 
                 profile.write('null\n')
                 print(line)
-                error = True
-    if error:
-        raise Exception('Operation failed')
+                status = -1
+    if status == -1:
+        raise ValueError('Operation failed, please use ASCII characters')
 
-
-def name_change(member):
-    with open(profile_path(str(member.id))) as profile:
-        lines = profile.readlines()
-    lines[1] = lines[1] + '->' + member.name
-    with open(profile_path(str(member.id)), 'w') as profile:
-        for line in lines:
-            profile.write(line)
 
 async def display_profile(message):
-    member = message.guild.get_member(get_user_id(message))
+    member = message.guild.get_member(get_user_id(message)) #what the fuck is this?
     try:
-        file = open(profile_path(str(member)))
+        file = open(profile_path(str(member.id)))
         file.close()
     except FileNotFoundError:
         create_profile(member)

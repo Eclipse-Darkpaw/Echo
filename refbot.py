@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.6.8'
+version_num = '1.8.7'
 
 
 eclipse_id = 440232487738671124
@@ -99,34 +99,56 @@ async def restart(message):
 
 # TODO: update to be refbot specific
 async def help(message):
-    embed = discord.Embed(title="Refbot Command list", color=0x45FFFF)
-    embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
-    embed.add_field(name='Prefix', value=prefix, inline=False)
-    embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
-    embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on', inline=False)
-    embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`',
-                    value="Gets a tagged user's profile or your profile", inline=False)
-    embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet", inline=False)
-    embed.add_field(name='`'+prefix+'setref [ref/description]`',
-                    value="Sets a user's ref. Over writes any existing refs", inline=False)
-    embed.add_field(name='`' + prefix + 'addref [ref/description]`', value="Adds a ref to the Users's ref list",
-                    inline=False)
+    # square brackets are optional arguments, angle brackets are required
+    command = message.content[1:].split(' ')
+    if len(command) == 1:
+        embed = discord.Embed(title="Refbot Command list", color=0x45FFFF)
+        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        embed.add_field(name='Prefix', value=prefix, inline=False)
+        embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
+        embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on', inline=False)
+        embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`',
+                        value="Gets a tagged user's profile or your profile", inline=False)
+        embed.add_field(name='`'+prefix+'ref [member tag/member id]`', value="gets a user's ref sheet", inline=False)
+        embed.add_field(name='`'+prefix+'setref [ref/description]`',
+                        value="Sets a user's ref. Over writes any existing refs", inline=False)
+        embed.add_field(name='`' + prefix + 'addref [ref/description]`', value="Adds a ref to the Users's ref list",
+                        inline=False)
+        embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
+        embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
+        await message.channel.send(embed=embed)
+    elif command[1] == 'help':
+        help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        help_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
+        await message.channel.send(embed=help_embed)
+    elif command[1] == 'profile':
+        profile_embed = discord.Embed(title='Profile Command list', description='Displays a users profile', color=0x45FFFF)
+        profile_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        profile_embed.add_field(name='No argument', value='Displays your profile', inline=False)
+        profile_embed.add_field(name='`User ID/Tagged User/Nickname`', value='Searches for a user\'s profile. Tagging the desired user, or using their member ID yeilds the most accurate results.', inline=False)
+        profile_embed.add_field(name='`edit <string>`', value='Changes your profile to say what you want. Only emotes from this server can be used.', inline=False)
+        await message.channel.send(embed=profile_embed)
+    elif command[1] == 'ref':
+        ref_embed = discord.Embed(title='`'+prefix+'ref` Command List', description='Displays a users primary ref.', color=0x45FFFF)
+        ref_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        ref_embed.add_field(name='No argument', value='Displays your ref', inline=False)
+        ref_embed.add_field(name='`User ID/Tagged User/Nickname`', value='Searches for a user\'s profile. Tagging the desired user, or using their member ID yeilds the most accurate results.', inline=False)
+        ref_embed.add_field(name='`set <string/ref>`', value='Changes your ref to say what you want. Only emotes from this server can be used.', inline=False)
+        await message.channel.send(embed=profile_embed)
 
-    embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
-    embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
-    await message.channel.send(embed=embed)
 
 # FIXME: Allow users to search for other users profiles. Feature is not working properly
 # TODO: update to handle emojis properly
 async def profile(message):
-    command = message.content[1:].split(' ', 2)
+    command = message.content.split(' ', 2)
     if len(command) == 1:
         await display_profile(message)
     elif command[1] == 'edit':
         try:
-            set_bio(str(message.author.id), command[2])
+            set_bio(message.author, command[2])
             await message.channel.send('Bio set')
-        except Exception:
+        except ValueError:
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
     else:
         await display_profile(message)
