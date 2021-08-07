@@ -4,7 +4,6 @@ import os
 import sys
 from applications import Application, verify
 from dotenv import load_dotenv
-from leaderboard import Leaderboard
 from profile import display_profile, set_bio
 from fileManagement import profile_path
 from refManagement import ref, set_ref, add_ref
@@ -16,7 +15,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.9.3'
+version_num = '1.9.4'
 
 eclipse_id = 440232487738671124
 
