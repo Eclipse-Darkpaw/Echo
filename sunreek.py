@@ -70,7 +70,7 @@ class Application:
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
 
 
-async def verify(message, verified_role):
+async def verify(message):
     guild = message.guild
 
     if verified_role in message.guild.get_member(message.author.id).roles:
