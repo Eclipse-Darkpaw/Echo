@@ -6,12 +6,11 @@ from main import get_user_id
 # name, join date, bio, icon
 
 
-def create_profile(member):
+def create_profile(member,bio='This user has not set a bio yet\n'):
     try:
         open(profile_path(str(member.id)), 'x')
     except FileExistsError:
         return
-    bio = 'This user has not set a bio yet\n'
     lines = [bio]
     with open(profile_path(str(member.id)), 'w') as profile:
         for line in lines:
@@ -19,13 +18,15 @@ def create_profile(member):
 
 
 def set_bio(member, bio):
-    error = 0
+    """Sets a member's bio"""
+    status = 0
     bio = bio.replace('\n','/n')
     try:
         file = open(profile_path(str(member.id)))
         file.close()
     except FileNotFoundError:
-        create_profile(member)
+        create_profile(member, bio)
+        return
     with open(profile_path(str(member.id))) as profile:
         lines = profile.readlines()
     lines[0] = bio+'\n'
@@ -37,9 +38,9 @@ def set_bio(member, bio):
             except UnicodeEncodeError: 
                 profile.write('null\n')
                 print(line)
-                error = 1
-    if error > 0:
-        raise ValueError('Operation failed')
+                status = -1
+    if status == -1:
+        raise ValueError('Operation failed, please use ASCII characters')
 
 
 async def display_profile(message):
