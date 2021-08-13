@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.9.5'
+version_num = '1.9.6'
 
 eclipse_id = 440232487738671124
 
@@ -32,7 +32,7 @@ questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 
 counter = 0
-questions = ['Password?', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
@@ -53,7 +53,7 @@ class Application:
             question = '<@!' + str(self.applicant.id) + '> ' + question
             response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
             self.responses.append(response.content)
-        await dm.send('Please wait while your application is reviewed')
+        await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is fully processed.')
 
     def gen_embed(self):
         global questions
@@ -77,11 +77,11 @@ async def verify(message):
         await message.channel.send('You are already verified')
         return
     try:
-        applicant = message.author
+        applicant = guild.get_member(message.author.id)
         application = Application(applicant, message.channel, message.guild)
         channel = guild.get_channel(application_channel)
     except discord.errors.Forbidden:
-        message.reply('I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
+        await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
         return
 
     await application.question()
@@ -99,7 +99,10 @@ async def verify(message):
         # TODO: allow multiple mods to react at once
         if str(reaction.emoji) == '✅':
             await application.applicant.add_roles(guild.get_role(verified_role))
-            await message.author.send('You have been approved.')
+            try:
+                await message.author.send('You have been approved.')
+            except Forbidden:
+                await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
             await application.applicant.remove_roles(guild.get_role(questioning_role))
             await application.applicant.remove_roles(guild.get_role(unverified))
             await channel.send('<@!'+str(message.author.id)+'> approved')
@@ -109,13 +112,13 @@ async def verify(message):
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
         elif str(reaction.emoji) == '🚫':
-            reason = await read_line(client, guild.get_channel(application_channel), 'Why was this user denied?', user,
+            reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> denied?', user,
                                      delete_prompt=False, delete_response=False)
             await message.author.send('Your application denied for:\n> ' + reason.content)
             await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
             break
         elif str(reaction.emoji) == '❗':
-            reason = await read_line(client, guild.get_channel(application_channel), 'Why was this user banned?', user,
+            reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> banned? write `cancel` to cancel.', user,
                                      delete_prompt=False, delete_response=False)
             reason = reason.content
             if reason == 'cancel':
