@@ -328,6 +328,19 @@ async def cursed_keys(message):
         await message.reply(str(len(message.guild.get_role(player_role_id).members)))
 
 
+async def purge(message):
+    '''method removes all members with the unverified role from Rikoland'''
+    unverified_ppl = message.guild.get_role(unverified).members
+    num_kicked = 0
+    for member in unverified_ppl:
+        try:
+            await member.kick(reason='Server purge.')
+            num_kicked += 1
+        except Forbidden:
+            await message.channel.send('unable to ban <@' + str(member.id) + '>')
+    await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
+
+
 @client.event
 async def on_ready():
     global guild
