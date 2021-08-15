@@ -10,6 +10,10 @@ def ref_path(target_id):
     return 'C:\\Users\\leebe\\Desktop\\Bot-files\\refs\\' + str(target_id) + '.refs'
 
 
+def ref_folder_path(target_id):
+    return 'C:\\Users\\leebe\\Desktop\\Bot-files\\refs\\' + str(target_id)
+
+
 def sona_path(target_id):
     return 'C:\\Users\\leebe\\Desktop\\Bot-files\\refs\\' + str(target_id) + '\\00.refs'
 
