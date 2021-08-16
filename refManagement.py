@@ -119,7 +119,7 @@ async def show_oc(message):
         await message.reply('Error: TypeError\n missing 1 required positional argument: \'name\'')
         return
     else:
-        with open(oc_path(command[2], command[3])) as file:
+        with open(oc_folder_path(command[2], command[3])) as file:
             pass
         target = get_user_id(message, 2)
 
