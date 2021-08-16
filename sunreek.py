@@ -340,15 +340,18 @@ async def cursed_keys(message):
 
 async def purge(message):
     '''method removes all members with the unverified role from Rikoland'''
-    unverified_ppl = message.guild.get_role(unverified).members
-    num_kicked = 0
-    for member in unverified_ppl:
-        try:
-            await member.kick(reason='Server purge.')
-            num_kicked += 1
-        except Forbidden:
-            await message.channel.send('unable to ban <@' + str(member.id) + '>')
-    await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
+    if message.author.guild_permissions.manage_roles:
+        unverified_ppl = message.guild.get_role(unverified).members
+        num_kicked = 0
+        for member in unverified_ppl:
+            try:
+                await member.kick(reason='Server purge.')
+                num_kicked += 1
+            except Forbidden:
+                await message.channel.send('unable to ban <@' + str(member.id) + '>')
+        await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
+    else:
+        await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
 
 @client.event
@@ -364,7 +367,7 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge}
 
 
 @client.event
