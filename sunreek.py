@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.10.2'
+version_num = '1.10.3'
 
 eclipse_id = 440232487738671124
 
@@ -237,7 +237,7 @@ async def help(message):
         ref_embed.add_field(name='No argument', value='Displays your ref', inline=False)
         ref_embed.add_field(name='`User ID/Tagged User/Nickname`', value='Searches for a user\'s profile. Tagging the desired user, or using their member ID yeilds the most accurate results.', inline=False)
         ref_embed.add_field(name='`set <string/ref>`', value='Changes your ref to say what you want. Only emotes from this server can be used.', inline=False)
-        await message.channel.send(embed=profile_embed)
+        await message.channel.send(embed=ref_embed)
     elif command[1] == 'OC':
         embed = discord.Embed(title='`' + prefix + 'OC` Command List', description='Manages a users OC\'s ref.',
                                   color=0x45FFFF)
