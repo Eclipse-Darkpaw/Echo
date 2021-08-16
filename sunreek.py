@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.10.1'
+version_num = '1.10.2'
 
 eclipse_id = 440232487738671124
 
@@ -199,6 +199,7 @@ async def help(message):
         embed.add_field(name='`'+prefix+'setref <attachment>`', value="Sets a user's ref. Overwrites all current ref data", inline=False)
         embed.add_field(name='`'+prefix+'addref <attachment>`', value="Adds another ref to your file.", inline=False)
         embed.add_field(name='`'+prefix+'crsdky [arguments]`', value='commands for the CursedKeys game. will show the list of cursed keys if argument is left off', inline=False)
+        embed.add_field(name='`'+prefix+'OC`', value="Manages a users OCs", inline=False)
         embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
         await message.channel.send(embed=embed)
@@ -245,6 +246,7 @@ async def help(message):
         embed.add_field(name='edit [OC name] [description/attachment]', value='Edits an existing OC', inline=False)
         embed.add_field(name='show [OC owner ID/tagged] [OC name]', value='Shows an OC', inline=False)
         embed.add_field(name='tree [OC owner ID/tagged]', value='Shows a user\'s OCs', inline=False)
+        await message.channel.send(embed=embed)
 
 
 async def profile(message):

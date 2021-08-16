@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.10.1'
+version_num = '1.10.2'
 
 eclipse_id = 440232487738671124
 
@@ -143,6 +143,7 @@ async def help(message):
         embed.add_field(name='edit [OC name] [description/attachment]', value='Edits an existing OC', inline=False)
         embed.add_field(name='show [OC owner ID/tagged] [OC name]', value='Shows an OC', inline=False)
         embed.add_field(name='tree [OC owner ID/tagged]', value='Shows a users OCs', inline=False)
+        await message.channel.send(embed=embed)
 
 
 async def profile(message):
