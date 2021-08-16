@@ -114,7 +114,7 @@ async def add_oc(message):
 
 async def show_oc(message):
     # >OC get <ownerId/tagged> <name>
-    command = message.content.spit(' ', 3)
+    command = message.content.split(' ', 3)
     if len(command) < 4:
         await message.reply('Error: TypeError\n missing 1 required positional argument: \'name\'')
         return
@@ -165,13 +165,17 @@ async def oc_tree(message):
     # >OC tree <ownerID/tagged>
     await message.reply('Traversing the file tree. This may take a while')
     file = oc_folder_path(get_user_id(message, 2))
-    os.chdir(file)
-    tree = '```root'
-    children = os.listdir()
-    for child in children:
-        if child == children[-1]:
-            tree += '└───' + str(child)
-        else:
-            tree += '├───' + str(child)
-    os.chdir('C:\\Users\\leebe\\Desktop\\Echo')
+    try:
+        os.chdir(file)
+        tree = '```root'
+        children = os.listdir()
+        for child in children:
+            if child == children[-1]:
+                tree += '\n└───' + str(child)
+            else:
+                tree += '\n├───' + str(child)
+        tree += '```'
+        os.chdir('C:\\Users\\leebe\\Desktop\\Echo')
+    except FileNotFoundError:
+        tree = 'No OCs found'
     await message.reply(tree)
