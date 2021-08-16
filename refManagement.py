@@ -163,7 +163,6 @@ async def edit_oc(message):
 
 async def oc_tree(message):
     # >OC tree <ownerID/tagged>
-    msg = await message.reply('Traversing the file tree. This may take a while')
     file = oc_folder_path(get_user_id(message, 2))
     try:
         os.chdir(file)
@@ -178,4 +177,4 @@ async def oc_tree(message):
         os.chdir('C:\\Users\\leebe\\Desktop\\Echo')
     except FileNotFoundError:
         tree = 'No OCs found'
-    await msg.edit(tree)
+    await message.reply(content=tree)
