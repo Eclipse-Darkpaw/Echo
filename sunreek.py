@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.10.6'
+version_num = '1.10.7'
 
 eclipse_id = 440232487738671124
 
@@ -382,7 +382,7 @@ async def on_message(message):
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         pass
     if message.content.startswith(prefix):
-        command = message.content[1:].split(' ', 1)
+        command = message.content[1:].lower().split(' ', 1)
         try:
             method = switcher[command[0]]
             await method(message)
