@@ -12,7 +12,7 @@ load_dotenv()
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.10.6'
+version_num = '1.10.7'
 
 eclipse_id = 440232487738671124
 
@@ -172,7 +172,7 @@ async def on_ready():
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'restart': restart,
-            'setref': set_ref, 'ref': ref, 'addref': add_ref, 'OC': oc}
+            'setref': set_ref, 'ref': ref, 'addref': add_ref, 'oc': oc}
 
 
 @client.event
@@ -182,7 +182,7 @@ async def on_message(message):
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         pass
     if message.content.startswith(prefix):
-        command = message.content[1:].split(' ', 1)
+        command = message.content[1:].lower().split(' ', 1)
         try:
             method = switcher[command[0]]
             await method(message)

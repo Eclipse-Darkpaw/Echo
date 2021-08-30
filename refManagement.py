@@ -113,7 +113,7 @@ async def add_oc(message):
 
 
 async def show_oc(message):
-    # >OC get <ownerId/tagged> <name>
+    # >OC show <ownerId/tagged> <oc_name>
     command = message.content.split(' ', 3)
     if len(command) < 4:
         await message.reply('Error: TypeError\n missing 1 required positional argument: \'name\'')
