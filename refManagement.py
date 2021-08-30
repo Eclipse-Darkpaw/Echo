@@ -119,9 +119,9 @@ async def show_oc(message):
         await message.reply('Error: TypeError\n missing 1 required positional argument: \'name\'')
         return
     else:
-        with open(oc_path(command[2], command[3])) as file:
-            pass
         target = get_user_id(message, 2)
+        with open(oc_path(target, command[3])) as file:
+            pass
 
         if target is None:
             await message.channel.send('User not found.')
