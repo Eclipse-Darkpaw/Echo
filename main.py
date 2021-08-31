@@ -29,12 +29,12 @@ async def read_line(client, channel, prompt, target, delete_prompt=True, delete_
 
 
 # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
-def get_user_id(message):
-    command = message.content.split(maxsplit=1)
-    if len(command) == 1:
+def get_user_id(message, arg=1):
+    command = message.content.split(' ')
+    if len(command) == arg:
         target = message.author.id
-    elif len(command[1]) == 18:
-        target = int(command[1])
+    elif len(command[arg]) == 18:
+        target = int(command[arg])
     elif len(message.mentions) == 1:
         target = message.mentions[0].id
     else:
