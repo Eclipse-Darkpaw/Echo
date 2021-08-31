@@ -5,7 +5,7 @@ import sys
 from dotenv import load_dotenv
 from profile import display_profile, set_bio
 from fileManagement import profile_path
-from refManagement import ref, set_ref, add_ref
+from refManagement import ref, set_ref, add_ref, oc
 from main import read_line
 
 load_dotenv()
@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.9.6'
+version_num = '1.10.8'
 
 eclipse_id = 440232487738671124
 
@@ -31,7 +31,7 @@ verified_role = 811522721824374834         # role to assign members who verify s
 questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 
-counter = 0
+counter = 187
 questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
@@ -199,6 +199,7 @@ async def help(message):
         embed.add_field(name='`'+prefix+'setref <attachment>`', value="Sets a user's ref. Overwrites all current ref data", inline=False)
         embed.add_field(name='`'+prefix+'addref <attachment>`', value="Adds another ref to your file.", inline=False)
         embed.add_field(name='`'+prefix+'crsdky [arguments]`', value='commands for the CursedKeys game. will show the list of cursed keys if argument is left off', inline=False)
+        embed.add_field(name='`'+prefix+'OC`', value="Manages a users OCs", inline=False)
         embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
         await message.channel.send(embed=embed)
@@ -236,7 +237,16 @@ async def help(message):
         ref_embed.add_field(name='No argument', value='Displays your ref', inline=False)
         ref_embed.add_field(name='`User ID/Tagged User/Nickname`', value='Searches for a user\'s profile. Tagging the desired user, or using their member ID yeilds the most accurate results.', inline=False)
         ref_embed.add_field(name='`set <string/ref>`', value='Changes your ref to say what you want. Only emotes from this server can be used.', inline=False)
-        await message.channel.send(embed=profile_embed)
+        await message.channel.send(embed=ref_embed)
+    elif command[1] == 'OC':
+        embed = discord.Embed(title='`' + prefix + 'OC` Command List', description='Manages a users OC\'s ref.',
+                                  color=0x45FFFF)
+        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        embed.add_field(name='add [OC name] [description/attachment]', value='Adds a new OC', inline=False)
+        embed.add_field(name='edit [OC name] [description/attachment]', value='Edits an existing OC', inline=False)
+        embed.add_field(name='show [OC owner ID/tagged] [OC name]', value='Shows an OC', inline=False)
+        embed.add_field(name='tree [OC owner ID/tagged]', value='Shows a user\'s OCs', inline=False)
+        await message.channel.send(embed=embed)
 
 
 async def profile(message):
@@ -328,6 +338,22 @@ async def cursed_keys(message):
         await message.reply(str(len(message.guild.get_role(player_role_id).members)))
 
 
+async def purge(message):
+    '''method removes all members with the unverified role from Rikoland'''
+    if message.author.guild_permissions.manage_roles:
+        unverified_ppl = message.guild.get_role(unverified).members
+        num_kicked = 0
+        for member in unverified_ppl:
+            try:
+                await member.kick(reason='Server purge.')
+                num_kicked += 1
+            except Forbidden:
+                await message.channel.send('unable to ban <@' + str(member.id) + '>')
+        await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
+    else:
+        await message.reply('Error 403: Forbidden\nInsufficient Permissions')
+
+
 @client.event
 async def on_ready():
     global guild
@@ -341,7 +367,7 @@ async def on_ready():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge}
 
 
 @client.event
@@ -356,7 +382,7 @@ async def on_message(message):
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         pass
     if message.content.startswith(prefix):
-        command = message.content[1:].split(' ', 1)
+        command = message.content[1:].lower().split(' ', 1)
         try:
             method = switcher[command[0]]
             await method(message)

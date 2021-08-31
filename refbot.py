@@ -5,14 +5,14 @@ import sys
 from dotenv import load_dotenv
 from profile import display_profile, set_bio
 from fileManagement import profile_path
-from refManagement import ref, set_ref, add_ref
+from refManagement import ref, set_ref, add_ref, oc
 
 load_dotenv()
 
 
 prefix = '>'
 cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.9.1'
+version_num = '1.10.8'
 
 eclipse_id = 440232487738671124
 
@@ -111,11 +111,13 @@ async def help(message):
                         value="Sets a user's ref. Over writes any existing refs", inline=False)
         embed.add_field(name='`' + prefix + 'addref [ref/description]`', value="Adds a ref to the Users's ref list",
                         inline=False)
+        embed.add_field(name='`' + prefix + 'OC []`', value="manages and views a users OCs (not including the ones in ",
+                        inline=False)
         embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
-        help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        help_embed = discord.Embed(title="help Command list", color=0x45FFFF)
         help_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
         help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
         await message.channel.send(embed=help_embed)
@@ -133,6 +135,15 @@ async def help(message):
         ref_embed.add_field(name='`User ID/Tagged User/Nickname`', value='Searches for a user\'s profile. Tagging the desired user, or using their member ID yeilds the most accurate results.', inline=False)
         ref_embed.add_field(name='`set <string/ref>`', value='Changes your ref to say what you want. Only emotes from this server can be used.', inline=False)
         await message.channel.send(embed=profile_embed)
+    elif command[1] == 'OC':
+        embed = discord.Embed(title='`' + prefix + 'OC` Command List', description='Manages a users OC\'s ref.',
+                                  color=0x45FFFF)
+        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        embed.add_field(name='add [OC name] [description/attachment]', value='Adds a new OC', inline=False)
+        embed.add_field(name='edit [OC name] [description/attachment]', value='Edits an existing OC', inline=False)
+        embed.add_field(name='show [OC owner ID/tagged] [OC name]', value='Shows an OC', inline=False)
+        embed.add_field(name='tree [OC owner ID/tagged]', value='Shows a users OCs', inline=False)
+        await message.channel.send(embed=embed)
 
 
 async def profile(message):
@@ -161,7 +172,7 @@ async def on_ready():
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'restart': restart,
-            'setref': set_ref, 'ref': ref, 'addref': add_ref}
+            'setref': set_ref, 'ref': ref, 'addref': add_ref, 'oc': oc}
 
 
 @client.event
@@ -171,7 +182,7 @@ async def on_message(message):
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         pass
     if message.content.startswith(prefix):
-        command = message.content[1:].split(' ', 1)
+        command = message.content[1:].lower().split(' ', 1)
         try:
             method = switcher[command[0]]
             await method(message)
