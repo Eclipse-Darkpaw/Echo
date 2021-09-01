@@ -13,8 +13,8 @@ start_time = time.time()
 # todo: add uptime feature
 # todo: add a master prefix only applicable to you as a back door
 
-prefix = '}'
-version_num = '1.10.9'
+prefix = '>'
+version_num = '1.11.0'
 
 eclipse_id = 440232487738671124
 
@@ -25,14 +25,14 @@ game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 guild = None
-application_channel = 819223217281302598   # channel where finished applications go
-unverified = 612958044132737025
-verified_role = 811522721824374834         # role to assign members who verify successfully
-questioning_role = 819238442931716137      # Role to assign when users
-mail_inbox = 840753555609878528            # modmail inbox channel
+application_channel = 882732489989316669   # channel where finished applications go
+unverified = 0
+verified_role = 882733517979668560         # role to assign members who verify successfully
+questioning_role = 882733598241853450 # Role to assign when users
+mail_inbox =             # modmail inbox channel
 
 counter = 187
-questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**', 'What is your name?', 'How old are you?', 'What year are you?']
 
 
 class Application:
@@ -104,7 +104,7 @@ async def verify(message):
             except Forbidden:
                 await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
             await application.applicant.remove_roles(guild.get_role(questioning_role))
-            await application.applicant.remove_roles(guild.get_role(unverified))
+            # await application.applicant.remove_roles(guild.get_role(unverified))
             await channel.send('<@!'+str(message.author.id)+'> approved')
             break
         elif str(reaction.emoji) == '❓':
@@ -188,7 +188,7 @@ async def help(message):
     # square brackets are optional arguments, angle brackets are required
     command = message.content[1:].split(' ')
     if len(command) == 1:
-        embed = discord.Embed(title="SunReek Command list", description='Square brackets are optional arguments. Angle brackets are required arguments', color=0x45FFFF)
+        embed = discord.Embed(title="Lil' Alf Command list", description='Square brackets are optional arguments. Angle brackets are required arguments', color=0x45FFFF)
         embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
         embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
         embed.add_field(name='`'+prefix+'verify`', value='Verifies an un verified member.', inline=False)
@@ -204,7 +204,7 @@ async def help(message):
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
-        help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
+        help_embed = discord.Embed(title="Lil' Alf Command list", color=0x45FFFF)
         help_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
         help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
         await message.channel.send(embed=help_embed)
@@ -414,5 +414,5 @@ async def on_message(message):
                     break
 
 
-token = os.getenv('SUNREEK')
+token = os.getenv('LILALF')
 client.run(token)
