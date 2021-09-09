@@ -371,10 +371,6 @@ async def on_disconnect():
     print(log)
     with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
         file.write(log)
-    try:
-        await guild.get_member(eclipse_id).send(log)
-    except:
-        pass
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
