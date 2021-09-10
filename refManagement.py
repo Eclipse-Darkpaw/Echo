@@ -50,6 +50,7 @@ async def add_ref(message):
 async def ref(message):
     # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
     command = message.content.split(' ', 2)
+
     if len(command) == 1:
         target = message.author.id
 
@@ -64,7 +65,7 @@ async def ref(message):
             await message.reply(content=ref_sheet.read())
         except FileNotFoundError:
             await msg.edit(content='User has not set their ref.')
-    if command[1] == 'set':
+    elif command[1] == 'set':
         set_ref(message)
         message.reply('Ref set!')
     elif command[1] == 'add':
