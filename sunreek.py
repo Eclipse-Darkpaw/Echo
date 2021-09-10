@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.10.9'
+version_num = '1.10.10'
 
 eclipse_id = 440232487738671124
 

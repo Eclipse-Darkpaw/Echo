@@ -11,7 +11,7 @@ load_dotenv()
 
 
 prefix = '>'
-version_num = '1.10.9'
+version_num = '1.10.10'
 
 eclipse_id = 440232487738671124
 
@@ -189,6 +189,7 @@ async def on_message(message):
         if command[0] == 'print':
             print(message.content)
 
-
-token = os.getenv('REFBOT')
-client.run(token)
+if __name__ == '__main__':
+    token = os.getenv('REFBOT')
+    client.run(token)
+    print('Establishing Connection to Discord')
