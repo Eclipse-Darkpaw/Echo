@@ -11,7 +11,7 @@ load_dotenv()
 
 
 prefix = '>'
-version_num = '1.10.10'
+version_num = '1.10.11'
 
 eclipse_id = 440232487738671124
 
