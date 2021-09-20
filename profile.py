@@ -6,7 +6,7 @@ from main import get_user_id
 # name, join date, bio, icon
 
 
-def create_profile(member,bio='This user has not set a bio yet\n'):
+def create_profile(member, bio='This user has not set a bio yet\n'):
     try:
         open(profile_path(str(member.id)), 'x')
     except FileExistsError:
@@ -20,7 +20,7 @@ def create_profile(member,bio='This user has not set a bio yet\n'):
 def set_bio(member, bio):
     """Sets a member's bio"""
     status = 0
-    bio = bio.replace('\n','/n')
+    bio = bio.replace('\n', '/n')
     try:
         file = open(profile_path(str(member.id)))
         file.close()
@@ -30,7 +30,7 @@ def set_bio(member, bio):
     with open(profile_path(str(member.id))) as profile:
         lines = profile.readlines()
     lines[0] = bio+'\n'
-    with open(profile_path(str(member)), 'w') as profile:
+    with open(profile_path(str(member.id)), 'w') as profile:
         for line in lines:
             try:
                 print(line)
