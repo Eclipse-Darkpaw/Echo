@@ -55,6 +55,7 @@ async def restart(message):
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
+
 # TODO: update to be Echo specific
 async def help(message):
     embed = discord.Embed(title="Echo Command list", color=0x45FFFF)
@@ -74,6 +75,7 @@ async def help(message):
     embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
     await message.channel.send(embed=embed)
 
+
 # FIXME: Allow users to search for other users profiles. Feature is not working properly
 # TODO: update to handle emojis properly
 async def profile(message):
@@ -89,6 +91,7 @@ async def profile(message):
     else:
         await display_profile(message)
 
+
 @client.event
 async def on_ready():
     global guild
@@ -98,6 +101,14 @@ async def on_ready():
     guild = client.get_guild(840181552016261170)
     await client.change_presence(activity=game)
     await guild.get_member(eclipse_id).send('Running, and active')
+
+
+@client.event
+async def on_disconnect():
+    log = 'Echo disconnected from discord at {}\n'.format(time.ctime())
+    print(log)
+    with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
+        file.write(log)
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile,

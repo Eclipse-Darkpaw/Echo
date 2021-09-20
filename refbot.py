@@ -11,8 +11,7 @@ load_dotenv()
 
 
 prefix = '>'
-cmdlog = 'command.log'  # ???: why is this a thing? it just takes up space on the HDD. Remove to save several KB
-version_num = '1.10.8'
+version_num = '1.10.11'
 
 eclipse_id = 440232487738671124
 
@@ -54,14 +53,6 @@ def get_user_id(message):
     elif len(command[1]) == 22:
         return int(command[3:-2])
     raise discord.InvalidArgument('Not a valid user!')
-
-
-def log(message):
-    to_log = '[' + str(message.created_at) + 'Z] ' + str(message.guild.id) + \
-             '\n' + message.content + '\n' + \
-             'channel ID:' + str(message.channel.id) + ' Author ID:' + str(message.author.id) + '\n\n'
-    with open(cmdlog, 'a') as file:
-        file.write(to_log)
 
 
 async def ping(message):
@@ -171,6 +162,13 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
+@client.event
+async def on_disconnect():
+    log = 'Gardenbot disconnected from discord at {}\n'.format(time.ctime())
+    print(log)
+    with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
+        file.write(log)
+
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'restart': restart,
             'setref': set_ref, 'ref': ref, 'addref': add_ref, 'oc': oc}
 
@@ -191,6 +189,7 @@ async def on_message(message):
         if command[0] == 'print':
             print(message.content)
 
-
-token = os.getenv('REFBOT')
-client.run(token)
+if __name__ == '__main__':
+    token = os.getenv('REFBOT')
+    client.run(token)
+    print('Establishing Connection to Discord')
