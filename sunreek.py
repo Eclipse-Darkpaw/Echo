@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.3'
+version_num = '1.11.4'
 
 eclipse_id = 440232487738671124
 
@@ -389,8 +389,8 @@ async def member_num(message):
 
     members.sort(key=sortby)
 
-    member = members[position]
-    await message.reply('<@%d> is member %d'%(member.id,pos))
+    member = members[position - 1]
+    await message.reply('<@%d> is member %d'%(member.id,position))
 
 
 @client.event
