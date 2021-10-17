@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.10.11'
+version_num = '1.11.1'
 
 eclipse_id = 440232487738671124
 
@@ -353,7 +353,8 @@ async def purge(message):
     else:
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
-async def joinrank(message):
+
+async def join_pos(message):
     command = message.split(' ')
     if len(command) == 1:
         target = message.author.id
@@ -385,9 +386,6 @@ def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
         if member.id == ID:
             return i
     return -1
-
-
-
 
 
 @client.event
