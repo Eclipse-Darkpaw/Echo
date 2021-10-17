@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.5'
+version_num = '1.11.6'
 
 eclipse_id = 440232487738671124
 
@@ -402,7 +402,7 @@ def get_member_position(position, guild):
         return -1
 
 
-def member_num(message):
+async def member_num(message):
     command = message.content.split(' ')
     if len(command) == 1:
         await message.reply('Missing Argument: Member number')
