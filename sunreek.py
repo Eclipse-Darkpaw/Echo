@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.1'
+version_num = '1.11.2'
 
 eclipse_id = 440232487738671124
 
@@ -355,7 +355,7 @@ async def purge(message):
 
 
 async def join_pos(message):
-    command = message.split(' ')
+    command = message.content.split(' ')
     if len(command) == 1:
         target = message.author.id
     else:
