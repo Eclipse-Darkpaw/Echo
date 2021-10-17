@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.2'
+version_num = '1.11.3'
 
 eclipse_id = 440232487738671124
 
@@ -202,6 +202,7 @@ async def help(message):
         embed.add_field(name='`'+prefix+'OC`', value="Manages a users OCs", inline=False)
         embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
+        embed.add_field(name='`' + prefix + 'join_pos [target ID]`', value='Shows the position a member joined in. shows message author if target is left blank', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
@@ -371,21 +372,25 @@ async def join_pos(message):
         await message.reply('Member <@%d> joined in position %d' % (target, join_pos))
 
 
-def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
+async def member_num(message):
+    command = message.content.split(' ')
+    if len(command) == 1:
+        position = message.author.id
+    else:
+        try:
+            position = int(command[1])
+        except ValueError:
+            await message.reply('Value Error: Please make sure the position is a number')
+
     members = guild.members
 
     def sortby(a):
         return a.joined_at.timestamp()
 
-
     members.sort(key=sortby)
 
-    i = 0
-    for member in members:
-        i += 1
-        if member.id == ID:
-            return i
-    return -1
+    member = members[position]
+    await message.reply('<@%d> is member %d'%(member.id,pos))
 
 
 @client.event
@@ -409,7 +414,7 @@ async def on_disconnect():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'member_num':member_num}
 
 
 @client.event
