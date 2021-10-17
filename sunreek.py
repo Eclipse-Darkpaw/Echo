@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.6'
+version_num = '1.11.7'
 
 eclipse_id = 440232487738671124
 
@@ -395,6 +395,7 @@ def get_member_position(position, guild):
     def sortby(a):
         return a.joined_at.timestamp()
 
+    members.sort(key=sortby)
 
     if position >= len(members):
         return members[position-1]
