@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.4'
+version_num = '1.11.5'
 
 eclipse_id = 440232487738671124
 
@@ -369,28 +369,55 @@ async def join_pos(message):
     if join_pos == -1:
         await message.reply('Member <@%d> is not in the guild'%(target))
     else:
-        await message.reply('Member <@%d> joined in position %d' % (target, join_pos))
+        await message.reply('Member %d joined in position %d' % (target, join_pos))
 
 
-async def member_num(message):
-    command = message.content.split(' ')
-    if len(command) == 1:
-        position = message.author.id
-    else:
-        try:
-            position = int(command[1])
-        except ValueError:
-            await message.reply('Value Error: Please make sure the position is a number')
-
+def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
     members = guild.members
 
     def sortby(a):
         return a.joined_at.timestamp()
 
+
     members.sort(key=sortby)
 
-    member = members[position - 1]
-    await message.reply('<@%d> is member %d'%(member.id,position))
+    i = 0
+    for member in members:
+        i += 1
+        if member.id == ID:
+            return i
+    return -1
+
+
+def get_member_position(position, guild):
+    members = guild.members
+
+    def sortby(a):
+        return a.joined_at.timestamp()
+
+
+    if position >= len(members):
+        return members[position-1]
+    else:
+        return -1
+
+
+def member_num(message):
+    command = message.content.split(' ')
+    if len(command) == 1:
+        await message.reply('Missing Argument: Member number')
+    else:
+        try:
+            position = int(command[1])
+        except ValueError:
+            await message.reply('Value Error: Please make sure the positon is a number')
+
+    join_pos = get_member_position(position, message.guild)
+    if join_pos == -1:
+        await message.reply('There is no member in position %d' % (position))
+    else:
+        await message.reply('Member in postion %d has the ID %d' % (postion, join_pos))
+
 
 
 @client.event
@@ -414,7 +441,7 @@ async def on_disconnect():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'member_num':member_num}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos}
 
 
 @client.event
