@@ -353,6 +353,42 @@ async def purge(message):
     else:
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
+async def joinrank(message):
+    command = message.split(' ')
+    if len(command) == 1:
+        target = message.author.id
+    else:
+        try:
+            target = int(command[1])
+        except ValueError:
+            await message.reply('Value Error: Please make sure the ID is a number')
+
+    join_pos = getJoinRank(target, message.guild)
+    if join_pos == -1:
+        await message.reply('Member <@%d> is not in the guild'%(target))
+    else:
+        await message.reply('Member <@%d> joined in position %d' % (target, join_pos))
+
+
+def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
+    members = guild.members
+
+    def sortby(a):
+        return a.joined_at.timestamp()
+
+
+    members.sort(key=sortby)
+
+    i = 0
+    for member in members:
+        i += 1
+        if member.id == ID:
+            return i
+    return -1
+
+
+
+
 
 @client.event
 async def on_ready():
@@ -375,7 +411,7 @@ async def on_disconnect():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos}
 
 
 @client.event
