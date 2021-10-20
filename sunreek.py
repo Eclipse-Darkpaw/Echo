@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.7'
+version_num = '1.11.8'
 
 eclipse_id = 440232487738671124
 
@@ -369,7 +369,8 @@ async def join_pos(message):
     if join_pos == -1:
         await message.reply('Member <@%d> is not in the guild'%(target))
     else:
-        await message.reply('Member %d joined in position %d' % (target, join_pos))
+        name = guild.get_member(target).name
+        await message.reply('Member %s joined in position %d' % (name, join_pos))
 
 
 def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
