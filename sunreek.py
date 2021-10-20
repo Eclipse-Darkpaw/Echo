@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.9'
+version_num = '1.11.10'
 
 eclipse_id = 440232487738671124
 
@@ -415,7 +415,8 @@ async def member_num(message):
     if join_pos == -1:
         await message.reply('There is no member in position %d' % (position))
     else:
-        await message.reply('Member in postion %d has the ID %d' % (postion, join_pos))
+        name = join_pos.name
+        await message.reply('Member in postion %d has the ID %d' % (postion, name))
 
 
 
