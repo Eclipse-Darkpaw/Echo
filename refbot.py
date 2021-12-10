@@ -152,12 +152,12 @@ async def profile(message):
 
 
 async def repeat(message):
-    commands = message.split(' ', 2)
-    iter = int(commands[1]) - 1
+    commands = message.content.split(' ', 2)
+    iter = int(commands[1])
     text = commands[2]
 
     for i in range(iter):
-        await message.channel.send(content + str(i))
+        await message.channel.send(text + str(i+1))
 
 
 @client.event
