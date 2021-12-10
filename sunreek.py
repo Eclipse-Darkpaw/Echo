@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.10'
+version_num = '1.11.11'
 
 eclipse_id = 440232487738671124
 
@@ -32,7 +32,7 @@ questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 
 counter = 612
-questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
@@ -80,11 +80,10 @@ async def verify(message):
         applicant = guild.get_member(message.author.id)
         application = Application(applicant, message.channel, message.guild)
         channel = guild.get_channel(application_channel)
+        await application.question()
     except discord.errors.Forbidden:
         await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
         return
-
-    await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
     emojis = ['✅', '❓', '🚫', '❗']
@@ -114,9 +113,14 @@ async def verify(message):
         elif str(reaction.emoji) == '🚫':
             reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> denied?', user,
                                      delete_prompt=False, delete_response=False)
-            await message.author.send('Your application denied for:\n> ' + reason.content)
-            await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
-            break
+
+            if reason == 'cancel':
+                await channel.send('Action cancelled')
+                continue
+            else:
+                await message.author.send('Your application denied for:\n> ' + reason.content)
+                await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
+                break
         elif str(reaction.emoji) == '❗':
             reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> banned? write `cancel` to cancel.', user,
                                      delete_prompt=False, delete_response=False)
@@ -263,6 +267,7 @@ async def profile(message):
     else:
         await display_profile(message)
 
+
 cursed_keys_running = False
 crsd_keys = []
 player_role_id = 863630913686077450
@@ -270,7 +275,6 @@ player_role_id = 863630913686077450
 
 async def cursed_keys(message):
     global cursed_keys_running
-    global player_num
     global crsd_keys
 
     command = message.content[1:].split(' ', 2)
