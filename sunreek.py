@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.11'
+version_num = '1.11.12'
 
 eclipse_id = 440232487738671124
 
@@ -31,14 +31,17 @@ verified_role = 811522721824374834         # role to assign members who verify s
 questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 
-counter = 612
-questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+counter = 666
+active_forms=0
+questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)', 'What is your nickname?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
     def __init__(self, applicant, channel, guild):
         global counter
+        global active_forms
         counter += 1
+        active_forms += 1
         self.applicant = applicant
         self.channel = channel
         self.guild = guild
@@ -70,16 +73,27 @@ class Application:
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
 
 
+class Message:
+    def __init__(self, content):
+        self.content = content
+
+    def reply(self):
+        return -1
+
+
 async def verify(message):
+    global active_forms
     guild = message.guild
 
     if verified_role in message.guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified')
         return
+
+    applicant = guild.get_member(message.author.id)
+    application = Application(applicant, message.channel, message.guild)
+    channel = guild.get_channel(application_channel)
+
     try:
-        applicant = guild.get_member(message.author.id)
-        application = Application(applicant, message.channel, message.guild)
-        channel = guild.get_channel(application_channel)
         await application.question()
     except discord.errors.Forbidden:
         await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
@@ -104,7 +118,8 @@ async def verify(message):
                 await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
             await application.applicant.remove_roles(guild.get_role(questioning_role))
             await application.applicant.remove_roles(guild.get_role(unverified))
-            await channel.send('<@!'+str(message.author.id)+'> approved')
+            await channel.send('<@!'+str(message.author.id)+'> approved'
+            active_forms -= 1
             break
         elif str(reaction.emoji) == '❓':
             await application.applicant.add_roles(guild.get_role(questioning_role))
@@ -176,16 +191,20 @@ async def restart(message):
 
 async def modmail(message):
     sender = message.author
+
     dm = await sender.create_dm()
-    subject = await read_line(client, dm, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
-    subject = 'Modmail | ' + subject.content
-    body = await read_line(client, dm, 'Body:', sender, delete_prompt=False, delete_response=False)
-    await dm.send('Your message has been sent')
+    try:
+        subject = await read_line(client, dm, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
+        subject = 'Modmail | ' + subject.content
+        body = await read_line(client, dm, 'Body:', sender, delete_prompt=False, delete_response=False)
+        await dm.send('Your message has been sent')
+    except discord.Forbidden:
+        message.reply('Unable to DM. Check your privacy settings')
 
     mail = discord.Embed(title=subject, color=0xadd8ff)
     mail.set_author(name=sender.name, icon_url=sender.avatar_url)
     mail.add_field(name='Message', value=body.content)
-    await guild.get_channel(mail_inbox).send(embed=mail)
+    await message.guild.get_channel(mail_inbox).send(embed=mail)
 
 
 async def help(message):
@@ -252,6 +271,11 @@ async def help(message):
         embed.add_field(name='show [OC owner ID/tagged] [OC name]', value='Shows an OC', inline=False)
         embed.add_field(name='tree [OC owner ID/tagged]', value='Shows a user\'s OCs', inline=False)
         await message.channel.send(embed=embed)
+    elif command[1] == 'artfight':
+        artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List', description='This is the commands for the annual Art Fight')
+        artfight_embed.add_field(name='join')
+        artfight_embed.add_field(name='submit')
+
 
 
 async def profile(message):
@@ -423,6 +447,18 @@ async def member_num(message):
         await message.reply('Member in postion %d has the ID %d' % (postion, name))
 
 
+async def artfight(message):
+    command = message.content[1:].split(' ', 2)
+    if len(command) == 1:
+        help()
+    elif command[1]=='join':
+        pass
+    elif command[1]=='submit':
+
+        submission=discord.Embed()
+
+
+
 
 @client.event
 async def on_ready():
@@ -435,17 +471,17 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-@client.event
-async def on_disconnect():
-    log = 'Sunreek disconnected from discord at {}\n'.format(time.ctime())
-    print(log)
-    with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
-        file.write(log)
+#@client.event
+#async def on_disconnect():
+    #log = 'Sunreek disconnected from discord at {}\n'.format(time.ctime())
+    #print(log)
+    #with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
+        #file.write(log)
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, }
 
 
 @client.event
