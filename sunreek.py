@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.11.12'
+version_num = '1.11.13'
 
 eclipse_id = 440232487738671124
 
@@ -33,6 +33,8 @@ mail_inbox = 840753555609878528            # modmail inbox channel
 
 counter = 666
 active_forms=0
+incomplete_forms=0
+submitted_forms=0
 questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)', 'What is your nickname?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
@@ -40,8 +42,10 @@ class Application:
     def __init__(self, applicant, channel, guild):
         global counter
         global active_forms
+        global incomplete_forms
         counter += 1
         active_forms += 1
+        incomplete_forms += 1
         self.applicant = applicant
         self.channel = channel
         self.guild = guild
@@ -83,6 +87,8 @@ class Message:
 
 async def verify(message):
     global active_forms
+    global incomplete_forms
+    global submitted_forms
     guild = message.guild
 
     if verified_role in message.guild.get_member(message.author.id).roles:
@@ -95,8 +101,11 @@ async def verify(message):
 
     try:
         await application.question()
+
     except discord.errors.Forbidden:
         await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
+        active_forms -= 1
+        incomplete_forms  -= 1
         return
 
     applied = await channel.send(embed=application.gen_embed())
@@ -107,6 +116,8 @@ async def verify(message):
     def check(reaction, user):
         return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and reaction.message == applied
 
+    incomplete_forms -= 1
+    submitted_forms += 1
     while True:
         reaction, user = await client.wait_for('reaction_add', check=check)
         # TODO: allow multiple mods to react at once
@@ -118,8 +129,9 @@ async def verify(message):
                 await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
             await application.applicant.remove_roles(guild.get_role(questioning_role))
             await application.applicant.remove_roles(guild.get_role(unverified))
-            await channel.send('<@!'+str(message.author.id)+'> approved'
+            await channel.send('<@!'+str(message.author.id)+'> approved')
             active_forms -= 1
+            submitted_forms -= 1
             break
         elif str(reaction.emoji) == '❓':
             await application.applicant.add_roles(guild.get_role(questioning_role))
@@ -135,6 +147,8 @@ async def verify(message):
             else:
                 await message.author.send('Your application denied for:\n> ' + reason.content)
                 await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
+                active_forms -= 1
+                submitted_forms -= 1
                 break
         elif str(reaction.emoji) == '❗':
             reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> banned? write `cancel` to cancel.', user,
@@ -147,6 +161,8 @@ async def verify(message):
                 try:
                     await message.guild.ban(user=application.applicant,reason=reason)
                     await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
+                    active_forms -= 1
+                    submitted_forms -= 1
                     break
                 except discord.HTTPException:
                     await channel.send('Ban failed. Please try again, by reacting to the message again.')
@@ -458,6 +474,12 @@ async def artfight(message):
         submission=discord.Embed()
 
 
+async def numforms(message):
+    await message.reply(str(active_forms) + ' active forms \n' +
+                        str(incomplete_forms) + ' incomplete \n' +
+                        str(submitted_forms) + ' forms Submitted')
+
+
 
 
 @client.event
@@ -479,9 +501,9 @@ async def on_ready():
         #file.write(log)
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, }
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeForms': numforms}
 
 
 @client.event
