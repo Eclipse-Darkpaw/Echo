@@ -151,6 +151,15 @@ async def profile(message):
         await display_profile(message)
 
 
+async def repeat(message):
+    commands = message.content.split(' ', 2)
+    iter = int(commands[1])
+    text = commands[2]
+
+    for i in range(iter):
+        await message.channel.send(text + str(i+1))
+
+
 @client.event
 async def on_ready():
     global guild
@@ -170,7 +179,7 @@ async def on_disconnect():
         file.write(log)
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'restart': restart,
-            'setref': set_ref, 'ref': ref, 'addref': add_ref, 'oc': oc}
+            'setref': set_ref, 'ref': ref, 'addref': add_ref, 'oc': oc, 'repeat':repeat}
 
 
 @client.event

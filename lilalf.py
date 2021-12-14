@@ -29,7 +29,7 @@ application_channel = 882732489989316669   # channel where finished applications
 unverified = 0
 verified_role = 882733517979668560         # role to assign members who verify successfully
 questioning_role = 882733598241853450 # Role to assign when users
-mail_inbox =             # modmail inbox channel
+mail_inbox = None           # modmail inbox channel
 
 counter = 187
 questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**', 'What is your name?', 'How old are you?', 'What year are you?']

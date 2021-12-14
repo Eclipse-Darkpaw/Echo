@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.10.11'
+version_num = '1.11.11'
 
 eclipse_id = 440232487738671124
 
@@ -31,8 +31,8 @@ verified_role = 811522721824374834         # role to assign members who verify s
 questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 
-counter = 187
-questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
+counter = 612
+questions = ['Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)', 'What is your name?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
 class Application:
@@ -80,11 +80,10 @@ async def verify(message):
         applicant = guild.get_member(message.author.id)
         application = Application(applicant, message.channel, message.guild)
         channel = guild.get_channel(application_channel)
+        await application.question()
     except discord.errors.Forbidden:
         await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
         return
-
-    await application.question()
 
     applied = await channel.send(embed=application.gen_embed())
     emojis = ['✅', '❓', '🚫', '❗']
@@ -114,9 +113,14 @@ async def verify(message):
         elif str(reaction.emoji) == '🚫':
             reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> denied?', user,
                                      delete_prompt=False, delete_response=False)
-            await message.author.send('Your application denied for:\n> ' + reason.content)
-            await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
-            break
+
+            if reason == 'cancel':
+                await channel.send('Action cancelled')
+                continue
+            else:
+                await message.author.send('Your application denied for:\n> ' + reason.content)
+                await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
+                break
         elif str(reaction.emoji) == '❗':
             reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> banned? write `cancel` to cancel.', user,
                                      delete_prompt=False, delete_response=False)
@@ -202,6 +206,7 @@ async def help(message):
         embed.add_field(name='`'+prefix+'OC`', value="Manages a users OCs", inline=False)
         embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
+        embed.add_field(name='`' + prefix + 'join_pos [target ID]`', value='Shows the position a member joined in. shows message author if target is left blank', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
@@ -262,6 +267,7 @@ async def profile(message):
     else:
         await display_profile(message)
 
+
 cursed_keys_running = False
 crsd_keys = []
 player_role_id = 863630913686077450
@@ -269,7 +275,6 @@ player_role_id = 863630913686077450
 
 async def cursed_keys(message):
     global cursed_keys_running
-    global player_num
     global crsd_keys
 
     command = message.content[1:].split(' ', 2)
@@ -354,6 +359,71 @@ async def purge(message):
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
 
+async def join_pos(message):
+    command = message.content.split(' ')
+    if len(command) == 1:
+        target = message.author.id
+    else:
+        try:
+            target = int(command[1])
+        except ValueError:
+            await message.reply('Value Error: Please make sure the ID is a number')
+
+    join_pos = getJoinRank(target, message.guild)
+    if join_pos == -1:
+        await message.reply('Member <@%d> is not in the guild'%(target))
+    else:
+        name = guild.get_member(target).name
+        await message.reply('Member %s joined in position %d' % (name, join_pos))
+
+
+def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
+    members = guild.members
+
+    def sortby(a):
+        return a.joined_at.timestamp()
+
+
+    members.sort(key=sortby)
+
+    i = 0
+    for member in members:
+        i += 1
+        if member.id == ID:
+            return i
+    return -1
+
+
+def get_member_position(position, guild):
+    members = guild.members
+
+    def sortby(a):
+        return a.joined_at.timestamp()
+
+    members.sort(key=sortby)
+
+    return members[position-1]
+
+
+async def member_num(message):
+    command = message.content.split(' ')
+    if len(command) == 1:
+        await message.reply('Missing Argument: Member number')
+    else:
+        try:
+            position = int(command[1])
+        except ValueError:
+            await message.reply('Value Error: Please make sure the positon is a number')
+
+    join_pos = get_member_position(position, message.guild)
+    if join_pos == -1:
+        await message.reply('There is no member in position %d' % (position))
+    else:
+        name = join_pos.name
+        await message.reply('Member in postion %d has the ID %d' % (postion, name))
+
+
+
 @client.event
 async def on_ready():
     global guild
@@ -375,7 +445,7 @@ async def on_disconnect():
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos}
 
 
 @client.event
