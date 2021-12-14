@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.6'
+version_num = '1.12.7'
 
 eclipse_id = 440232487738671124
 
@@ -502,26 +502,26 @@ async def artfight_submit(message, team_num):
         message.reply('Unable to DM You, please change your privacy settings.')
 
 
-    if int(responses[0]) == 1:
+    if int(responses[0].content) == 1:
         base = 5
-    elif int(responses[0]) == 2:
+    elif int(responses[0].content) == 2:
         base = 10
-    elif int(responses[0]) == 3:
+    elif int(responses[0].content) == 3:
         base = 20
-    elif int(responses[0]) == 4:
+    elif int(responses[0].content) == 4:
         base = 30
     else:
         await message.reply('Unable to score your submission')
         return -1
 
-    num_chars = int(responses[1])
+    num_chars = int(responses[1].content)
 
-    if responses[2].lower() == 'y':
+    if responses[2].content.lower() == 'y':
         shaded = 10
     else:
         shaded = 0
 
-    if responses[3].lower() == 'y':
+    if responses[3].content.lower() == 'y':
         bg = 20
     else:
         bg = 0
@@ -529,14 +529,16 @@ async def artfight_submit(message, team_num):
     score = base * num_chars + shaded + bg
 
     if team_num == 1:
-        artfight_team1_score += score
+        #artfight_team1_score += score
+        pass
     elif team_num == 2:
-        artfight_team2_score += score
+        #artfight_team2_score += score
+        pass
     else:
         return -1
 
-    embed = discord.embed(title=responses[4], description='A Submission from <@'+str(message.author.id)+'>')
-    embed.add_field(title='Score', description=str(score)+' ornaments')
+    embed = discord.embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
+    embed.add_field(name='Score', value=str(score)+' ornaments')
     embed.set_image(link)
 
     return embed
@@ -554,7 +556,7 @@ async def artfight(message):
         await message.reply('This command is not functional')
         return
     elif command[1] == 'scores':
-        score_embed = discord.Embed(Title='Team scores')
+        score_embed = discord.Embed(title='Team scores')
         score_embed.add_field(name='Coal Factories Score', value=str(artfight_team1_score))
         score_embed.add_field(name='Black Nosed Rendeers Score', value=str(artfight_team2_score))
         await message.reply(embed=score_embed)
