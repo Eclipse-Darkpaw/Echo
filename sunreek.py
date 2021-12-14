@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.16'
+version_num = '1.12.17'
 
 eclipse_id = 440232487738671124
 
@@ -512,8 +512,8 @@ async def artfight_submit(message, team_num):
     elif int(responses[0].content) == 4:
         base = 30
     else:
-        await message.reply('Unable to score your submission')
-        return -1
+        await dm.send('Unable to score your submission')
+        return -2
 
     num_chars = int(responses[1].content)
 
@@ -545,9 +545,11 @@ async def artfight_submit(message, team_num):
         elif team_num == 2:
             artfight_team2_score += score
             pass
+        await dm.send('Submission sent!')
         return embed
     else:
-        return -1
+        await dm.send('Submission cancelled. please redo')
+        return -2
 
 
 async def artfight(message):
