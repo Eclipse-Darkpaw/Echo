@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.3'
+version_num = '1.12.4'
 
 eclipse_id = 440232487738671124
 
@@ -86,28 +86,6 @@ class Message:
 
     def reply(self):
         return -1
-
-
-class Submission:
-    def __init__(self, artist, type, num_chars, has_bg, has_shading, team):
-        self.artist = artist            # int   Discord User ID/who the artist is
-        self.type = type                # int   determines base score
-        self.num_chars = num_chars      # int   determines point multiplier
-        self.has_bg = has_bg            # bool  determines score bonus +20
-        self.has_shading = has_shading  # bool  determines score bonus +10
-        base = 0
-
-        if type == 1:
-            base = 5
-        elif type == 2:
-            base = 10
-        elif type == 3:
-            base = 20
-        elif type == 4:
-            base = 30
-
-        self.score = base * num_chars + int(has_bg)*20 + int(has_shading*10)
-
 
 
 async def verify(message):
@@ -267,6 +245,7 @@ async def help(message):
         embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
         embed.add_field(name='`' + prefix + 'join_pos [target ID]`', value='Shows the position a member joined in. shows message author if target is left blank', inline=False)
+        embed.add_field(name='`' + prefix + 'artfight', value='Commands for the annual artfight')
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
@@ -314,8 +293,8 @@ async def help(message):
         await message.channel.send(embed=embed)
     elif command[1] == 'artfight':
         artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List', description='This is the commands for the annual Art Fight')
-        artfight_embed.add_field(name='join', description='this command is disabled')
-        artfight_embed.add_field(name='submit', description='This is how you submit art. See <#787316128614973491> for scoring.')
+        artfight_embed.add_field(name='join', value='this command is disabled')
+        artfight_embed.add_field(name='submit', value='This is how you submit art. See <#787316128614973491> for scoring.')
 
 
 
@@ -494,7 +473,7 @@ artfight_team2 = 918673909266645022     # black nosed reindeers
 artfight_team1_score = 1560
 artfight_team2_score = 1735
 
-artfight_channel = 918673017549238283
+artfight_channel = 819220142675197962
 
 
 async def artfight_submit(message, team_num):
