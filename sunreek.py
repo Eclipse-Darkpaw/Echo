@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.11'
+version_num = '1.12.12'
 
 eclipse_id = 440232487738671124
 
@@ -575,16 +575,12 @@ async def artfight(message):
                 if embed == -1:
                     await message.reply('Error: Please retry your submission')
                     return
-
-                await message.reply(embed=embed)
             elif artfight_team2 in role_ids:
                 embed = await artfight_submit(message, 2)
 
                 if embed == -1:
                     await message.reply('Error: Please retry your submission')
                     return
-
-                message.reply(embed=embed)
             else:
                 await message.reply('You are not on an artfight team!')
                 return
