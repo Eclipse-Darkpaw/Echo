@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.5'
+version_num = '1.12.6'
 
 eclipse_id = 440232487738671124
 
@@ -293,9 +293,9 @@ async def help(message):
         await message.channel.send(embed=embed)
     elif command[1] == 'artfight':
         artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List', description='This is the commands for the annual Art Fight')
-        artfight_embed.add_field(name='join', value='this command is disabled')
-        artfight_embed.add_field(name='scores', value='shows the team scores')
-        artfight_embed.add_field(name='submit', value='This is how you submit art. See <#787316128614973491> for scoring.')
+        artfight_embed.add_field(name='join', value='this command is disabled', inline=False)
+        artfight_embed.add_field(name='scores', value='shows the team scores', inline=False)
+        artfight_embed.add_field(name='submit', value='This is how you submit art. See <#787316128614973491> for scoring.', inline=False)
         await message.channel.send(embed=artfight_embed)
 
 
@@ -555,8 +555,8 @@ async def artfight(message):
         return
     elif command[1] == 'scores':
         score_embed = discord.Embed(Title='Team scores')
-        score_embed.add_field(name='<@' + str(artfight_team1) + '> Score', description=str(artfight_team1_score))
-        score_embed.add_field(name='<@' + str(artfight_team2) + '> Score', description=str(artfight_team2_score))
+        score_embed.add_field(name='<@' + str(artfight_team1) + '> Score', value=str(artfight_team1_score))
+        score_embed.add_field(name='<@' + str(artfight_team2) + '> Score', value=str(artfight_team2_score))
         await message.reply(embed=score_embed)
         return
     elif command[1] == 'submit':
@@ -568,7 +568,7 @@ async def artfight(message):
 
         if message.channel.id == artfight_channel:
             if artfight_team1 in role_ids:
-                embed = artfight_submit(message, 1)
+                embed = await artfight_submit(message, 1)
 
                 if embed == -1:
                     await message.reply('Error: Please retry your submission')
@@ -576,7 +576,7 @@ async def artfight(message):
 
                 await message.reply(embed=embed)
             elif artfight_team2 in role_ids:
-                embed = artfight_submit(message, 2)
+                embed = await artfight_submit(message, 2)
 
                 if embed == -1:
                     await message.reply('Error: Please retry your submission')
