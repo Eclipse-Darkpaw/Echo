@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.2'
+version_num = '1.12.3'
 
 eclipse_id = 440232487738671124
 
@@ -314,8 +314,7 @@ async def help(message):
         await message.channel.send(embed=embed)
     elif command[1] == 'artfight':
         artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List', description='This is the commands for the annual Art Fight')
-        artfight_embed.add_field(name='')
-        artfight_embed.add_field(name='join', description='assigns you to a random team or the team with fewer players')
+        artfight_embed.add_field(name='join', description='this command is disabled')
         artfight_embed.add_field(name='submit', description='This is how you submit art. See <#787316128614973491> for scoring.')
 
 
@@ -569,7 +568,7 @@ async def artfight(message):
     command = message.content[1:].split(' ', 2)
 
     if len(command) == 1:
-        help(Message('}help artfight', message.channel))
+        await help(Message('}help artfight', message.channel))
     elif command[1]=='join':
         await message.reply('This command is not functional')
         return
@@ -608,7 +607,7 @@ async def artfight(message):
                 return
             await message.reply(embed=embed)
         else:
-            await message.reply('You can only use this in <#' + artfight_channel + '>!')
+            await message.reply('You can only use this in <#' + str(artfight_channel) + '>!')
 
 
 async def numforms(message):
