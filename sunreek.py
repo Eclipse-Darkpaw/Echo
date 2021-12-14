@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.7'
+version_num = '1.12.10'
 
 eclipse_id = 440232487738671124
 
@@ -537,7 +537,7 @@ async def artfight_submit(message, team_num):
     else:
         return -1
 
-    embed = discord.embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
+    embed = discord.Embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
     embed.add_field(name='Score', value=str(score)+' ornaments')
     embed.set_image(link)
 
