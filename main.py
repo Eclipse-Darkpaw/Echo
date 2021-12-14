@@ -13,7 +13,7 @@ async def read_line(client, channel, prompt, target, delete_prompt=True, delete_
     show = await channel.send(prompt)
 
     def check(msg):
-        return msg.author != client.user and (msg.author == target or msg.channel == channel)
+        return msg.author != client.user and msg.author == target and msg.channel == channel
 
     msg = await client.wait_for('message', check=check)
 
