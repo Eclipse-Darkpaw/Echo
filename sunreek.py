@@ -475,7 +475,7 @@ artfight_team2 = 918673909266645022     # black nosed reindeers
 artfight_team1_score = 1560
 artfight_team2_score = 1735
 
-artfight_channel = 819220142675197962
+artfight_channel = 918673017549238283
 
 
 async def artfight_submit(message, team_num):
@@ -529,10 +529,10 @@ async def artfight_submit(message, team_num):
     score = base * num_chars + shaded + bg
 
     if team_num == 1:
-        #artfight_team1_score += score
+        artfight_team1_score += score
         pass
     elif team_num == 2:
-        #artfight_team2_score += score
+        artfight_team2_score += score
         pass
     else:
         return -1
