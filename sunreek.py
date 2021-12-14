@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.17'
+version_num = '1.12.18'
 
 eclipse_id = 440232487738671124
 
@@ -563,7 +563,7 @@ async def artfight(message):
     elif command[1] == 'join':
         await message.reply('This command is not functional')
         return
-    elif command[1] == 'scores':
+    elif command[1] == 'scores' and message.author.guild_permissions.manage_roles:
         score_embed = discord.Embed(title='Team scores')
         score_embed.add_field(name='Coal Factories Score', value=str(artfight_team1_score))
         score_embed.add_field(name='Black Nosed Rendeers Score', value=str(artfight_team2_score))
