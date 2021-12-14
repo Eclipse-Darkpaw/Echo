@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.14'
+version_num = '1.12.16'
 
 eclipse_id = 440232487738671124
 
@@ -500,6 +500,7 @@ async def artfight_submit(message, team_num):
             responses.append(response)
     except discord.Forbidden as er:
         message.reply('Unable to DM You, please change your privacy settings.')
+        return
 
 
     if int(responses[0].content) == 1:
@@ -528,21 +529,25 @@ async def artfight_submit(message, team_num):
 
     score = (base + shaded) * num_chars + bg
 
-    if team_num == 1:
-        artfight_team1_score += score
-        pass
-    elif team_num == 2:
-        artfight_team2_score += score
-        pass
-    else:
-        return -1
-
     embed = discord.Embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
     embed.add_field(name='Score', value=str(score)+' ornaments')
     embed.set_image(url=link)
     embed.color = message.author.color
 
-    return embed
+    await dm.send(embed=embed)
+    response = await read_line(client, dm, 'Do you want to submit this? "Y" for yes.', message.author, delete_prompt=False, delete_response=False)
+
+    if response.content.lower() == 'y':
+
+        if team_num == 1:
+            artfight_team1_score += score
+            pass
+        elif team_num == 2:
+            artfight_team2_score += score
+            pass
+        return embed
+    else:
+        return -1
 
 
 async def artfight(message):
