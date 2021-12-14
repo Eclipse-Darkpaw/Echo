@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.12'
+version_num = '1.12.13'
 
 eclipse_id = 440232487738671124
 
@@ -472,8 +472,8 @@ async def member_num(message):
 artfight_team1 = 918673949557129227     # coal factories
 artfight_team2 = 918673909266645022     # black nosed reindeers
 
-artfight_team1_score = 1560
-artfight_team2_score = 1735
+artfight_team1_score = 1760
+artfight_team2_score = 1795
 
 artfight_channel = 918673017549238283
 
@@ -526,7 +526,7 @@ async def artfight_submit(message, team_num):
     else:
         bg = 0
 
-    score = base * num_chars + shaded + bg
+    score = (base + shaded) * num_chars + bg
 
     if team_num == 1:
         artfight_team1_score += score
@@ -540,6 +540,7 @@ async def artfight_submit(message, team_num):
     embed = discord.Embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
     embed.add_field(name='Score', value=str(score)+' ornaments')
     embed.set_image(url=link)
+    embed.color = message.author.color
 
     return embed
 
@@ -584,6 +585,7 @@ async def artfight(message):
             else:
                 await message.reply('You are not on an artfight team!')
                 return
+            embed.set
             await message.reply(embed=embed)
         else:
             await message.reply('You can only use this in <#' + str(artfight_channel) + '>!')
