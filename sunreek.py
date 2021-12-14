@@ -38,6 +38,8 @@ submitted_forms=0
 questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)', 'What is your nickname?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
 
 
+artfight_enabled = True
+
 class Application:
     def __init__(self, applicant, channel, guild):
         global counter
@@ -78,11 +80,34 @@ class Application:
 
 
 class Message:
-    def __init__(self, content):
+    def __init__(self, content, channel):
         self.content = content
+        self.channel = channel
 
     def reply(self):
         return -1
+
+
+class Submission:
+    def __init__(self, artist, type, num_chars, has_bg, has_shading, team):
+        self.artist = artist            # int   Discord User ID/who the artist is
+        self.type = type                # int   determines base score
+        self.num_chars = num_chars      # int   determines point multiplier
+        self.has_bg = has_bg            # bool  determines score bonus +20
+        self.has_shading = has_shading  # bool  determines score bonus +10
+        base = 0
+
+        if type == 1:
+            base = 5
+        elif type == 2:
+            base = 10
+        elif type == 3:
+            base = 20
+        elif type == 4:
+            base = 30
+
+        self.score = base * num_chars + int(has_bg)*20 + int(has_shading*10)
+
 
 
 async def verify(message):
@@ -105,7 +130,7 @@ async def verify(message):
     except discord.errors.Forbidden:
         await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
         active_forms -= 1
-        incomplete_forms  -= 1
+        incomplete_forms -= 1
         return
 
     applied = await channel.send(embed=application.gen_embed())
@@ -125,7 +150,7 @@ async def verify(message):
             await application.applicant.add_roles(guild.get_role(verified_role))
             try:
                 await message.author.send('You have been approved.')
-            except Forbidden:
+            except discord.Forbidden:
                 await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
             await application.applicant.remove_roles(guild.get_role(questioning_role))
             await application.applicant.remove_roles(guild.get_role(unverified))
@@ -289,8 +314,9 @@ async def help(message):
         await message.channel.send(embed=embed)
     elif command[1] == 'artfight':
         artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List', description='This is the commands for the annual Art Fight')
-        artfight_embed.add_field(name='join')
-        artfight_embed.add_field(name='submit')
+        artfight_embed.add_field(name='')
+        artfight_embed.add_field(name='join', description='assigns you to a random team or the team with fewer players')
+        artfight_embed.add_field(name='submit', description='This is how you submit art. See <#787316128614973491> for scoring.')
 
 
 
@@ -463,15 +489,126 @@ async def member_num(message):
         await message.reply('Member in postion %d has the ID %d' % (postion, name))
 
 
-async def artfight(message):
-    command = message.content[1:].split(' ', 2)
-    if len(command) == 1:
-        help()
-    elif command[1]=='join':
-        pass
-    elif command[1]=='submit':
+artfight_team1 = 918673949557129227     # coal factories
+artfight_team2 = 918673909266645022     # black nosed reindeers
 
-        submission=discord.Embed()
+artfight_team1_score = 1560
+artfight_team2_score = 1735
+
+artfight_channel = 918673017549238283
+
+
+async def artfight_submit(message, team_num):
+    global artfight_team1_score
+    global artfight_team2_score
+
+    dm = await message.author.create_dm()
+
+    image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author)
+    link = image.attachments[1].url
+
+    questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
+                 'Please reply with the number of OCs/characters in your submission',
+                 'Is this shaded? Respond "Y" if yes, anything else for no',
+                 'Is there a background? Respond "Y" if yes, anything else for no',
+                 'What is the title of this piece?']
+    responses = []
+    try:
+        for question in questions:
+            question = '<@!' + str(message.author.id) + '> ' + question
+            response = await read_line(client, dm, question, message.author, delete_prompt=False, delete_response=False)
+            responses.append(response)
+    except discord.Forbidden as er:
+        message.reply('Unable to DM You, please change your privacy settings.')
+
+
+    if int(responses[0]) == 1:
+        base = 5
+    elif int(responses[0]) == 2:
+        base = 10
+    elif int(responses[0]) == 3:
+        base = 20
+    elif int(responses[0]) == 4:
+        base = 30
+    else:
+        await message.reply('Unable to score your submission')
+        return -1
+
+    num_chars = int(responses[1])
+
+    if responses[2].lower() == 'y':
+        shaded = 10
+    else:
+        shaded = 0
+
+    if responses[3].lower() == 'y':
+        bg = 20
+    else:
+        bg = 0
+
+    score = base * num_chars + shaded + bg
+
+    if team_num == 1:
+        artfight_team1_score += score
+    elif team_num == 2:
+        artfight_team2_score += score
+    else:
+        return -1
+
+    embed = discord.embed(title=responses[4], description='A Submission from <@'+str(message.author.id)+'>')
+    embed.add_field(title='Score', description=str(score)+' ornaments')
+    embed.set_image(link)
+
+    return embed
+
+
+async def artfight(message):
+    if not artfight_enabled:
+        message.reply('This command is currently disabled')
+        return
+    command = message.content[1:].split(' ', 2)
+
+    if len(command) == 1:
+        help(Message('}help artfight', message.channel))
+    elif command[1]=='join':
+        await message.reply('This command is not functional')
+        return
+    elif command[1] == 'scores':
+        score_embed = discord.Embed(Title='Team scores')
+        score_embed.add_field(name='<@' + artfight_team1 + '> Score', description=str(artfight_team1_score))
+        score_embed.add_field(name='<@' + artfight_team2 + '> Score', description=str(artfight_team2_score))
+        await message.reply(embed=score_embed)
+        return
+    elif command[1] == 'submit':
+        roles = message.author.roles
+        role_ids = []
+
+        for role in roles:
+            role_ids.append(role.id)
+
+        if message.channel.id == artfight_channel:
+            if artfight_team1 in role_ids:
+                embed = artfight_submit(message, 1)
+
+                if embed == -1:
+                    await message.reply('Error: Please retry your submission')
+                    return
+
+                await message.reply(embed=embed)
+            elif artfight_team2 in role_ids:
+                embed = artfight_submit(message, 2)
+
+                if embed == -1:
+                    await message.reply('Error: Please retry your submission')
+                    return
+
+                message.reply(embed=embed)
+            else:
+                message.reply('You are not on an artfight team!')
+                return
+            await message.reply(embed=embed)
+        else:
+            await message.reply('You can only use this in <#' + artfight_channel + '>!')
 
 
 async def numforms(message):
@@ -493,17 +630,10 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-#@client.event
-#async def on_disconnect():
-    #log = 'Sunreek disconnected from discord at {}\n'.format(time.ctime())
-    #print(log)
-    #with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
-        #file.write(log)
-
-
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
+            'artfight': artfight}
 
 
 @client.event
