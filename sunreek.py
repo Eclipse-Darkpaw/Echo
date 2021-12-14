@@ -485,7 +485,7 @@ async def artfight_submit(message, team_num):
     dm = await message.author.create_dm()
 
     image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author, delete_prompt=False, delete_response=False)
-    link = image.attachments[1].url
+    link = image.attachments[0].url
 
     questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
                  'Please reply with the number of OCs/characters in your submission',
