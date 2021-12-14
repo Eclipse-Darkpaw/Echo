@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.4'
+version_num = '1.12.5'
 
 eclipse_id = 440232487738671124
 
@@ -294,7 +294,9 @@ async def help(message):
     elif command[1] == 'artfight':
         artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List', description='This is the commands for the annual Art Fight')
         artfight_embed.add_field(name='join', value='this command is disabled')
+        artfight_embed.add_field(name='scores', value='shows the team scores')
         artfight_embed.add_field(name='submit', value='This is how you submit art. See <#787316128614973491> for scoring.')
+        await message.channel.send(embed=artfight_embed)
 
 
 
@@ -548,13 +550,13 @@ async def artfight(message):
 
     if len(command) == 1:
         await help(Message('}help artfight', message.channel))
-    elif command[1]=='join':
+    elif command[1] == 'join':
         await message.reply('This command is not functional')
         return
     elif command[1] == 'scores':
         score_embed = discord.Embed(Title='Team scores')
-        score_embed.add_field(name='<@' + artfight_team1 + '> Score', description=str(artfight_team1_score))
-        score_embed.add_field(name='<@' + artfight_team2 + '> Score', description=str(artfight_team2_score))
+        score_embed.add_field(name='<@' + str(artfight_team1) + '> Score', description=str(artfight_team1_score))
+        score_embed.add_field(name='<@' + str(artfight_team2) + '> Score', description=str(artfight_team2_score))
         await message.reply(embed=score_embed)
         return
     elif command[1] == 'submit':
@@ -582,7 +584,7 @@ async def artfight(message):
 
                 message.reply(embed=embed)
             else:
-                message.reply('You are not on an artfight team!')
+                await message.reply('You are not on an artfight team!')
                 return
             await message.reply(embed=embed)
         else:
