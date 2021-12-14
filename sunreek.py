@@ -484,7 +484,7 @@ async def artfight_submit(message, team_num):
 
     dm = await message.author.create_dm()
 
-    image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author)
+    image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author, delete_prompt=False, delete_response=False)
     link = image.attachments[1].url
 
     questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
@@ -555,8 +555,8 @@ async def artfight(message):
         return
     elif command[1] == 'scores':
         score_embed = discord.Embed(Title='Team scores')
-        score_embed.add_field(name='<@' + str(artfight_team1) + '> Score', value=str(artfight_team1_score))
-        score_embed.add_field(name='<@' + str(artfight_team2) + '> Score', value=str(artfight_team2_score))
+        score_embed.add_field(name='Coal Factories Score', value=str(artfight_team1_score))
+        score_embed.add_field(name='Black Nosed Rendeers Score', value=str(artfight_team2_score))
         await message.reply(embed=score_embed)
         return
     elif command[1] == 'submit':
