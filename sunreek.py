@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.13'
+version_num = '1.12.14'
 
 eclipse_id = 440232487738671124
 
@@ -484,9 +484,6 @@ async def artfight_submit(message, team_num):
 
     dm = await message.author.create_dm()
 
-    image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author, delete_prompt=False, delete_response=False)
-    link = image.attachments[0].url
-
     questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
                  'Please reply with the number of OCs/characters in your submission',
                  'Is this shaded? Respond "Y" if yes, anything else for no',
@@ -494,6 +491,9 @@ async def artfight_submit(message, team_num):
                  'What is the title of this piece?']
     responses = []
     try:
+        image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author, delete_prompt=False, delete_response=False)
+        link = image.attachments[0].url
+
         for question in questions:
             question = '<@!' + str(message.author.id) + '> ' + question
             response = await read_line(client, dm, question, message.author, delete_prompt=False, delete_response=False)
@@ -585,7 +585,6 @@ async def artfight(message):
             else:
                 await message.reply('You are not on an artfight team!')
                 return
-            embed.set
             await message.reply(embed=embed)
         else:
             await message.reply('You can only use this in <#' + str(artfight_channel) + '>!')
