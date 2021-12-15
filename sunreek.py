@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.22'
+version_num = '1.12.23'
 
 eclipse_id = 440232487738671124
 
@@ -247,10 +247,10 @@ async def help(message):
         embed.add_field(name='`'+prefix+'addref <attachment>`', value="Adds another ref to your file.", inline=False)
         embed.add_field(name='`'+prefix+'crsdky [arguments]`', value='commands for the CursedKeys game. will show the list of cursed keys if argument is left off', inline=False)
         embed.add_field(name='`'+prefix+'OC`', value="Manages a users OCs", inline=False)
-        embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
-        embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
+        embed.add_field(name='`'+prefix+'quit`', value='quits the bot.\n Mod only.', inline=False)
         embed.add_field(name='`' + prefix + 'join_pos [target ID]`', value='Shows the position a member joined in. shows message author if target is left blank', inline=False)
-        embed.add_field(name='`' + prefix + 'artfight', value='Commands for the annual artfight')
+        embed.add_field(name='`' + prefix + 'artfight', value='Commands for the annual artfight', inline=False)
+        embed.add_field(name='`' + prefix + 'huh`', value= '???', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
@@ -652,6 +652,10 @@ async def numforms(message):
                         str(submitted_forms) + ' forms Submitted')
 
 
+async def huh(message):
+    await message.reply("We've been trying to reach you about your car's extended warranty")
+
+
 @client.event
 async def on_ready():
     global guild
@@ -666,7 +670,7 @@ async def on_ready():
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
-            'artfight': artfight, 'save': save}
+            'artfight': artfight, 'save': save, 'huh': huh}
 
 
 @client.event
