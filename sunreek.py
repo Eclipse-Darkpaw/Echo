@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.25'
+version_num = '1.12.26'
 
 eclipse_id = 440232487738671124
 
@@ -577,7 +577,7 @@ def artfight_load():
         lines = file.readlines()
 
     try:
-        artfight_team1_score = int(lines[0].split('\n'))
+        artfight_team1_score = int(lines[0].split('\n')[0])
         artfight_team2_score = int(lines[1])
     except NameError:
         return -1
