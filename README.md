@@ -1,4 +1,4 @@
-# Echo v1.2.1
+# Echo v1.12.18
 Echo is a bot I've made for my discord servers I moderate. Most values are hard coded in right now.
 
 ## Features
@@ -21,7 +21,11 @@ Echo is a bot I've made for my discord servers I moderate. Most values are hard 
 `quit` - quits the program
 
 ##Change Log
-###
+###1.12.18
+* added the Artfight commands
+* updated the `}help` command
+
+many other changes were not included
 
 ###1.2.0
 * added the leaderboard functionality

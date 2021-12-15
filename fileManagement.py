@@ -28,3 +28,7 @@ def char_path(target_id, char):
 
 def folder_path(target_id, folder):
     return 'C:\\Users\\leebe\\Desktop\\Bot-files\\refs\\{}\\{}'.format(target_id, folder)
+
+
+def artfight_scores():
+    return 'C:\\Users\\user\\Desktop\\Echo\\resources\\artfight\\artfight_2021.scores'
