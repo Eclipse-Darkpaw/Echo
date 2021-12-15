@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.21'
+version_num = '1.12.22'
 
 eclipse_id = 440232487738671124
 
@@ -634,7 +634,7 @@ async def artfight(message):
     elif command[1] == 'load' and message.author.guild_permissions.manage_roles:
         error = artfight_load()
         if error == 1:
-            await message.reply
+            await message.reply('Data loaded from memory!')
     elif command[1] == 'save':
         artfight_save()
     elif command[1] == 'remove' and message.author.guild_permissions.manage_roles:
