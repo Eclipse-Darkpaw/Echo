@@ -52,7 +52,7 @@ async def ping(message):
     await x.edit(content=edit)
 
 
-async def quit(message, game):
+async def quit(message):
     log(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         await message.channel.send('Goodbye :wave:')
@@ -64,7 +64,6 @@ async def quit(message, game):
 
 async def restart(message):
     log(message)
-    # await save(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         os.execl(sys.executable,__file__,'main.py')
     else:

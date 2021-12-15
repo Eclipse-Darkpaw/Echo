@@ -4,7 +4,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from profile import display_profile, set_bio
-from fileManagement import profile_path
+from fileManagement import profile_path, artfight_scores
 from refManagement import ref, set_ref, add_ref, oc
 from main import read_line
 
@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.18'
+version_num = '1.12.19'
 
 eclipse_id = 440232487738671124
 
@@ -552,6 +552,28 @@ async def artfight_submit(message, team_num):
         return -2
 
 
+def artfight_save():
+    with open(artfight_scores(), 'w') as file:
+        lines = [artfight_team1_score, artfight_team2_score]
+
+        for line in lines:
+            file.write(line + '\n')
+
+def artfight_load():
+    global artfight_team1_score
+    global artfight_team2_score
+
+    with open(artfight_scores(), 'r') as file:
+        lines = file.readlines()
+
+    try:
+        artfight_team1_score = lines[0]
+        artfight_team2_score = lines[1]
+    except NameError:
+        return -1
+    return 1
+
+
 async def artfight(message):
     if not artfight_enabled:
         message.reply('This command is currently disabled')
@@ -568,6 +590,7 @@ async def artfight(message):
         score_embed.add_field(name='Coal Factories Score', value=str(artfight_team1_score))
         score_embed.add_field(name='Black Nosed Rendeers Score', value=str(artfight_team2_score))
         await message.reply(embed=score_embed)
+        artfight_save()
         return
     elif command[1] == 'submit':
         roles = message.author.roles
@@ -595,14 +618,18 @@ async def artfight(message):
             await message.reply(embed=embed)
         else:
             await message.reply('You can only use this in <#' + str(artfight_channel) + '>!')
+    elif command[1] == 'load' and message.author.guild_permissions.manage_roles:
+        error = artfight_load()
+        if error == 1:
+            await message.reply
+    elif command[1] == 'save':
+        artfight_save()
 
 
 async def numforms(message):
     await message.reply(str(active_forms) + ' active forms \n' +
                         str(incomplete_forms) + ' incomplete \n' +
                         str(submitted_forms) + ' forms Submitted')
-
-
 
 
 @client.event
