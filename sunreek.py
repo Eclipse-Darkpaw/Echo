@@ -559,6 +559,7 @@ def artfight_save():
         for line in lines:
             file.write(line + '\n')
 
+
 def artfight_load():
     global artfight_team1_score
     global artfight_team2_score
@@ -578,7 +579,7 @@ async def artfight(message):
     if not artfight_enabled:
         message.reply('This command is currently disabled')
         return
-    command = message.content[1:].split(' ', 2)
+    command = message.content[1:].split(' ', 3)
 
     if len(command) == 1:
         await help(Message('}help artfight', message.channel))
@@ -624,6 +625,11 @@ async def artfight(message):
             await message.reply
     elif command[1] == 'save':
         artfight_save()
+    elif command[1] == 'remove' and message.author.guild_permissions.manage_roles:
+        if command[2] == 'coal':
+            artfight_team1_score -= int(command[3])
+        elif command[2] == 'reindeer':
+            artfight_team2_score -= int(command[3])
 
 
 async def numforms(message):
