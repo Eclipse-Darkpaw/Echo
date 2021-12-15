@@ -576,6 +576,9 @@ def artfight_load():
 
 
 async def artfight(message):
+    global artfight_team1_score
+    global artfight_team2_score
+
     if not artfight_enabled:
         message.reply('This command is currently disabled')
         return
@@ -628,8 +631,10 @@ async def artfight(message):
     elif command[1] == 'remove' and message.author.guild_permissions.manage_roles:
         if command[2] == 'coal':
             artfight_team1_score -= int(command[3])
+            await message.reply(command[3]+' ornaments removed from coal')
         elif command[2] == 'reindeer':
             artfight_team2_score -= int(command[3])
+            await message.reply(command[3]+' ornaments removed from Reindeer')
 
 
 async def numforms(message):
