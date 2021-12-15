@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.19'
+version_num = '1.12.20'
 
 eclipse_id = 440232487738671124
 
@@ -31,7 +31,7 @@ verified_role = 811522721824374834         # role to assign members who verify s
 questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 
-counter = 666
+counter = 680
 active_forms=0
 incomplete_forms=0
 submitted_forms=0
@@ -292,10 +292,14 @@ async def help(message):
         embed.add_field(name='tree [OC owner ID/tagged]', value='Shows a user\'s OCs', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'artfight':
-        artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List', description='This is the commands for the annual Art Fight')
+        artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List',
+                                       description='This is the commands for the annual Art Fight', color=0x45FFFF)
         artfight_embed.add_field(name='join', value='this command is disabled', inline=False)
         artfight_embed.add_field(name='scores', value='shows the team scores', inline=False)
         artfight_embed.add_field(name='submit', value='This is how you submit art. See <#787316128614973491> for scoring.', inline=False)
+        artfight_embed.add_field(name='save', value='Saves the data to a file to be loaded from later. this is automatically done after every submission', inline=False)
+        artfight_embed.add_field(name='load', value='loads saved score values', inline=False)
+        artfight_embed.add_field(name='remove [coal/reindeer] [score to remove]', value='Takes score away from a team (coal/reindeer). Use negative numbers to add score.\nMod only.', inline=False)
         await message.channel.send(embed=artfight_embed)
 
 
