@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.20'
+version_num = '1.12.21'
 
 eclipse_id = 440232487738671124
 
@@ -206,6 +206,11 @@ async def restart(message):
         os.execl(sys.executable,__file__,'main.py')
     else:
         await message.channel.send('You do not have permission to turn me off!')
+
+
+async def save(message):
+    artfight_save()
+    await message.reply('Data saved')
 
 
 async def modmail(message):
@@ -661,7 +666,7 @@ async def on_ready():
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
-            'artfight': artfight}
+            'artfight': artfight, 'save': save}
 
 
 @client.event
