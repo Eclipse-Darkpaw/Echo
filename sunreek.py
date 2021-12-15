@@ -577,8 +577,8 @@ def artfight_load():
         lines = file.readlines()
 
     try:
-        artfight_team1_score = lines[0]
-        artfight_team2_score = lines[1]
+        artfight_team1_score = int(lines[0])
+        artfight_team2_score = int(lines[1])
     except NameError:
         return -1
     return 1
