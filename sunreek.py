@@ -536,10 +536,10 @@ async def artfight_submit(message, team_num):
     else:
         bg = 0
 
-    score = (base + shaded) * num_chars + bg
-
     if num_chars > 5:
-        score = 0
+        num_chars = 5
+
+    score = (base + shaded) * num_chars + bg
 
     embed = discord.Embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
     embed.add_field(name='Score', value=str(score)+' ornaments')
