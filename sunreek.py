@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.12.27'
+version_num = '1.13.0'
 
 eclipse_id = 440232487738671124
 
@@ -135,6 +135,7 @@ async def verify(message):
             await channel.send('<@!'+str(message.author.id)+'> approved')
             active_forms -= 1
             submitted_forms -= 1
+            await applied.add_reaction('🆗')
             break
         elif str(reaction.emoji) == '❓':
             await application.applicant.add_roles(guild.get_role(questioning_role))
@@ -152,6 +153,7 @@ async def verify(message):
                 await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
                 active_forms -= 1
                 submitted_forms -= 1
+                await applied.add_reaction('🆗')
                 break
         elif str(reaction.emoji) == '❗':
             reason = await read_line(client, guild.get_channel(application_channel), 'Why was <@!'+str(message.author.id)+'> banned? write `cancel` to cancel.', user,
@@ -166,6 +168,7 @@ async def verify(message):
                     await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
                     active_forms -= 1
                     submitted_forms -= 1
+                    await applied.add_reaction('🆗')
                     break
                 except discord.HTTPException:
                     await channel.send('Ban failed. Please try again, by reacting to the message again.')
