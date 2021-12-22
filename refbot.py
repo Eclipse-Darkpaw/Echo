@@ -2,12 +2,10 @@ import time
 import discord
 import os
 import sys
-from dotenv import load_dotenv
 from profile import display_profile, set_bio
 from fileManagement import profile_path
 from refManagement import ref, set_ref, add_ref, oc
 
-load_dotenv()
 
 
 prefix = '>'
@@ -199,6 +197,5 @@ async def on_message(message):
             print(message.content)
 
 if __name__ == '__main__':
-    token = os.getenv('REFBOT')
     client.run(token)
     print('Establishing Connection to Discord')

@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.13.0'
+version_num = '1.13.1'
 
 eclipse_id = 440232487738671124
 
@@ -218,6 +218,7 @@ async def save(message):
 
 async def modmail(message):
     sender = message.author
+    await message.delete()
 
     dm = await sender.create_dm()
     try:
