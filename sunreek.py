@@ -30,6 +30,7 @@ unverified = 612958044132737025
 verified_role = 811522721824374834         # role to assign members who verify successfully
 questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
+log_channel=933456094016208916
 
 counter = 680
 active_forms=0
@@ -411,7 +412,7 @@ async def purge(message):
             try:
                 await member.kick(reason='Server purge.')
                 num_kicked += 1
-            except Forbidden:
+            except discord.Forbidden:
                 await message.channel.send('unable to ban <@' + str(member.id) + '>')
         await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
     else:
@@ -468,18 +469,20 @@ async def member_num(message):
     command = message.content.split(' ')
     if len(command) == 1:
         await message.reply('Missing Argument: Member number')
+        return
     else:
         try:
             position = int(command[1])
         except ValueError:
             await message.reply('Value Error: Please make sure the positon is a number')
+            return
 
     join_pos = get_member_position(position, message.guild)
     if join_pos == -1:
         await message.reply('There is no member in position %d' % (position))
     else:
         name = join_pos.name
-        await message.reply('Member in postion %d has the ID %d' % (postion, name))
+        await message.reply('Member in postion %d has the ID %d' % (position, name))
 
 
 artfight_team1 = 918673949557129227     # coal factories
@@ -690,7 +693,13 @@ async def on_message(message):
     if message.author.bot:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
-        pass
+        if message.author.guild_permissions.mention_everyone:
+            pass
+        else:
+            await message.delete()
+            channel = guild.get_channel(log_channel)
+            await channel.send('<@' + str(message.author.id) + '> tried to ping everyone in <#' + str(message.channel.id)
+            + '>, with the message \n> ' + str(message.content))
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
