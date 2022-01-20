@@ -1,8 +1,8 @@
 import discord
 
-version_num = '1.1.2'
+version_num = '1.1.4'
 
-prefix = 'as!'
+prefix = 'a'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
 token = 'OTMzNTQwOTg1NjY3OTkzNjcx.YejByw.dISKG7JJOBC2L3BAIPmqEpHHJMQ'          # put the bot token in the quotes
 
@@ -45,9 +45,7 @@ switcher = {'ping': ping, 'version': version, 'quit': quit}
 @client.event
 async def on_message(message):
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
-        if message.author.guild_permissions.mention_everyone:
-            pass
-        else:
+        if not message.author.guild_permissions.mention_everyone:
             await message.delete()
             content = message.content.replace('@', '@ ')
 
@@ -55,17 +53,17 @@ async def on_message(message):
 
             embed = discord.Embed(title='Attempted ping in <#' + str(message.channel.id) + '>')
             embed.set_author(name='<@' + str(message.author.id) + '>', icon_url=message.author.avatar_url)
-            embed.add_field(name=message, value=content)
+            embed.add_field(name='message', value=content)
             await channel.send(embed=embed)
-        if message.content.startswith(prefix):
-            command = message.content[1:].lower().split(' ', 1)
-            try:
-                method = switcher[command[0]]
-                await method(message)
-            except KeyError:
-                pass
-            if command[0] == 'print':
-                print(message.content)
+    if message.content.startswith(prefix):
+        command = message.content[1:].lower().split(' ', 1)
+        try:
+            method = switcher[command[0]]
+            await method(message)
+        except KeyError:
+            pass
+        if command[0] == 'print':
+            print(message.content)
 
 
 client.run(token)
