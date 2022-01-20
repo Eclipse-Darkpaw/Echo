@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.14.0'
+version_num = '1.14.1'
 
 eclipse_id = 440232487738671124
 
@@ -699,9 +699,12 @@ async def on_message(message):
             await message.delete()
             content = message.content.replace('@', '@ ')
 
-            channel = message.guild.get_channel(log_channel )
-            await channel.send('<@' + str(message.author.id) + '> tried to ping everyone in <#' + str(message.channel.id)
-            + '>, with the message \n> ' + str(content))
+            channel = message.guild.get_channel(log_channel)
+
+            embed = discord.Embed(title='Attempted ping in <#' + str(message.channel.id) + '>')
+            embed.set_author(name='<@' + str(message.author.id) + '>', icon_url=message.author.avatar_url)
+            embed.add_field(name=message, value=content)
+            await channel.send(embed=embed)
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
