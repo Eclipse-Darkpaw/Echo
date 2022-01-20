@@ -4,7 +4,7 @@ import time
 
 version_num = '1.1.5'
 
-prefix = 'a'
+prefix = 'as!'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
 token = 'OTMzNTQwOTg1NjY3OTkzNjcx.YejByw.dISKG7JJOBC2L3BAIPmqEpHHJMQ'          # put the bot token in the quotes
 
