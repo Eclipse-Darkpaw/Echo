@@ -1,6 +1,6 @@
 import discord
 
-version_num = '1.1.0'
+version_num = '1.1.2'
 
 prefix = 'as!'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
