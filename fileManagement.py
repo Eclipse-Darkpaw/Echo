@@ -31,4 +31,4 @@ def folder_path(target_id, folder):
 
 
 def artfight_scores():
-    return 'C:\\Users\\user\\Desktop\\Echo\\resources\\artfight\\artfight_2021.scores'
+    return 'C:\\Users\\user\\Desktop\\Echo\\resources\\artfight\\artfight.scores'
