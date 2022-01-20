@@ -2,7 +2,7 @@ import discord
 import sys
 import time
 
-version_num = '1.1.6'
+version_num = '1.1.7'
 
 prefix = '>'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
@@ -53,10 +53,10 @@ async def on_message(message):
 
             channel = message.guild.get_channel(log_channel)
 
-            embed = discord.Embed(title='Attempted ping in #' + str(message.channel.name))
+            embed = discord.Embed(title='Attempted ping in #' + str(message.channel.name),color=0xFF0000)
             embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar_url)
             embed.add_field(name='message', value=content, inline=False)
-            embed.add_field(name='Sender ID', value=message.author.ID)
+            embed.add_field(name='Sender ID', value=message.author.id)
             embed.add_field(name='Channel ID', value=message.channel.id)
             embed.add_field(name='Message ID', value=message.id)
             await channel.send(embed=embed,)
