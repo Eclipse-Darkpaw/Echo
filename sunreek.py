@@ -2,19 +2,19 @@ import time
 import discord
 import os
 import sys
-from dotenv import load_dotenv
+
 from profile import display_profile, set_bio
 from fileManagement import profile_path, artfight_scores
 from refManagement import ref, set_ref, add_ref, oc
 from main import read_line
 
-load_dotenv()
+
 start_time = time.time()
 # todo: add uptime feature
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.13.1'
+version_num = '1.14.0'
 
 eclipse_id = 440232487738671124
 
@@ -195,7 +195,7 @@ async def quit(message):
     global game
     # log(message)
     # await save(message)
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
+    if message.author.id == eclipse_id or message.author.guild_permissions.administrator:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
         sys.exit()
@@ -311,7 +311,6 @@ async def help(message):
         artfight_embed.add_field(name='load', value='loads saved score values', inline=False)
         artfight_embed.add_field(name='remove [coal/reindeer] [score to remove]', value='Takes score away from a team (coal/reindeer). Use negative numbers to add score.\nMod only.', inline=False)
         await message.channel.send(embed=artfight_embed)
-
 
 
 async def profile(message):
@@ -485,11 +484,11 @@ async def member_num(message):
         await message.reply('Member in postion %d has the ID %d' % (position, name))
 
 
-artfight_team1 = 918673949557129227     # coal factories
-artfight_team2 = 918673909266645022     # black nosed reindeers
+artfight_team1 = 000000000000000000    # coal factories
+artfight_team2 = 000000000000000000    # black nosed reindeers
 
-artfight_team1_score = 1760
-artfight_team2_score = 1795
+artfight_team1_score = 0
+artfight_team2_score = 0
 
 artfight_channel = 918673017549238283
 
@@ -576,7 +575,7 @@ def artfight_save():
         lines = [artfight_team1_score, artfight_team2_score]
 
         for line in lines:
-            file.write(line + '\n')
+            file.write(str(line) + '\n')
 
 
 def artfight_load():
@@ -675,6 +674,7 @@ async def on_ready():
     guild = client.get_guild(840181552016261170)
     await client.change_presence(activity=game)
     await guild.get_member(eclipse_id).send('Running, and active')
+    artfight_load()
 
 
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'quit': quit,
@@ -697,9 +697,11 @@ async def on_message(message):
             pass
         else:
             await message.delete()
-            channel = guild.get_channel(log_channel)
+            content = message.content.replace('@', '@ ')
+
+            channel = message.guild.get_channel(log_channel )
             await channel.send('<@' + str(message.author.id) + '> tried to ping everyone in <#' + str(message.channel.id)
-            + '>, with the message \n> ' + str(message.content))
+            + '>, with the message \n> ' + str(content))
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
@@ -721,5 +723,5 @@ async def on_message(message):
                     break
 
 
-token = os.getenv('SUNREEK')
-client.run(token)
+
+client.run('ODE1NDE4NDQ1MTkyODg4MzIx.YDsHmw.Bn8ZoV6xMITm6YqeIUtLetkh0cw')
