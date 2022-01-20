@@ -1,6 +1,8 @@
 import discord
+import sys
+import time
 
-version_num = '1.1.4'
+version_num = '1.1.5'
 
 prefix = 'a'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
@@ -51,10 +53,10 @@ async def on_message(message):
 
             channel = message.guild.get_channel(log_channel)
 
-            embed = discord.Embed(title='Attempted ping in <#' + str(message.channel.id) + '>')
-            embed.set_author(name='<@' + str(message.author.id) + '>', icon_url=message.author.avatar_url)
+            embed = discord.Embed(title='Attempted ping in #' + str(message.channel.name))
+            embed.set_author(name='<@!' + str(message.author.id) + '>', icon_url=message.author.avatar_url)
             embed.add_field(name='message', value=content)
-            await channel.send(embed=embed)
+            await channel.send(embed=embed,)
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
