@@ -2,9 +2,9 @@ import discord
 import sys
 import time
 
-version_num = '1.1.5'
+version_num = '1.1.6'
 
-prefix = 'as!'
+prefix = '>'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
 token = 'OTMzNTQwOTg1NjY3OTkzNjcx.YejByw.dISKG7JJOBC2L3BAIPmqEpHHJMQ'          # put the bot token in the quotes
 
@@ -54,8 +54,11 @@ async def on_message(message):
             channel = message.guild.get_channel(log_channel)
 
             embed = discord.Embed(title='Attempted ping in #' + str(message.channel.name))
-            embed.set_author(name='<@!' + str(message.author.id) + '>', icon_url=message.author.avatar_url)
-            embed.add_field(name='message', value=content)
+            embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar_url)
+            embed.add_field(name='message', value=content, inline=False)
+            embed.add_field(name='Sender ID', value=message.author.ID)
+            embed.add_field(name='Channel ID', value=message.channel.id)
+            embed.add_field(name='Message ID', value=message.id)
             await channel.send(embed=embed,)
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
