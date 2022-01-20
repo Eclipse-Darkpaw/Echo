@@ -36,7 +36,7 @@ async def quit(message):
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     await client.change_presence(activity=game)
-    await guild.get_member(440232487738671124).send('Running, and active')
+
 
 
 switcher = {'ping': ping, 'version': version, 'quit': quit}
