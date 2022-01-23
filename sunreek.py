@@ -665,6 +665,22 @@ async def huh(message):
     await message.reply("We've been trying to reach you about your car's extended warranty")
 
 
+async def flag_message(message, code=0, flags=0):
+    await message.delete()
+    content = message.content.replace('@', '@ ')
+
+    channel = message.guild.get_channel(log_channel)
+
+    embed = discord.Embed(title='Attempted ping in #' + str(message.channel.name), color=0xFF0000)
+    embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar_url)
+    embed.add_field(name='message', value=content, inline=False)
+    embed.add_field(name='Flags', value=str(flags), inline=False)
+    embed.add_field(name='Sender ID', value=message.author.id)
+    embed.add_field(name='Channel ID', value=message.channel.id)
+    embed.add_field(name='Message ID', value=message.id)
+    await channel.send(embed=embed)
+
+
 @client.event
 async def on_ready():
     global guild
@@ -681,6 +697,8 @@ switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
             'artfight': artfight, 'save': save, 'huh': huh}
+blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free']
+code = 'plsdontban'
 
 
 @client.event
@@ -693,18 +711,19 @@ async def on_message(message):
     if message.author.bot:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
-        if message.author.guild_permissions.mention_everyone:
-            pass
-        else:
-            await message.delete()
-            content = message.content.replace('@', '@ ')
-
-            channel = message.guild.get_channel(log_channel)
-
-            embed = discord.Embed(title='Attempted ping in <#' + str(message.channel.id) + '>')
-            embed.set_author(name='<@' + str(message.author.id) + '>', icon_url=message.author.avatar_url)
-            embed.add_field(name=message, value=content)
-            await channel.send(embed=embed)
+        if not message.author.guild_permissions.mention_everyone:
+             await flag_message(message)
+    content = message.content.lower()
+    if content.find(code) != -1:
+        pass
+    else:
+        count = 0
+        for word in blacklist:
+            index = content.find(word)
+            if index != -1:
+                count += 1
+            if count >= 2:
+                await flag_message(message, flags=count)
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
