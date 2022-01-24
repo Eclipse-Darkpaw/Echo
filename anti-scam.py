@@ -2,7 +2,7 @@ import discord
 import sys
 import time
 
-version_num = '1.2.0'
+version_num = '1.2.1'
 
 prefix = '>'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
@@ -55,7 +55,7 @@ async def flag_message(message, code=0, flags=0):
 
     channel = message.guild.get_channel(log_channel)
 
-    embed = discord.Embed(title='Attempted ping in #' + str(message.channel.name), color=0xFF0000)
+    embed = discord.Embed(title='Possible scam in #' + str(message.channel.name), color=0xFF0000)
     embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar_url)
     embed.add_field(name='message', value=content, inline=False)
     embed.add_field(name='Flags', value=str(flags), inline=False)
@@ -77,11 +77,16 @@ async def on_ready():
 
 switcher = {'ping': ping, 'version': version, 'quit': quit}
 blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free']
-code = 'plsdontban'
+code = 'plsdontban'     # flag escape code
 
 
 @client.event
 async def on_message(message):
+    '''
+    When a message happens, it scans the message for
+    :param message: the message sent
+    :return: n/a
+    '''
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
              await flag_message(message)
@@ -94,8 +99,8 @@ async def on_message(message):
             index = content.find(word)
             if index != -1:
                 count += 1
-            if count >= 2:
-                await flag_message(message, flags=count)
+        if count >= 3:
+            await flag_message(message, flags=count)
 
 
     if message.content.startswith(prefix):
