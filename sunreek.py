@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.14.1'
+version_num = '1.14.3'
 
 eclipse_id = 440232487738671124
 
@@ -671,7 +671,7 @@ async def flag_message(message, code=0, flags=0):
 
     channel = message.guild.get_channel(log_channel)
 
-    embed = discord.Embed(title='Attempted ping in #' + str(message.channel.name), color=0xFF0000)
+    embed = discord.Embed(title='Possible Scam in #' + str(message.channel.name), color=0xFF0000)
     embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar_url)
     embed.add_field(name='message', value=content, inline=False)
     embed.add_field(name='Flags', value=str(flags), inline=False)
@@ -714,6 +714,7 @@ async def on_message(message):
         if not message.author.guild_permissions.mention_everyone:
              await flag_message(message)
     content = message.content.lower()
+
     if content.find(code) != -1:
         pass
     else:
@@ -722,7 +723,7 @@ async def on_message(message):
             index = content.find(word)
             if index != -1:
                 count += 1
-            if count >= 2:
+            if count >= 3:
                 await flag_message(message, flags=count)
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
