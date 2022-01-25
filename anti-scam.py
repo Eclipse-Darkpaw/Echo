@@ -2,11 +2,11 @@ import discord
 import sys
 import time
 
-version_num = '1.2.3'
+version_num = '1.2.4'
 
 prefix = '>'
-log_channel = 933539437357432892     #channel ID of the channel where logs go
-token = 'OTMzNTQwOTg1NjY3OTkzNjcx.YejByw.dISKG7JJOBC2L3BAIPmqEpHHJMQ'          # put the bot token in the quotes
+log_channel = 0     #channel ID of the channel where logs go
+token = ''          # put the bot token in the quotes
 
 game = discord.Game('Scanning for pings')
 client = discord.Client()
@@ -108,7 +108,7 @@ async def on_ready():
 
 
 switcher = {'ping': ping, 'version': version, 'quit': quit}
-blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'Who is first? :)']
+blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
 code = 'plsdontban'     # flag escape code
 
 
