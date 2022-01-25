@@ -2,7 +2,7 @@ import discord
 import sys
 import time
 
-version_num = '1.2.2'
+version_num = '1.2.3'
 
 prefix = '>'
 log_channel = 933539437357432892     #channel ID of the channel where logs go
@@ -60,7 +60,7 @@ async def scan_message(message):
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
     does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
     Last docstring edit: -Autumn V1.2.2
-    Last method edit: -Autumn V1.2.2
+    Last method edit: -Autumn V1.2.3
     :param message: the message sent
     :return: None
     """
@@ -72,7 +72,7 @@ async def scan_message(message):
         if index != -1:
             flags += 1
 
-    if flags == 0:
+    if flags < 2:
         return
     else:
         if flags >= 3:
@@ -108,7 +108,7 @@ async def on_ready():
 
 
 switcher = {'ping': ping, 'version': version, 'quit': quit}
-blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free']
+blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'Who is first? :)']
 code = 'plsdontban'     # flag escape code
 
 
