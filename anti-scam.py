@@ -2,11 +2,11 @@ import discord
 import sys
 import time
 
-version_num = '1.2.1'
+version_num = '1.2.2'
 
 prefix = '>'
-log_channel = 933539437357432892     #channel ID of the channel where logs go
-token = 'OTMzNTQwOTg1NjY3OTkzNjcx.YejByw.dISKG7JJOBC2L3BAIPmqEpHHJMQ'          # put the bot token in the quotes
+log_channel = 0     #channel ID of the channel where logs go
+token = ''          # put the bot token in the quotes
 
 game = discord.Game('Scanning for pings')
 client = discord.Client()
@@ -49,7 +49,7 @@ async def quit(message):
         await message.channel.send('You do not have permission to turn me off!')
 
 
-async def flag_message(message, code=0, flags=0):
+async def flag_message(message, code=0, flags='3+'):
     await message.delete()
     content = message.content.replace('@', '@ ')
 
@@ -89,9 +89,9 @@ async def on_message(message):
     '''
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-             await flag_message(message)
+            await flag_message(message)
     content = message.content.lower()
-    if content.find(code) != -1:
+    if content.find(code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
         count = 0
