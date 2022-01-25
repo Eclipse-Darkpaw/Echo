@@ -5,8 +5,8 @@ import time
 version_num = '1.2.4'
 
 prefix = '>'
-log_channel = 0     #channel ID of the channel where logs go
-token = ''          # put the bot token in the quotes
+log_channel = 933539437357432892     #channel ID of the channel where logs go
+token = 'OTMzNTQwOTg1NjY3OTkzNjcx.YejByw.dISKG7JJOBC2L3BAIPmqEpHHJMQ'          # put the bot token in the quotes
 
 game = discord.Game('Scanning for pings')
 client = discord.Client()
