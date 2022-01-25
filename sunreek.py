@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.14.4'
+version_num = '1.14.5'
 
 eclipse_id = 440232487738671124
 
@@ -38,7 +38,7 @@ incomplete_forms = 0
 submitted_forms = 0
 questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)',
              'What is your nickname?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
-blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free']
+blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'Who is first? :)']
 
 artfight_enabled = True
 
@@ -735,7 +735,7 @@ async def scan_message(message):
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
     does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.4
+    Last method edit: -Autumn V1.14.5
     :param message: the message sent
     :return: None
     """
@@ -747,7 +747,7 @@ async def scan_message(message):
         if index != -1:
             flags += 1
 
-    if flags == 0:
+    if flags < 2:
         return
     else:
         if flags >= 3:
