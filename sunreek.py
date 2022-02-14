@@ -517,27 +517,51 @@ async def clean_out(message):
     command = message.content[1:].split(' ')
     ignore_above_role = message.guild.get_role(667970355733725184)
 
+
+    num_unverified = 0
+    num_reverified = 0
+
+    command = message.content[1:].split(' ')
+    ignore_above_role = message.guild.get_role(667970355733725184)
+    verified_role = message.guild.get_role(811522721824374834)
+    unverified_role = message.guild.get_role(612958044132737025)
+    '''
     # unverify all users below cookies
     members = message.guild.members
     for member in members:
         if member.guild_permissions.manage_roles:
+            print(str(member.display_name) + ' skipped bc mod')
             continue
-        elif member.roles[-1] > ignore_above_role:
+        elif member.roles[-1] >= ignore_above_role:
+            print(str(member.display_name) + ' skipped for role ' + str(member.roles[-1]))
+            continue
+        elif not verified_role in member.roles:
+            print(verified_role)
+            print(member.roles)
+            print(str(member.display_name), 'skipped due to lack of role')
             continue
         else:
-            await member.remove_roles(guild.get_role(verified_role_id))
-            await member.add_roles(guild.get_role(unverified_role_id))
+
+            await member.remove_roles(verified_role)
+            await member.add_roles(unverified_role)
+            print(str(member.display_name) + ' unverified')
+            num_unverified += 1
+    '''
 
     # re-verify users who have reacted to the message
     ch = await message.guild.get_channel(command[1]).fetch_message(command[2]).reactions
 
     for reaction in reactions:
         if reaction.emoji == '✅':
-            users = reaction.users().flatten()
+            users = await reaction.users().flatten()
 
     for member in users:
-        await member.add_roles(guild.get_role(verified_role_id))
-        await member.remove_roles(guild.get_role(unverified_role_id))
+        await member.add_roles(verified_role)
+        await member.remove_roles(unverified_role)
+        print(str(member.display_name) + ' reverified')
+        num_reverified += 1
+
+    await message.reply(str(num_unverified) + 'users unverified\n' + str(num_reverified) + ' reverified')
 
 
 async def join_pos(message):
