@@ -409,18 +409,42 @@ async def cursed_keys(message):
     global crsd_keys
 
     command = message.content[1:].split(' ', 2)
-    if len(command) == 1:
+    if len(command) == 1 or command[1] == 'help':
+        overview = discord.Embed(title='Cursd Ky Overview',
+                                 description='Welcome, to a brutal game called "CURSD KY" (Idea by Reek and Isybel)\n\n'
+                                             ' The main of the game is to avoid a certain key/letter on your keyboard '
+                                             '(mostly vowels), But still try to make sure everyone understands what you'
+                                             ' are trying to say. The last survivor standing wins and will be given a '
+                                             'custom role',
+                                 color=0x45ffff)
+        overview.add_field(name='RULES',
+                           value="-You can't the leave the game until you lose and the bot will remove your roles to get rid of the curse"
+                                 "\n-Once you make a mistake, you will be instantly disqualified"
+                                 "\n-This challenge will apply to every chat on this server, so be careful"
+                                 "\n-you have to use an alt word to describe what you want to say rather censor that word"
+                                 "\n-Abusing rule loop hole is not allowed"
+                                 "\n-Using emoji contain that key also not allowed"
+                                 "\n-If you don't talk in general, you'll also lose (we check)",
+                           inline=False)
+
+        overview.add_field(name='QnA', inline=False)
+        overview.add_field(name='Q: What does "crsd ky" mean?',
+                           value='A: It\'s "Cursed Key" but get rid of the vowels cause they are cursed.')
+        overview.add_field(name='Q: What made you come up with this game?',
+                           value='A: Isybel is upset she can\'t curse in my server, so she cursed me by removing my ability to use the letter "a" and I took it as a challenge xD (But I lost rip) ')
+        overview.add_field(name='Q: What do I do if i got removed but dont think I should\'ve been?',
+                           value='A: contact a moderator, and we\'ll look into your case and determine if you should still be in the game or not')
+    elif command[1] == 'list':
         if len(crsd_keys) == 0:
             await message.reply('there are no cursed keys')
         else:
             await message.reply('cursed keys are: '+str(crsd_keys))
     elif command[1] == 'join':
-        # either by command or by some other mechanism
         if not cursed_keys_running:
             if message.guild.get_role(player_role_id) in message.author.roles:
                 await message.reply('You are already a part of this game!')
             else:
-                await message.author.add_roles (message.guild.get_role(player_role_id))
+                await message.author.add_roles(message.guild.get_role(player_role_id))
                 await message.reply('Joined the game!')
         else:
             await message.reply("Unable to join. a game is already running")
@@ -446,19 +470,6 @@ async def cursed_keys(message):
                 await message.reply('<@&863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
         else:
             await message.reply('Invalid permissions')
-    elif command[1] == 'auto-enroll':
-        if message.author.guild_permissions.manage_roles:
-            if command[2] == all:
-                for member in message.guild.members:
-                    await member.add_roles(player_role_id)
-            else:
-                roles = message.role_mentions
-                for role in roles:
-                    for member in role.members:
-                        await member.add_roles(player_role_id)
-                await message.reply('members added')
-        else:
-            await message.reply('invalid permissions')
     elif command[1] == 'resetPlayers':
         if message.author.guild_permissions.manage_roles:
             for member in message.guild.get_role(player_role_id).members:
@@ -497,10 +508,14 @@ async def purge(message):
 
 
 async def clean_out(message):
-    #
+    if not message.author.guild_permissions.manage_roles:
+        await message.reply('Insufficient perms')
+        return
+
+
 
     command = message.content[1:].split(' ')
-    ignore_above_role = message.guild.get_role(936526065181011978?)
+    ignore_above_role = message.guild.get_role(667970355733725184)
 
     # unverify all users below cookies
     members = message.guild.members
@@ -514,7 +529,7 @@ async def clean_out(message):
             await member.add_roles(guild.get_role(unverified_role_id))
 
     # re-verify users who have reacted to the message
-    reactions = await message.guild.get_channel(command[1]).fetch_message(command[2]).reactions
+    ch = await message.guild.get_channel(command[1]).fetch_message(command[2]).reactions
 
     for reaction in reactions:
         if reaction.emoji == '✅':
