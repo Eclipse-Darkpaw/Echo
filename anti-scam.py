@@ -2,10 +2,10 @@ import discord
 import sys
 import time
 
-version_num = '1.2.4'
+version_num = '1.3.0'
 
 prefix = '>'
-log_channel = 933539437357432892     #channel ID of the channel where logs go
+log_channel = 933539437357432892     # channel ID of the channel where logs go
 token = 'OTMzNTQwOTg1NjY3OTkzNjcx.YejByw.dISKG7JJOBC2L3BAIPmqEpHHJMQ'          # put the bot token in the quotes
 
 game = discord.Game('Scanning for pings')
@@ -55,13 +55,14 @@ async def quit(message):
         await message.channel.send('You do not have permission to turn me off!')
 
 
-async def scan_message(message):
+async def scan_message(message, is_flagged=False):
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
     does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
     Last docstring edit: -Autumn V1.2.2
     Last method edit: -Autumn V1.2.3
     :param message: the message sent
+    :param is_flagged: if the message is flagged for deletion
     :return: None
     """
     flags = 0
@@ -75,7 +76,7 @@ async def scan_message(message):
     if flags < 2:
         return
     else:
-        if flags >= 3:
+        if flags >= 3 and is_flagged is False:
             await message.delete()
 
         content = message.content.replace('@', '@ ')
@@ -123,13 +124,13 @@ async def on_message(message):
     """
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-            await flag_message(message)
+            await scan_message(message, True)
+            await message.delete()
     content = message.content.lower()
     if content.find(code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
         await scan_message(message)
-
 
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
@@ -142,4 +143,11 @@ async def on_message(message):
             print(message.content)
 
 
-client.run(token)
+def run_antiscam():
+    inp = int(input('Input a bot num\n1. Anti-scam\n'))
+    if inp == 1:
+        client.run(token)
+
+
+if __name__ == '__main__':
+    run_antiscam()

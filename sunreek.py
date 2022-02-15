@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.14.9'
+version_num = '1.15.0'
 
 eclipse_id = 440232487738671124
 
@@ -924,7 +924,7 @@ async def on_message(message):
                     break
 
 
-def run():
+def run_sunreek():
     global prefix
     inp = int(input('input token num\n1. SunReek\n2. Testing\n'))
     if inp == 1:
@@ -935,4 +935,4 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    run_sunreek()
