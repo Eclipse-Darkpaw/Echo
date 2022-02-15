@@ -18,3 +18,4 @@ class MartianChess:
         pass
 
 class Piece:
+    pass
