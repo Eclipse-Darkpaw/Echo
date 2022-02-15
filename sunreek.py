@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.14.8'
+version_num = '1.14.9'
 
 eclipse_id = 440232487738671124
 
@@ -565,7 +565,7 @@ async def join_pos(message):
         await message.reply('Member %s joined in position %d' % (name, join_pos))
 
 
-def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
+def getJoinRank(ID, guild):  # Call it with the ID of the user and the guild
     members = guild.members
 
     def sortby(a):
@@ -627,14 +627,16 @@ async def artfight_submit(message, team_num):
 
     dm = await message.author.create_dm()
 
-    questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
+    questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch\n3:Black&White Lineart'
+                 '\n4:Flat colored\nPlease reply with the corrosponding number',
                  'Please reply with the number of OCs/characters in your submission',
                  'Is this shaded? Respond "Y" if yes, anything else for no',
                  'Is there a background? Respond "Y" if yes, anything else for no',
                  'What is the title of this piece?']
     responses = []
     try:
-        image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author, delete_prompt=False, delete_response=False)
+        image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author,
+                                delete_prompt=False, delete_response=False)
         link = image.attachments[0].url
 
         for question in questions:
@@ -644,7 +646,6 @@ async def artfight_submit(message, team_num):
     except discord.Forbidden as er:
         message.reply('Unable to DM You, please change your privacy settings.')
         return
-
 
     if int(responses[0].content) == 1:
         base = 5
@@ -681,7 +682,8 @@ async def artfight_submit(message, team_num):
     embed.color = message.author.color
 
     await dm.send(embed=embed)
-    response = await read_line(client, dm, 'Do you want to submit this? "Y" for yes.', message.author, delete_prompt=False, delete_response=False)
+    response = await read_line(client, dm, 'Do you want to submit this? "Y" for yes.', message.author,
+                               delete_prompt=False, delete_response=False)
 
     if response.content.lower() == 'y':
 
@@ -871,7 +873,6 @@ switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify
             'artfight': artfight, 'save': save, 'huh': huh, 'clean_out': clean_out}
 
 
-
 @client.event
 async def on_message(message):
     """
@@ -891,7 +892,7 @@ async def on_message(message):
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-             await scan_message(message)
+            await scan_message(message)
     content = message.content.lower()
 
     if content.find(code) != -1 or message.author.guild_permissions.administrator:
@@ -921,4 +922,13 @@ async def on_message(message):
                     break
 
 
-client.run('ODE1NDE4NDQ1MTkyODg4MzIx.YDsHmw.Bn8ZoV6xMITm6YqeIUtLetkh0cw')
+def run():
+    inp = int(input('input token num\n1. SunReek\n2. Testing'))
+    if inp == 1:
+        client.run('ODE1NDE4NDQ1MTkyODg4MzIx.YDsHmw.Bn8ZoV6xMITm6YqeIUtLetkh0cw')
+    elif inp == 2:
+        client.run('OTQzMDE2MDU2NTA5ODI5MTIw.Ygs6JA.FR7KZa_bOzyLWkhOawwlCvu6dzI')
+
+
+if __name__ == '__main__':
+    run()
