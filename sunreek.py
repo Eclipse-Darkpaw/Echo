@@ -487,7 +487,7 @@ async def cursed_keys(message):
 
 async def purge(message):
     """
-    method removes all members with the unverified_role_id role from Rikoland
+    method removes all members with the unverified role from Rikoland
     Last docstring edit: -Autumn V1.14.4
     Last method edit: -Autumn V1.14.4
     :param message: Message that called the bot
