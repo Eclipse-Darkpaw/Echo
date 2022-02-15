@@ -169,13 +169,6 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-@client.event
-async def on_disconnect():
-    log = 'Gardenbot disconnected from discord at {}\n'.format(time.ctime())
-    print(log)
-    with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
-        file.write(log)
-
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'restart': restart,
             'setref': set_ref, 'ref': ref, 'addref': add_ref, 'oc': oc, 'repeat':repeat}
 
@@ -196,6 +189,14 @@ async def on_message(message):
         if command[0] == 'print':
             print(message.content)
 
+
+def run_refbot():
+    inp = int(input('Input a bot num\n1. refbot\n'))
+    if inp == 1:
+        client.run('ODQyMTk0NDA0NDk2NTA2OTcy.YJxwqQ.M2hEOsoiBbEYcC_kRz4iXWoBoY4')
+
+    pass
+
+
 if __name__ == '__main__':
-    client.run(token)
-    print('Establishing Connection to Discord')
+    run_refbot()
