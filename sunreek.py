@@ -34,7 +34,7 @@ application_channel = 819223217281302598   # channel where finished applications
 mail_inbox = 840753555609878528            # modmail inbox channel
 log_channel = 933456094016208916
 
-counter = 2
+counter = 0
 active_forms = 0
 incomplete_forms = 0
 submitted_forms = 0
@@ -291,7 +291,7 @@ async def help(message):
     """
     Displays the Bot's help message. Square brackets are optional arguments, angle brackets are required.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Unknown
+    Last method edit: -Autumn V1.14.8
     :param message:
     :return:
     """
@@ -331,6 +331,8 @@ async def help(message):
         crsdky_embed = discord.Embed(title="`}crsdky Command list", color=0x45FFFF)
         crsdky_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
         crsdky_embed.add_field(name='Notes', value='Used by going `}crsdky [argument]`, ', inline=False)
+        crsdky_embed.add_field(name='`rules` or no argument', value='Give an overview of the game Cursd Ky', inline=False)
+        crsdky_embed.add_field(name='`list`', value='lists the current cursed keys', inline=False)
         crsdky_embed.add_field(name='`join`', value='Joins the game of crsdky. Users cannot join after the game starts.', inline=False)
         crsdky_embed.add_field(name='`leave`', value='leaves the game of crsdky', inline=False)
         crsdky_embed.add_field(name='`numleft`', value='Shows the number of players left.', inline=False)
@@ -401,7 +403,7 @@ async def cursed_keys(message):
     """
     Handles all crsdky game functions and methods.
     Last docstring edit: -Autumn V1.14.5
-    Last method edit: Unknown
+    Last method edit: -Autumn V1.14.8
     :param message:
     :return:
     """
@@ -426,8 +428,8 @@ async def cursed_keys(message):
                                  "\n-Using emoji contain that key also not allowed"
                                  "\n-If you don't talk in general, you'll also lose (we check)",
                            inline=False)
-
-        overview.add_field(name='QnA', inline=False)
+        await message.reply(embed=overview)
+        overview.add_field(name='QnA', value='', inline=False)
         overview.add_field(name='Q: What does "crsd ky" mean?',
                            value='A: It\'s "Cursed Key" but get rid of the vowels cause they are cursed.')
         overview.add_field(name='Q: What made you come up with this game?',
@@ -923,10 +925,12 @@ async def on_message(message):
 
 
 def run():
-    inp = int(input('input token num\n1. SunReek\n2. Testing'))
+    global prefix
+    inp = int(input('input token num\n1. SunReek\n2. Testing\n'))
     if inp == 1:
         client.run('ODE1NDE4NDQ1MTkyODg4MzIx.YDsHmw.Bn8ZoV6xMITm6YqeIUtLetkh0cw')
     elif inp == 2:
+        prefix = '>'
         client.run('OTQzMDE2MDU2NTA5ODI5MTIw.Ygs6JA.FR7KZa_bOzyLWkhOawwlCvu6dzI')
 
 
