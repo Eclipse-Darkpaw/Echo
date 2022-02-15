@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.14.6'
+version_num = '1.14.8'
 
 eclipse_id = 440232487738671124
 
@@ -25,22 +25,26 @@ game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 guild = None
+
+unverified_role_id = 612958044132737025
+verified_role_id = 811522721824374834      # role to assign members who verify successfully
+questioning_role_id = 819238442931716137   # Role to assign when users
+
 application_channel = 819223217281302598   # channel where finished applications go
-unverified = 612958044132737025
-verified_role = 811522721824374834         # role to assign members who verify successfully
-questioning_role = 819238442931716137      # Role to assign when users
 mail_inbox = 840753555609878528            # modmail inbox channel
 log_channel = 933456094016208916
 
-counter = 680
+counter = 2
 active_forms = 0
 incomplete_forms = 0
 submitted_forms = 0
 questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)',
              'What is your nickname?', 'How old are you?', 'Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)', 'Why do you want to join?']
-blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
 
-artfight_enabled = True
+blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
+code = 'plsdontban'
+
+artfight_enabled = False
 
 
 class Application:
@@ -92,12 +96,20 @@ class Message:
 
 
 async def verify(message):
+    """
+    The method that primarily handles member verification. All members must verify from this method. Sends DM to user,
+    asks user questions, then sends answers to the moderators in a designated chat
+    Last docstring edit: -Autumn V1.14.5
+    Last method edit: Unknown
+    :param message: Discord message calling the method
+    :return: NoneType
+    """
     global active_forms
     global incomplete_forms
     global submitted_forms
     guild = message.guild
 
-    if verified_role in message.guild.get_member(message.author.id).roles:
+    if verified_role_id in message.guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified')
         return
 
@@ -128,20 +140,20 @@ async def verify(message):
         reaction, user = await client.wait_for('reaction_add', check=check)
         # TODO: allow multiple mods to react at once
         if str(reaction.emoji) == '✅':
-            await application.applicant.add_roles(guild.get_role(verified_role))
+            await application.applicant.add_roles(guild.get_role(verified_role_id))
             try:
                 await message.author.send('You have been approved.')
             except discord.Forbidden:
                 await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
-            await application.applicant.remove_roles(guild.get_role(questioning_role))
-            await application.applicant.remove_roles(guild.get_role(unverified))
+            await application.applicant.remove_roles(guild.get_role(questioning_role_id))
+            await application.applicant.remove_roles(guild.get_role(unverified_role_id))
             await channel.send('<@!'+str(message.author.id)+'> approved')
             active_forms -= 1
             submitted_forms -= 1
             await applied.add_reaction('🆗')
             break
         elif str(reaction.emoji) == '❓':
-            await application.applicant.add_roles(guild.get_role(questioning_role))
+            await application.applicant.add_roles(guild.get_role(questioning_role_id))
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
         elif str(reaction.emoji) == '🚫':
@@ -299,8 +311,9 @@ async def help(message):
         embed.add_field(name='`'+prefix+'OC`', value="Manages a users OCs", inline=False)
         embed.add_field(name='`'+prefix+'quit`', value='quits the bot.\n Mod only.', inline=False)
         embed.add_field(name='`' + prefix + 'join_pos [target ID]`', value='Shows the position a member joined in. shows message author if target is left blank', inline=False)
-        embed.add_field(name='`' + prefix + 'artfight', value='Commands for the annual artfight', inline=False)
+        embed.add_field(name='`' + prefix + 'artfight`', value='Commands for the annual artfight', inline=False)
         embed.add_field(name='`' + prefix + 'huh`', value= '???', inline=False)
+        embed.add_field(name='`' + prefix + 'clean_out [channel_id] [message_id]`', value='???', inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
@@ -359,6 +372,13 @@ async def help(message):
 
 
 async def profile(message):
+    """
+    Handles all profile changes and calls the desired methods.
+    Last docstring edit: -Autumn V1.14.5
+    Last method edit: Unknown
+    :param message:
+    :return:
+    """
     command = message.content.split(' ', 2)
     if len(command) == 1:
         await display_profile(message)
@@ -378,22 +398,53 @@ player_role_id = 863630913686077450
 
 
 async def cursed_keys(message):
+    """
+    Handles all crsdky game functions and methods.
+    Last docstring edit: -Autumn V1.14.5
+    Last method edit: Unknown
+    :param message:
+    :return:
+    """
     global cursed_keys_running
     global crsd_keys
 
     command = message.content[1:].split(' ', 2)
-    if len(command) == 1:
+    if len(command) == 1 or command[1] == 'help':
+        overview = discord.Embed(title='Cursd Ky Overview',
+                                 description='Welcome, to a brutal game called "CURSD KY" (Idea by Reek and Isybel)\n\n'
+                                             ' The main of the game is to avoid a certain key/letter on your keyboard '
+                                             '(mostly vowels), But still try to make sure everyone understands what you'
+                                             ' are trying to say. The last survivor standing wins and will be given a '
+                                             'custom role',
+                                 color=0x45ffff)
+        overview.add_field(name='RULES',
+                           value="-You can't the leave the game until you lose and the bot will remove your roles to get rid of the curse"
+                                 "\n-Once you make a mistake, you will be instantly disqualified"
+                                 "\n-This challenge will apply to every chat on this server, so be careful"
+                                 "\n-you have to use an alt word to describe what you want to say rather censor that word"
+                                 "\n-Abusing rule loop hole is not allowed"
+                                 "\n-Using emoji contain that key also not allowed"
+                                 "\n-If you don't talk in general, you'll also lose (we check)",
+                           inline=False)
+
+        overview.add_field(name='QnA', inline=False)
+        overview.add_field(name='Q: What does "crsd ky" mean?',
+                           value='A: It\'s "Cursed Key" but get rid of the vowels cause they are cursed.')
+        overview.add_field(name='Q: What made you come up with this game?',
+                           value='A: Isybel is upset she can\'t curse in my server, so she cursed me by removing my ability to use the letter "a" and I took it as a challenge xD (But I lost rip) ')
+        overview.add_field(name='Q: What do I do if i got removed but dont think I should\'ve been?',
+                           value='A: contact a moderator, and we\'ll look into your case and determine if you should still be in the game or not')
+    elif command[1] == 'list':
         if len(crsd_keys) == 0:
             await message.reply('there are no cursed keys')
         else:
             await message.reply('cursed keys are: '+str(crsd_keys))
     elif command[1] == 'join':
-        # either by command or by some other mechanism
         if not cursed_keys_running:
             if message.guild.get_role(player_role_id) in message.author.roles:
                 await message.reply('You are already a part of this game!')
             else:
-                await message.author.add_roles (message.guild.get_role(player_role_id))
+                await message.author.add_roles(message.guild.get_role(player_role_id))
                 await message.reply('Joined the game!')
         else:
             await message.reply("Unable to join. a game is already running")
@@ -419,19 +470,6 @@ async def cursed_keys(message):
                 await message.reply('<@&863630913686077450> The game is starting! Cursed Keys are ' + str(crsd_keys))
         else:
             await message.reply('Invalid permissions')
-    elif command[1] == 'auto-enroll':
-        if message.author.guild_permissions.manage_roles:
-            if command[2] == all:
-                for member in message.guild.members:
-                    await member.add_roles(player_role_id)
-            else:
-                roles = message.role_mentions
-                for role in roles:
-                    for member in role.members:
-                        await member.add_roles(player_role_id)
-                await message.reply('members added')
-        else:
-            await message.reply('invalid permissions')
     elif command[1] == 'resetPlayers':
         if message.author.guild_permissions.manage_roles:
             for member in message.guild.get_role(player_role_id).members:
@@ -449,14 +487,14 @@ async def cursed_keys(message):
 
 async def purge(message):
     """
-    method removes all members with the unverified role from Rikoland
+    method removes all members with the unverified_role_id role from Rikoland
     Last docstring edit: -Autumn V1.14.4
     Last method edit: -Autumn V1.14.4
     :param message: Message that called the bot
     :return: None
     """
     if message.author.guild_permissions.manage_roles:
-        unverified_ppl = message.guild.get_role(unverified).members
+        unverified_ppl = message.guild.get_role(unverified_role_id).members
         num_kicked = 0
         for member in unverified_ppl:
             try:
@@ -469,7 +507,47 @@ async def purge(message):
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
 
+async def clean_out(message):
+    if not message.author.guild_permissions.manage_roles:
+        await message.reply('Insufficient perms')
+        return
+
+
+
+    command = message.content[1:].split(' ')
+    ignore_above_role = message.guild.get_role(667970355733725184)
+
+    # unverify all users below cookies
+    members = message.guild.members
+    for member in members:
+        if member.guild_permissions.manage_roles:
+            continue
+        elif member.roles[-1] > ignore_above_role:
+            continue
+        else:
+            await member.remove_roles(guild.get_role(verified_role_id))
+            await member.add_roles(guild.get_role(unverified_role_id))
+
+    # re-verify users who have reacted to the message
+    ch = await message.guild.get_channel(command[1]).fetch_message(command[2]).reactions
+
+    for reaction in reactions:
+        if reaction.emoji == '✅':
+            users = reaction.users().flatten()
+
+    for member in users:
+        await member.add_roles(guild.get_role(verified_role_id))
+        await member.remove_roles(guild.get_role(unverified_role_id))
+
+
 async def join_pos(message):
+    """
+    Displays the number a user joined the server in.
+    Last docstring edit: -Autumn V1.14.5
+    Last method edit: Unknown
+    :param message:
+    :return: NoneType
+    """
     command = message.content.split(' ')
     if len(command) == 1:
         target = message.author.id
@@ -492,7 +570,6 @@ def getJoinRank(ID, guild):# Call it with the ID of the user and the guild
 
     def sortby(a):
         return a.joined_at.timestamp()
-
 
     members.sort(key=sortby)
 
@@ -791,8 +868,8 @@ async def on_ready():
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
-            'artfight': artfight, 'save': save, 'huh': huh}
-code = 'plsdontban'
+            'artfight': artfight, 'save': save, 'huh': huh, 'clean_out': clean_out}
+
 
 
 @client.event
@@ -807,8 +884,8 @@ async def on_message(message):
     """
     global cursed_keys_running
     global application_channel
-    global verified_role
-    global questioning_role
+    global verified_role_id
+    global questioning_role_id
 
     if message.author.bot:
         return
