@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.16.0'
+version_num = '1.16.2'
 
 eclipse_id = 440232487738671124
 
@@ -34,6 +34,8 @@ application_channel = 819223217281302598   # channel where finished applications
 mail_inbox = 840753555609878528            # modmail inbox channel
 log_channel = 933456094016208916
 
+testing_channel = 952750855285784586
+
 counter = 0
 active_forms = 0
 incomplete_forms = 0
@@ -45,6 +47,8 @@ blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free',
 code = 'plsdontban'
 
 artfight_enabled = False
+
+testing_client = False
 
 
 class Application:
@@ -66,18 +70,22 @@ class Application:
         global client
         dm = await self.applicant.create_dm()
         for question in questions:
-            guesses = 2
-            question = '<@!' + str(self.applicant.id) + '> ' + question
             response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
-            while question is question[0] and response.content != '':
-                question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
-                response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
-                                           delete_response=False)
-                guesses -= 1
-                if guesses == 0:
-                    return -1
-
-
+            if question == questions[0]:
+                guesses = 2
+                for guess in range(guesses):
+                    if response.content != 'Ooo festive, joining Riko server les go' and guesses > 0:
+                        question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
+                        guesses -= 1
+                        response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
+                                                   delete_response=False)
+                        if guesses <= 0:
+                            await dm.send('No guesses remain. You ')
+                            return -1
+                        else:
+                            continue
+                    else:
+                        break
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is fully processed.')
         return 1
@@ -126,7 +134,11 @@ async def verify(message):
 
     applicant = guild.get_member(message.author.id)                         # wtf: Why not just use message.author? it does the same thing
     application = Application(applicant, message.channel, message.guild)
-    channel = guild.get_channel(application_channel)
+
+    if not testing_client:
+        channel = guild.get_channel(application_channel)
+    else:
+        channel = message.channel
 
     try:
         questioning_error_code = await application.question()
@@ -137,8 +149,11 @@ async def verify(message):
         return
 
     if questioning_error_code == -1:
-        await message.guild.kick(message.author, reason='Too many failed password attempts')
-        await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.')
+        try:
+            await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.')
+            await message.guild.kick(message.author, reason='Too many failed password attempts')
+        except discord.Forbidden:
+            await message.channel.send('Unable to complete task. Please verify my permissions are correct\n```Error 403\nLine 156```')
 
 
     applied = await channel.send(embed=application.gen_embed())
@@ -245,7 +260,7 @@ async def quit(message):
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
         await save(message)
-        sys.exit()
+        await client.close()
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
@@ -315,21 +330,26 @@ async def kick(message):
     if message.author.guild_permissions.kick_members:
         command = message.content[1:].split(' ', 2)
         if len(command) == 1:
-            help(Message(prefix + 'help kick', channel=message.channel))
+            embed = discord.Embed(title='Kick Command usage')
+            embed.add_field(name='}kick [user]', value='Kicks a user from the server')
+            embed.add_field(name='}kick [user] [reason]', value='Kicks a user with the reason provided')
+            await message.channel.send(embed=embed)
+            return
 
-        target = get_user_id(command[1])
+        target = get_user_id(message)
 
         if len(command) > 2:
             reason = command[2]
         else:
             reason = 'No reason specified.'
         try:
-            await message.guild.kick(message.guild.get_member(target), reason=reason + '|Rikoland')
+            await message.guild.kick(message.guild.get_member(target), reason=reason)
+            await message.channel.send('<@!' + target + '> was kicked.')
         except discord.Forbidden:
             await message.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
 
     else:
-        message.reply('Unauthorized usage.')
+        await message.reply('Unauthorized usage.')
 
 
 async def ban(message):
@@ -345,11 +365,13 @@ async def ban(message):
     if message.author.guild_permissions.ban_members:
         command = message.content[1:].split(' ', 2)
         if len(command) == 1:
-            embed = discord.Embed(title='Ban Command usage', description='All bans have the `|Rikoland` appended to the reason for documentation in the Server Protector database')
+            embed = discord.Embed(title='Ban Command usage', description='All bans have the ` | Rikoland` appended to the reason for documentation in the Server Protector database')
             embed.add_field(name='}ban [user]', value='Bans a user from the server')
             embed.add_field(name='}ban [user] [reason]', value='Bans a user with the reason provided')
+            await message.channel.send(embed=embed)
+            return
 
-        target = get_user_id(command[1])
+        target = get_user_id(message, 1)
 
         if len(command) > 2:
             reason = command[2]
@@ -357,13 +379,14 @@ async def ban(message):
             reason = 'No reason specified.'
 
         try:
-            await message.guild.ban(message.guild.get_member(target), reason=reason + '|Rikoland',
+            await message.guild.ban(message.guild.get_member(target), reason=reason + ' | Rikoland',
                                     delete_message_days=1)
+            await message.channel.send('<@!' + str(target) + '> was banned.')
         except discord.Forbidden:
             await message.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
 
     else:
-        message.reply('Unauthorized usage.')
+        await message.reply('Unauthorized usage.')
 
 
 async def help(message):
@@ -975,7 +998,7 @@ async def on_message(message):
     content = message.content.lower()
 
     #TODO: move this code to main class
-    if content.find(code) != -1 or message.author.guild_permissions.administrator:
+    if message.guild != guild or message.guild is None or content.find(code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
         await scan_message(message)
@@ -1005,13 +1028,17 @@ async def on_message(message):
 
 def run_sunreek():
     global prefix
+    global testing_client
+
     inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
+
     if inp == 1:
         # Main bot client. Do not use for tests
         client.run('ODE1NDE4NDQ1MTkyODg4MzIx.YDsHmw.Bn8ZoV6xMITm6YqeIUtLetkh0cw')
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         prefix = '>'
+        testing_client = True
         client.run('OTQzMDE2MDU2NTA5ODI5MTIw.Ygs6JA.FR7KZa_bOzyLWkhOawwlCvu6dzI')
 
 
