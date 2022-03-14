@@ -6,7 +6,7 @@ import sys
 from profile import display_profile, set_bio
 from fileManagement import profile_path, artfight_scores
 from refManagement import ref, set_ref, add_ref, oc
-from main import read_line
+from main import read_line, get_user_id
 
 
 start_time = time.time()
@@ -14,7 +14,7 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 prefix = '}'
-version_num = '1.15.0'
+version_num = '1.16.0'
 
 eclipse_id = 440232487738671124
 
@@ -66,10 +66,21 @@ class Application:
         global client
         dm = await self.applicant.create_dm()
         for question in questions:
+            guesses = 2
             question = '<@!' + str(self.applicant.id) + '> ' + question
             response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
+            while question is question[0] and response.content != '':
+                question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
+                response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
+                                           delete_response=False)
+                guesses -= 1
+                if guesses == 0:
+                    return -1
+
+
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is fully processed.')
+        return 1
 
     def gen_embed(self):
         global questions
@@ -113,18 +124,22 @@ async def verify(message):
         await message.channel.send('You are already verified')
         return
 
-    applicant = guild.get_member(message.author.id)
+    applicant = guild.get_member(message.author.id)                         # wtf: Why not just use message.author? it does the same thing
     application = Application(applicant, message.channel, message.guild)
     channel = guild.get_channel(application_channel)
 
     try:
-        await application.question()
-
+        questioning_error_code = await application.question()
     except discord.errors.Forbidden:
         await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy settings in User Settings->Privacy & Safety')
         active_forms -= 1
         incomplete_forms -= 1
         return
+
+    if questioning_error_code == -1:
+        await message.guild.kick(message.author, reason='Too many failed password attempts')
+        await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.')
+
 
     applied = await channel.send(embed=application.gen_embed())
     emojis = ['✅', '❓', '🚫', '❗']
@@ -285,6 +300,70 @@ async def modmail(message):
     mail.set_author(name=sender.name, icon_url=sender.avatar_url)
     mail.add_field(name='Message', value=body.content)
     await message.guild.get_channel(mail_inbox).send(embed=mail)
+
+
+async def kick(message):
+    """
+        Method designed to kick users from the server the command originated.
+        >kick [user] [reason]
+        Last docstring edit: -Autumn V1.16.0
+        Last method edit: -Autumn V1.16.0
+        Method added: V1.16.0
+        :param message:The message that called the command
+        :return: None
+        """
+    if message.author.guild_permissions.kick_members:
+        command = message.content[1:].split(' ', 2)
+        if len(command) == 1:
+            help(Message(prefix + 'help kick', channel=message.channel))
+
+        target = get_user_id(command[1])
+
+        if len(command) > 2:
+            reason = command[2]
+        else:
+            reason = 'No reason specified.'
+        try:
+            await message.guild.kick(message.guild.get_member(target), reason=reason + '|Rikoland')
+        except discord.Forbidden:
+            await message.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
+
+    else:
+        message.reply('Unauthorized usage.')
+
+
+async def ban(message):
+    """
+        Method designed to ban users from the server the command originated. Deletes User messages from the last 24 hours
+        >ban [user] [reason]
+        Last docstring edit: -Autumn V1.16.0
+        Last method edit: -Autumn V1.16.0
+        Method added: V1.16.0
+        :param message:The message that called the command
+        :return: None
+        """
+    if message.author.guild_permissions.ban_members:
+        command = message.content[1:].split(' ', 2)
+        if len(command) == 1:
+            embed = discord.Embed(title='Ban Command usage', description='All bans have the `|Rikoland` appended to the reason for documentation in the Server Protector database')
+            embed.add_field(name='}ban [user]', value='Bans a user from the server')
+            embed.add_field(name='}ban [user] [reason]', value='Bans a user with the reason provided')
+
+        target = get_user_id(command[1])
+
+        if len(command) > 2:
+            reason = command[2]
+        else:
+            reason = 'No reason specified.'
+
+        try:
+            await message.guild.ban(message.guild.get_member(target), reason=reason + '|Rikoland',
+                                    delete_message_days=1)
+        except discord.Forbidden:
+            await message.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
+
+    else:
+        message.reply('Unauthorized usage.')
 
 
 async def help(message):
@@ -513,8 +592,6 @@ async def clean_out(message):
     if not message.author.guild_permissions.manage_roles:
         await message.reply('Insufficient perms')
         return
-
-
 
     command = message.content[1:].split(' ')
     ignore_above_role = message.guild.get_role(667970355733725184)
@@ -872,7 +949,7 @@ async def on_ready():
 switcher = {'help': help, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail, 'quit': quit,
             'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
-            'artfight': artfight, 'save': save, 'huh': huh, 'clean_out': clean_out}
+            'artfight': artfight, 'save': save, 'huh': huh, 'clean_out': clean_out, 'kick': kick, 'ban': ban}
 
 
 @client.event
@@ -897,11 +974,13 @@ async def on_message(message):
             await scan_message(message)
     content = message.content.lower()
 
+    #TODO: move this code to main class
     if content.find(code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
         await scan_message(message)
 
+    #Todo: make crsdky a separate function
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
@@ -926,10 +1005,12 @@ async def on_message(message):
 
 def run_sunreek():
     global prefix
-    inp = int(input('input token num\n1. SunReek\n2. Testing\n'))
+    inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
     if inp == 1:
+        # Main bot client. Do not use for tests
         client.run('ODE1NDE4NDQ1MTkyODg4MzIx.YDsHmw.Bn8ZoV6xMITm6YqeIUtLetkh0cw')
     elif inp == 2:
+        # Test Bot client. Allows for tests to be run in a secure environment.
         prefix = '>'
         client.run('OTQzMDE2MDU2NTA5ODI5MTIw.Ygs6JA.FR7KZa_bOzyLWkhOawwlCvu6dzI')
 
