@@ -44,7 +44,6 @@ def get_user_id(message, arg=1):
 
 
 async def ping(message):
-    log(message)
     start = time.time()
     x = await message.channel.send('Pong!')
     ping = time.time() - start
@@ -53,7 +52,6 @@ async def ping(message):
 
 
 async def quit(message):
-    log(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
@@ -63,7 +61,6 @@ async def quit(message):
 
 
 async def restart(message):
-    log(message)
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
         os.execl(sys.executable,__file__,'main.py')
     else:
