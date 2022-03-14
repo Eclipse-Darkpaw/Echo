@@ -3,13 +3,19 @@ Echo is a bot I've made for my discord servers I moderate. Most values are hard 
 
 
 ## Change Log
-### Upcoming Changes
+### Sunreek 1.16
+* Addition of the `ban()` and `kick()` functions
+* Automated application password checker
+
+### 1.14
 * Removal of the `.env` file
 * update to use enviromental variables
+* Added docstrings to functions
+* A
 
-### 1.13
+### Sunreek 1.13
 * completed the artfight feature
-* 
+
 ### 1.12.18
 * added the Artfight commands
 * updated the `}help` command
