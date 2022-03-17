@@ -9,10 +9,10 @@ from main import read_line, get_user_id
 
 
 start_time = time.time()
-# todo: add uptime feature
+# TODO: Add uptime feature.
 
 prefix = '}'
-version_num = '1.16.3'
+version_num = '1.16.4'
 
 eclipse_id = 440232487738671124
 
@@ -24,13 +24,13 @@ client = discord.Client(intents=intents)
 
 guild = None
 
-unverified_role_id = 612958044132737025
-verified_role_id = 811522721824374834      # role to assign members who verify successfully
-questioning_role_id = 819238442931716137   # Role to assign when users
+unverified_role_id = 612958044132737025     # Role assigned to unverified users. is removed on verification
+verified_role_id = 811522721824374834       # role to assign members who verify successfully
+questioning_role_id = 819238442931716137    # Role to assign when users
 
-application_channel = 819223217281302598   # channel where finished applications go
-mail_inbox = 840753555609878528            # modmail inbox channel
-log_channel = 933456094016208916
+application_channel = 819223217281302598    # channel where finished applications go
+mail_inbox = 840753555609878528             # modmail inbox channel
+log_channel = 933456094016208916            # channel all bot logs get sent
 
 testing_channel = 952750855285784586
 
@@ -160,7 +160,7 @@ async def verify(message):
             await message.guild.kick(message.author, reason='Too many failed password attempts')
         except discord.Forbidden:
             await message.channel.send("Unable to complete task. Please verify my permissions are correct\n```Error 403"
-                                       "\nsunkreek.py Line 158:13\n"
+                                       "\nsunkreek.py Line 160:13\n"
                                        "await message.guild.kick(message.author, reason='Too many failed password "
                                        "attempts')```")
 
@@ -174,7 +174,7 @@ async def verify(message):
         Checks for reactions on a message.
         :param reaction:
         :param user:
-        :return:
+        :return: boolean
         """
         return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and\
                reaction.message == applied
@@ -185,15 +185,19 @@ async def verify(message):
         reaction, user = await client.wait_for('reaction_add', check=check)
         if str(reaction.emoji) == '✅':
             await application.applicant.add_roles(msg_guild.get_role(verified_role_id))
+
             try:
                 await message.author.send('You have been approved.')
             except discord.Forbidden:
                 await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
+
             await application.applicant.remove_roles(msg_guild.get_role(questioning_role_id))
             await application.applicant.remove_roles(msg_guild.get_role(unverified_role_id))
             await channel.send('<@!'+str(message.author.id)+'> approved')
+
             active_forms -= 1
             submitted_forms -= 1
+
             await applied.add_reaction('🆗')
             break
         elif str(reaction.emoji) == '❓':
@@ -241,7 +245,7 @@ async def ping(message):
     """
     Displays the time it takes for the bot to send a message upon a message being received.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.4
+    Last method edit: -Autumn V1.16.2
     :param message: Message calling the bot
     :return: None
     """
@@ -265,7 +269,8 @@ async def version(message):
 
 async def end(message):
     """
-    Quits the bot. Sends a message and updates the game status to alert users the bot is quiting
+    Quits the bot. Sends a message and updates the game status to alert users the bot is quiting.
+
     Last docstring edit: -Autumn V1.14.4
     Last method edit: -Autumn V1.14.4
     :param message: Message calling the bot
@@ -376,7 +381,7 @@ async def ban(message):
         >ban [user] [reason]
         Last docstring edit: -Autumn V1.16.0
         Last method edit: -Autumn V1.16.3
-        Method added: V1.16.0
+        Method added: -Autumn V1.16.0
         :param message:The message that called the command
         :return: None
         """
@@ -742,8 +747,8 @@ async def join_pos(message):
     """
     Displays the number a user joined the server in.
     Last docstring edit: -Autumn V1.14.5
-    Last method edit: -Autumn V1.16.3
-    :param message:
+    Last function edit: -Autumn V1.16.3
+    :param message: The message that called the command
     :return: NoneType
     """
     command = message.content.split(' ')
@@ -765,6 +770,12 @@ async def join_pos(message):
 
 
 def get_join_rank(target_id, target_guild):  # Call it with the ID of the user and the guild
+    """
+    Returns the rank at which a user joined the server.
+    :param target_id:
+    :param target_guild:
+    :return:
+    """
     members = target_guild.members
 
     def sortby(a):
@@ -781,6 +792,15 @@ def get_join_rank(target_id, target_guild):  # Call it with the ID of the user a
 
 
 def get_member_position(position, target_guild):
+    """
+    Unknown function.
+    Last docstring edit: -Autumn V1.16.3
+    Last function edit: Unknown
+    :param position:
+    :param target_guild: Guild the member is in
+    :return:
+    """
+    # TODO: Analyze function and correct the docstring
     members = target_guild.members
 
     def sort_by(a):
@@ -792,6 +812,12 @@ def get_member_position(position, target_guild):
 
 
 async def member_num(message):
+    """
+    I have no idea what this is. I need to make more detailed analysis later
+    :param message:
+    :return:
+    """
+    # TODO: Analyze function and correct the docstring
     command = message.content.split(' ')
     if len(command) == 1:
         await message.reply('Missing Argument: Member number')
@@ -811,8 +837,8 @@ async def member_num(message):
         await message.reply('Member in postion %d has the ID %d' % (position, name))
 
 
-artfight_team1 = 000000000000000000    # team 1
-artfight_team2 = 000000000000000000    # team 2
+artfight_team1 = 000000000000000000    # team 1 id
+artfight_team2 = 000000000000000000    # team 2 id
 
 artfight_team1_score = 0
 artfight_team2_score = 0
@@ -1101,22 +1127,31 @@ async def on_message(message):
         await scan_message(message)
 
     if message.content.startswith(prefix):
+
+        # split the message to determine what command is being called
         command = message.content[1:].lower().split(' ', 1)
+
+        # search the switcher for the command called. If the command is not found, do nothing
         try:
             method = switcher[command[0]]
             await method(message)
         except KeyError:
             pass
         if command[0] == 'print':
+            # Used to transfer data from Discord directly to the command line. Very simple shortcut
             print(message.content)
-    elif cursed_keys_running:
+    elif cursed_keys_running and message.guild is not None:
         # TODO: Make this a separate function.
+        # Check if the message author has the game role
         if message.guild.get_role(player_role_id) in message.author.roles:
+            # If the message author has the role, scan their message for any cursed keys
             for key in crsd_keys:
                 if key in message.content.lower():
                     await message.author.remove_roles(message.guild.get_role(player_role_id))
                     await message.reply('You have been cursed for using the key: ' + key)
+
                     if len(message.guild.get_role(player_role_id).members) == 1:
+                        # This code detects if there is a winner
                         cursed_keys_running = False
                         await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) +
                                                    '> wins the game!')
@@ -1124,6 +1159,14 @@ async def on_message(message):
 
 
 def run_sunreek():
+    """
+    Function allows the host to pick whether to run the live bot, or run the test bot in a closed environment, without
+    switching programs. This allows the live code to run parallel to the testing code and prevent constant restarts to
+    test new features.
+    Last docstring edit: -Autumn V1.16.3
+    Last function edit: Unknown
+    :return: None
+    """
     global prefix
     global testing_client
 
