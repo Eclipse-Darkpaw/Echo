@@ -74,18 +74,17 @@ class Application:
             if question == questions[0]:
                 guesses = 2
                 for guess in range(guesses):
-                    if response.content != 'Ooo festive, joining Riko server les go' and guesses > 0:
-                        question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
-                        guesses -= 1
-                        response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
-                                                   delete_response=False)
-                        if guesses <= 0:
-                            await dm.send('No guesses remain. You ')
-                            return -1
-                        else:
-                            continue
-                    else:
+                    if response.content == 'Ooo festive, joining Riko server les go':
                         break
+                    question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
+                    guesses -= 1
+                    response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
+                                                   delete_response=False)
+                    if guesses <= 0:
+                        await dm.send('No guesses remain.')
+                        return -1
+                    else:
+                        continue
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is fully processed.')
         return 1
