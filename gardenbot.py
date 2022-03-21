@@ -499,7 +499,8 @@ async def on_message(message):
             message.author.guild_permissions.administrator:
         pass
     else:
-        await scan_message(message)
+        # await scan_message(message)
+        pass
 
     if message.content.startswith(prefix):
 
