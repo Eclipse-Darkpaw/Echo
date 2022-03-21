@@ -37,4 +37,4 @@ def artfight_scores():
 
 
 def warn_log_path(user_id):
-    return resource_file_path + 'warns\\{}'
+    return resource_file_path + 'warns\\{}'.format(user_id)

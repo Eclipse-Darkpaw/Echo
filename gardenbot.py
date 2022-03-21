@@ -18,7 +18,7 @@ start_time = time.time()
 # TODO: Add uptime feature.
 
 prefix = '>'
-version_num = '1.0.0'
+version_num = '1.0.1'
 
 eclipse_id = 440232487738671124
 
@@ -35,17 +35,7 @@ suspended_2_id = 955230786993414156
 
 mail_inbox = 955207611379245066             # modmail inbox channel
 log_channel = 955224780318081095            # channel all bot logs get sent
-warn_log_id = 0
-
-counter = 0
-active_forms = 0
-incomplete_forms = 0
-application_questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**',
-                         'What is your nickname?',
-                         'How old are you?',
-                         'Where did you get the link from? Please be specific. If it was a user, please use the full'
-                         'name and numbers(e.g. Echo#0109)',
-                         'Why do you want to join?']
+warn_log_id = 955563724511518790
 
 
 async def ping(message):
@@ -100,19 +90,42 @@ async def warn(message):
     :return:
     """
     command = message.content[1:].split(' ', 3)
+    if len(command) <= 2:
+        embed = discord.Embed(title='Warn Command usage')
+        embed.add_field(name='>warn [user] [rule number]', value='gives a user a warn')
+        embed.add_field(name='>warn [user] [rule number] [reason]', value='Warns a user with the reason provided')
+        await message.channel.send(embed=embed)
+        return
+
     target_id = get_user_id(message, 1)
     rule_num = command[2]
-    reason = command[3]
+    try:
+        reason = command[3]
+    except IndexError:
+        reason = 'No reason provided'
 
-    with os.scandir(warn_log_path(target_id)) as files:
-        warn_num = len(files) + 1
+    try:
+        os.scandir(warn_log_path(target_id))
+    except FileNotFoundError:
+        os.mkdir(warn_log_path(target_id))
+
+    os.chdir(warn_log_path(target_id))
+
+    files = os.listdir()
+    warn_num = len(files) + 1
 
     warn_time = time.strftime("%d/%m/%y %H:%M", time.gmtime())
 
-    lines = [command[2], command[3], str(message.author.id), warn_time]
-    with open(warn_log_path(target_id)+str(warn_num)+'.warn', 'w') as warn_file:
-        warn_file.writelines(lines)
-    await message.guild.get_channel(warn_log_id).send('<@'+target_id+'> Warned for '+rule_num+'\nReason: '+reason)
+    try:
+        lines = [command[2], command[3], str(message.author.id), warn_time]
+    except IndexError:
+        await message.reply('Improper formatting. Warns need `>warn <target> <rule_num> <reason>')
+        return
+
+    with open(warn_log_path(target_id)+'\\'+str(warn_num)+'.warn', 'w') as warn_file:
+        for line in lines:
+            warn_file.writelines(line + '\n')
+    await message.guild.get_channel(warn_log_id).send('<@'+str(target_id)+'> Warned for '+rule_num+'\nReason: '+reason)
     await message.channel.send('<@'+str(target_id)+'> You have been warned under rule '+rule_num+' for '+reason)
 
 
@@ -126,8 +139,13 @@ async def list_warnings(message):
     target_id = get_user_id(message, 1)
     warn_folder_path = warn_log_path(target_id)
 
-    display_name = await message.guild.get_member(target_id)
+    display_name = message.guild.get_member(target_id).display_name
     list_embed = discord.Embed(title=display_name+"'s Warnings")
+
+    try:
+        os.chdir(warn_log_path(target_id))
+    except FileNotFoundError:
+        os.mkdir(warn_log_path(target_id))
 
     i = 1
     with os.scandir(warn_folder_path) as files:
@@ -135,11 +153,12 @@ async def list_warnings(message):
             with open(warn_path) as warn:
                 lines = warn.readlines()
                 list_embed.add_field(name='Warn #'+str(i),
-                                     value='Rule number: '+lines[0]+
-                                           '\nReason: '+lines[1]+
-                                           '\nResponsible moderator: '+lines[2]+
-                                           '\nDate: '+lines[3],
+                                     value='Rule number: ' + lines[0] +
+                                           '\nReason: ' + lines[1] +
+                                           '\nResponsible moderator: ' + lines[2] +
+                                           '\nDate: ' + lines[3],
                                      inline=False)
+                i += 1
     await message.channel.send(embed=list_embed)
 
 
@@ -161,12 +180,13 @@ async def modmail(message):
         body = await read_line(client, dm, 'Body:', sender, delete_prompt=False, delete_response=False)
         await dm.send('Your message has been sent')
     except discord.Forbidden:
-        message.reply('Unable to DM. Check your privacy settings')
+        await message.reply('Unable to DM. Check your privacy settings')
         return
 
     mail = discord.Embed(title=subject, color=0xadd8ff)
     mail.set_author(name=sender.name, icon_url=sender.avatar_url)
     mail.add_field(name='Message', value=body.content)
+    mail.add_field(name='User ID', value=str(message.author.id), inline=False)
     await message.guild.get_channel(mail_inbox).send(embed=mail)
 
 
@@ -174,9 +194,9 @@ async def kick(message):
     """
         Method designed to kick users from the server the command originated.
         >kick [user] [reason]
-        Last docstring edit: -Autumn V1.16.0
-        Last method edit: -Autumn V1.16.0
-        Method added: V1.16.0
+        Last docstring edit: -Autumn V1.0.0
+        Last method edit: -Autumn V1.0.0
+        Method added: V1.0.0
         :param message:The message that called the command
         :return: None
         """
@@ -184,8 +204,8 @@ async def kick(message):
         command = message.content[1:].split(' ', 2)
         if len(command) == 1:
             embed = discord.Embed(title='Kick Command usage')
-            embed.add_field(name='}kick [user]', value='Kicks a user from the server')
-            embed.add_field(name='}kick [user] [reason]', value='Kicks a user with the reason provided')
+            embed.add_field(name='>kick [user]', value='Kicks a user from the server')
+            embed.add_field(name='>kick [user] [reason]', value='Kicks a user with the reason provided')
             await message.channel.send(embed=embed)
             return
 
@@ -219,11 +239,11 @@ async def ban(message):
     if message.author.guild_permissions.ban_members:
         command = message.content[1:].split(' ', 2)
         if len(command) == 1:
-            embed = discord.Embed(title='Ban Command usage', description='All bans have the ` | Rikoland` appended to '
-                                                                         'the reason for documentation in the Server '
+            embed = discord.Embed(title='Ban Command usage', description='All bans have ` | GM` appended to '
+                                                                         'them for documentation in the Server '
                                                                          'Protector database')
-            embed.add_field(name='}ban [user]', value='Bans a user from the server')
-            embed.add_field(name='}ban [user] [reason]', value='Bans a user with the reason provided')
+            embed.add_field(name='>ban [user]', value='Bans a user from the server')
+            embed.add_field(name='>ban [user] [reason]', value='Bans a user with the reason provided')
             await message.channel.send(embed=embed)
             return
 
@@ -236,7 +256,7 @@ async def ban(message):
 
         try:
             await message.guild.ban(message.guild.get_member(target),
-                                    reason=reason + ' | Rikoland',
+                                    reason=reason + ' | GM',
                                     delete_message_days=1)
             await message.channel.send('<@!' + str(target) + '> was banned.')
         except discord.Forbidden:
@@ -442,14 +462,15 @@ async def on_ready():
 
     print('We have logged in as {0.user}'.format(client))
 
-    guild = client.get_guild(840181552016261170)
+    guild = client.get_guild(955148737427157062)
     await client.change_presence(activity=game)
     await guild.get_member(eclipse_id).send('Running, and active')
     # artfight_load()
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'modmail': modmail, 'quit': end, 'oc': oc,
-            'profile': profile,  'setref': set_ref, 'ref': ref, 'addref': add_ref, 'huh': huh, 'kick': kick, 'ban': ban}
+            'profile': profile,  'setref': set_ref, 'ref': ref, 'addref': add_ref, 'huh': huh, 'kick': kick, 'ban': ban,
+            'warn': warn, 'listwarnings':list_warnings, 'listwarns': list_warnings, 'lw': list_warnings}
 
 
 @client.event
@@ -508,7 +529,7 @@ def run_gardenbot():
     global prefix
     global testing_client
 
-    inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
+    inp = int(input('input token num\n1. gardenbot\n2. Testing Environment\n'))
 
     if inp == 1:
         # Main bot client. Do not use for tests
