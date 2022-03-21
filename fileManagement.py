@@ -34,3 +34,7 @@ def folder_path(target_id, folder):
 
 def artfight_scores():
     return resource_file_path + 'artfight\\artfight.scores'
+
+
+def warn_log_path(user_id):
+    return resource_file_path + 'warns\\{}'
