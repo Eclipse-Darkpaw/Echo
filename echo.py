@@ -2,15 +2,13 @@ import time
 import discord
 import os
 import sys
-from dotenv import load_dotenv
 from profile import display_profile, set_bio
-from fileManagement import joinleave_path, profile_path
+from fileManagement import profile_path
 from refManagement import ref, set_ref, add_ref
-load_dotenv()
 
 
 prefix = '>'
-version_num = '1.1.2'
+version_num = '1.2.0'
 
 
 eclipse_id = 440232487738671124
@@ -38,7 +36,6 @@ async def version(message):
 
 async def quit(message):
     global game
-    # await save (message)
     if message.author.id == eclipse_id or message.author.guild_permissions.administrator:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
@@ -47,16 +44,6 @@ async def quit(message):
         await message.channel.send('You do not have permission to turn me off!')
 
 
-async def restart(message):
-    log(message)
-    # await save(message)
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execl(sys.executable,__file__,'main.py')
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
-
-
-# TODO: update to be Echo specific
 async def help(message):
     embed = discord.Embed(title="Echo Command list", color=0x45FFFF)
     embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
@@ -76,17 +63,15 @@ async def help(message):
     await message.channel.send(embed=embed)
 
 
-# FIXME: Allow users to search for other users profiles. Feature is not working properly
-# TODO: update to handle emojis properly
 async def profile(message):
-    command = message.content[1:].split(' ', 2)
+    command = message.content.split(' ', 2)
     if len(command) == 1:
         await display_profile(message)
     elif command[1] == 'edit':
         try:
-            set_bio(str(message.author.id), command[2])
+            set_bio(message.author, command[2])
             await message.channel.send('Bio set')
-        except Exception:
+        except ValueError:
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
     else:
         await display_profile(message)
@@ -103,16 +88,8 @@ async def on_ready():
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-@client.event
-async def on_disconnect():
-    log = 'Echo disconnected from discord at {}\n'.format(time.ctime())
-    print(log)
-    with open('C:\\Users\\leebe\\Desktop\\Echo\\resources\\disconnect.log', 'a') as file:
-        file.write(log)
-
-
-switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile,
-            'setref': set_ref, 'ref': ref, 'addref': add_ref}
+switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'setref': set_ref,
+            'ref': ref, 'addref': add_ref}
 
 
 @client.event
@@ -133,5 +110,4 @@ async def on_message(message):
     # most_active.score(message)
 
 
-token = os.getenv('ECHO')
-client.run(token) 
+client.run('NzQ3MTUyOTU3OTE2ODQwMDM3.X0Kuag.99OHacMr_qmK2hKyCLURIAGYjNQ')
