@@ -277,7 +277,7 @@ async def help_message(message):
     # TODO: USE A SWITCH HERE!!!
     command = message.content[1:].split(' ')
     if len(command) == 1:
-        embed = discord.Embed(title="SunReek Command list",
+        embed = discord.Embed(title="Gardenbot Command list",
                               description='Square brackets are optional arguments. Angle brackets are required '
                                           'arguments',
                               color=0x45FFFF)
@@ -303,10 +303,6 @@ async def help_message(message):
                         inline=False)
         embed.add_field(name='`'+prefix+'addref <attachment>`',
                         value="Adds another ref to your file.",
-                        inline=False)
-        embed.add_field(name='`'+prefix+'crsdky [arguments]`',
-                        value='commands for the CursedKeys game. will show the list of cursed keys if argument is left '
-                              'off',
                         inline=False)
         embed.add_field(name='`'+prefix+'OC`',
                         value="Manages a users OCs",
