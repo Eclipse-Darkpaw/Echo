@@ -3,7 +3,6 @@ import discord
 import os
 import sys
 
-
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc
 from fileManagement import warn_log_path
@@ -29,6 +28,7 @@ game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 guild = None
+guild_id = 955148737427157062
 
 suspended_1_id = 955229885163532319
 suspended_2_id = 955230786993414156
@@ -187,7 +187,7 @@ async def modmail(message):
     mail.set_author(name=sender.name, icon_url=sender.avatar_url)
     mail.add_field(name='Message', value=body.content)
     mail.add_field(name='User ID', value=str(message.author.id), inline=False)
-    await message.guild.get_channel(mail_inbox).send(embed=mail)
+    await client.get_guild(guild_id).get_channel(mail_inbox).send(embed=mail)
 
 
 async def kick(message):
@@ -534,7 +534,7 @@ def run_gardenbot():
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         testing_client = True
-        client.run(os.environ.get('TESTBOT_TOKEN'))
+        client.run(str(os.environ.get('TESTBOT_TOKEN')))
 
 
 if __name__ == '__main__':

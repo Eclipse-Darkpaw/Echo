@@ -114,7 +114,7 @@ class Message:
         self.content = content
         self.channel = channel
 
-    def reply(self, content):
+    async def reply(self, content):
         await self.channel.send(content)
 
 

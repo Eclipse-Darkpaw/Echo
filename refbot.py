@@ -189,7 +189,7 @@ async def on_message(message):
 def run_refbot():
     inp = int(input('Input a bot num\n1. refbot\n'))
     if inp == 1:
-        client.run('ODQyMTk0NDA0NDk2NTA2OTcy.YJxwqQ.M2hEOsoiBbEYcC_kRz4iXWoBoY4')
+        client.run(os.environ.get('REFBOT_TOKEN'))
 
     pass
 
