@@ -136,6 +136,14 @@ async def list_warnings(message):
     :param message:
     :return:
     """
+    if message.guild is None:
+        await message.reply('You need to be in a server to use this command!')
+        return
+    elif not message.author.guild_permissions.manage_roles:
+        await message.reply('Error 403: Forbidden. \n'
+                            ' Please verify you have the proper permissions level\n'
+                            '*This command requires `guild_permissions.manage_roles`*')
+        return
     target_id = get_user_id(message, 1)
     warn_folder_path = warn_log_path(target_id)
 
@@ -171,7 +179,8 @@ async def modmail(message):
     :return: None
     """
     sender = message.author
-    await message.delete()
+    if message.guild is not None:
+        await message.delete()
 
     dm = await sender.create_dm()
     try:
@@ -464,9 +473,11 @@ async def on_ready():
     # artfight_load()
 
 
-switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'modmail': modmail, 'quit': end, 'oc': oc,
-            'profile': profile,  'setref': set_ref, 'ref': ref, 'addref': add_ref, 'huh': huh, 'kick': kick, 'ban': ban,
-            'warn': warn, 'listwarnings':list_warnings, 'listwarns': list_warnings, 'lw': list_warnings}
+switcher = {'help': help_message, 'ping': ping,
+            'version_num': version, 'version': version, 'v': version,
+            'modmail': modmail, 'quit': end, 'oc': oc, 'profile': profile,  'setref': set_ref, 'ref': ref,
+            'addref': add_ref, 'huh': huh, 'kick': kick, 'ban': ban, 'warn': warn,
+            'listwarnings': list_warnings, 'listwarns': list_warnings, 'lw': list_warnings}
 
 
 @client.event
@@ -479,11 +490,6 @@ async def on_message(message):
     :param message:
     :return: None
     """
-    global cursed_keys_running
-    global application_channel
-    global verified_role_id
-    global questioning_role_id
-
     if message.author.bot:
         return
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
@@ -499,7 +505,6 @@ async def on_message(message):
         pass
 
     if message.content.startswith(prefix):
-
         # split the message to determine what command is being called
         command = message.content[1:].lower().split(' ', 1)
 
