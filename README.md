@@ -16,6 +16,11 @@ Last method edit: -name Vx.x.x
 as well as adding all changes to the change log below
 
 ## Change Log
+###V2.0.1/Refbot V2.1.0
+Author - Autumn
+* Reformatted `refbot.py`
+* Removed ununsed methods from
+
 ###V2.0.0
 Author - Autumn
 * Updated README
