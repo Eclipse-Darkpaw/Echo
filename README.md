@@ -16,7 +16,7 @@ Last method edit: -name Vx.x.x
 as well as adding all changes to the change log below
 
 ## Change Log
-###V2.0.0
+### V2.0.0
 Author - Autumn
 * Updated README
 * Updated version_num in `anti-scam.py`, `echo.py`, `main.py`, `gardenbot.py`, `refbot.py`, and `sunreek.py`
