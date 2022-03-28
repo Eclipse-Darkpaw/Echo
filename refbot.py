@@ -10,7 +10,7 @@ from refManagement import ref, set_ref, add_ref, oc
 
 
 prefix = '>'
-version_num = '2.1.0'
+version_num = '2.1.1'
 
 eclipse_id = 440232487738671124
 
@@ -23,57 +23,6 @@ client = discord.Client(intents=intents)
 guild = None
 
 
-async def read_line(channel, prompt, target, delete_prompt=True, delete_response=True):
-    """
-    Obsolete function. Overshadowed by main.read_line()
-    Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
-    :param channel:
-    :param prompt:
-    :param target:
-    :param delete_prompt:
-    :param delete_response:
-    :return:
-    """
-    # TODO: REMOVE ME
-    show = await channel.send(prompt)
-
-    def check(msg):
-        return msg.author != client.user and (msg.author == target or msg.channel == channel)
-
-    msg = await client.wait_for('message', check=check)
-
-    if delete_response:
-        try:
-            await msg.delete()
-        finally:
-            pass
-    if delete_prompt:
-        await show.delete()
-    return msg
-
-
-def get_user_id(message):
-    """
-    Obsolete function. Overshadowed by main.get_user_id()
-    Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
-    :param message:
-    :return:
-    """
-    # TODO: REMOVE ME
-    command = message.content.split()
-    if len(command) == 1:
-        return message.author.id
-    elif len(command[1]) == 18:
-        return int(command[1])
-    elif len(command[1]) == 21:
-        return int(command[2:-2])
-    elif len(command[1]) == 22:
-        return int(command[3:-2])
-    raise discord.InvalidArgument('Not a valid user!')
-
-
 async def ping(message):
     """
     Times how long it takes the bot to edit a message
@@ -82,7 +31,6 @@ async def ping(message):
     :param message:
     :return:
     """
-    # TODO: REMOVE ME
     start = time.time()
     x = await message.channel.send('Pong!')
     ping_time = time.time() - start
@@ -98,7 +46,6 @@ async def version(message):
     :param message:
     :return:
     """
-    # TODO: REMOVE ME
     await message.channel.send('I am currently running version ' + version_num)
 
 
@@ -275,23 +222,6 @@ async def profile(message):
         await display_profile(message)
 
 
-async def repeat(message):
-    """
-    To be removed
-    Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
-    :param message:
-    :return:
-    """
-    # TODO: remove this
-    commands = message.content.split(' ', 2)
-    iterations = int(commands[1])
-    text = commands[2]
-
-    for i in range(iterations):
-        await message.channel.send(text + str(i+1))
-
-
 @client.event
 async def on_ready():
     """
@@ -310,7 +240,7 @@ async def on_ready():
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'quit': end, 'profile': profile, 'ref': ref,
-            'restart': restart, 'setref': set_ref, 'addref': add_ref, 'oc': oc, 'repeat': repeat}
+            'restart': restart, 'setref': set_ref, 'addref': add_ref, 'oc': oc}
 
 
 @client.event
