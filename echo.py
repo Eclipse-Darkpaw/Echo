@@ -1,9 +1,7 @@
 import time
 import discord
-import os
 import sys
 from profile import display_profile, set_bio
-from fileManagement import profile_path
 from refManagement import ref, set_ref, add_ref
 
 
