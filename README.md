@@ -15,6 +15,10 @@ Last method edit: -name Vx.x.x
 ```
 as well as adding all changes to the change log below
 
+## Important links
+The Pivotal tracker project link containing all the plans for the codebase
+https://www.pivotaltracker.com/n/projects/2462509
+
 ## Change Log
 ### V2.0.0
 Author - Autumn
