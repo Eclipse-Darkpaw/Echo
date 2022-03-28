@@ -7,7 +7,7 @@ from refManagement import ref, set_ref, add_ref, oc
 
 
 prefix = '>'
-version_num = '1.11.0'
+version_num = '2.0.0'
 
 eclipse_id = 440232487738671124
 
