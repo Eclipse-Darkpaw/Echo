@@ -7,15 +7,28 @@ class MartianChess:
 
 
     def gen_board(self):
-        if len(self.players) == 2:
-            pass                    # 2 player game
-        elif len(self.players) == 4:
-            pass                    # 4 player game
+
+                       # 4 player game
         else:
             return -1               # invalid player number. error code -1
 
     def play(self):
         pass
 
+
 class Piece:
+
+    def move(self):
+        raise NotImplementedError('Method not implemented by inherited class')
+
+class Pawn(Piece):
+    def move(self):
+        pass
+
+class Drone(Piece):
     pass
+
+class Queen(Piece):
+    def move(self,):
+
+
