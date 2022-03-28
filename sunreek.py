@@ -12,7 +12,7 @@ start_time = time.time()
 # TODO: Add uptime feature.
 
 prefix = '}'
-version_num = '1.16.4'
+version_num = '2.0.0'
 
 eclipse_id = 440232487738671124
 

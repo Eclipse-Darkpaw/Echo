@@ -1,46 +1,22 @@
-# Echo v1.13
-Echo is a bot I've made for my discord servers I moderate. Most values are hard coded in right now.
+# Echo Discord bot collection
+The Echo project is a collection of discord bots that share code and run on the same machine. Most bots are designed 
+specifically for a server.  
 
+## Repo modifications
+If you modify any functions or method, please document in the following format
+```
+"""
+Description
+Last docstring edit: -name Vx.x.x
+Last method edit: -name Vx.x.x
+:param:
+:return:
+"""
+```
+as well as adding all changes to the change log below
 
 ## Change Log
-### Sunreek 1.16
-* Addition of the `ban()` and `kick()` functions
-* Automated application password checker
-
-### 1.14
-* Removal of the `.env` file
-* update to use enviromental variables
-* Added docstrings to functions
-* A
-
-### Sunreek 1.13
-* completed the artfight feature
-
-### 1.12.18
-* added the Artfight commands
-* updated the `}help` command
-
-many other changes were not included
-
-### 1.2.0
-* added the leaderboard functionality
-* added profile functionality
-* added `>ref` and `>setref` functionality
-
-### 1.1.0
-
-* Finalized `>help`
-* removed `>repeat` and `>repeatq`
-### 0.3
-
-* Fixed `log()` function and created `command.log`
-* Fixed `>warn`
-* altered `>verify` to remove the Questioning role upon membership approval
-* altered `>verify` to not verify users who are already verified
-### 0.2
-
-* Fixed `>verify`
-### 0.1
-
-* Fixed `>ban` 
-* Fixed `>kick`
+###V2.0.0
+Author - Autumn
+* Updated README
+* Updated version_num in `anti-scam.py`, `echo.py`, `main.py`, `gardenbot.py`, `refbot.py`, and `sunreek.py`
