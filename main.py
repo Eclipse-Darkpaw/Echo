@@ -1,12 +1,7 @@
-import time
-import discord
-import os
-import sys
-
-
-start_time = time.time()
-# todo: add uptime feature
-# todo: add a master prefix only applicable to you as a back door
+"""
+Main class. Contains basic methods used by all bots
+"""
+version_num = '2.0.0'
 
 
 async def read_line(client, channel, prompt, target, delete_prompt=True, delete_response=True):
@@ -30,6 +25,12 @@ async def read_line(client, channel, prompt, target, delete_prompt=True, delete_
 
 # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
 def get_user_id(message, arg=1):
+    """
+
+    :param message:
+    :param arg:
+    :return:
+    """
     command = message.content.split(' ')
     if len(command) == arg:
         target = message.author.id
@@ -41,30 +42,6 @@ def get_user_id(message, arg=1):
         target = message.guild.get_member_named(command[1]).id
 
     return target
-
-
-async def ping(message):
-    start = time.time()
-    x = await message.channel.send('Pong!')
-    ping = time.time() - start
-    edit = x.content + ' ' + str(int(ping * 1000)) + 'ms'
-    await x.edit(content=edit)
-
-
-async def quit(message):
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        await message.channel.send('Goodbye :wave:')
-        await client.change_presence(activity=discord.Game('Going offline'))
-        sys.exit()
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
-
-
-async def restart(message):
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execl(sys.executable,__file__,'main.py')
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
 
 '''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
 add each int and mod '''
