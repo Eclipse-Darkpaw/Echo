@@ -20,6 +20,11 @@ The Pivotal tracker project link containing all the plans for the codebase
 https://www.pivotaltracker.com/n/projects/2462509
 
 ## Change Log
+### V2.0.1/Refbot V2.1.0
+Author - Autumn
+* Reformatted `refbot.py`
+* Removed ununsed methods from
+
 ### V2.0.0
 Author - Autumn
 * Updated README
