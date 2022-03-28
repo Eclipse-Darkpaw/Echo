@@ -44,7 +44,7 @@ def set_bio(member, bio):
 
 
 async def display_profile(message):
-    member = message.guild.get_member(get_user_id(message)) #what the fuck is this?
+    member = message.author
     try:
         file = open(profile_path(str(member.id)))
         file.close()
@@ -53,9 +53,11 @@ async def display_profile(message):
     with open(profile_path(str(member.id))) as file:
         lines = file.readlines()
 
-        lines[0]=lines[0].replace('/n','\n')
+        lines[0] = lines[0].replace('/n', '\n')
         embed = discord.Embed()
-        embed.set_author(name=member.name,icon_url=member.avatar_url)
+        embed.set_author(name=member.name, icon_url=member.avatar_url)
         embed.color = member.color
-        embed.add_field(name='Bio',value=lines[0],inline=False)
+        embed.add_field(name='Bio',
+                        value=lines[0],
+                        inline=False)
         await message.channel.send(embed=embed)
