@@ -12,7 +12,7 @@ start_time = time.time()
 # TODO: Add uptime feature.
 
 prefix = '}'
-version_num = '1.16.4'
+version_num = '1.17.0'
 
 eclipse_id = 440232487738671124
 
@@ -1173,12 +1173,12 @@ def run_sunreek():
 
     if inp == 1:
         # Main bot client. Do not use for tests
-        client.run('ODE1NDE4NDQ1MTkyODg4MzIx.YDsHmw.Bn8ZoV6xMITm6YqeIUtLetkh0cw')
+        client.run(os.environ.get('SUNREEK_TOKEN'))
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         prefix = '>'
         testing_client = True
-        client.run('OTQzMDE2MDU2NTA5ODI5MTIw.Ygs6JA.FR7KZa_bOzyLWkhOawwlCvu6dzI')
+        client.run(os.environ.get('TESTBOT_TOKEN'))
 
 
 if __name__ == '__main__':
