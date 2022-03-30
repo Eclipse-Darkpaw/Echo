@@ -12,7 +12,7 @@ start_time = time.time()
 # TODO: Add uptime feature.
 
 prefix = '}'
-version_num = '1.17.0'
+version_num = '2.0.0'
 
 eclipse_id = 440232487738671124
 
@@ -114,7 +114,7 @@ class Message:
         self.content = content
         self.channel = channel
 
-    async def reply(self, content):
+    def reply(self, content):
         await self.channel.send(content)
 
 
@@ -1173,11 +1173,14 @@ def run_sunreek():
 
     if inp == 1:
         # Main bot client. Do not use for tests
+
         client.run(os.environ.get('SUNREEK_TOKEN')) # must say client.run(os.environ.get('SUNREEK_TOKEN'))
+
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         prefix = '>'
         testing_client = True
+
         client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
 
 

@@ -1,13 +1,11 @@
 import discord
-import os
 import sys
 import time
 
-version_num = '1.4.0'
+version_num = '2.0.0'
 
 prefix = '>'
 log_channel = 933539437357432892     # channel ID of the channel where logs go
-token = os.environ.get('ANTI-SCAM_TOKEN')      # put the bot token in the quotes
 
 game = discord.Game('Scanning for pings')
 client = discord.Client()

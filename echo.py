@@ -8,7 +8,7 @@ from refManagement import ref, set_ref, add_ref
 
 
 prefix = '>'
-version_num = '1.3.0'
+version_num = '2.0.0'
 
 
 eclipse_id = 440232487738671124
@@ -110,4 +110,4 @@ async def on_message(message):
     # most_active.score(message)
 
 
-client.run(os.environ.get('ECHO_TOKEN'))
+client.run('NzQ3MTUyOTU3OTE2ODQwMDM3.X0Kuag.99OHacMr_qmK2hKyCLURIAGYjNQ')
