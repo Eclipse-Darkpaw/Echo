@@ -114,7 +114,7 @@ class Message:
         self.content = content
         self.channel = channel
 
-    def reply(self, content):
+    async def reply(self, content):
         await self.channel.send(content)
 
 
@@ -1119,7 +1119,7 @@ async def on_message(message):
             await scan_message(message)
     content = message.content.lower()
 
-    if message.guild != guild or message.guild is None or content.find(code) != -1 or \
+    if message.guild is None or content.find(code) != -1 or \
             message.author.guild_permissions.administrator:
         pass
     else:
