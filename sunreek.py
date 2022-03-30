@@ -1173,12 +1173,12 @@ def run_sunreek():
 
     if inp == 1:
         # Main bot client. Do not use for tests
-        client.run(os.environ.get('SUNREEK_TOKEN'))
+        client.run(os.environ.get('SUNREEK_TOKEN')) # must say client.run(os.environ.get('SUNREEK_TOKEN'))
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         prefix = '>'
         testing_client = True
-        client.run(os.environ.get('TESTBOT_TOKEN'))
+        client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
 
 
 if __name__ == '__main__':
