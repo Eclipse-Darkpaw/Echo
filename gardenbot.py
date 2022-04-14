@@ -530,11 +530,11 @@ def run_gardenbot():
 
     if inp == 1:
         # Main bot client. Do not use for tests
-        client.run('OTU1MjI0OTYxODA1NTk4NzQw.Yjekkg.sm9eYBu0sHh1Tp41VUQLDP051C4')
+        client.run(os.environ.get('GARDENBOT_TOKEN'))
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         testing_client = True
-        client.run('OTQzMDE2MDU2NTA5ODI5MTIw.Ygs6JA.FR7KZa_bOzyLWkhOawwlCvu6dzI')
+        client.run(os.environ.get('TESTBOT_TOKEN'))
 
 
 if __name__ == '__main__':
