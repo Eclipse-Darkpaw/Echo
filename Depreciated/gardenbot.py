@@ -1,3 +1,6 @@
+"""
+A bot designed for gard3nb0y's public discord server (now deleted). Removed on deletion of the server.
+"""
 import time
 import discord
 import os
@@ -18,7 +21,7 @@ start_time = time.time()
 # TODO: Add uptime feature.
 
 prefix = '>'
-version_num = '2.1.0'
+version_num = 'Depreciated'     # V2.1.0 on last update
 
 eclipse_id = 440232487738671124
 
