@@ -29,6 +29,7 @@ verified_role_id = 811522721824374834       # role to assign members who verify 
 questioning_role_id = 819238442931716137    # Role to assign when users
 
 application_channel = 819223217281302598    # channel where finished applications go
+questioning_channel = 819223217281302598    # channel where users are questioned in
 mail_inbox = 840753555609878528             # modmail inbox channel
 log_channel = 933456094016208916            # channel all bot logs get sent
 
@@ -68,6 +69,10 @@ class Application:
         self.responses = []
 
     async def question(self):
+        """
+
+        :return:
+        """
         global application_questions
         global client
         dm = await self.applicant.create_dm()
@@ -90,7 +95,7 @@ class Application:
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is '
                       'fully processed.')
-        return 1
+        return
 
     def gen_embed(self):
         global application_questions
@@ -203,6 +208,9 @@ async def verify(message):
             await application.applicant.add_roles(msg_guild.get_role(questioning_role_id))
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
+            questioning = await message.guild.get_channel(questioning_channel)
+            thread_name = message.author.display_name + ' Questioning'
+            questioning.create_thread(name=thread_name, type=discord.ChannelType.public_thread)
         elif str(reaction.emoji) == '🚫':
             reason = await read_line(client, msg_guild.get_channel(application_channel),
                                      'Why was <@!' + str(message.author.id) + '> denied?', user,
@@ -1174,14 +1182,14 @@ def run_sunreek():
     if inp == 1:
         # Main bot client. Do not use for tests
 
-        client.run(os.environ.get('SUNREEK_TOKEN')) # must say client.run(os.environ.get('SUNREEK_TOKEN'))
+        client.run(os.environ.get('SUNREEK_TOKEN'))  # must say client.run(os.environ.get('SUNREEK_TOKEN'))
 
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         prefix = '>'
         testing_client = True
 
-        client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
+        client.run(os.environ.get('TESTBOT_TOKEN'))  # must say client.run(os.environ.get('TESTBOT_TOKEN'))
 
 
 if __name__ == '__main__':

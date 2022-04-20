@@ -63,7 +63,7 @@ async def quit(message):
 
 async def restart(message):
     if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execl(sys.executable,__file__,'main.py')
+        os.execl(sys.executable, __file__, 'main.py')
     else:
         await message.channel.send('You do not have permission to turn me off!')
 
