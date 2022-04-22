@@ -1169,7 +1169,10 @@ def run_sunreek():
     global prefix
     global testing_client
 
-    inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
+    if len(sys.argv) > 0:
+        inp = sys.argv[0]
+    else:
+        inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
 
     if inp == 1:
         # Main bot client. Do not use for tests
