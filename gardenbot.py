@@ -526,7 +526,10 @@ def run_gardenbot():
     global prefix
     global testing_client
 
-    inp = int(input('input token num\n1. gardenbot\n2. Testing Environment\n'))
+    if len(sys.argv) > 1:
+        inp = int(sys.argv[1])
+    else:
+        inp = int(input('input token num\n1. gardenbot\n2. Testing Environment\n'))
 
     if inp == 1:
         # Main bot client. Do not use for tests
