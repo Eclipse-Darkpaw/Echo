@@ -274,7 +274,12 @@ def run_refbot():
     Last function edit: -Autumn | Unknown Version
     :return: None
     """
-    inp = int(input('Input a bot num\n1. refbot\n'))
+
+    if len(sys.argv) > 1:
+        inp = int(sys.argv[1])
+    else:
+        inp = int(input('Input a bot num\n1. refbot\n'))
+
     if inp == 1:
         client.run(os.environ.get('REFBOT_TOKEN'))
 

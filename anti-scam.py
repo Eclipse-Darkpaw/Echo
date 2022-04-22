@@ -1,3 +1,5 @@
+import os
+
 import discord
 import sys
 import time
@@ -361,9 +363,13 @@ async def on_message(message):
 
 
 def run_antiscam():
-    inp = int(input('Input a bot num\n1. Anti-scam\n'))
+    if len(sys.argv) > 1:
+        inp = int(sys.argv[1])
+    else:
+        inp = int(input('Input a bot num\n1. Anti-scam\n'))
+
     if inp == 1:
-        client.run(token)
+        client.run(os.environ.get('ANTI-SCAM_TOKEN'))
 
 
 if __name__ == '__main__':
