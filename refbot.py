@@ -275,8 +275,8 @@ def run_refbot():
     :return: None
     """
 
-    if len(sys.argv) > 0:
-        inp = sys.argv[0]
+    if len(sys.argv) > 1:
+        inp = int(sys.argv[1])
     else:
         inp = int(input('Input a bot num\n1. refbot\n'))
 
