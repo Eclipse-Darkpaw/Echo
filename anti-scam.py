@@ -6,7 +6,7 @@ import time
 
 from main import read_line
 
-version_num = '2.1.0'
+version_num = '2.1.1'
 
 prefix = '>'
 
@@ -284,6 +284,9 @@ async def scan_message(message, is_flagged=False):
     :param is_flagged: if the message is flagged for deletion
     :return: None
     """
+    if message.guild is None:
+        return
+
     flags = 0
     content = message.content.lower()
 
@@ -346,7 +349,7 @@ async def on_message(message):
             await scan_message(message, True)
             await message.delete()
     content = message.content.lower()
-    if content.find(code) != -1 or message.author.guild_permissions.administrator:
+    if message.guild is None or content.find(code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
         await scan_message(message)
