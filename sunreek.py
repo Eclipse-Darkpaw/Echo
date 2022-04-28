@@ -110,12 +110,14 @@ class Application:
 
 
 class Message:
-    def __init__(self, content, channel):
+    def __init__(self, content, channel, target_message = None):
         self.content = content
         self.channel = channel
+        self.author = target_message.author
+        self.message = target_message
 
     async def reply(self, content):
-        await self.channel.send(content)
+        await self.message.reply(content)
 
 
 async def verify(message):
