@@ -1,4 +1,4 @@
-resource_file_path = 'C:\\Users\\user\\Desktop\\Echo\\resources\\'
+resource_file_path = 'resources\\'
 
 def get_leaderboard_path(guild_id):
     return resource_file_path + 'Guild-files\\{}\\.leaderboard'.format(guild_id)
@@ -38,3 +38,7 @@ def artfight_scores():
 
 def warn_log_path(user_id):
     return resource_file_path + 'warns\\{}'.format(user_id)
+
+
+def ref_folder_path():
+    return resource_file_path + 'refs'

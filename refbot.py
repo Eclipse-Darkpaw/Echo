@@ -275,13 +275,14 @@ def run_refbot():
     :return: None
     """
 
+    tokens = ['REFBOT_TOKEN', 'TESTBOT_TOKEN']
     if len(sys.argv) > 1:
-        inp = int(sys.argv[1])
+        inp = int(sys.argv[1])  - 1
     else:
-        inp = int(input('Input a bot num\n1. refbot\n'))
+        inp = int(input('Input a bot num\n1. refbot\n2. testbot')) - 1
 
     if inp == 1:
-        client.run(os.environ.get('REFBOT_TOKEN'))
+        client.run(os.environ.get(tokens[inp]))
 
     pass
 
