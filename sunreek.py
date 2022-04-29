@@ -3,8 +3,8 @@ import discord
 import os
 import sys
 
-from profile import display_profile, set_bio
-from refManagement import ref, set_ref, add_ref, oc
+from profile import profile
+from refManagement import ref, set_ref, add_ref, oc, random_ref
 from main import read_line, get_user_id
 
 
@@ -604,27 +604,6 @@ async def help_message(message):
                                        'score.\nMod only.',
                                  inline=False)
         await message.channel.send(embed=artfight_embed)
-
-
-async def profile(message):
-    """
-    Handles all profile changes and calls the desired methods.
-    Last docstring edit: -Autumn V1.14.5
-    Last method edit: Unknown
-    :param message:
-    :return:
-    """
-    command = message.content.split(' ', 2)
-    if len(command) == 1:
-        await display_profile(message)
-    elif command[1] == 'edit':
-        try:
-            set_bio(message.author, command[2])
-            await message.channel.send('Bio set')
-        except ValueError:
-            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
-    else:
-        await display_profile(message)
 
 
 cursed_keys_running = False

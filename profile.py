@@ -43,8 +43,12 @@ def set_bio(member, bio):
         raise ValueError('Operation failed, please use ASCII characters')
 
 
-async def display_profile(message):
-    member = message.author
+async def display_profile(message, client):
+    command = message.content.split(' ', 1)
+    if len(command) > 1:
+        member = client.get_user(get_user_id(message, 1))
+    else:
+        member = message.author
     try:
         file = open(profile_path(str(member.id)))
         file.close()
@@ -61,3 +65,22 @@ async def display_profile(message):
                         value=lines[0],
                         inline=False)
         await message.channel.send(embed=embed)
+
+
+async def profile(message):
+    """
+    Displays a users profile
+    Last docstring edit: -Autumn | V2.1.0
+    Last function edit: -Autumn | Unknown Version
+    :param message: message calling the bot
+    :return: None
+    """
+    command = message.content.split(' ', 2)
+    if command[1] == 'edit':
+        try:
+            set_bio(message.author, command[2])
+            await message.channel.send('Bio set')
+        except ValueError:
+            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
+    else:
+        await display_profile(message, client)

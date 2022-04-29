@@ -2,8 +2,7 @@ import time
 import discord
 import os
 import sys
-from profile import display_profile, set_bio
-from fileManagement import profile_path
+from profile import profile
 from refManagement import ref, set_ref, add_ref
 
 
@@ -61,20 +60,6 @@ async def help(message):
     embed.add_field(name='Moderator Commands', value='Commands that only mods can use', inline=False)
     embed.add_field(name='`'+prefix+'quit`', value='quits the bot', inline=False)
     await message.channel.send(embed=embed)
-
-
-async def profile(message):
-    command = message.content.split(' ', 2)
-    if len(command) == 1:
-        await display_profile(message)
-    elif command[1] == 'edit':
-        try:
-            set_bio(message.author, command[2])
-            await message.channel.send('Bio set')
-        except ValueError:
-            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
-    else:
-        await display_profile(message)
 
 
 @client.event
