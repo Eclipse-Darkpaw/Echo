@@ -1,3 +1,5 @@
+import os
+
 resource_file_path = 'resources\\'
 
 def get_leaderboard_path(guild_id):
