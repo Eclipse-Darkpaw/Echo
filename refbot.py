@@ -221,9 +221,8 @@ async def on_ready():
 
     print('We have logged in as {0.user}'.format(client))
 
-    guild = client.get_guild(840181552016261170)
     await client.change_presence(activity=game)
-    await guild.get_member(eclipse_id).send('Running, and active')
+    await client.get_user(eclipse_id).send('Running, and active')
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'quit': end, 'profile': profile, 'ref': ref,

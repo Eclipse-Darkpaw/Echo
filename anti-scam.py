@@ -12,6 +12,8 @@ version_num = '2.1.1'
 
 prefix = '>'
 
+eclipse_id = 440232487738671124
+
 application_channel = 813991832593367051
 log_channel = 933539437357432892     # channel ID of the channel where logs go
 
@@ -329,8 +331,9 @@ async def on_ready():
     :return: N/A
     """
     print('We have logged in as {0.user}'.format(client))
-    notification.notify(title='Anti-Scam Bot active',message='Anti-scam.py is online and running.')
+    notification.notify(title='Anti-Scam Bot active', message='Anti-scam.py is online and running.')
     await client.change_presence(activity=game)
+    await client.get_user(eclipse_id).send('Ready and Active')
 
 
 switcher = {'ping': ping, 'version': version, 'quit': quit, 'profile': profile, 'ref': ref, 'setref': set_ref,
