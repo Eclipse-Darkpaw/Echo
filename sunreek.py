@@ -110,12 +110,14 @@ class Application:
 
 
 class Message:
-    def __init__(self, content, channel):
+    def __init__(self, content, channel, target_message = None):
         self.content = content
         self.channel = channel
+        self.author = target_message.author
+        self.message = target_message
 
     async def reply(self, content):
-        await self.channel.send(content)
+        await self.message.reply(content)
 
 
 async def verify(message):
@@ -474,6 +476,9 @@ async def help_message(message):
         embed.add_field(name='`' + prefix + 'huh`',
                         value='???',
                         inline=False)
+        embed.add_field(name='`' + prefix + 'random_ref`',
+                        value='Same as `' + prefix + 'ref random`',
+                        inline='False')
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
@@ -1094,7 +1099,8 @@ async def on_ready():
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,
             'quit': end, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
-            'save': save, 'huh': huh, 'kick': kick, 'ban': ban}
+            'save': save, 'huh': huh, 'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref,
+            'rr': random_ref}
 
 
 @client.event
