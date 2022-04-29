@@ -6,11 +6,11 @@ import discord
 import os
 import sys
 from profile import display_profile, set_bio
-from refManagement import ref, set_ref, add_ref, oc
+from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 
 prefix = '>'
-version_num = '2.1.1'
+version_num = '2.1.2'
 
 eclipse_id = 440232487738671124
 
@@ -84,7 +84,7 @@ async def help_message(message):
     """
     Displays the help embed
     Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
+    Last function edit: -Autumn | V2.1.2
     :param message:
     :return:
     """
@@ -119,6 +119,9 @@ async def help_message(message):
                         inline=False)
         embed.add_field(name='`' + prefix + 'OC []`',
                         value="manages and views a users OCs (not including the ones in ",
+                        inline=False)
+        embed.add_field(name='`' + prefix + 'rr/randomref/random_ref`',
+                        value='Gets a random users ref sheet. Alias for `' + prefix + 'ref random`',
                         inline=False)
         embed.add_field(name='Moderator Commands',
                         value='Commands that only mods can use',
@@ -176,7 +179,12 @@ async def help_message(message):
         ref_embed.add_field(name='`set <string/ref>`',
                             value='Changes your ref to say what you want. Only emotes from this server can be used.',
                             inline=False)
-
+        ref_embed.add_field(name='`random [all]`',
+                            value="Retrieves a random user's ref sheet. Is limited to members in the guild the message "
+                                  "comes from, unless you add `all` to the end of the command or run the command in "
+                                  "DMs",
+                            inline=False)
+        
         await message.channel.send(embed=ref_embed)
     elif command[1] == 'OC':
         embed = discord.Embed(title='`' + prefix + 'OC` Command List',
@@ -240,7 +248,8 @@ async def on_ready():
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'quit': end, 'profile': profile, 'ref': ref,
-            'restart': restart, 'setref': set_ref, 'addref': add_ref, 'oc': oc}
+            'restart': restart, 'setref': set_ref, 'addref': add_ref, 'oc': oc, 'random_ref': random_ref,
+            'randomref': random_ref, 'rr': random_ref}
 
 
 @client.event
@@ -275,16 +284,13 @@ def run_refbot():
     :return: None
     """
 
+    tokens = ['REFBOT_TOKEN', 'TESTBOT_TOKEN']
     if len(sys.argv) > 1:
-        inp = int(sys.argv[1])
+        inp = int(sys.argv[1]) - 1
     else:
-        inp = int(input('Input a bot num\n1. refbot\n'))
-
-    if inp == 1:
-        client.run(os.environ.get('REFBOT_TOKEN'))
-
-    pass
-
+        inp = int(input('Input a bot num\n1. refbot\n2. testbot\n')) - 1
+        
+    client.run(os.environ.get(tokens[inp]))
 
 if __name__ == '__main__':
     run_refbot()

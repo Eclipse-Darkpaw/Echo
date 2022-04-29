@@ -5,6 +5,9 @@ import sys
 import time
 
 from main import read_line
+from plyer import notification
+from refbot import profile
+from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 version_num = '2.1.1'
 
@@ -327,10 +330,12 @@ async def on_ready():
     :return: N/A
     """
     print('We have logged in as {0.user}'.format(client))
+    notification.notify(title='Anti-Scam Bot active',message='Anti-scam.py is online and running.')
     await client.change_presence(activity=game)
 
 
-switcher = {'ping': ping, 'version': version, 'quit': quit}
+switcher = {'ping': ping, 'version': version, 'quit': quit, 'profile': profile, 'ref': ref, 'setref': set_ref,
+            'addref': add_ref, 'oc': oc, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref}
 blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
 code = 'plsdontban'     # flag escape code
 

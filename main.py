@@ -10,6 +10,17 @@ start_time = time.time()
 # todo: add a master prefix only applicable to you as a back door
 
 
+class Message:
+    def __init__(self, content, channel, target_message = None):
+        self.content = content
+        self.channel = channel
+        self.author = target_message.author
+        self.message = target_message
+
+    async def reply(self, content):
+        await self.message.reply(content)
+        
+
 async def read_line(client, channel, prompt, target, delete_prompt=True, delete_response=True):
     show = await channel.send(prompt)
 
@@ -31,17 +42,24 @@ async def read_line(client, channel, prompt, target, delete_prompt=True, delete_
 
 # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
 def get_user_id(message, arg=1):
+    """
+    
+    :param message:
+    :param arg:
+    :return: Returns a user ID as an int. returns -1 if unable to complete task. works in 100% of cases if used right,
+    so don't worry about it ever returning -1.
+    """
     command = message.content.split(' ')
     if len(command) == arg:
-        target = message.author.id
+        return message.author.id
     elif len(command[arg]) == 18:
-        target = int(command[arg])
+        return int(command[arg])
     elif len(message.mentions) == 1:
-        target = message.mentions[0].id
+        return message.mentions[0].id
+    elif message.guild is not None:
+        return message.guild.get_member_named(command[1]).id
     else:
-        target = message.guild.get_member_named(command[1]).id
-
-    return target
+        return -1
 
 
 async def ping(message):
