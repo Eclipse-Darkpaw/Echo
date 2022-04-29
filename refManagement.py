@@ -1,10 +1,9 @@
 import discord
 import os
 from fileManagement import ref_path, oc_folder_path, oc_path, ref_folder_path
-from main import get_user_id
+from main import get_user_id, Message
 from random import randint
-from sunreek import Message
-# TODO: allow for multiple OCs
+# DONE: allow for multiple OCs
 
 
 async def set_ref(message):
@@ -49,13 +48,42 @@ async def add_ref(message):
         await message.channel.send('No ref attached!')
 
 
-async def random_ref(message):
-    '''
+async def random_ref(message, refs_in_guild=True):
+    """
     >random ref (all)
     :param message:
+    :param refs_in_guild:
     :return:
-    '''
-    message.content.split(' ')
+    """
+    command = message.content[1:].split(' ', 1)
+    if len(command) == 2 and (command[0] == 'rr' or command[0] == 'randomref' or command[0] == 'random_ref'):
+        refs_in_guild = False
+    guild = message.guild
+    
+    ref_ids = [int(f[:-5]) for f in os.listdir('resources/refs') if f[-5:] == '.refs']
+    ref_ids.remove(message.author.id)
+    target_id = int(ref_ids[randint(0, len(ref_ids))])
+    target_in_guild = False
+    
+    if guild is not None:
+        member_ids = [m.id for m in message.guild.members]
+        if target_id in member_ids:
+            target_in_guild = True
+    
+    if guild is not None and refs_in_guild:
+        while not target_in_guild:
+            if target_id in member_ids:
+                target_in_guild = True
+            else:
+                ref_ids.remove(str(target_id))
+                target_id = int(ref_ids[randint(0, len(ref_ids))])
+                
+    await ref(Message('ref ' + str(target_id), message.channel, target_message=message))
+    
+    if target_in_guild:
+        await message.channel.send(message.guild.get_member(target_id).display_name + "'s ref sheet(s)")
+    else:
+        await message.channel.send('<@' + str(target_id) + ">'s ref sheet")
 
 
 async def ref(message):
@@ -83,17 +111,10 @@ async def ref(message):
         add_ref(message)
         message.reply('Ref added!')
     elif command[1] == 'random':
-        ref_ids = [int(f[:-5]) for f in os.listdir('resources/refs') if f[-5:] == '.refs']
-        if len(command) == 3:
-            member_ids = [m.id for m in message.guild.members]
-            target_invalid = True
-            target_id = ref_ids[randint(0, len(ref_ids))]
-            while target_invalid:
-                if target_id in member_ids:
-                    target_invalid = False
-                else:
-                    ref_ids.remove(target_id)
-        await ref(Message('ref ' + str(target_id), message.chanel, target_message=message))
+        random_ref(message, len(command)==2)
+        
+            
+        
     else:
         target = get_user_id(message)
 
