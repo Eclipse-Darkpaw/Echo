@@ -81,7 +81,8 @@ async def random_ref(message, refs_in_guild=True):
     await ref(Message('ref ' + str(target_id), message.channel, target_message=message))
     
     if target_in_guild:
-        await message.channel.send(message.guild.get_member(target_id).display_name + "'s ref sheet(s)")
+        target = message.guild.get_member(target_id)
+        await message.channel.send(target.name + "'s ref sheet(s)\n`ID: " + target_id + '`')
     else:
         await message.channel.send('<@' + str(target_id) + ">'s ref sheet")
 
