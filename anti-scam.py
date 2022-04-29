@@ -5,7 +5,6 @@ import sys
 import time
 
 from main import read_line
-from plyer import notification
 from refbot import profile
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
