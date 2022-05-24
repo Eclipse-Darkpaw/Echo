@@ -209,6 +209,27 @@ async def help_message(message):
         await message.channel.send(embed=embed)
 
 
+async def num_servers(message):
+    """
+    Returns the number of servers the bot is in
+    :param message:
+    :return:
+    """
+    await message.reply(str(len(client.guilds)))
+
+
+async def list_servers(message):
+    """
+    Prints the list of servers the bot is in
+    :param message:
+    :return:
+    """
+    servers = '**__Server List__**\n'
+    for guild in client.guilds:
+        servers += '`' + guild.id + '` - ' + guild.name + '\n'
+    await message.reply(servers)
+
+
 @client.event
 async def on_ready():
     """
@@ -227,7 +248,7 @@ async def on_ready():
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'quit': end, 'profile': profile, 'ref': ref,
             'restart': restart, 'setref': set_ref, 'addref': add_ref, 'oc': oc, 'random_ref': random_ref,
-            'randomref': random_ref, 'rr': random_ref}
+            'randomref': random_ref, 'rr': random_ref, 'num_servers': num_servers, 'list_servers': list_servers}
 
 
 @client.event
