@@ -3,7 +3,7 @@ import discord
 import os
 import sys
 
-from profile import profile
+from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 from main import read_line, get_user_id
 
@@ -311,6 +311,27 @@ async def save(message):
     """
     # artfight_save()
     await message.reply('Data saved')
+
+
+async def profile(message, client=None):
+    """
+    Displays a users profile
+    Last docstring edit: -Autumn | V2.1.0
+    Last function edit: -Autumn | Unknown Version
+    :param message: message calling the bot
+    :return: None
+    """
+    command = message.content.split(' ', 2)
+    if len(command) == 1:
+        await display_profile(message, client)
+    if command[1] == 'edit':
+        try:
+            set_bio(message.author, command[2])
+            await message.channel.send('Bio set')
+        except ValueError:
+            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
+    else:
+        await display_profile(message, client)
 
 
 async def modmail(message):
