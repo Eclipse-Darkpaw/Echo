@@ -1016,7 +1016,7 @@ async def huh(message):
     """
     await message.reply("We've been trying to reach you about your car's extended warranty")
 
-
+scan_ignore = [688611557508513854]
 async def scan_message(message):
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
@@ -1098,13 +1098,13 @@ async def on_message(message):
 
     if message.author.bot:
         return
-    if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
+    if (message.content.find('@here') != -1 or message.content.find('@everyone') != -1):
         if not message.author.guild_permissions.mention_everyone:
             await scan_message(message)
     content = message.content.lower()
 
     if message.guild is None or content.find(code) != -1 or \
-            message.author.guild_permissions.administrator:
+            message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
         pass
     else:
         await scan_message(message)
