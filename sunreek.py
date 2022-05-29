@@ -45,7 +45,8 @@ application_questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you 
                          'name and numbers(e.g. Echo#0109)',
                          'Why do you want to join?']
 
-blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
+extreme_blacklist = ['@everyone', '@here']
+blacklist = ['https://', 'gift', 'nitro', 'steam', 'discord', 'free', 'who is first? :)', "who's first? :)"]
 code = 'plsdontban'
 
 artfight_enabled = False
@@ -1016,6 +1017,7 @@ async def huh(message):
     """
     await message.reply("We've been trying to reach you about your car's extended warranty")
 
+
 scan_ignore = [688611557508513854]
 async def scan_message(message):
     """
@@ -1027,17 +1029,25 @@ async def scan_message(message):
     :return: None
     """
     flags = 0
+    extreme_flags = 0
+    words_flagged = []
     content = message.content.lower()
+
+    for word in extreme_blacklist:
+        index = content.find(word)
+        if index != -1:
+            extreme_flags += 1
+            flags += 1
+            words_flagged.append(word)
 
     for word in blacklist:
         index = content.find(word)
         if index != -1:
             flags += 1
+            words_flagged.append(word)
 
-    if flags < 2:
-        return
-    else:
-        if flags >= 3:
+    if flags >= 2:
+        if flags >= 3 or extreme_flags >= 1:
             await message.delete()
 
         content = message.content.replace('@', '@ ')
@@ -1103,8 +1113,10 @@ async def on_message(message):
             await scan_message(message)
     content = message.content.lower()
 
-    if message.guild is None or content.find(code) != -1 or \
-            message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
+    if message.guild is None or\
+            content.find(code) != -1 or \
+            message.author.guild_permissions.administrator or\
+            message.channel.id in scan_ignore:
         pass
     else:
         await scan_message(message)
