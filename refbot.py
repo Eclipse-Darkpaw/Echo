@@ -5,7 +5,7 @@ import time
 import discord
 import os
 import sys
-from profile import profile
+from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 
@@ -228,6 +228,27 @@ async def list_servers(message):
     for guild in client.guilds:
         servers += '`' + guild.id + '` - ' + guild.name + '\n'
     await message.reply(servers)
+
+
+async def profile(message):
+    """
+    Displays a users profile
+    Last docstring edit: -Autumn | V2.1.0
+    Last function edit: -Autumn | Unknown Version
+    :param message: message calling the bot
+    :return: None
+    """
+    command = message.content.split(' ', 2)
+    if len(command) == 1:
+        await display_profile(message, client)
+    if command[1] == 'edit':
+        try:
+            set_bio(message.author, command[2])
+            await message.channel.send('Bio set')
+        except ValueError:
+            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
+    else:
+        await display_profile(message, client)
 
 
 @client.event
