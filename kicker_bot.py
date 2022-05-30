@@ -28,19 +28,27 @@ import time
 version_num = '2.1.0'
 
 # This is the bot prefix. This tells the bot what to look for at the start of a message.
-prefix = '>'        
+prefix = '>'
 
 # This is the bot Token. It's like the bots password. DO NOT SHARE THE TOKEN WITH ANYONE. Ideally you'll store this
 # in an environment variable, but baby steps first. When you get a grasp on what you're doing, look up how to use
 # environmental variables
-token = os.environ.get('TESTBOT_TOKEN')
+token = ''
 
 # This sets the bot's Activity status. It allows the bot to go into more detail about its current
 # status
-game = discord.Game('Scanning for pings')
+
+
+intents = discord.Intents.default()
+intents.members = True  # DO NOT TOUCH THIS LINE
+# In or
+
+# This gives the bot a custom activity status. I'd recommend keeping this because it  tells you the bots prefix
+game = discord.Game(prefix + "help for commands")
 
 # The client is the bot's discord account. It allows the bot to connect to discord and run commands
-client = discord.Client()
+client = discord.Client(intents=intents)
+
 
 
 def split_commands(content, arguments=1):
@@ -119,13 +127,20 @@ async def purge(message):
     # this method only runs if you can manage roles
     if message.author.guild_permissions.manage_roles:
         commands = split_commands(message.content, 1)
+        print(commands[1])
 
         await message.reply('Finding unverified users, Please wait.')
         unverified_ppl = []
-
-        kick_number = int(commands[1])
+        
+        try:
+            kick_number = int(commands[1])
+        except IndexError:
+            await message.reply('Lack of arguments. Please provide a number to kick')
+        
+        print(message.guild.members)
 
         for member in message.guild.members:
+            print(len(member.roles))
             if len(member.roles) == 1:
                 unverified_ppl.append(member)
                 if len(unverified_ppl) >= kick_number:
@@ -175,7 +190,7 @@ async def help(message):
     """
     Displays help with the bot's commands and how to use them
     Last docstring edit: -Autumn V2.0.0
-    Last method edit: -Autumn V2.0.0
+    Last method edit: -Autumn V2.1.0
     :param message: The message that called the bot
     :return: None
     """
@@ -190,11 +205,11 @@ async def help(message):
                                           'arguments',
                               color=0x45FFFF)
 
-        embed.add_field(name='`' + prefix + 'ping',
+        embed.add_field(name='`' + prefix + 'ping`',
                         value='Pings the bot and returns the time it takes to edit a message',
                         inline=False)  # adding inline=False makes sure all the items display in a vertical column
 
-        embed.add_field(name='`' + prefix + 'version_num`',
+        embed.add_field(name='`' + prefix + 'version`',
                         value='What version the bot is currently on',
                         inline=False)
 
@@ -210,12 +225,15 @@ async def help(message):
                         value='Displays the credit information about the bot and where you can get one of your own',
                         inline=False)
 
-        embed.add_field(name='`' + prefix + 'purge <role_id> <number_to_purge>`',
-                        value="",
+        embed.add_field(name='`' + prefix + 'purge <number_to_purge>`',
+                        value="purges a given number of role-less members",
                         inline=False)
+        
+        await message.channel.send(embed=embed)
     else:
         try:
-            help_switch[command[1]]()
+            embed = help_switch[command[1]]()
+            await message.channel.send(embed=embed)
         except KeyError:
             message.reply('Not a valid argument')
 
@@ -238,7 +256,8 @@ Its much easier to work with when dealing with Strings, like in discord bots, an
 functions to be called in a much more efficient way. However, this requires each function to have
 the same parameters. If you want each function to have different parameters, you need to handle it
 in the function.'''
-switcher = {'credit': credits, 'ping': ping, 'version': version, 'quit': end, 'help': help, 'purge': purge}
+switcher = {'credit': credits, 'credits': credits, 'ping': ping, 'version': version, 'quit': end, 'help': help,
+            'purge': purge}
 
 
 @client.event
