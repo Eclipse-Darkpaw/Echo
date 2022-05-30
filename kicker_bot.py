@@ -12,6 +12,7 @@ Every function has a docstring containing information about the function. Every 
 
 NOTE: I made this at like 2 am so there's gonna be spelling errors
 """
+import os
 
 '''
 Import statements are crucial statments that allow the bot to run code you didn't create yourself
@@ -25,7 +26,7 @@ import time
 
 # The version number isn't a necessary feature, but it is useful to confirm the bot is running the
 # most recent version of the code
-version_num = '2.1.0'
+version_num = '2.1.1'
 
 # This is the bot prefix. This tells the bot what to look for at the start of a message.
 prefix = '>'
@@ -33,15 +34,12 @@ prefix = '>'
 # This is the bot Token. It's like the bots password. DO NOT SHARE THE TOKEN WITH ANYONE. Ideally you'll store this
 # in an environment variable, but baby steps first. When you get a grasp on what you're doing, look up how to use
 # environmental variables
-token = ''
-
-# This sets the bot's Activity status. It allows the bot to go into more detail about its current
-# status
+token = os.environ.get('TOKEN')
 
 
 intents = discord.Intents.default()
 intents.members = True  # DO NOT TOUCH THIS LINE
-# In or
+# In order for the bot to see members, it need the members intent active
 
 # This gives the bot a custom activity status. I'd recommend keeping this because it  tells you the bots prefix
 game = discord.Game(prefix + "help for commands")
@@ -108,7 +106,7 @@ async def end(message):
     """
     global game
     # The global key word tells python to look for the variable outside the function named game
-    if message.author.guild_permissions.administrator: #makes sure the bot is being 
+    if message.author.guild_permissions.administrator: #makes sure the bot is being
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
         sys.exit()
