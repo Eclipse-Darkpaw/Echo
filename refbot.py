@@ -5,6 +5,8 @@ import time
 import discord
 import os
 import sys
+
+# custom imports from other files
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
