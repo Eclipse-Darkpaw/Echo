@@ -226,7 +226,7 @@ async def list_servers(message):
     """
     servers = '**__Server List__**\n'
     for guild in client.guilds:
-        servers += '`' + guild.id + '` - ' + guild.name + '\n'
+        servers += '`' + str(guild.id) + '` - ' + guild.name + '\n'
     await message.reply(servers)
 
 
