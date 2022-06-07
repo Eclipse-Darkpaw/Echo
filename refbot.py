@@ -7,7 +7,7 @@ import os
 import sys
 
 # custom imports from other files
-from profile import display_profile, set_bio
+from profile import display_profile, set_bio, edit_field, add_field, delete_field
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 
@@ -249,6 +249,16 @@ async def profile(message):
             await message.channel.send('Bio set')
         except KeyError:
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
+    elif command[1] == 'field':
+        command = message.content.split(' ', 3)
+        if command[2] == 'add':
+            add_field(message)
+        elif command[2] == 'edit':
+            edit_field(message)
+        elif command[2] == 'delete':
+            delete_field(message)
+        else:
+            await message.channel.send()
     else:
         await display_profile(message, client)
 
