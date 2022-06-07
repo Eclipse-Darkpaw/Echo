@@ -1,46 +1,35 @@
+"""
+Handles all profile related functions.
+File Version:2.0.1
+"""
 import discord
-from fileManagement import profile_path
+import json
+
+from fileManagement import profile_path, resource_file_path
 from main import get_user_id
 
 
 # name, join date, bio, icon
-
-
-def create_profile(member, bio='This user has not set a bio yet\n'):
-    try:
-        open(profile_path(str(member.id)), 'x')
-    except FileExistsError:
-        return
-    lines = [bio]
-    with open(profile_path(str(member.id)), 'w') as profile:
-        for line in lines:
-            profile.write(line)
+file_path = resource_file_path + 'global_files.json'
 
 
 def set_bio(member, bio):
-    """Sets a member's bio"""
-    status = 0
-    bio = bio.replace('\n', '/n')
+    with open(file_path, 'r') as file:
+        data = json.load(file)
     try:
-        file = open(profile_path(str(member.id)))
-        file.close()
-    except FileNotFoundError:
-        create_profile(member, bio)
-        return
-    with open(profile_path(str(member.id))) as profile:
-        lines = profile.readlines()
-    lines[0] = bio+'\n'
-    with open(profile_path(str(member.id)), 'w') as profile:
-        for line in lines:
-            try:
-                print(line)
-                profile.write(line)
-            except UnicodeEncodeError: 
-                profile.write('null\n')
-                print(line)
-                status = -1
-    if status == -1:
-        raise ValueError('Operation failed, please use ASCII characters')
+        data[str(member.id)]
+    except KeyError:
+        data[str(member.id)] = {}
+    
+    try:
+        data[str(member.id)]['profile']
+    except KeyError:
+        data[str(member.id)]['profile'] = {}
+    
+    data[str(member.id)]['profile']['bio'] = bio
+    
+    with open(file_path, 'w') as file:
+        file.write(json.dumps(data, indent=4))
 
 
 async def display_profile(message, client):
@@ -52,22 +41,57 @@ async def display_profile(message, client):
             member = message.guild.get_member(get_user_id(message, 1))
     else:
         member = message.author
+    # member variable is the member who's profile we want to display. I should probably name it target or something more
+    # obvious later. for now i just wanna make it work
+    
+    with open(file_path) as file:
+        data = json.load(file)
+    
     try:
-        file = open(profile_path(str(member.id)))
-        file.close()
-    except FileNotFoundError:
-        create_profile(member)
-    with open(profile_path(str(member.id))) as file:
-        lines = file.readlines()
+        profile = data[str(member.id)]['profile']
+    except KeyError:
+        profile = {'bio': "This user has not set a bio yet"}
+    
+    embed = discord.Embed(title=member.display_name,
+                                  description=profile['bio'])
+    embed.set_thumbnail(url=member.avatar_url)
+    embed.color = member.color
+    try:
+        for field in profile['fields']:
+            embed.add_field(name=field[0], value=field[1], inline=field[2])
+    except KeyError:
+        pass
+    
+    await message.channel.send(embed=embed)
 
-        lines[0] = lines[0].replace('/n', '\n')
-        embed = discord.Embed()
-        embed.set_author(name=member.name, icon_url=member.avatar_url)
-        embed.color = member.color
-        embed.add_field(name='Bio',
-                        value=lines[0],
-                        inline=False)
-        await message.channel.send(embed=embed)
+
+async def add_field(message):
+    # TODO: add this function
+    await message.reply('This isnt ready yet!\n<@440232487738671124>, Hurry up and fix me!')
+    if True:
+        return
+    title = ''
+    with open(file_path) as file:
+        data = json.load(file)
+    field = (title, value, inline)
+    data[str(message.author.id())]['profile']['fields'].append(field)
+    
+    with open(file_path, 'w') as file:
+        file.write(json.dumps(data, indent=4))
 
 
+async def edit_field(message, field_num, value):
+    await message.reply('This isn\'t ready yet!\n<@440232487738671124> Please fix me already!')
+    with open(file_path) as file:
+        data = json.load(file)
+    
+    data[str(message.author.id())]['profile']['fields'][field_num][1] = value
 
+    with open(file_path, 'w') as file:
+        file.write(json.dumps(data, indent=4))
+    
+
+async def delete_field(message):
+    # TODO: add this function
+    await message.reply('This isnt ready to use yet! Sorry!\n*<@440232487738671124>, hurry up and fix me!*')
+    raise NotImplementedError('delete_field is not implemented yet')
