@@ -5,9 +5,10 @@ import json
 def profile_update(root, files, dicty):
     profiles = dicty
     for file in files:
-        with open(root + '\\' + file, 'r') as prof:
-            profile = prof.readline().replace('/n', '\n')
-        profiles[int(file[0:-8])] = {"profile": profile}
+        with open(root + '\\' + file, 'r') as profile:
+            bio = profile.readline().replace('/n', '\n').strip()
+        profiles[int(file[0:-8])] = {"profile": {'bio': bio,
+                                                 'fields': []}}
     return profiles
 
 def ref_update(root, files, refs):
@@ -18,11 +19,11 @@ def ref_update(root, files, refs):
             if len(str(file[:-5])) == 18:
                 id = int(file[0:18])
                 try:
-                    refs[id]['refs'] = {'main': ref}
+                    refs[id]['refs'] = {'main': ref.strip()}
                 except KeyError:
-                    refs[id] = {'refs:': {'main': ref}}
+                    refs[id] = {'refs:': {'main': ref.strip()}}
             elif len(directory[-1]) == 18:
-                refs[int(directory[-1])]['refs'][file[:-4]] = ref
+                refs[int(directory[-1])]['refs'][file[:-4]] = ref.strip()
             else:
                 continue
     return refs
