@@ -1,12 +1,15 @@
+"""
+File Version:2.0.0
+"""
 import discord
 import json
 
-from fileManagement import profile_path
+from fileManagement import profile_path, resource_file_path
 from main import get_user_id
 
 
 # name, join date, bio, icon
-
+file_path = resource_file_path + 'global_files.json'
 
 def create_profile(member, bio='This user has not set a bio yet\n'):
     try:
@@ -20,30 +23,22 @@ def create_profile(member, bio='This user has not set a bio yet\n'):
 
 
 def set_bio(member, bio):
-    """Sets a member's bio"""
-    status = 0
-    bio = bio.replace('\n', '/n')
+    with open(file_path,'r') as file:
+        data = json.load(file)
     try:
-        file = open(profile_path(str(member.id)))
-        file.close()
-    except FileNotFoundError:
-        create_profile(member, bio)
-        return
-    with open(profile_path(str(member.id))) as profile:
-        lines = profile.readlines()
-    lines[0] = bio+'\n'
-    with open(profile_path(str(member.id)), 'w') as profile:
-        for line in lines:
-            try:
-                print(line)
-                profile.write(line)
-            except UnicodeEncodeError: 
-                profile.write('null\n')
-                print(line)
-                status = -1
-    if status == -1:
-        raise ValueError('Operation failed, please use ASCII characters')
-
+        data[str(member.id)]
+    except KeyError:
+        data[str(member.id)] = {}
+    
+    try:
+        data[str(member.id)]['profile']
+    except KeyError:
+        data[str(member.id)]['profile'] = {}
+    
+    data[str(member.id)]['profile']['bio'] = bio
+    
+    with open(file_path, 'w') as file:
+        file.write(json.dumps(data, indent=4))
 
 async def display_profile(message, client):
     command = message.content.split(' ', 1)
@@ -54,22 +49,28 @@ async def display_profile(message, client):
             member = message.guild.get_member(get_user_id(message, 1))
     else:
         member = message.author
+    # member variable is the member who's profile we want to display. I should probably name it target or something more
+    # obvious later. for now i just wanna make it work
+    
+    with open(file_path) as file:
+        data = json.load(file)
+    
     try:
-        file = open(profile_path(str(member.id)))
-        file.close()
-    except FileNotFoundError:
-        create_profile(member)
-    with open(profile_path(str(member.id))) as file:
-        lines = file.readlines()
-
-        lines[0] = lines[0].replace('/n', '\n')
-        embed = discord.Embed()
-        embed.set_author(name=member.name, icon_url=member.avatar_url)
-        embed.color = member.color
-        embed.add_field(name='Bio',
-                        value=lines[0],
-                        inline=False)
-        await message.channel.send(embed=embed)
+        profile = data[str(member.id)]['profile']
+    except KeyError:
+        profile = {'bio': "This user has not set a bio yet"}
+    
+    embed = discord.Embed(title=member.display_name,
+                                  description=profile['bio'])
+    embed.set_thumbnail(url=member.avatar_url)
+    embed.color = member.color
+    try:
+        for field in profile['fields']:
+            embed.add_field(field)
+    except KeyError:
+        pass
+    
+    await message.channel.send(embed=embed)
 
 
 
