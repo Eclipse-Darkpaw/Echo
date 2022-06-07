@@ -5,12 +5,14 @@ import time
 import discord
 import os
 import sys
-from profile import display_profile, set_bio
+
+# custom imports from other files
+from profile import display_profile, set_bio, edit_field, add_field, delete_field
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 
 prefix = '>'
-version_num = '2.1.2'
+version_num = '2.2.0'
 
 eclipse_id = 440232487738671124
 
@@ -241,12 +243,22 @@ async def profile(message):
     command = message.content.split(' ', 2)
     if len(command) == 1:
         await display_profile(message, client)
-    if command[1] == 'edit':
+    elif command[1] == 'edit':
         try:
             set_bio(message.author, command[2])
             await message.channel.send('Bio set')
-        except ValueError:
+        except KeyError:
             await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
+    elif command[1] == 'field':
+        command = message.content.split(' ', 3)
+        if command[2] == 'add':
+            add_field(message)
+        elif command[2] == 'edit':
+            edit_field(message)
+        elif command[2] == 'delete':
+            delete_field(message)
+        else:
+            await message.channel.send()
     else:
         await display_profile(message, client)
 
@@ -304,7 +316,7 @@ def run_refbot():
     :return: None
     """
 
-    tokens = ['REFBOT_TOKEN', 'TESTBOT_TOKEN']
+    tokens = ['REFBOT_TOKEN', 'TESTBOT_TOKEN', 'TOKEN']
     if len(sys.argv) > 1:
         inp = int(sys.argv[1]) - 1
     else:
