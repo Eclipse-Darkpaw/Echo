@@ -155,7 +155,7 @@
             "fields": []
         },
         "refs": {
-            "main": "https://cdn.discordapp.com/attachments/688611557508513854/879511508478988338/sam_reference_sheet_2021.png"
+            "main": "https://cdn.discordapp.com/attachments/612946957438025728/981728059453497374/sam_reference_sheet_20212022-.png"
         }
     },
     "434119116094439424": {
@@ -170,7 +170,18 @@
     "440232487738671124": {
         "profile": {
             "bio": "Hi! I'm Autumn! Im a mod and maintain several bots, such as <@815418445192888321>, <@842194404496506972> and <@933540985667993671>, DM me if you have any issues with them! <:tiniGemini:848413921169375253>",
-            "fields": []
+            "fields": [
+                [
+                    "Names",
+                    "Autumn\nSummer\nWinter\nEclipse",
+                    "True"
+                ],
+                [
+                    "Pronouns",
+                    "she/they\nhe/him\nthey/them\nhe/they",
+                    "True"
+                ]
+            ]
         },
         "refs": {
             "main": "https://cdn.discordapp.com/attachments/842197646327676978/890326717850345502/gemini_ref_copy.png",
@@ -312,6 +323,18 @@
             "fields": []
         }
     },
+    "749443249302929479": {
+        "profile": {
+            "bio": "This user has not set a bio yet",
+            "fields": []
+        }
+    },
+    "755898791818952756": {
+        "profile": {
+            "bio": "This user has not set a bio yet",
+            "fields": []
+        }
+    },
     "798470348801835019": {
         "profile": {
             "bio": "Hello! I'm elliot or gino!! I'm just a silly lil' gardenboy :'3\nplease only use the pronouns listed next to the name when referring to me :> !! \nElliot (they/he) \nGino (they/them)",
@@ -328,6 +351,12 @@
         }
     },
     "955224961805598740": {
+        "profile": {
+            "bio": "This user has not set a bio yet",
+            "fields": []
+        }
+    },
+    "978288915335225375": {
         "profile": {
             "bio": "This user has not set a bio yet",
             "fields": []
@@ -491,6 +520,11 @@
     "842194404496506972": {
         "refs:": {
             "main": "https://cdn.discordapp.com/attachments/842168956478423090/848301713781555210/What-Are-Plants.png"
+        }
+    },
+    "843564250945552454": {
+        "refs:": {
+            "main": "merald_exper\nhttps://cdn.discordapp.com/attachments/980884324708663387/980886663146377236/Merald_Exper_REF_SHEET_COMMISSION.png"
         }
     }
 }
