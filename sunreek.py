@@ -81,7 +81,7 @@ class Application:
                     question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
                     guesses -= 1
                     response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
-                                                   delete_response=False)
+                                               delete_response=False)
                     if guesses <= 0:
                         await dm.send('No guesses remain.')
                         return -1
