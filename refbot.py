@@ -252,11 +252,11 @@ async def profile(message):
     elif command[1] == 'field':
         command = message.content.split(' ', 3)
         if command[2] == 'add':
-            add_field(message)
+            await add_field(message, client)
         elif command[2] == 'edit':
-            edit_field(message)
+            await edit_field(message)
         elif command[2] == 'delete':
-            delete_field(message)
+            await delete_field(message)
         else:
             await message.channel.send()
     else:

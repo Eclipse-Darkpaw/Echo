@@ -178,8 +178,13 @@
                 ],
                 [
                     "Pronouns",
-                    "she/they\nhe/him\nthey/them\nhe/they",
+                    "She/They\nHe/Him\nThey/Them\He/They",
                     "True"
+                ],
+                [
+                    "Social Media",
+                    "Twitter - @Autumna1Equin0x\nFurAffinity - Autumna1Equin0x\nToyhou.se - Autumna1Equin0x",
+                    "False"
                 ]
             ]
         },

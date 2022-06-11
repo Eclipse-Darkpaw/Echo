@@ -19,9 +19,19 @@ class Message:
 
     async def reply(self, content):
         await self.message.reply(content)
-        
+
 
 async def read_line(client, channel, prompt, target, delete_prompt=True, delete_response=True):
+    """
+    
+    :param client:
+    :param channel:
+    :param prompt:
+    :param target:
+    :param delete_prompt:
+    :param delete_response:
+    :return:
+    """
     show = await channel.send(prompt)
 
     def check(msg):
@@ -68,22 +78,6 @@ async def ping(message):
     ping = time.time() - start
     edit = x.content + ' ' + str(int(ping * 1000)) + 'ms'
     await x.edit(content=edit)
-
-
-async def quit(message):
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        await message.channel.send('Goodbye :wave:')
-        await client.change_presence(activity=discord.Game('Going offline'))
-        sys.exit()
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
-
-
-async def restart(message):
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execl(sys.executable,__file__,'main.py')
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
 
 '''RNG base on a string a human creates then converts each word into an int by using its position on the list of words.
 add each int and mod '''
