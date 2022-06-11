@@ -47,10 +47,16 @@ async def display_profile(message, client):
     with open(file_path) as file:
         data = json.load(file)
     
+    profile = {}
     try:
-        profile = data[str(member.id)]['profile']
+        profile = data[str(member.id)]['profile']['bio']
     except KeyError:
-        profile = {'bio': "This user has not set a bio yet"}
+        profile['bio'] = "This user has not set a bio yet"
+    
+    try:
+        profile['fields'] = data[str(member.id)]['profile']['fields']
+    except KeyError:
+        pass
     
     embed = discord.Embed(title=member.display_name, description=profile['bio'])
     embed.set_thumbnail(url=member.avatar_url)
@@ -103,8 +109,19 @@ async def add_field(message, client):
     with open(file_path) as file:
         data = json.load(file)
     field = (title, value, inline)
-    data[str(message.author.id)]['profile']['fields'].append(field)
     
+    try:
+        data[str(message.author.id)]['profile']['fields'].append(field)
+    except KeyError:
+        try:
+            data[str(message.author.id)]['profile']['fields'] = [field]
+        except KeyError:
+            try:
+                data[str(message.author.id)]['profile'] = {'fields': [field]}
+            except KeyError:
+                data[str(message.author.id)] = {'profile': {'fields': [field]}}
+            
+            
     with open(file_path, 'w') as file:
         file.write(json.dumps(data, indent=4))
     
