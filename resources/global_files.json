@@ -170,7 +170,23 @@
     "440232487738671124": {
         "profile": {
             "bio": "Hi! I'm Autumn! Im a mod and maintain several bots, such as <@815418445192888321>, <@842194404496506972> and <@933540985667993671>, DM me if you have any issues with them! <:tiniGemini:848413921169375253>",
-            "fields": []
+            "fields": [
+                [
+                    "Names",
+                    "Autumn\n Summer\n Winter\n Eclipse",
+                    "True"
+                ],
+                [
+                    "Pronouns",
+                    "She/They",
+                    "True"
+                ],
+                [
+                    "Social Media",
+                    "Twitter - @Autumna1Equin0x\nFurAffinity - Autumna1Equin0x\nToyhou.se - Autumna1Equin0x",
+                    false
+                ]
+            ]
         },
         "refs": {
             "main": "https://cdn.discordapp.com/attachments/842197646327676978/890326717850345502/gemini_ref_copy.png",
