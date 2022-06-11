@@ -6,7 +6,7 @@ import discord
 import json
 
 from fileManagement import profile_path, resource_file_path
-from main import get_user_id
+from main import get_user_id, read_line
 
 
 # name, join date, bio, icon
@@ -52,46 +52,119 @@ async def display_profile(message, client):
     except KeyError:
         profile = {'bio': "This user has not set a bio yet"}
     
-    embed = discord.Embed(title=member.display_name,
-                                  description=profile['bio'])
+    embed = discord.Embed(title=member.display_name, description=profile['bio'])
     embed.set_thumbnail(url=member.avatar_url)
     embed.color = member.color
     try:
         for field in profile['fields']:
-            embed.add_field(name=field[0], value=field[1], inline=field[2])
+            embed.add_field(name=field[0], value=field[1], inline=bool(field[2]))
     except KeyError:
         pass
     
     await message.channel.send(embed=embed)
 
 
-async def add_field(message):
-    # TODO: add this function
-    await message.reply('This isnt ready yet!\n<@440232487738671124>, Hurry up and fix me!')
-    if True:
-        return
+async def add_field(message, client):
     title = ''
+    value = ''
+    inline = None
+    
+    # Get field title
+    title = await read_line(client,
+                            message.channel,
+                            'Field title?',
+                            message.author,
+                            delete_prompt=False,
+                            delete_response=False)
+    title = title.content
+    value = await read_line(client,
+                            message.channel,
+                            'Field text?',
+                            message.author,
+                            delete_prompt=False,
+                            delete_response=False)
+    value = value.content
+    while inline is None:
+        inline = await read_line(client,
+                                 message.channel,
+                                 'Field inline? (Y or N)',
+                                 message.author,
+                                 delete_response=False,
+                                 delete_prompt=False)
+        inline = inline.content
+        
+        if inline.lower() == "y" or inline.lower() == 'yes' or inline.lower() == 'true':
+            inline = True
+        elif inline.lower() == "n" or inline.lower() == 'no' or inline.lower() == 'false':
+            inline = False
+        else:
+            inline = None
+    
     with open(file_path) as file:
         data = json.load(file)
     field = (title, value, inline)
-    data[str(message.author.id())]['profile']['fields'].append(field)
+    data[str(message.author.id)]['profile']['fields'].append(field)
     
     with open(file_path, 'w') as file:
         file.write(json.dumps(data, indent=4))
+    
+    await message.reply('Field added!')
 
 
-async def edit_field(message, field_num, value):
-    await message.reply('This isn\'t ready yet!\n<@440232487738671124> Please fix me already!')
+async def edit_field(message):
+    # >profile field edit field_num name/value/inline <value>
+    temp = message.content.split(' ', 5)
+    if len(temp) == 6:
+        junk0, junk1, junk2, field_num, type, value = message.content.split(' ', 5)
+    else:
+        await message.reply('Missing required argument')
+    
     with open(file_path) as file:
         data = json.load(file)
     
-    data[str(message.author.id())]['profile']['fields'][field_num][1] = value
+    switch = {'name': 0, 'value': 1, 'inline': 2}
+    
+    try:
+        data[str(message.author.id)]['profile']['fields'][int(field_num)-1][switch[type]] = value
+    except KeyError:
+        await message.reply("Invalid field section, please select either `name`, `value` or `inline` instead of "
+                            + type)
+        return
+    except IndexError:
+        await message.reply("That field doesn't exist!")
+        return
 
     with open(file_path, 'w') as file:
         file.write(json.dumps(data, indent=4))
     
+    await message.reply('Field edited successfully')
+    
 
 async def delete_field(message):
-    # TODO: add this function
-    await message.reply('This isnt ready to use yet! Sorry!\n*<@440232487738671124>, hurry up and fix me!*')
-    raise NotImplementedError('delete_field is not implemented yet')
+    # >profile field edit field_num name/value/inline <value>
+    temp = message.content.split(' ', 3)
+    if len(temp) == 4:
+        junk0, junk1, junk2, field_num = message.content.split(' ', 3)
+    else:
+        raise TypeError('missing required argument`')
+    
+    with open(file_path) as file:
+        data = json.load(file)
+    
+    temp = data[str(message.author.id)]['profile']['fields']
+    
+    try:
+        del temp[int(field_num)-1]
+    except ValueError:
+        await message.reply('Please input a field number')
+        return
+    except IndexError:
+        await message.reply("This field doesn't exist!")
+        return
+    
+    data[str(message.author.id)]['profile']['fields'] = temp
+
+    with open(file_path, 'w') as file:
+        file.write(json.dumps(data, indent=4))
+    
+    await message.reply('Field deleted successfully')
