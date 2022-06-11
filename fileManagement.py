@@ -1,6 +1,6 @@
 import os
 
-resource_file_path = 'C:\\Users\\user\\Desktop\\Echo\\resources\\'
+resource_file_path = 'C:\\Users\\leebe\\Desktop\\Echo\\resources\\'
 
 def get_leaderboard_path(guild_id):
     return resource_file_path + 'Guild-files\\{}\\.leaderboard'.format(guild_id)
