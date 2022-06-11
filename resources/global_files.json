@@ -155,7 +155,7 @@
             "fields": []
         },
         "refs": {
-            "main": "https://cdn.discordapp.com/attachments/688611557508513854/879511508478988338/sam_reference_sheet_2021.png"
+            "main": "https://cdn.discordapp.com/attachments/612946957438025728/981728059453497374/sam_reference_sheet_20212022-.png"
         }
     },
     "434119116094439424": {
@@ -173,18 +173,18 @@
             "fields": [
                 [
                     "Names",
-                    "Autumn\n Summer\n Winter\n Eclipse",
+                    "Autumn\nSummer\nWinter\nEclipse",
                     "True"
                 ],
                 [
                     "Pronouns",
-                    "She/They",
+                    "She/They\nHe/Him\nThey/Them\He/They",
                     "True"
                 ],
                 [
                     "Social Media",
                     "Twitter - @Autumna1Equin0x\nFurAffinity - Autumna1Equin0x\nToyhou.se - Autumna1Equin0x",
-                    false
+                    "False"
                 ]
             ]
         },
@@ -328,6 +328,18 @@
             "fields": []
         }
     },
+    "749443249302929479": {
+        "profile": {
+            "bio": "This user has not set a bio yet",
+            "fields": []
+        }
+    },
+    "755898791818952756": {
+        "profile": {
+            "bio": "This user has not set a bio yet",
+            "fields": []
+        }
+    },
     "798470348801835019": {
         "profile": {
             "bio": "Hello! I'm elliot or gino!! I'm just a silly lil' gardenboy :'3\nplease only use the pronouns listed next to the name when referring to me :> !! \nElliot (they/he) \nGino (they/them)",
@@ -344,6 +356,12 @@
         }
     },
     "955224961805598740": {
+        "profile": {
+            "bio": "This user has not set a bio yet",
+            "fields": []
+        }
+    },
+    "978288915335225375": {
         "profile": {
             "bio": "This user has not set a bio yet",
             "fields": []
@@ -507,6 +525,11 @@
     "842194404496506972": {
         "refs:": {
             "main": "https://cdn.discordapp.com/attachments/842168956478423090/848301713781555210/What-Are-Plants.png"
+        }
+    },
+    "843564250945552454": {
+        "refs:": {
+            "main": "merald_exper\nhttps://cdn.discordapp.com/attachments/980884324708663387/980886663146377236/Merald_Exper_REF_SHEET_COMMISSION.png"
         }
     }
 }
