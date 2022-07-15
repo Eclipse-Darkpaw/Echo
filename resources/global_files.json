@@ -174,17 +174,17 @@
                 [
                     "Names",
                     "Autumn\nSummer\nWinter\nEclipse",
-                    "True"
+                    true
                 ],
                 [
                     "Pronouns",
-                    "She/They\nHe/Him\nThey/Them\He/They",
-                    "True"
+                    "She/They\nHe/They\nThey/Them\nHe/They",
+                    true
                 ],
                 [
-                    "Social Media",
-                    "Twitter - @Autumna1Equin0x\nFurAffinity - Autumna1Equin0x\nToyhou.se - Autumna1Equin0x",
-                    "False"
+                    "Social Medias",
+                    "\n`Twitter` - @Autumna1Equin0x\n`FurAffinity` - Autumna1Equin0x\n`Toyhou.se` - Autumna1Equin0x\n`Instagram` - @Autumna1Equin0x",
+                    false
                 ]
             ]
         },
@@ -355,15 +355,15 @@
             "fields": []
         }
     },
-    "955224961805598740": {
+    "9524961805598740": {
         "profile": {
             "bio": "This user has not set a bio yet",
             "fields": []
         }
     },
-    "978288915335225375": {
+    "988915335225375": {
         "profile": {
-            "bio": "This user has not set a bio yet",
+            "bio": "gay",
             "fields": []
         }
     },
@@ -398,6 +398,15 @@
         }
     },
     "298119584337100800": {
+        "profile": {
+            "fields": [
+                [
+                    "names",
+                    "lio (friends only)\nalbedo\nbedo",
+                    true
+                ]
+            ]
+        },
         "refs:": {
             "main": "https://f2.toyhou.se/file/f2-toyhou-se/images/46515113_Fh4IbzRDzX3U3O6.png"
         }
@@ -484,7 +493,7 @@
     },
     "548252453431279626": {
         "refs:": {
-            "main": "https://cdn.discordapp.com/attachments/893444496593944606/943043430286778388/0F5F2A7F-2F60-4A79-AE03-B3F0C8F71DBE.jpg"
+            "main": "https://cdn.discordapp.com/attachments/893444496593944606/983813974288105522/FE72F154-6CFF-49F9-882C-93F1A7B8EC0C.png"
         }
     },
     "564953984205324298": {
@@ -530,6 +539,9 @@
     "843564250945552454": {
         "refs:": {
             "main": "merald_exper\nhttps://cdn.discordapp.com/attachments/980884324708663387/980886663146377236/Merald_Exper_REF_SHEET_COMMISSION.png"
+        },
+        "profile": {
+            "bio": "Tech enthusiast, Gamer and Furry all it one.\nHope you enjoy your stay here!"
         }
     }
 }
