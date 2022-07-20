@@ -95,4 +95,5 @@ async def on_message(message):
     # most_active.score(message)
 
 
-client.run('NzQ3MTUyOTU3OTE2ODQwMDM3.X0Kuag.99OHacMr_qmK2hKyCLURIAGYjNQ')
+client.run('expired token')
+raise Exception("Invalid bot token. Please reset the token in the dev portal")
