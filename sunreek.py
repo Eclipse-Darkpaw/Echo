@@ -66,6 +66,7 @@ class Application:
         self.guild = applicant_guild
         self.count = counter
         self.responses = []
+        self.passguesses = []
 
     async def question(self):
         global application_questions
@@ -79,18 +80,19 @@ class Application:
                     if response.content == 'Ooo festive, joining Riko server les go':
                         break
                     question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
+                    self.passguesses.append(response.content)
                     guesses -= 1
                     response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
                                                delete_response=False)
                     if guesses <= 0:
                         await dm.send('No guesses remain.')
-                        return -1
+                        return -1, self.passguesses
                     else:
                         continue
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is '
                       'fully processed.')
-        return 1
+        return 1, self.passguesses
 
     def gen_embed(self):
         global application_questions
@@ -147,7 +149,7 @@ async def verify(message):
         channel = message.channel
 
     try:
-        questioning_error_code = await application.question()
+        questioning_error_code, guesses = await application.question()
     except discord.errors.Forbidden:
         await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy '
                                                                 'settings in User Settings->Privacy & Safety')
@@ -157,7 +159,7 @@ async def verify(message):
 
     if questioning_error_code == -1:
         try:
-            await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.')
+            await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.\n' + guesses)
             await message.guild.kick(message.author, reason='Too many failed password attempts')
         except discord.Forbidden:
             await message.channel.send("Unable to complete task. Please verify my permissions are correct\n```Error 403"
