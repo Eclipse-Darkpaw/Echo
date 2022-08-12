@@ -80,7 +80,7 @@ class Application:
         for question in application_questions:
             response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
             if question == application_questions[0]:
-                guesses = 2
+                guesses = 2  # set number to one less than the number you want
                 for guess in range(guesses):
                     similarity = SequenceMatcher(None, 'Ooo festive, joining Riko server les go', response.content).ratio()
                     if debug:
