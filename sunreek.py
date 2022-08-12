@@ -1,12 +1,14 @@
-import time
 import discord
 import os
 import sys
+import time
 
+from difflib import SequenceMatcher
+from main import read_line, get_user_id
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
-from main import read_line, get_user_id
 
+# Keep imports in alphabetical order
 
 start_time = time.time()
 # TODO: Add uptime feature.
@@ -23,6 +25,9 @@ game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 guild = None
+
+bot_num = -1
+debug = False
 
 unverified_role_id = 612958044132737025     # Role assigned to unverified users. is removed on verification
 verified_role_id = 811522721824374834       # role to assign members who verify successfully
@@ -75,9 +80,12 @@ class Application:
         for question in application_questions:
             response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
             if question == application_questions[0]:
-                guesses = 2
+                guesses = 2  # set number to one less than the number you want
                 for guess in range(guesses):
-                    if response.content == 'Ooo festive, joining Riko server les go':
+                    similarity = SequenceMatcher(None, 'Ooo festive, joining Riko server les go', response.content).ratio()
+                    if debug:
+                        print(similarity)
+                    if similarity >= 0.4:
                         break
                     question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
                     self.passguesses.append(response.content)
@@ -112,7 +120,7 @@ class Application:
 
 
 class Message:
-    def __init__(self, content, channel, target_message = None):
+    def __init__(self, content, channel, target_message=None):
         self.content = content
         self.channel = channel
         self.author = target_message.author
@@ -136,6 +144,7 @@ async def verify(message):
     global submitted_forms
     msg_guild = message.guild
 
+# Check if member is verified
     if verified_role_id in message.guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified')
         return
@@ -159,7 +168,7 @@ async def verify(message):
 
     if questioning_error_code == -1:
         try:
-            await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.\n' + guesses)
+            await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.\n' + str(guesses))
             await message.guild.kick(message.author, reason='Too many failed password attempts')
         except discord.Forbidden:
             await message.channel.send("Unable to complete task. Please verify my permissions are correct\n```Error 403"
@@ -1180,7 +1189,10 @@ def run_sunreek():
         inp = int(sys.argv[1])
     else:
         inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
-
+    
+    # global bot number. determines what
+    bot_num = inp
+    
     if inp == 1:
         # Main bot client. Do not use for tests
 
