@@ -27,7 +27,7 @@ client = discord.Client(intents=intents)
 guild = None
 
 bot_num = -1
-debug = True
+debug = False
 
 unverified_role_id = 612958044132737025     # Role assigned to unverified users. is removed on verification
 verified_role_id = 811522721824374834       # role to assign members who verify successfully
@@ -80,7 +80,7 @@ class Application:
         for question in application_questions:
             response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
             if question == application_questions[0]:
-                guesses = 3
+                guesses = 2
                 for guess in range(guesses):
                     similarity = SequenceMatcher(None, 'Ooo festive, joining Riko server les go', response.content).ratio()
                     if debug:
