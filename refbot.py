@@ -12,7 +12,7 @@ from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 
 prefix = '>'
-version_num = '2.2.0'
+version_num = '3.0.0'
 
 eclipse_id = 440232487738671124
 

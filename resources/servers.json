@@ -1,0 +1,42 @@
+{
+	"serverID": {
+		"serverName":"name",
+		"codeword": "code",
+		"channels": {
+			"application": "channelID",
+			"questioning": "channelID",
+			"ScamLog": "channelID"
+		},
+		"roles":{
+			"member": "roleID",
+			"unverified": "roleID",
+			"questioning": "roleID"
+		}
+	},
+	"612550152514961408": {
+		"codeword": "Ooo spooki, joining Riko server les go",
+		"channels": {
+			"application": "819223217281302598",
+			"mailbox": "840753555609878528",
+			"log": "933456094016208916"
+		},
+		"roles":{
+			"unverified": "612958044132737025",
+			"questioning": "819238442931716137",
+			"verified": "811522721824374834"
+		}
+	},
+	"791392423704133653": {
+		"codeword": "orange",
+		"channels": {
+			"application": "1044847233574637608",
+			"log": "1044847253363376158"
+		},
+		"roles": {
+			"unverified": "983772184197627985",
+			"questioning": "983772406944505952",
+			"verified": "983772448749142137"
+		}
+	}
+
+}

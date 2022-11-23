@@ -1,10 +1,12 @@
 import discord
+import json
 import os
 import sys
 import time
 
-from difflib import SequenceMatcher
+from fileManagement import resource_file_path
 from main import read_line, get_user_id
+from modules.Verification import verify
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
@@ -13,8 +15,11 @@ from refManagement import ref, set_ref, add_ref, oc, random_ref
 start_time = time.time()
 # TODO: Add uptime feature.
 
+with open(resource_file_path + 'servers.json') as file:
+    data = json.load(file)
+
 prefix = '}'
-version_num = '2.0.0'
+version_num = '3.0.0'
 
 eclipse_id = 440232487738671124
 
@@ -29,26 +34,10 @@ guild = None
 bot_num = -1
 debug = False
 
-unverified_role_id = 612958044132737025     # Role assigned to unverified users. is removed on verification
-verified_role_id = 811522721824374834       # role to assign members who verify successfully
-questioning_role_id = 819238442931716137    # Role to assign when users
-
-application_channel = 819223217281302598    # channel where finished applications go
 mail_inbox = 840753555609878528             # modmail inbox channel
 log_channel = 933456094016208916            # channel all bot logs get sent
 
 testing_channel = 952750855285784586
-
-counter = 0
-active_forms = 0
-incomplete_forms = 0
-submitted_forms = 0
-application_questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)',
-                         'What is your nickname?',
-                         'How old are you?',
-                         'Where did you get the link from? Please be specific. If it was a user, please use the full '
-                         'name and numbers(e.g. Echo#0109)',
-                         'Why do you want to join?']
 
 blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
 code = 'plsdontban'
@@ -56,67 +45,6 @@ code = 'plsdontban'
 artfight_enabled = False
 
 testing_client = False
-
-
-class Application:
-    def __init__(self, applicant, channel, applicant_guild):
-        global counter
-        global active_forms
-        global incomplete_forms
-        counter += 1
-        active_forms += 1
-        incomplete_forms += 1
-        self.applicant = applicant
-        self.channel = channel
-        self.guild = applicant_guild
-        self.count = counter
-        self.responses = []
-        self.passguesses = []
-
-    async def question(self):
-        global application_questions
-        global client
-        dm = await self.applicant.create_dm()
-        for question in application_questions:
-            response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
-            if question == application_questions[0]:
-                guesses = 2  # set number to one less than the number you want
-                for guess in range(guesses):
-                    similarity = SequenceMatcher(None, 'Ooo festive, joining Riko server les go', response.content).ratio()
-                    if debug:
-                        print(similarity)
-                    if similarity >= 0.4:
-                        break
-                    question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
-                    self.passguesses.append(response.content)
-                    guesses -= 1
-                    response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
-                                               delete_response=False)
-                    if guesses <= 0:
-                        await dm.send('No guesses remain.')
-                        return -1, self.passguesses
-                    else:
-                        continue
-            self.responses.append(response.content)
-        await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is '
-                      'fully processed.')
-        return 1, self.passguesses
-
-    def gen_embed(self):
-        global application_questions
-
-        embed = discord.Embed(title='Application #' + str(self.count))
-        embed.set_author(name=self.applicant.name, icon_url=self.applicant.avatar_url)
-
-        for i in range(len(application_questions)):
-            embed.add_field(name=application_questions[i], value=self.responses[i])
-
-        embed.add_field(name='User ID', value=str(self.applicant.id), inline=False)
-
-        return embed
-
-    def __str__(self):
-        return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
 
 
 class Message:
@@ -130,127 +58,25 @@ class Message:
         await self.message.reply(content)
 
 
+async def setup(message):
+    """
+    sets up the bot for initial usage
+    :param message:
+    :return: None
+    """
+    pass
+    
+
 async def verify(message):
     """
     The method that primarily handles member verification. All members must verify from this method. Sends DM to user,
     asks user questions, then sends answers to the moderators in a designated chat
     Last docstring edit: -Autumn V1.14.5
-    Last method edit: -Autumn V1.16.3
+    Last method edit: -Autumn V3.0.0
     :param message: Discord message calling the method
     :return: NoneType
     """
-    global active_forms
-    global incomplete_forms
-    global submitted_forms
-    msg_guild = message.guild
-
-# Check if member is verified
-    if verified_role_id in message.guild.get_member(message.author.id).roles:
-        await message.channel.send('You are already verified')
-        return
-
-    applicant = message.author
-    application = Application(applicant, message.channel, message.guild)
-
-    if not testing_client:
-        channel = msg_guild.get_channel(application_channel)
-    else:
-        channel = message.channel
-
-    try:
-        questioning_error_code, guesses = await application.question()
-    except discord.errors.Forbidden:
-        await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy '
-                                                                'settings in User Settings->Privacy & Safety')
-        active_forms -= 1
-        incomplete_forms -= 1
-        return
-
-    if questioning_error_code == -1:
-        try:
-            await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.\n' + str(guesses))
-            await message.guild.kick(message.author, reason='Too many failed password attempts')
-        except discord.Forbidden:
-            await message.channel.send("Unable to complete task. Please verify my permissions are correct\n```Error 403"
-                                       "\nsunkreek.py Line 160:13\n"
-                                       "await message.guild.kick(message.author, reason='Too many failed password "
-                                       "attempts')```")
-
-    applied = await channel.send(embed=application.gen_embed())
-    emojis = ['✅', '❓', '🚫', '❗']
-    for emoji in emojis:
-        await applied.add_reaction(emoji)
-
-    def check(reaction, user):
-        """
-        Checks for reactions on a message.
-        :param reaction:
-        :param user:
-        :return: boolean
-        """
-        return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and\
-               reaction.message == applied
-
-    incomplete_forms -= 1
-    submitted_forms += 1
-    while True:
-        reaction, user = await client.wait_for('reaction_add', check=check)
-        if str(reaction.emoji) == '✅':
-            await application.applicant.add_roles(msg_guild.get_role(verified_role_id))
-
-            try:
-                await message.author.send('You have been approved.')
-            except discord.Forbidden:
-                await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
-
-            await application.applicant.remove_roles(msg_guild.get_role(questioning_role_id))
-            await application.applicant.remove_roles(msg_guild.get_role(unverified_role_id))
-            await channel.send('<@!'+str(message.author.id)+'> approved')
-
-            active_forms -= 1
-            submitted_forms -= 1
-
-            await applied.add_reaction('🆗')
-            break
-        elif str(reaction.emoji) == '❓':
-            await application.applicant.add_roles(msg_guild.get_role(questioning_role_id))
-            await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
-            await message.author.send('You have been pulled into questioning.')
-        elif str(reaction.emoji) == '🚫':
-            reason = await read_line(client, msg_guild.get_channel(application_channel),
-                                     'Why was <@!' + str(message.author.id) + '> denied?', user,
-                                     delete_prompt=False, delete_response=False)
-
-            if reason == 'cancel':
-                await channel.send('Action cancelled')
-                continue
-            else:
-                await message.author.send('Your application denied for:\n> ' + reason.content)
-                await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
-                active_forms -= 1
-                submitted_forms -= 1
-                await applied.add_reaction('🆗')
-                break
-        elif str(reaction.emoji) == '❗':
-            reason = await read_line(client, msg_guild.get_channel(application_channel), 'Why was <@!' +
-                                     str(message.author.id) + '> banned? write `cancel` to cancel.', user,
-                                     delete_prompt=False, delete_response=False)
-            reason = reason.content
-            if reason == 'cancel':
-                await channel.send('Ban cancelled')
-
-            else:
-                try:
-                    await message.guild.ban(user=application.applicant, reason=reason)
-                    await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
-                    active_forms -= 1
-                    submitted_forms -= 1
-                    await applied.add_reaction('🆗')
-                    break
-                except discord.Forbidden:
-                    await channel.send('Error 403: Forbidden. Insufficient permissions.')
-                except discord.HTTPException:
-                    await channel.send('Ban failed. Please try again, by reacting to the message again.')
+    verify(message, client_in=client)
 
 
 async def ping(message):
@@ -744,6 +570,8 @@ async def purge(message):
     :param message: Message that called the bot
     :return: None
     """
+    unverified_role_id = data[str(message.guild.id)]["roles"]['unverified']
+    
     if message.author.guild_permissions.manage_roles:
         unverified_ppl = message.guild.get_role(unverified_role_id).members
         num_kicked = 0
@@ -1025,19 +853,6 @@ async def artfight(message):
             await message.reply(command[3]+' ornaments removed from Reindeer')'''
 
 
-async def numforms(message):
-    """
-    Displays the number of verification forms.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: Unknown
-    :param message:
-    :return:
-    """
-    await message.reply(str(active_forms) + ' active forms \n' +
-                        str(incomplete_forms) + ' incomplete \n' +
-                        str(submitted_forms) + ' forms Submitted')
-
-
 async def huh(message):
     """
     Easter egg
@@ -1108,9 +923,8 @@ async def on_ready():
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,
             'quit': end, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'activeforms': numforms,
-            'save': save, 'huh': huh, 'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref,
-            'rr': random_ref}
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save, 'huh': huh,
+            'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref}
 
 
 @client.event
@@ -1124,13 +938,10 @@ async def on_message(message):
     :return: None
     """
     global cursed_keys_running
-    global application_channel
-    global verified_role_id
-    global questioning_role_id
 
     if message.author.bot:
         return
-    if (message.content.find('@here') != -1 or message.content.find('@everyone') != -1):
+    if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
             await scan_message(message)
     content = message.content.lower()
