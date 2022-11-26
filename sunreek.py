@@ -19,7 +19,7 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.0.0'
+version_num = '3.1.2'
 
 eclipse_id = 440232487738671124
 
@@ -59,6 +59,8 @@ class Message:
 async def setup(message):
     """
     sets up the bot for initial usage
+    Last docstring edit: -Autumn V3.0.0
+    Last method edit: -Autumn V3.0.0
     :param message:
     :return: None
     """
@@ -75,6 +77,10 @@ async def verify(message):
     :return: NoneType
     """
     await Verif.verify(message, client_in=client)
+
+
+async def setcode(message):
+    await Verif.setcode(message, message.content.split(' ', 1)[1])
 
 
 async def ping(message):
@@ -918,10 +924,10 @@ async def on_ready():
     # artfight_load()
 
 
-switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify': verify, 'modmail': modmail,
-            'quit': end, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save, 'huh': huh,
-            'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref}
+switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify': verify, 'setcode': setcode,
+            'modmail': modmail, 'quit': end, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref,
+            'addref': add_ref, 'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save,
+            'huh': huh, 'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref}
 
 
 @client.event
