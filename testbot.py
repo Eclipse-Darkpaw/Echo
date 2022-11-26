@@ -2,33 +2,52 @@ import discord
 import os
 import sys
 
-from discord import app_commands
-
 
 intents = discord.Intents.default()
+intents.members = True
+
 client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)
 
 
-@tree.command(name="quit", description="quits the bot", guild=discord.Object(id=791392423704133653))
+prefix = '>'
+
 async def quit(interaction):
     await interaction.response.send_message("Goodbye")
     sys.exit()
     
 
-
-@tree.command(name="commandname", description="My first application Command", guild=discord.Object(id=791392423704133653))
-async def first_command(interaction):
-    await interaction.response.send_message("Hello!")
+async def first_command(message):
+    await message.reply("Hello!")
 
 
-@app_commands.context_menu()
-async def react(interaction: discord.Interaction, message: discord.Message):
-    await interaction.response.send_message('Very cool message!', ephemeral=True)
+async def react(message):
+    await message.reply('Very cool message!')
 
 
 @client.event
 async def on_ready():
-    await tree.sync(guild=discord.Object(id=791392423704133653))
+    print("All systems are go. Proceed with testing.")
 
-client.run(os.environ.get('TESTBOT_TOKEN'))
+
+
+switcher = {'first': first_command, 'react': react}
+
+
+@client.event
+async def on_mesage(message):
+    if message.author.bot:
+        return
+    if message.content[0] == prefix:
+        command = message.content.split()
+        try:
+            switcher[command[1]](message)
+        except KeyError:
+            pass
+
+
+def run_test():
+    client.run(os.environ.get('TESTBOT_TOKEN'))
+    
+
+if __name__ == "__main__":
+    run_test()
