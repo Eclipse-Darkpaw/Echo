@@ -45,6 +45,12 @@ class Application:
         self.passguesses = []
 
     async def question(self):
+        """
+        Questions the applicant
+        Last docstring edit: -Autumn V3.0.0
+        Last method edit: -Autumn V3.0.0
+        :return:
+        """
         global application_questions
         global client
         
@@ -86,6 +92,12 @@ class Application:
         return 1, self.passguesses
 
     def gen_embed(self):
+        """
+        generates the embed for the application.
+        Last docstring edit: -Autumn V3.0.0
+        Last method edit: -Autumn V3.0.0
+        :return:
+        """
         global application_questions
 
         embed = discord.Embed(title='Application #' + str(self.count))
@@ -106,8 +118,8 @@ async def verify(message, client_in):
     """
     The method that primarily handles member verification. All members must verify from this method. Sends DM to user,
     asks user questions, then sends answers to the moderators in a designated chat
-    Last docstring edit: -Autumn V3.0.0
-    Last method edit: -Autumn V3.0.0
+    Last docstring edit: -Autumn V3.1.0
+    Last method edit: -Autumn V3.1.1
     :param message: Discord message calling the method
     :param client_in: Bot client handling IO functions
     :return: NoneType
@@ -247,17 +259,20 @@ async def verify(message, client_in):
 async def setcode(message, codeword):
     """
     Changes the code word
+    Last docstring edit: -Autumn V3.1.2
+    Last method edit: -Autumn V3.1.2
+    :param message: discord message calling the function
     :type codeword: String
     :param codeword: The codeword to be set to
-    :return:
+    :return: None
     """
     with open(file_path) as file:
         data = json.load(file)
     
     data[str(message.guild.id)]['codeword'] = codeword
     
-    with open(file_path) as file:
+    with open(file_path, 'w') as file:
         file.write(json.dumps(data, indent=4))
     
-    await message.reply('Code word changed')
+    await message.reply(f'Code word changed to {codeword}')
     
