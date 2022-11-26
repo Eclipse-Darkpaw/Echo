@@ -3,10 +3,10 @@ import json
 import os
 import sys
 import time
+import modules.Verification as Verif
 
 from fileManagement import resource_file_path
 from main import read_line, get_user_id
-from modules.Verification import verify
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
@@ -28,8 +28,6 @@ intents.members = True
 
 game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
-
-guild = None
 
 bot_num = -1
 debug = False
@@ -76,7 +74,7 @@ async def verify(message):
     :param message: Discord message calling the method
     :return: NoneType
     """
-    verify(message, client_in=client)
+    await Verif.verify(message, client_in=client)
 
 
 async def ping(message):
@@ -912,7 +910,6 @@ async def on_ready():
     Last method edit: -Autumn V1.16.3
     :return: None
     """
-    global guild
 
     print('We have logged in as {0.user}'.format(client))
 

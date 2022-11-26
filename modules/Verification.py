@@ -27,20 +27,19 @@ client = None
 
 
 class Application:
-    def __init__(self, applicant, channel, applicant_guild, client_in):
+    def __init__(self, applicant, channel, applicant_guild,):
         global counter
         global active_forms
         global incomplete_forms
-        global client
         
         counter += 1
         active_forms += 1
         incomplete_forms += 1
-        client = client_in
+        
         
         self.applicant = applicant
         self.channel = channel
-        self.guild = applicant_guild
+        self.applicant_guild = applicant_guild
         self.count = counter
         self.responses = []
         self.passguesses = []
@@ -49,31 +48,38 @@ class Application:
         global application_questions
         global client
         
+        # FIXME: change to false for live deployment
+        debug = False
+        
         with open(file_path) as file:
             data = json.load(file)
         
-        code = data[str(self.applicant_guild)]['codeword']
+        code = data[str(self.applicant_guild.id)]['codeword']
         dm = await self.applicant.create_dm()
         for question in application_questions:
-            response = await read_line(client, dm, question, self.applicant, delete_prompt=False, delete_response=False)
+            
             if question == application_questions[0]:
-                guesses = 2  # set number to one less than the number you want
+                guesses = 3
                 for guess in range(guesses):
+                    response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
+                                               delete_response=False)
                     similarity = SequenceMatcher(None, code, response.content).ratio()
                     if debug:
                         print(similarity)
                     if similarity >= 0.4:
                         break
+                    guesses -= 1
                     question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
                     self.passguesses.append(response.content)
-                    guesses -= 1
-                    response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
-                                               delete_response=False)
+                    
                     if guesses <= 0:
                         await dm.send('No guesses remain.')
                         return -1, self.passguesses
                     else:
                         continue
+            else:
+                response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
+                                           delete_response=False)
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is '
                       'fully processed.')
@@ -110,6 +116,7 @@ async def verify(message, client_in):
     global incomplete_forms
     global submitted_forms
     global client
+    
     client = client_in
     msg_guild = message.guild
 
@@ -117,18 +124,17 @@ async def verify(message, client_in):
     with open(file_path) as file:
         data = json.load(file)
     
-    application_channel = data[str(message.guild.id)]['channels']['application']
-    verified_role_id = data[str(message.guild.id)]['roles']['verified']
-    
+    application_channel = int(data[str(message.guild.id)]['channels']['application'])
+    verified_role_id = int(data[str(message.guild.id)]['roles']['verified'])
     
     if verified_role_id in message.guild.get_member(message.author.id).roles:
-        await message.channel.send('You are already verified')
+        await message.channel.send('You are already verified', client_in)
         return
 
     applicant = message.author
     application = Application(applicant, message.channel, message.guild)
     
-    channel = message.channel
+    channel = message.guild.get_channel(application_channel)
 
     try:
         questioning_error_code, guesses = await application.question()
@@ -139,13 +145,18 @@ async def verify(message, client_in):
         incomplete_forms -= 1
         return
 
-    if questioning_error_code == -1:
-        try:
-            await channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.\n' + str(guesses))
+    if questioning_error_code == -1:    # Got password wrong too many times
+        
+        try:                            # kicks the user and sends a message.
+            # TODO: change to application channel
+            await message.channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.\n' + str(guesses))
             await message.guild.kick(message.author, reason='Too many failed password attempts')
-        except discord.Forbidden:
-            await message.channel.send("Unable to complete task. Please verify my permissions are correct\n```Error 403"
-                                       "\nsunkreek.py Line 160:13\n"
+        except discord.Forbidden:       # User cannot be kicked
+            
+            # TODO: change to application channel
+            await message.channel.send("Unable to complete task. Please verify my permissions are correct\n"
+                                       "```Error 403\n"
+                                       "Verification.py Line 148:13\n"
                                        "await message.guild.kick(message.author, reason='Too many failed password "
                                        "attempts')```")
 
@@ -166,12 +177,13 @@ async def verify(message, client_in):
 
     incomplete_forms -= 1
     submitted_forms += 1
-    questioning_role_id = data[str(message.guild.id)]['roles']['questioning']
-    unverified_role_id = data[str(message.guild.id)]['roles']['unverified']
+    questioning_role_id = int(data[str(message.guild.id)]['roles']['questioning'])
+    unverified_role_id = int(data[str(message.guild.id)]['roles']['unverified'])
     while True:
         reaction, user = await client.wait_for('reaction_add', check=check)
         if str(reaction.emoji) == '✅':
-            await application.applicant.add_roles(msg_guild.get_role(verified_role_id))
+            
+            await application.applicant.add_roles(message.guild.get_role(verified_role_id))
 
             try:
                 await message.author.send('You have been approved.')
@@ -192,15 +204,19 @@ async def verify(message, client_in):
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
         elif str(reaction.emoji) == '🚫':
-            reason = await read_line(client, msg_guild.get_channel(application_channel),
-                                     'Why was <@!' + str(message.author.id) + '> denied?', user,
+            # add a confirm feature
+            
+            reason = await read_line(client,
+                                     msg_guild.get_channel(application_channel),
+                                     'Why was <@!' + str(message.author.id) + '> denied? Write `cancel` to cancel.',
+                                     user,
                                      delete_prompt=False, delete_response=False)
 
-            if reason == 'cancel':
+            if reason.content == 'cancel':
                 await channel.send('Action cancelled')
                 continue
             else:
-                await message.author.send('Your application denied for:\n> ' + reason.content)
+                await message.author.send('Your application was denied for:\n> ' + reason.content)
                 await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
                 active_forms -= 1
                 submitted_forms -= 1
