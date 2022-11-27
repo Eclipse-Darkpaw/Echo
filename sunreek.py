@@ -1,8 +1,11 @@
 import discord
 import json
 import logging
-import modules.Verification as Verif
+import modules.AntiScam as AntiScam
+import modules.General as General
+import modules.Moderation as Mod
 import modules.ServerSettings as Settings
+import modules.Verification as Verif
 import os
 import sys
 import time
@@ -11,8 +14,6 @@ from fileManagement import resource_file_path
 from main import read_line, get_user_id
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
-
-
 # Keep imports in alphabetical order
 
 start_time = time.time()
@@ -24,7 +25,7 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.2.0'
+version_num = '3.3.0'
 
 eclipse_id = 440232487738671124
 
@@ -35,31 +36,7 @@ intents.members = True
 game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
-bot_num = -1
-debug = False    # Done: set to false on launch
-
-mail_inbox = 840753555609878528             # modmail inbox channel
-log_channel = 933456094016208916            # channel all bot logs get sent
-
-testing_channel = 952750855285784586
-
-blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
-code = 'plsdontban'
-
 artfight_enabled = False
-
-testing_client = False
-
-
-class Message:
-    def __init__(self, content, channel, target_message=None):
-        self.content = content
-        self.channel = channel
-        self.author = target_message.author
-        self.message = target_message
-
-    async def reply(self, content):
-        await self.message.reply(content)
 
 
 async def setup(message):
@@ -100,26 +77,22 @@ async def ping(message):
     """
     Displays the time it takes for the bot to send a message upon a message being received.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.16.2
+    Last method edit: -Autumn V3.3.0
     :param message: Message calling the bot
     :return: None
     """
-    start = time.time()
-    x = await message.channel.send('Pong!')
-    ping_time = time.time() - start
-    edit = x.content + ' ' + str(int(ping_time * 1000)) + 'ms'
-    await x.edit(content=edit)
+    await General.ping(message)
 
 
 async def version(message):
     """
     Displays the version of the bot being used
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.4
+    Last method edit: -Autumn V3.3.0
     :param message: Message calling the bot
     :return: None
     """
-    await message.channel.send('I am currently running version ' + version_num)
+    General.version(message, version_num)
 
 
 async def end(message):
@@ -127,32 +100,11 @@ async def end(message):
     Quits the bot. Sends a message and updates the game status to alert users the bot is quiting.
 
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.4
+    Last method edit: -Autumn V3.3.0
     :param message: Message calling the bot
     :return: None
     """
-    global game
-    if message.author.id == eclipse_id or message.author.guild_permissions.administrator:
-        await message.channel.send('Goodbye :wave:')
-        await client.change_presence(activity=discord.Game('Going offline'))
-        await save(message)
-        await client.close()
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
-
-
-async def restart(message):
-    """
-    Restarts the bot. Rarely called.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.16.3
-    :param message:
-    :return: None
-    """
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execl(sys.executable, __file__, 'main.py')
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
+    General.quit(message, client)
 
 
 async def save(message):
@@ -196,99 +148,34 @@ async def modmail(message):
     :param message: Message that called the bot
     :return: None
     """
-    sender = message.author
-    await message.delete()
-
-    dm = await sender.create_dm()
-    try:
-        subject = await read_line(client, dm, 'Subject Line:', sender, delete_prompt=False, delete_response=False)
-        subject = 'Modmail | ' + subject.content
-        body = await read_line(client, dm, 'Body:', sender, delete_prompt=False, delete_response=False)
-        await dm.send('Your message has been sent')
-    except discord.Forbidden:
-        message.reply('Unable to DM. Check your privacy settings')
-        return
-
-    mail = discord.Embed(title=subject, color=0xadd8ff)
-    mail.set_author(name=sender.name, icon_url=sender.avatar_url)
-    mail.add_field(name='Message', value=body.content)
-    await message.guild.get_channel(mail_inbox).send(embed=mail)
+    await Mod.modmail(message, client)
 
 
 async def kick(message):
     """
-        Method designed to kick users from the server the command originated.
-        >kick [user] [reason]
-        Last docstring edit: -Autumn V1.16.0
-        Last method edit: -Autumn V1.16.0
-        Method added: V1.16.0
-        :param message:The message that called the command
-        :return: None
-        """
-    if message.author.guild_permissions.kick_members:
-        command = message.content[1:].split(' ', 2)
-        if len(command) == 1:
-            embed = discord.Embed(title='Kick Command usage')
-            embed.add_field(name='}kick [user]', value='Kicks a user from the server')
-            embed.add_field(name='}kick [user] [reason]', value='Kicks a user with the reason provided')
-            await message.channel.send(embed=embed)
-            return
-
-        target = get_user_id(message)
-
-        if len(command) > 2:
-            reason = command[2]
-        else:
-            reason = 'No reason specified.'
-        try:
-            await message.guild.kick(message.guild.get_member(target), reason=reason)
-            await message.channel.send('<@!' + target + '> was kicked.')
-        except discord.Forbidden:
-            await message.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
-
-    else:
-        await message.reply('Unauthorized usage.')
+    Method designed to kick users from the server the command originated.
+    >kick [user] [reason]
+    Last docstring edit: -Autumn V1.16.0
+    Last method edit: -Autumn V1.16.0
+    Method added: V1.16.0
+    :param message:The message that called the command
+    :return: None
+    """
+    await Mod.kick(message)
 
 
 async def ban(message):
     """
-        Method designed to ban users from the server the command originated. Deletes User messages from the last 24
-        hours
-        >ban [user] [reason]
-        Last docstring edit: -Autumn V1.16.0
-        Last method edit: -Autumn V1.16.3
-        Method added: -Autumn V1.16.0
-        :param message:The message that called the command
-        :return: None
-        """
-    if message.author.guild_permissions.ban_members:
-        command = message.content[1:].split(' ', 2)
-        if len(command) == 1:
-            embed = discord.Embed(title='Ban Command usage', description='All bans have the ` | Rikoland` appended to '
-                                                                         'the reason for documentation in the Server '
-                                                                         'Protector database')
-            embed.add_field(name='}ban [user]', value='Bans a user from the server')
-            embed.add_field(name='}ban [user] [reason]', value='Bans a user with the reason provided')
-            await message.channel.send(embed=embed)
-            return
-
-        target = get_user_id(message, 1)
-
-        if len(command) > 2:
-            reason = command[2]
-        else:
-            reason = 'No reason specified.'
-
-        try:
-            await message.guild.ban(message.guild.get_member(target),
-                                    reason=reason + ' | Rikoland',
-                                    delete_message_days=1)
-            await message.channel.send('<@!' + str(target) + '> was banned.')
-        except discord.Forbidden:
-            await message.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
-
-    else:
-        await message.reply('Unauthorized usage.')
+    Method designed to ban users from the server the command originated. Deletes User messages from the last 24
+    hours
+    >ban [user] [reason]
+    Last docstring edit: -Autumn V1.16.0
+    Last method edit: -Autumn V3.3.0
+    Method added: -Autumn V1.16.0
+    :param message:The message that called the command
+    :return: None
+    """
+    await Mod.ban(message)
 
 
 async def help_message(message):
@@ -706,7 +593,7 @@ artfight_team2_score = 0
 artfight_channel = 918673017549238283
 
 
-'''async def artfight_submit(message, team_num):
+async def artfight_submit(message, team_num):
     global artfight_team1_score
     global artfight_team2_score
 
@@ -867,7 +754,7 @@ async def artfight(message):
             await message.reply(command[3]+' ornaments removed from coal')
         elif command[2] == 'reindeer':
             artfight_team2_score -= int(command[3])
-            await message.reply(command[3]+' ornaments removed from Reindeer')'''
+            await message.reply(command[3]+' ornaments removed from Reindeer')
 
 
 async def huh(message):
@@ -879,46 +766,6 @@ async def huh(message):
     :return: None
     """
     await message.reply("We've been trying to reach you about your car's extended warranty")
-
-scan_ignore = [688611557508513854]
-async def scan_message(message):
-    """
-    The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
-    does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.5
-    :param message: the message sent
-    :return: None
-    """
-    flags = 0
-    content = message.content.lower()
-
-    for word in blacklist:
-        index = content.find(word)
-        if index != -1:
-            flags += 1
-
-    if flags < 2:
-        return
-    else:
-        if flags >= 3:
-            await message.delete()
-
-        content = message.content.replace('@', '@ ')
-
-        channel = message.guild.get_channel(log_channel)
-
-        embed = discord.Embed(title='Possible Scam in #' + str(message.channel.name), color=0xFF0000)
-        embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar_url)
-        embed.add_field(name='message', value=content, inline=False)
-        embed.add_field(name='Flags', value=str(flags), inline=False)
-        embed.add_field(name='Sender ID', value=message.author.id)
-        embed.add_field(name='Channel ID', value=message.channel.id)
-        embed.add_field(name='Message ID', value=message.id)
-
-        if flags < 3:
-            embed.add_field(name='URL', value=message.jump_url, inline=False)
-        await channel.send(embed=embed)
 
 
 @client.event
@@ -938,12 +785,13 @@ async def on_ready():
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify': verify, 'setcode': setcode,
-            'modmail': modmail, 'quit': end, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref,
-            'addref': add_ref, 'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save,
-            'huh': huh, 'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
+            'modmail': modmail, 'quit': end, 'profile': profile, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
+            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save, 'huh': huh,
+            'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
             'setup': setup}
 
-errors = 0
+scan_ignore = [688611557508513854]
+
 
 @client.event
 async def on_message(message):
@@ -951,7 +799,7 @@ async def on_message(message):
     The primary method called. This method determines what was called, and calls the appropriate message, as well as
     handling all message scanning. This is called every time a message the bot can see is sent.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.4
+    Last method edit: -Autumn V3.3.0
     :param message:
     :return: None
     """
@@ -962,14 +810,14 @@ async def on_message(message):
     
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-            await scan_message(message)
+            await AntiScam.scan_message(message)
     content = message.content.lower()
 
-    if message.guild is None or content.find(code) != -1 or \
+    if message.guild is None or content.find(AntiScam.code) != -1 or \
             message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
         pass
     else:
-        await scan_message(message)
+        await AntiScam.scan_message(message, client)
     
     if content[0] == prefix:
 
@@ -1014,27 +862,22 @@ def run_sunreek():
     :return: None
     """
     global prefix
-    global testing_client
 
     if len(sys.argv) > 1:
         inp = int(sys.argv[1])
     else:
         inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
     
-    # global bot number. determines what
-    bot_num = inp
-    
     if inp == 1:
         # Main bot client. Do not use for tests
 
-        client.run(os.environ.get('SUNREEK_TOKEN')) # must say client.run(os.environ.get('SUNREEK_TOKEN'))
+        client.run(os.environ.get('SUNREEK_TOKEN'))     # must say client.run(os.environ.get('SUNREEK_TOKEN'))
 
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         prefix = '>'
-        testing_client = True
 
-        client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
+        client.run(os.environ.get('TESTBOT_TOKEN'))     # must say client.run(os.environ.get('TESTBOT_TOKEN'))
 
 
 if __name__ == '__main__':

@@ -6,17 +6,20 @@ import discord
 import os
 import sys
 
+import modules.General as General
+
 # custom imports from other files
 from profile import display_profile, set_bio, edit_field, add_field, delete_field
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 
 prefix = '>'
-version_num = '3.0.0'
+version_num = '3.3.0'
 
 eclipse_id = 440232487738671124
 
 intents = discord.Intents.default()
+intents.message_content = True
 intents.members = True
 
 game = discord.Game(prefix + "help for commands")
@@ -29,57 +32,33 @@ async def ping(message):
     """
     Times how long it takes the bot to edit a message
     Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
+    Last function edit: -Autumn | V3.3.0
     :param message:
     :return:
     """
-    start = time.time()
-    x = await message.channel.send('Pong!')
-    ping_time = time.time() - start
-    edit = x.content + ' ' + str(int(ping_time * 1000)) + 'ms'
-    await x.edit(content=edit)
+    await General.ping(message)
 
 
 async def version(message):
     """
     Displays the current file version number
     Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
+    Last function edit: -Autumn | V3.3.0
     :param message:
     :return:
     """
-    await message.channel.send('I am currently running version ' + version_num)
+    await General.version(message, version_num)
 
 
 async def end(message):
     """
     Quits the bot.requires admin perms
     Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
+    Last function edit: -Autumn | V3.3.0
     :param message:
     :return:
     """
-    global game
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        await message.channel.send('Goodbye :wave:')
-        await client.change_presence(activity=discord.Game('Going offline'))
-        sys.exit()
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
-
-
-async def restart(message):
-    """
-    Obsolete function. Not used
-    Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
-    :param message:
-    :return:
-    """
-    if message.author.guild_permissions.administrator or message.author.id == eclipse_id:
-        os.execl(sys.executable, __file__, 'main.py')
-    else:
-        await message.channel.send('You do not have permission to turn me off!')
+    await General.quit(message, client)
 
 
 async def help_message(message):

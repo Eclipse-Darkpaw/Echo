@@ -355,3 +355,39 @@ INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 97321c8
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f787524d09839a653dc7e1775c13c7f3).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 09d851ca4619aea8e39ac2655cf27bd7).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 930, in on_message
+    if message.guild is None or content.find(code) != -1 or \
+NameError: name 'code' is not defined
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: eab67a17ca7e3beae8368f2daed46236).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 5522769cda2a2f608b7ef6ee33c3bd95).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 9e9b421322dc7cd9a495384498f9c6a7).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 905, in on_message
+    await method(message)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 176, in modmail
+    await Mod.modmail(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\Moderation.py", line 32, in modmail
+    mail.set_author(name=sender.name, icon_url=sender.avatar_url)
+AttributeError: 'Member' object has no attribute 'avatar_url'
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: da8372ff0c2967da704b4000d7510a85).
