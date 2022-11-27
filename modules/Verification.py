@@ -48,13 +48,13 @@ class Application:
         """
         Questions the applicant
         Last docstring edit: -Autumn V3.0.0
-        Last method edit: -Autumn V3.0.0
+        Last method edit: -Autumn V3.2.0
         :return:
         """
         global application_questions
         global client
         
-        # FIXME: change to false for live deployment
+        # Done: change to false for live deployment
         debug = False
         
         with open(file_path) as file:
@@ -63,28 +63,38 @@ class Application:
         code = data[str(self.applicant_guild.id)]['codeword']
         dm = await self.applicant.create_dm()
         for question in application_questions:
-            
             if question == application_questions[0]:
-                guesses = 3
-                for guess in range(guesses):
-                    response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
-                                               delete_response=False)
-                    similarity = SequenceMatcher(None, code, response.content).ratio()
-                    if debug:
-                        print(similarity)
-                    if similarity >= 0.4:
-                        break
-                    guesses -= 1
-                    question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
-                    self.passguesses.append(response.content)
-                    
-                    if guesses <= 0:
-                        await dm.send('No guesses remain.')
-                        return -1, self.passguesses
-                    else:
-                        continue
+                if code is None:
+                    pass
+                else:
+                    guesses = 3
+                    for guess in range(guesses):
+                        response = await read_line(client,
+                                                   dm,
+                                                   question,
+                                                   self.applicant,
+                                                   delete_prompt=False,
+                                                   delete_response=False)
+                        similarity = SequenceMatcher(None, code, response.content).ratio()
+                        if debug:
+                            print(similarity)
+                        if similarity >= 0.4:
+                            break
+                        guesses -= 1
+                        question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
+                        self.passguesses.append(response.content)
+                        
+                        if guesses <= 0:
+                            await dm.send('No guesses remain.')
+                            return -1, self.passguesses
+                        else:
+                            continue
             else:
-                response = await read_line(client, dm, question, self.applicant, delete_prompt=False,
+                response = await read_line(client,
+                                           dm,
+                                           question,
+                                           self.applicant,
+                                           delete_prompt=False,
                                            delete_response=False)
             self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is '
@@ -141,7 +151,9 @@ async def verify(message, client_in):
         data = json.load(file)
     
     application_channel = int(data[str(message.guild.id)]['channels']['application'])
-    verified_role_id = int(data[str(message.guild.id)]['roles']['verified'])
+    verified_role_id = int(data[str(message.guild.id)]['roles']['member'])
+    questioning_role_id = int(data[str(message.guild.id)]['roles']['questioning'])
+    unverified_role_id = int(data[str(message.guild.id)]['roles']['unverified'])
     
     if verified_role_id in message.guild.get_member(message.author.id).roles:
         await message.channel.send('You are already verified', client_in)
@@ -193,8 +205,6 @@ async def verify(message, client_in):
 
     incomplete_forms -= 1
     submitted_forms += 1
-    questioning_role_id = int(data[str(message.guild.id)]['roles']['questioning'])
-    unverified_role_id = int(data[str(message.guild.id)]['roles']['unverified'])
     while True:
         reaction, user = await client.wait_for('reaction_add', check=check)
         if str(reaction.emoji) == '✅':

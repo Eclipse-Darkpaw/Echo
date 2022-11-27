@@ -2,6 +2,7 @@ import discord
 import json
 import logging
 import modules.Verification as Verif
+import modules.ServerSettings as Settings
 import os
 import sys
 import time
@@ -10,6 +11,7 @@ from fileManagement import resource_file_path
 from main import read_line, get_user_id
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
+
 
 # Keep imports in alphabetical order
 
@@ -22,7 +24,7 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.1.3'
+version_num = '3.2.0'
 
 eclipse_id = 440232487738671124
 
@@ -64,16 +66,11 @@ async def setup(message):
     """
     sets up the bot for initial usage
     Last docstring edit: -Autumn V3.0.0
-    Last method edit: -Autumn V3.0.0
+    Last method edit: -Autumn V3.2.0
     :param message:
     :return: None
     """
-    channels = ['application', 'questioning', '']
-    roles = ['']
-    data = {}
-    data = {str(message.guild.id): data}
-    with open(resource_file_path + 'servers.json') as file:
-        data = json.load(file)
+    await Settings.setup(message, client)
     
 
 async def verify(message):
@@ -943,7 +940,8 @@ async def on_ready():
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify': verify, 'setcode': setcode,
             'modmail': modmail, 'quit': end, 'profile': profile, 'restart': restart, 'setref': set_ref, 'ref': ref,
             'addref': add_ref, 'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save,
-            'huh': huh, 'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref}
+            'huh': huh, 'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
+            'setup': setup}
 
 errors = 0
 
