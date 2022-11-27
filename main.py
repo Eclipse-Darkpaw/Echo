@@ -23,13 +23,15 @@ class Message:
 
 async def read_line(client, channel, prompt, target, delete_prompt=True, delete_response=True):
     """
-    
-    :param client:
-    :param channel:
-    :param prompt:
-    :param target:
-    :param delete_prompt:
-    :param delete_response:
+    Asks for a response from a target user. Waits for a response
+    Last docstring edit: -Autumn V3.2.0
+    Last method edit: -Autumn V Unknown
+    :param client: bot client
+    :param channel: Channel to send a message in
+    :param prompt: prompt to be sent
+    :param target: What user should we read responses from
+    :param delete_prompt: Do we delete the prompt?
+    :param delete_response: Do we delete the response?
     :return:
     """
     show = await channel.send(prompt)

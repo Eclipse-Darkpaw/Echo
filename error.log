@@ -1,68 +1,110 @@
-ERROR:discord.client:Ignoring exception in on_message
-Traceback (most recent call last):
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 986, in on_message
-    pass
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 175, in verify
-    applied = await channel.send(embed=application.gen_embed())
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 104, in gen_embed
-    embed.set_author(name=self.applicant.name, icon_url=self.applicant.avatar_url)
-AttributeError: 'Member' object has no attribute 'avatar_url'
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 8ec0d23edf11201d9c7493ebe2ce85de).
-ERROR:discord.client:Ignoring exception in on_message
-Traceback (most recent call last):
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 175, in verify
-    applied = await channel.send(embed=application.gen_embed())
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 104, in gen_embed
-    embed.set_author(name=self.applicant.name, icon_url=self.applicant.guild_avatar.url)
-AttributeError: 'NoneType' object has no attribute 'url'
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e75d93a8ec8d9761bbb6347234621fd5).
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c4a9f96e330f4033d6d10e608e3d0c5b).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 1d115af6c05f715e588470e0b631c379).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 5db54e07db2e08f07c2c2aeebe40f274).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b75cbad8cf204e4f23a8fafacb3d0a23).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: d70577a6601f5c1fc5af3f71484b9edc).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 2a85bf7d1c82fed8e54b54a710b8572c).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 1a0db8731144f79db328a7fa421e5888).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e76670589f0fca5b3c5c5c80e6367096).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 84, in setup
+    channelIDs[channel] = response.channel_mentions[0].id
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1042, in on_message
+    await method(message)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 87, in setup
+    await response.reply('No channels were mentioned')
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\message.py", line 1246, in reply
+    return await self.channel.send(content, reference=self, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\abc.py", line 1538, in send
+    data = await state.http.send_message(channel.id, params=params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 744, in request
+    raise HTTPException(response, data)
+discord.errors.HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
+In message_reference: Unknown message
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: dd36bdbcf857ebf9638059352fca35fb).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f5b12ecb2edc058070414bf0015f3d94).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 84, in setup
+    channelIDs[channel] = response.channel_mentions[0].id
+IndexError: list index out of range
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1042, in on_message
+    await method(message)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 87, in setup
+    await response.reply('No channels were mentioned')
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\message.py", line 1246, in reply
+    return await self.channel.send(content, reference=self, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\abc.py", line 1538, in send
+    data = await state.http.send_message(channel.id, params=params)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 744, in request
+    raise HTTPException(response, data)
+discord.errors.HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
+In message_reference: Unknown message
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: efa63864eced7d6e5ce201d14e54a85b).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e3430ca16087f2457f19586a0dda052c).
 ERROR:discord.client:Ignoring exception in on_message
 Traceback (most recent call last):
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
     await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 982, in on_message
     await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 143, in verify
-    application_channel = int(data[str(message.guild.id)]['channels']['application'])
-AttributeError: 'NoneType' object has no attribute 'id'
-ERROR:discord.client:Ignoring exception in on_message
-Traceback (most recent call last):
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 143, in verify
-    application_channel = int(data[str(message.guild.id)]['channels']['application'])
-AttributeError: 'NoneType' object has no attribute 'id'
-ERROR:discord.client:Ignoring exception in on_message
-Traceback (most recent call last):
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-TypeError: TextChannel.create_thread() takes 1 positional argument but 2 positional arguments (and 1 keyword-only argument) were given
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 73, in setup
+    await Settings.setup(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 46, in setup
+    await update_progress()
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 29, in update_progress
+    await progress.edit(msg)
+TypeError: Message.edit() takes 1 positional argument but 2 were given
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b6c4b270848c215fd830591954b3e838).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: ddc183932526f6186c512709778b7b36).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 628b65856acd91b20cd3cd22cf24703a).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 055e8ce223bed620c838bf0f65d433c6).
 WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 10 seconds.
 Loop thread traceback (most recent call last):
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
@@ -75,9 +117,9 @@ Loop thread traceback (most recent call last):
     pydev_imports.execfile(file, globals, locals)  # execute the script
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
     exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1041, in <module>
     run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1037, in run_sunreek
     client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
     asyncio.run(runner())
@@ -95,12 +137,14 @@ Loop thread traceback (most recent call last):
     self._context.run(self._callback, *self._args)
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
     await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 982, in on_message
     await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 73, in setup
+    await Settings.setup(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 51, in setup
+    await update_progress()
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 26, in update_progress
+    msg += f'\n**{responses[i][0]}:** <#{responses[i][1]}>'
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
     self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
@@ -118,9 +162,9 @@ Loop thread traceback (most recent call last):
     pydev_imports.execfile(file, globals, locals)  # execute the script
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
     exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1041, in <module>
     run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1037, in run_sunreek
     client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
     asyncio.run(runner())
@@ -138,12 +182,14 @@ Loop thread traceback (most recent call last):
     self._context.run(self._callback, *self._args)
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
     await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 982, in on_message
     await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 73, in setup
+    await Settings.setup(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 51, in setup
+    await update_progress()
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 26, in update_progress
+    msg += f'\n**{responses[i][0]}:** <#{responses[i][1]}>'
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
     self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
@@ -161,9 +207,9 @@ Loop thread traceback (most recent call last):
     pydev_imports.execfile(file, globals, locals)  # execute the script
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
     exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1041, in <module>
     run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1037, in run_sunreek
     client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
     asyncio.run(runner())
@@ -181,12 +227,14 @@ Loop thread traceback (most recent call last):
     self._context.run(self._callback, *self._args)
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
     await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 982, in on_message
     await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 73, in setup
+    await Settings.setup(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 51, in setup
+    await update_progress()
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 26, in update_progress
+    msg += f'\n**{responses[i][0]}:** <#{responses[i][1]}>'
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
     self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
@@ -204,9 +252,9 @@ Loop thread traceback (most recent call last):
     pydev_imports.execfile(file, globals, locals)  # execute the script
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
     exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1041, in <module>
     run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1037, in run_sunreek
     client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
     asyncio.run(runner())
@@ -224,12 +272,14 @@ Loop thread traceback (most recent call last):
     self._context.run(self._callback, *self._args)
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
     await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 982, in on_message
     await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 73, in setup
+    await Settings.setup(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 51, in setup
+    await update_progress()
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 26, in update_progress
+    msg += f'\n**{responses[i][0]}:** <#{responses[i][1]}>'
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
     self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
@@ -247,9 +297,9 @@ Loop thread traceback (most recent call last):
     pydev_imports.execfile(file, globals, locals)  # execute the script
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
     exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1041, in <module>
     run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1037, in run_sunreek
     client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
     asyncio.run(runner())
@@ -267,1216 +317,14 @@ Loop thread traceback (most recent call last):
     self._context.run(self._callback, *self._args)
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
     await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 982, in on_message
     await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 60 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 70 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 80 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 90 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 100 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 110 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 120 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 130 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 140 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 150 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 160 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 170 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 180 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 190 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 200 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 210 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 220 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 230 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 240 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 250 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 224, in verify
-    thread_name = f'{message.author.name} Questioning'
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 260 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 270 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 280 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 290 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 300 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 310 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 320 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 330 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 225, in verify
-    await questioning_room.create_thread(thread_name, auto_archive_duration=1440)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 73, in setup
+    await Settings.setup(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 51, in setup
+    await update_progress()
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 26, in update_progress
+    msg += f'\n**{responses[i][0]}:** <#{responses[i][1]}>'
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
     self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
   File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
@@ -1484,64 +332,26 @@ Loop thread traceback (most recent call last):
 
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 6ced543cfe735eb31b1a1b6468075705).
-WARNING:discord.gateway:Shard ID None heartbeat blocked for more than 10 seconds.
-Loop thread traceback (most recent call last):
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2195, in <module>
-    main()
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 2177, in main
-    globals = debugger.run(setup['file'], None, None, is_module)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1489, in run
-    return self._exec(is_module, entry_point_fn, module_name, file, globals, locals)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1496, in _exec
-    pydev_imports.execfile(file, globals, locals)  # execute the script
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
-    exec(compile(contents+"\n", file, 'exec'), glob, loc)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1043, in <module>
-    run_sunreek()
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 1039, in run_sunreek
-    client.run(os.environ.get('TESTBOT_TOKEN')) # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
-    asyncio.run(runner())
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
-    return loop.run_until_complete(main)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
-    self.run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
-    super().run_forever()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
-    self._run_once()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
-    handle._run()
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
-    self._context.run(self._callback, *self._args)
-  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
-    await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
-    await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 223, in verify
-    questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1160, in do_wait_suspend
-    self._do_wait_suspend(thread, frame, event, arg, suspend_type, from_this_thread)
-  File "C:\Program Files\JetBrains\PyCharm Community Edition 2021.2.2\plugins\python-ce\helpers\pydev\pydevd.py", line 1175, in _do_wait_suspend
-    time.sleep(0.01)
-
-WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
-INFO:discord.client:logging in using static token
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 4dd60ba03751aeb86e44bdc2e4d3faad).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: cbeee720c04d4afd3ce851f4d4afced5).
 ERROR:discord.client:Ignoring exception in on_message
 Traceback (most recent call last):
   File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
     await coro(*args, **kwargs)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 984, in on_message
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 982, in on_message
     await method(message)
-  File "C:\Users\user\Desktop\Echo\sunreek.py", line 88, in verify
-    await Verif.verify(message, client_in=client)
-  File "C:\Users\user\Desktop\Echo\modules\Verification.py", line 226, in verify
-    await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@{reaction.user.id}>')
-AttributeError: 'Reaction' object has no attribute 'user'
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 73, in setup
+    await Settings.setup(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 51, in setup
+    await update_progress()
+  File "C:\Users\user\Desktop\Echo\modules\ServerSettings.py", line 23, in update_progress
+    if responses[i][1].lower() == 'none':
+AttributeError: 'int' object has no attribute 'lower'
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
-INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 04bdb6ab92272bf9823ceb1b419a1fef).
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e49659ad9854f52084b743fc98048c0f).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 97321c868efcd5cb74250a7417779f39).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f787524d09839a653dc7e1775c13c7f3).
