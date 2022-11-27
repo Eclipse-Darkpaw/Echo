@@ -1,9 +1,10 @@
 import discord
 import json
+import logging
+import modules.Verification as Verif
 import os
 import sys
 import time
-import modules.Verification as Verif
 
 from fileManagement import resource_file_path
 from main import read_line, get_user_id
@@ -13,24 +14,27 @@ from refManagement import ref, set_ref, add_ref, oc, random_ref
 # Keep imports in alphabetical order
 
 start_time = time.time()
+
+logging.basicConfig(filename='error.log', encoding='utf-8')
 # TODO: Add uptime feature.
 
 with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.1.2'
+version_num = '3.1.3'
 
 eclipse_id = 440232487738671124
 
 intents = discord.Intents.default()
+intents.message_content = True
 intents.members = True
 
 game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
 bot_num = -1
-debug = False
+debug = False    # Done: set to false on launch
 
 mail_inbox = 840753555609878528             # modmail inbox channel
 log_channel = 933456094016208916            # channel all bot logs get sent
@@ -64,7 +68,12 @@ async def setup(message):
     :param message:
     :return: None
     """
-    pass
+    channels = ['application', 'questioning', '']
+    roles = ['']
+    data = {}
+    data = {str(message.guild.id): data}
+    with open(resource_file_path + 'servers.json') as file:
+        data = json.load(file)
     
 
 async def verify(message):
@@ -80,6 +89,13 @@ async def verify(message):
 
 
 async def setcode(message):
+    """
+    Sets the server passcode.
+    Last docstring edit: -Autumn V3.2.0
+    Last method edit: -Autumn V3.1.2
+    :param message:
+    :return:
+    """
     await Verif.setcode(message, message.content.split(' ', 1)[1])
 
 
@@ -929,6 +945,7 @@ switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify'
             'addref': add_ref, 'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save,
             'huh': huh, 'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref}
 
+errors = 0
 
 @client.event
 async def on_message(message):
@@ -944,6 +961,7 @@ async def on_message(message):
 
     if message.author.bot:
         return
+    
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
             await scan_message(message)
@@ -954,8 +972,8 @@ async def on_message(message):
         pass
     else:
         await scan_message(message)
-
-    if message.content.startswith(prefix):
+    
+    if content[0] == prefix:
 
         # split the message to determine what command is being called
         command = message.content[1:].lower().split(' ', 1)
@@ -966,6 +984,7 @@ async def on_message(message):
             await method(message)
         except KeyError:
             pass
+        
         if command[0] == 'print':
             # Used to transfer data from Discord directly to the command line. Very simple shortcut
             print(message.content)

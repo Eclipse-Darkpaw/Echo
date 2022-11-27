@@ -101,8 +101,12 @@ class Application:
         global application_questions
 
         embed = discord.Embed(title='Application #' + str(self.count))
-        embed.set_author(name=self.applicant.name, icon_url=self.applicant.avatar_url)
-
+        try:
+            icon_url = self.applicant.guild_avatar.url
+        except AttributeError:
+            icon_url = self.applicant.avatar.url
+        embed.set_author(name=self.applicant.name, icon_url=icon_url)
+        
         for i in range(len(application_questions)):
             embed.add_field(name=application_questions[i], value=self.responses[i])
 
@@ -215,6 +219,11 @@ async def verify(message, client_in):
             await application.applicant.add_roles(msg_guild.get_role(questioning_role_id))
             await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
             await message.author.send('You have been pulled into questioning.')
+            
+            questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
+            thread_name = f'{message.author.name} Questioning'
+            thread = await questioning_room.create_thread(name=thread_name, auto_archive_duration=1440)
+            await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@{user.id}>')
         elif str(reaction.emoji) == '🚫':
             # add a confirm feature
             
