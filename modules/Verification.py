@@ -75,14 +75,15 @@ class Application:
                                                    self.applicant,
                                                    delete_prompt=False,
                                                    delete_response=False)
+                        self.passguesses.append(response.content)
                         similarity = SequenceMatcher(None, code, response.content).ratio()
                         if debug:
                             print(similarity)
                         if similarity >= 0.4:
+                            self.responses.append(self.passguesses)
                             break
                         guesses -= 1
                         question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
-                        self.passguesses.append(response.content)
                         
                         if guesses <= 0:
                             await dm.send('No guesses remain.')
@@ -96,7 +97,7 @@ class Application:
                                            self.applicant,
                                            delete_prompt=False,
                                            delete_response=False)
-            self.responses.append(response.content)
+                self.responses.append(response.content)
         await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is '
                       'fully processed.')
         return 1, self.passguesses
@@ -227,13 +228,19 @@ async def verify(message, client_in):
             break
         elif str(reaction.emoji) == '❓':
             await application.applicant.add_roles(msg_guild.get_role(questioning_role_id))
-            await channel.send('<@!'+str(message.author.id)+'>  is being questioned')
-            await message.author.send('You have been pulled into questioning.')
             
             questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
             thread_name = f'{message.author.name} Questioning'
-            thread = await questioning_room.create_thread(name=thread_name, auto_archive_duration=1440)
-            await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@{user.id}>')
+            try:
+                thread = await questioning_room.create_thread(name=thread_name, auto_archive_duration=1440)
+                await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@{user.id}>.')
+                await message.author.send(f'You have been pulled into questioning in <#{thread.id}>.')
+                await channel.send(f'<@!{message.author.id}> is being questioned in <#{thread.id}>')
+            except discord.errors.Forbidden:
+                await channel.send(f'<@!{message.author.id}> is being questioned')
+                await message.author.send('You have been pulled into questioning.')
+                await message.guild.get_channel(application_channel).send('```Error 403: Forbidden.\nUnable to create '
+                                                                          'thread. Please check my permissions. ```')
         elif str(reaction.emoji) == '🚫':
             # add a confirm feature
             
@@ -245,6 +252,7 @@ async def verify(message, client_in):
 
             if reason.content == 'cancel':
                 await channel.send('Action cancelled')
+                await reaction.remove(user)
                 continue
             else:
                 await message.author.send('Your application was denied for:\n> ' + reason.content)
@@ -260,7 +268,7 @@ async def verify(message, client_in):
             reason = reason.content
             if reason == 'cancel':
                 await channel.send('Ban cancelled')
-
+                await reaction.remove(user)
             else:
                 try:
                     await message.guild.ban(user=application.applicant, reason=reason)

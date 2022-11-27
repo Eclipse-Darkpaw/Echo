@@ -3,7 +3,7 @@ import discord
 import os
 import sys
 
-project_version = '2.0.1'
+project_version = '3.3.0'
 
 start_time = time.time()
 # todo: add uptime feature
