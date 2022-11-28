@@ -1,0 +1,83 @@
+{
+    "serverID": {
+        "serverName": "name",
+        "codeword": "code",
+        "channels": {
+            "application": "channelID",
+            "questioning": "channelID",
+            "log": "channelID",
+            "modmail": "channelID"
+        },
+        "roles": {
+            "member": "roleID",
+            "unverified": "roleID",
+            "questioning": "roleID"
+        }
+    },
+    "612550152514961408": {
+        "codeword": "Ooo spooki, joining Riko server les go",
+        "channels": {
+            "application": "819223217281302598",
+            "mailbox": "840753555609878528",
+            "log": "933456094016208916"
+        },
+        "roles": {
+            "unverified": "612958044132737025",
+            "questioning": "819238442931716137",
+            "member": "811522721824374834"
+        }
+    },
+    "791392423704133653": {
+        "name": "Bot Testing Grounds",
+        "codeword": "orange",
+        "channels": {
+            "application": 1044847233574637608,
+            "questioning": 1046199594972880906,
+            "mailbox": 1046199597825007727,
+            "log": 1044847253363376158
+        },
+        "roles": {
+            "member": 983772448749142137,
+            "unverified": 983772184197627985,
+            "questioning": 983772406944505952
+        },
+        "artfight": {
+            "roles": {
+                "team1": 1046637509175681024,
+                "team2": 1046637547821994086
+            },
+            "channel": 1046653792042631248,
+            "scores": {
+                "team1": 464,
+                "team2": 0
+            }
+        }
+    },
+    "980609854924288060": {
+        "name": "Bot testing",
+        "codeword": null,
+        "channels": {
+            "application": 1046279182885330995,
+            "questioning": 1046279252670156830
+        },
+        "roles": {
+            "member": 980616430527606844,
+            "suspended": 1011845104996188270
+        }
+    },
+    "758472902197772318": {
+        "name": "The Meadow",
+        "codeword": "Orange",
+        "channels": {
+            "application": 813991832593367051,
+            "questioning": 1046323171743248384,
+            "log": 933539437357432892
+        },
+        "roles": {
+            "member": 758487413257011271,
+            "unverified": 813996107126276127,
+            "questioning": 1046323062775226509,
+            "suspended": 773401156935352390
+        }
+    }
+}

@@ -1,9 +1,8 @@
 import discord
 import os
-from fileManagement import ref_path, oc_folder_path, oc_path, ref_folder_path
+from fileManagement import ref_path, oc_folder_path, oc_path
 from main import get_user_id, Message
 from random import randint
-# DONE: allow for multiple OCs
 
 
 async def set_ref(message):
@@ -231,6 +230,7 @@ async def oc_tree(message):
             else:
                 tree += '\n├───' + str(child)
         tree += '```'
+        # Done: update this to the actual file path needed on launch
         os.chdir('C:\\Users\\leebe\\Desktop\\Echo')
     except FileNotFoundError:
         tree = 'No OCs found'

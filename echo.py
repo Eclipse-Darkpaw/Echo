@@ -2,7 +2,8 @@ import time
 import discord
 import os
 import sys
-from profile import profile
+
+# from profile import profile
 from refManagement import ref, set_ref, add_ref
 
 
@@ -18,19 +19,29 @@ intents.members = True
 game = discord.Game(prefix + "help for commands")
 client = discord.Client(intents=intents)
 
+tree = discord.app_commands.CommandTree(client)
+
 guild = None
 
 
-async def ping(message):
+@tree.command(name="ping", description="Checks the bot's ping", guild=discord.Object(id=791392423704133653))
+async def ping(interaction):
     start = time.time()
-    x = await message.channel.send('Pong!')
+    x = await interaction.response.send_message('Pong!')
     ping = time.time() - start
-    edit = x.content + ' ' + str(int(ping * 1000)) + 'ms'
-    await x.edit(content=edit)
+    edit = 'Pong! ' + str(int(ping * 1000)) + 'ms'
+    await interaction.response.edit_message(content=edit)
 
 
-async def version(message):
-    await message.channel.send('I am currently running version ' + version_num)
+@tree.command(name="version", description='Displays the current version', guild=discord.Object(id=791392423704133653))
+async def version(interaction):
+    await interaction.response.send_message('I am currently running version ' + version_num)
+
+
+@tree.command(name='verify', description='Applys for membership in the server', guild=discord.Object(id=791392423704133653), eph)
+async def verify(interaction, password: str):
+    if password == 'password':
+        await interaction
 
 
 async def quit(message):
@@ -45,7 +56,6 @@ async def quit(message):
 
 async def help(message):
     embed = discord.Embed(title="Echo Command list", color=0x45FFFF)
-    embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
     embed.add_field(name='Prefix', value=prefix, inline=False)
     embed.add_field(name='`'+prefix+'help`', value="That's this command!", inline=False)
     embed.add_field(name='`'+prefix+'version_num`', value='What version the bot is currently on', inline=False)
@@ -62,19 +72,23 @@ async def help(message):
     await message.channel.send(embed=embed)
 
 
+@tree.command(name="setup", description="begins setup of the bot.", guild=discord.Object(id=791392423704133653))
+async def setup(interaction, ):
+    pass
+
+
 @client.event
 async def on_ready():
-    global guild
+    await tree.sync(guild=discord.Object(id=791392423704133653))
 
     print('We have logged in as {0.user}'.format(client))
 
-    guild = client.get_guild(840181552016261170)
     await client.change_presence(activity=game)
     await guild.get_member(eclipse_id).send('Running, and active')
 
 
-switcher = {'help': help, 'ping': ping, 'version_num': version, 'quit': quit, 'profile': profile, 'setref': set_ref,
-            'ref': ref, 'addref': add_ref}
+switcher = {'help': help, 'ping': ping, 'setref': set_ref,
+            'ref': ref, 'addref': add_ref, 'quit': quit}
 
 
 @client.event
@@ -95,5 +109,4 @@ async def on_message(message):
     # most_active.score(message)
 
 
-client.run('expired token')
-raise Exception("Invalid bot token. Please reset the token in the dev portal")
+client.run(os.environ.get('TESTBOT_TOKEN'))
