@@ -259,7 +259,7 @@ async def on_ready():
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'quit': end, 'profile': profile, 'ref': ref,
-            'restart': restart, 'setref': set_ref, 'addref': add_ref, 'oc': oc, 'random_ref': random_ref,
+            'setref': set_ref, 'addref': add_ref, 'oc': oc, 'random_ref': random_ref,
             'randomref': random_ref, 'rr': random_ref, 'num_servers': num_servers, 'list_servers': list_servers}
 
 

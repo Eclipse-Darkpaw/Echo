@@ -3679,3 +3679,53 @@ Traceback (most recent call last):
   File "C:\Users\user\Desktop\Echo\modules\Artfight.py", line 255, in artfight
     with open(server_settings_path, 'w') as file:
 PermissionError: [Errno 13] Permission denied: 'C:\\Users\\user\\Desktop\\Echo\\resources\\servers.json'
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 3b664163494f998bd35f344681d4871a).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\leebe\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\leebe\Desktop\Echo\sunreek.py", line 652, in on_message
+    await AntiScam.scan_message(message, client)
+TypeError: scan_message() takes 1 positional argument but 2 were given
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\leebe\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\leebe\Desktop\Echo\sunreek.py", line 652, in on_message
+    await AntiScam.scan_message(message, client)
+TypeError: scan_message() takes 1 positional argument but 2 were given
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 93fb687c413940aede670b336731053d).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\leebe\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\leebe\Desktop\Echo\sunreek.py", line 652, in on_message
+    await AntiScam.scan_message(message)
+  File "C:\Users\leebe\Desktop\Echo\modules\AntiScam.py", line 19, in scan_message
+    log_channel = json.load(file)[message.guild.id]['channels']['log']
+KeyError: 612550152514961408
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\leebe\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\leebe\Desktop\Echo\sunreek.py", line 652, in on_message
+    await AntiScam.scan_message(message)
+  File "C:\Users\leebe\Desktop\Echo\modules\AntiScam.py", line 19, in scan_message
+    log_channel = json.load(file)[message.guild.id]['channels']['log']
+KeyError: 612550152514961408
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\leebe\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\leebe\Desktop\Echo\sunreek.py", line 652, in on_message
+    await AntiScam.scan_message(message)
+  File "C:\Users\leebe\Desktop\Echo\modules\AntiScam.py", line 19, in scan_message
+    log_channel = json.load(file)[message.guild.id]['channels']['log']
+KeyError: 612550152514961408
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 62da9f5136cd1b6db53cf33483a1b460).

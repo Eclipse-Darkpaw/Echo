@@ -16,8 +16,8 @@ async def scan_message(message):
     :return: None
     """
     with open(resource_file_path + 'servers.json') as file:
-        log_channel = json.load(file)[message.guild.id]['channels']['log']
-        
+        log_channel = json.load(file)[str(message.guild.id)]['channels']['log']
+
     flags = 0
     content = message.content.lower()
     

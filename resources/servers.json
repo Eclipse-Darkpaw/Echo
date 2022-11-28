@@ -15,16 +15,18 @@
         }
     },
     "612550152514961408": {
+        "name": "Rikoland",
         "codeword": "Ooo spooki, joining Riko server les go",
         "channels": {
-            "application": "819223217281302598",
-            "mailbox": "840753555609878528",
-            "log": "933456094016208916"
+            "application": 819223217281302598,
+            "questioning": 819232418153889893,
+            "mailbox": 840753555609878528,
+            "log": 933456094016208916
         },
         "roles": {
-            "unverified": "612958044132737025",
-            "questioning": "819238442931716137",
-            "member": "811522721824374834"
+            "member": 811522721824374834,
+            "unverified": 612958044132737025,
+            "questioning": 819238442931716137
         }
     },
     "791392423704133653": {

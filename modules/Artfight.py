@@ -254,7 +254,7 @@ async def artfight(message, client):
         
         with open(server_settings_path, 'w') as file:
             file.write(json.dumps(data, indent=4))
-        await message.reply('Data saved')>
+        await message.reply('Data saved')
     elif command[1] == 'setup' and message.author.guild_permissions.manage_roles:
         await setup(message, client)
     else:

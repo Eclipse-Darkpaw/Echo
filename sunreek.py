@@ -649,7 +649,7 @@ async def on_message(message):
             message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
         pass
     else:
-        await AntiScam.scan_message(message, client)
+        await AntiScam.scan_message(message)
     
     if content[0] == prefix:
 
