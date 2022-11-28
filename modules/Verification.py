@@ -156,7 +156,7 @@ async def verify(message, client_in):
     questioning_role_id = int(data[str(message.guild.id)]['roles']['questioning'])
     unverified_role_id = int(data[str(message.guild.id)]['roles']['unverified'])
     
-    if verified_role_id in message.guild.get_member(message.author.id).roles:
+    if verified_role_id in message.guild.get_member(message.author.id).roles:   # what the fuck?
         await message.channel.send('You are already verified', client_in)
         return
 
