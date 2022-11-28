@@ -2,6 +2,7 @@ import discord
 import json
 import logging
 import modules.AntiScam as AntiScam
+import modules.Artfight as Artfight
 import modules.General as General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
@@ -115,7 +116,7 @@ async def save(message):
     :param message:
     :return:
     """
-    # artfight_save()
+    artfight.save()
     await message.reply('Data saved')
 
 
@@ -584,177 +585,8 @@ async def member_num(message):
         await message.reply('Member in postion %d has the ID %d' % (position, name))
 
 
-artfight_team1 = 000000000000000000    # team 1 id
-artfight_team2 = 000000000000000000    # team 2 id
-
-artfight_team1_score = 0
-artfight_team2_score = 0
-
-artfight_channel = 918673017549238283
-
-
-async def artfight_submit(message, team_num):
-    global artfight_team1_score
-    global artfight_team2_score
-
-    dm = await message.author.create_dm()
-
-    artfight_questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch'
-                          '\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
-                          'Please reply with the number of OCs/characters in your submission',
-                          'Is this shaded? Respond "Y" if yes, anything else for no',
-                          'Is there a background? Respond "Y" if yes, anything else for no',
-                          'What is the title of this piece?']
-    responses = []
-    try:
-        image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author,
-                                delete_prompt=False, delete_response=False)
-        link = image.attachments[0].url
-
-        for question in artfight_questions:
-            question = '<@!' + str(message.author.id) + '> ' + question
-            response = await read_line(client, dm, question, message.author, delete_prompt=False, delete_response=False)
-            responses.append(response)
-    except discord.Forbidden:
-        message.reply('Unable to DM You, please change your privacy settings.')
-        return -1
-
-    if int(responses[0].content) == 1:
-        base = 5
-    elif int(responses[0].content) == 2:
-        base = 10
-    elif int(responses[0].content) == 3:
-        base = 20
-    elif int(responses[0].content) == 4:
-        base = 30
-    else:
-        await dm.send('Unable to score your submission')
-        return -2
-
-    num_chars = int(responses[1].content)
-
-    if responses[2].content.lower() == 'y':
-        shaded = 10
-    else:
-        shaded = 0
-
-    if responses[3].content.lower() == 'y':
-        bg = 20
-    else:
-        bg = 0
-
-    if num_chars > 5:
-        num_chars = 5
-
-    score = (base + shaded) * num_chars + bg
-
-    embed = discord.Embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
-    embed.add_field(name='Score', value=str(score)+' ornaments')
-    embed.set_image(url=link)
-    embed.color = message.author.color
-
-    await dm.send(embed=embed)
-    response = await read_line(client, dm, 'Do you want to submit this? "Y" for yes.', message.author,
-                               delete_prompt=False, delete_response=False)
-
-    if response.content.lower() == 'y':
-
-        if team_num == 1:
-            artfight_team1_score += score
-            pass
-        elif team_num == 2:
-            artfight_team2_score += score
-            pass
-        await dm.send('Submission sent!')
-        return embed
-    else:
-        await dm.send('Submission cancelled. please redo')
-        return -2
-
-
-def artfight_save():
-    with open(artfight_scores(), 'w') as file:
-        lines = [artfight_team1_score, artfight_team2_score]
-
-        for line in lines:
-            file.write(str(line) + '\n')
-
-
-def artfight_load():
-    global artfight_team1_score
-    global artfight_team2_score
-
-    with open(artfight_scores(), 'r') as file:
-        lines = file.readlines()
-
-    try:
-        artfight_team1_score = int(lines[0].split('\n')[0])
-        artfight_team2_score = int(lines[1])
-    except NameError:
-        return -1
-    return 1
-
-
 async def artfight(message):
-    global artfight_team1_score
-    global artfight_team2_score
-
-    if not artfight_enabled:
-        message.reply('This command is currently disabled')
-        return
-    command = message.content[1:].split(' ', 3)
-
-    if len(command) == 1:
-        await help_message(Message('}help artfight', message.channel))
-    elif command[1] == 'join':
-        await message.reply('This command is not functional')
-        return
-    elif command[1] == 'scores' and message.author.guild_permissions.manage_roles:
-        score_embed = discord.Embed(title='Team scores')
-        score_embed.add_field(name='Coal Factories Score', value=str(artfight_team1_score))
-        score_embed.add_field(name='Black Nosed Rendeers Score', value=str(artfight_team2_score))
-        await message.reply(embed=score_embed)
-        artfight_save()
-        return
-    elif command[1] == 'submit':
-        roles = message.author.roles
-        role_ids = []
-
-        for role in roles:
-            role_ids.append(role.id)
-
-        if message.channel.id == artfight_channel:
-            if artfight_team1 in role_ids:
-                embed = await artfight_submit(message, 1)
-
-                if embed == -1:
-                    await message.reply('Error: Please retry your submission')
-                    return
-            elif artfight_team2 in role_ids:
-                embed = await artfight_submit(message, 2)
-
-                if embed == -1:
-                    await message.reply('Error: Please retry your submission')
-                    return
-            else:
-                await message.reply('You are not on an artfight team!')
-                return
-            await message.reply(embed=embed)
-        else:
-            await message.reply('You can only use this in <#' + str(artfight_channel) + '>!')
-    elif command[1] == 'load' and message.author.guild_permissions.manage_roles:
-        error = artfight_load()
-        if error == 1:
-            await message.reply('Data loaded from memory!')
-    elif command[1] == 'save':
-        artfight_save()
-    elif command[1] == 'remove' and message.author.guild_permissions.manage_roles:
-        if command[2] == 'coal':
-            artfight_team1_score -= int(command[3])
-            await message.reply(command[3]+' ornaments removed from coal')
-        elif command[2] == 'reindeer':
-            artfight_team2_score -= int(command[3])
-            await message.reply(command[3]+' ornaments removed from Reindeer')
+    await Artfight.artfight(message, client)
 
 
 async def huh(message):
@@ -788,7 +620,7 @@ switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify'
             'modmail': modmail, 'quit': end, 'profile': profile, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save, 'huh': huh,
             'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
-            'setup': setup}
+            'setup': setup, 'artfight': artfight}
 
 scan_ignore = [688611557508513854]
 
@@ -827,10 +659,10 @@ async def on_message(message):
         # search the switcher for the command called. If the command is not found, do nothing
         try:
             method = switcher[command[0]]
-            await method(message)
         except KeyError:
-            pass
+            return
         
+        await method(message)
         if command[0] == 'print':
             # Used to transfer data from Discord directly to the command line. Very simple shortcut
             print(message.content)
