@@ -16,7 +16,7 @@
     },
     "612550152514961408": {
         "name": "Rikoland",
-        "codeword": "Ooo spooki, joining Riko server les go",
+        "codeword": "Ooo it's Christmas, joining Riko server les go",
         "channels": {
             "application": 819223217281302598,
             "questioning": 819232418153889893,
@@ -27,6 +27,17 @@
             "member": 811522721824374834,
             "unverified": 612958044132737025,
             "questioning": 819238442931716137
+        },
+        "artfight": {
+            "roles": {
+                "team1": 1051384069650403388,
+                "team2": 1051384159421087785
+            },
+            "channel": 1051385216104661102,
+            "scores": {
+                "team1": 60,
+                "team2": 100
+            }
         }
     },
     "791392423704133653": {

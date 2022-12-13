@@ -74,8 +74,12 @@ async def help_message(message):
     if len(command) == 1:
         embed = discord.Embed(title="Refbot Command list",
                               color=0x45FFFF)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
         embed.set_author(name=client.user.name,
-                         icon_url=client.user.avatar_url)
+                         icon_url=icon_url)
 
         embed.add_field(name='Prefix',
                         value=prefix,
@@ -115,8 +119,12 @@ async def help_message(message):
     elif command[1] == 'help':
         help_embed = discord.Embed(title="help Command list",
                                    color=0x45FFFF)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
         help_embed.set_author(name=client.user.name,
-                              icon_url=client.user.avatar_url)
+                              icon_url=icon_url)
 
         help_embed.add_field(name='`' + prefix + 'help [bot command]`',
                              value="That's this command!",
@@ -127,8 +135,12 @@ async def help_message(message):
         profile_embed = discord.Embed(title='Profile Command list',
                                       description='Displays a users profile',
                                       color=0x45FFFF)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
         profile_embed.set_author(name=client.user.name,
-                                 icon_url=client.user.avatar_url)
+                                 icon_url=icon_url)
 
         profile_embed.add_field(name='No argument',
                                 value='Displays your profile',
@@ -147,8 +159,12 @@ async def help_message(message):
         ref_embed = discord.Embed(title='`'+prefix+'ref` Command List',
                                   description='Displays a users primary ref.',
                                   color=0x45FFFF)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
         ref_embed.set_author(name=client.user.name,
-                             icon_url=client.user.avatar_url)
+                             icon_url=icon_url)
 
         ref_embed.add_field(name='No argument',
                             value='Displays your ref',
@@ -171,8 +187,12 @@ async def help_message(message):
         embed = discord.Embed(title='`' + prefix + 'OC` Command List',
                               description='Manages a users OC\'s ref.',
                               color=0x45FFFF)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
         embed.set_author(name=client.user.name,
-                         icon_url=client.user.avatar_url)
+                         icon_url=icon_url)
 
         embed.add_field(name='add [OC name] [description/attachment]',
                         value='Adds a new OC',

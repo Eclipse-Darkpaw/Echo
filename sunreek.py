@@ -26,9 +26,9 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.3.0'
+version_num = '3.3.1'
 
-eclipse_id = 440232487738671124
+eclipse_id = 749443249302929479
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -194,7 +194,11 @@ async def help_message(message):
                               description='Square brackets are optional arguments. Angle brackets are required '
                                           'arguments',
                               color=0x45FFFF)
-        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
+        embed.set_author(name=client.user.name, icon_url=icon_url)
 
         embed.add_field(name='`'+prefix+'help`',
                         value="That's this command!",
@@ -245,7 +249,11 @@ async def help_message(message):
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
-        help_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
+        help_embed.set_author(name=client.user.name, icon_url=icon_url)
         help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
         await message.channel.send(embed=help_embed)
     elif command[1] == 'profile':
@@ -253,7 +261,11 @@ async def help_message(message):
                                       description='Displays a users profile',
                                       color=0x45FFFF)
 
-        profile_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
+        profile_embed.set_author(name=client.user.name, icon_url=icon_url)
 
         profile_embed.add_field(name='No argument',
                                 value='Displays your profile',
@@ -269,7 +281,11 @@ async def help_message(message):
         await message.channel.send(embed=profile_embed)
     elif command[1] == 'crsdky':
         crsdky_embed = discord.Embed(title="`}crsdky Command list", color=0x45FFFF)
-        crsdky_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
+        crsdky_embed.set_author(name=client.user.name, icon_url=icon_url)
 
         crsdky_embed.add_field(name='Notes',
                                value='Used by going `}crsdky [argument]`, ',
@@ -312,7 +328,11 @@ async def help_message(message):
         ref_embed = discord.Embed(title='`'+prefix+'ref` Command List',
                                   description='Displays a users primary ref.',
                                   color=0x45FFFF)
-        ref_embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
+        ref_embed.set_author(name=client.user.name, icon_url=icon_url)
         ref_embed.add_field(name='No argument',
                             value='Displays your ref',
                             inline=False)
@@ -328,7 +348,11 @@ async def help_message(message):
         embed = discord.Embed(title='`' + prefix + 'OC` Command List',
                               description='Manages a users OC\'s ref.',
                               color=0x45FFFF)
-        embed.set_author(name=client.user.name, icon_url=client.user.avatar_url)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
+        embed.set_author(name=client.user.name, icon_url=icon_url)
         embed.add_field(name='add [OC name] [description/attachment]',
                         value='Adds a new OC',
                         inline=False)
@@ -347,7 +371,7 @@ async def help_message(message):
                                        description='This is the commands for the annual Art Fight',
                                        color=0x45FFFF)
         artfight_embed.add_field(name='join',
-                                 value='this command is disabled',
+                                 value='Assigns a user to a team ',
                                  inline=False)
         artfight_embed.add_field(name='scores',
                                  value='shows the team scores',
@@ -355,15 +379,8 @@ async def help_message(message):
         artfight_embed.add_field(name='submit',
                                  value='This is how you submit art. See <#787316128614973491> for scoring.',
                                  inline=False)
-        artfight_embed.add_field(name='save',
-                                 value='Saves the data to a file to be loaded from later. this is automatically done '
-                                       'after every submission',
-                                 inline=False)
-        artfight_embed.add_field(name='load',
-                                 value='loads saved score values',
-                                 inline=False)
-        artfight_embed.add_field(name='remove [coal/reindeer] [score to remove]',
-                                 value='Takes score away from a team (coal/reindeer). Use negative numbers to add '
+        artfight_embed.add_field(name='remove [1/2] [score to remove]',
+                                 value='Takes score away from a team (1/2). Use negative numbers to add '
                                        'score.\nMod only.',
                                  inline=False)
         await message.channel.send(embed=artfight_embed)

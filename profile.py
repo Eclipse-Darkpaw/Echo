@@ -5,7 +5,7 @@ File Version:2.0.1
 import discord
 import json
 
-from fileManagement import profile_path, resource_file_path
+from fileManagement import resource_file_path
 from main import get_user_id, read_line
 
 
@@ -53,7 +53,11 @@ async def display_profile(message, client):
         profile = {'bio': "This user has not set a bio yet"}
     
     embed = discord.Embed(title=member.display_name, description=profile['bio'])
-    embed.set_thumbnail(url=member.avatar_url)
+    try:
+        icon_url = member.guild_avatar.url
+    except AttributeError:
+        icon_url = member.avatar.url
+    embed.set_thumbnail(url=icon_url)
     embed.color = member.color
     try:
         for field in profile['fields']:

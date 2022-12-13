@@ -4,7 +4,7 @@ import sunreek
 
 from difflib import SequenceMatcher
 from fileManagement import server_settings_path
-from main import read_line, Message
+from main import read_line
 from random import randint
 
 async def setup(message, client):
@@ -181,7 +181,23 @@ async def artfight(message, client):
     command = message.content[1:].split(' ', 3)
 
     if len(command) == 1:
-        await sunreek.help_message(Message('}help artfight', message.channel))
+        artfight_embed = discord.Embed(title='Artfight Command List',
+                                       description='This is the commands for the annual Art Fight',
+                                       color=0x45FFFF)
+        artfight_embed.add_field(name='join',
+                                 value='Assigns a user to a team ',
+                                 inline=False)
+        artfight_embed.add_field(name='scores',
+                                 value='shows the team scores',
+                                 inline=False)
+        artfight_embed.add_field(name='submit',
+                                 value='This is how you submit art. See <#787316128614973491> for scoring.',
+                                 inline=False)
+        artfight_embed.add_field(name='remove [1/2] [score to remove]',
+                                 value='Takes score away from a team (1/2). Use negative numbers to add '
+                                       'score.\nMod only.',
+                                 inline=False)
+        await message.channel.send(embed=artfight_embed)
     elif command[1] == 'join':
         if artfight_team1 in message.author.roles or artfight_team2 in message.author.roles:
             await message.reply("You are already on a team")

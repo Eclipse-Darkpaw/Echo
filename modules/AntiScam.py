@@ -37,7 +37,7 @@ async def scan_message(message):
         channel = message.guild.get_channel(log_channel)
 
         embed = discord.Embed(title='Possible Scam in #' + str(message.channel.name), color=0xFF0000)
-        embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar_url)
+        embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar.url)
         embed.add_field(name='message', value=content, inline=False)
         embed.add_field(name='Flags', value=str(flags), inline=False)
         embed.add_field(name='Sender ID', value=message.author.id)
