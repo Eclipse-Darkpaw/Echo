@@ -88,7 +88,8 @@ async def artfight_submit(message, team_num, client):
                           'Please reply with the number of OCs/characters in your submission',
                           'Is this shaded? Respond "Y" if yes, anything else for no',
                           'Is there a background? Respond "Y" if yes, anything else for no',
-                          'What is the title of this piece?']
+                          'What is the title of this piece?',
+                          'Who are you attacking? you may type it out in the server, then paste it here.']
     responses = []
     try:
         image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author,
@@ -132,7 +133,8 @@ async def artfight_submit(message, team_num, client):
 
     score = (base + shaded) * num_chars + bg
 
-    embed = discord.Embed(title=responses[4].content, description='A Submission from <@'+str(message.author.id)+'>')
+    embed = discord.Embed(title=responses[4].content, description=responses[5].content)
+    embed.add_field(name='Author', value='A Submission from <@'+str(message.author.id)+'>')
     embed.add_field(name='Score', value=str(score)+' ornaments')
     embed.set_image(url=link)
     embed.color = message.author.color
