@@ -1,7 +1,6 @@
 import discord
 import json
 
-from discord.ext import commands
 from main import read_line
 from difflib import SequenceMatcher
 from fileManagement import resource_file_path
@@ -79,7 +78,7 @@ class Application:
                         similarity = SequenceMatcher(None, code, response.content).ratio()
                         if debug:
                             print(similarity)
-                        if similarity >= 0.4:
+                        if similarity >= 0.5:
                             self.responses.append(self.passguesses)
                             break
                         guesses -= 1
@@ -178,7 +177,9 @@ async def verify(message, client_in):
         
         try:                            # kicks the user and sends a message.
             # TODO: change to application channel
-            await message.channel.send('<@!'+str(message.author.id)+'> kicked for excessive password guesses.\n' + str(guesses))
+            await message.guild.get_channel(application_channel).send('<@!'+str(message.author.id)+'> kicked for '
+                                                                                                 'excessive '
+                                                                                       'password guesses.\n' + str(guesses))
             await message.guild.kick(message.author, reason='Too many failed password attempts')
         except discord.Forbidden:       # User cannot be kicked
             
@@ -189,7 +190,7 @@ async def verify(message, client_in):
                                        "await message.guild.kick(message.author, reason='Too many failed password "
                                        "attempts')```")
 
-    applied = await channel.send(embed=application.gen_embed())
+    applied = await channel.send(content=f'<@{message.author.id}>', embed=application.gen_embed())
     emojis = ['✅', '❓', '🚫', '❗']
     for emoji in emojis:
         await applied.add_reaction(emoji)
