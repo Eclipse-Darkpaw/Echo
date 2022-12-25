@@ -3,6 +3,8 @@ import os
 # TODO: change to actual file path for launch
 resource_file_path = f'{os.environ.get("HOMEDRIVE")}\\{os.environ.get("HOMEPATH")}\\Desktop\\Echo\\resources\\'
 server_settings_path = resource_file_path + 'servers.json'
+server_warns_path = resource_file_path + 'warns.json'
+
 
 def get_leaderboard_path(guild_id):
     return resource_file_path + 'Guild-files\\{}\\.leaderboard'.format(guild_id)
