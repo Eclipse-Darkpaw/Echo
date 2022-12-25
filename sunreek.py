@@ -12,7 +12,6 @@ import sys
 import time
 
 from fileManagement import resource_file_path
-from main import read_line, get_user_id
 from profile import display_profile, set_bio
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 # Keep imports in alphabetical order
@@ -20,13 +19,12 @@ from refManagement import ref, set_ref, add_ref, oc, random_ref
 start_time = time.time()
 
 logging.basicConfig(filename='error.log', encoding='utf-8')
-# TODO: Add uptime feature.
 
 with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.3.1'
+version_num = '3.3.4'
 
 eclipse_id = 749443249302929479
 
@@ -34,7 +32,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-game = discord.Game(prefix + "help for commands")
+game = discord.Game(f'{prefix}help for commands')
 client = discord.Client(intents=intents)
 
 artfight_enabled = False
@@ -60,6 +58,8 @@ async def verify(message):
     :param message: Discord message calling the method
     :return: NoneType
     """
+    if len(message.content) > 8:
+        return
     await Verif.verify(message, client_in=client)
 
 
@@ -85,6 +85,19 @@ async def ping(message):
     await General.ping(message)
 
 
+async def uptime(message):
+    """
+    Displays the time the bot has been running for.
+    Last docstring edit: -Autumn V3.3.4
+    Last method edit: -Autumn V3.3.4
+    :param message: message calling the bot
+    :return: None
+    """
+    days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
+    await message.reply(time.strftime(f'Online for {days-1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
+                                      time.gmtime(time.time() - start_time)))
+    
+
 async def version(message):
     """
     Displays the version of the bot being used
@@ -99,25 +112,12 @@ async def version(message):
 async def end(message):
     """
     Quits the bot. Sends a message and updates the game status to alert users the bot is quiting.
-
     Last docstring edit: -Autumn V1.14.4
     Last method edit: -Autumn V3.3.0
     :param message: Message calling the bot
     :return: None
     """
-    General.quit(message, client)
-
-
-async def save(message):
-    """
-    Saves necessary bot data to the necessary files
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.16.3
-    :param message:
-    :return:
-    """
-    artfight.save()
-    await message.reply('Data saved')
+    await General.quit(message, client)
 
 
 async def profile(message, client=None):
@@ -484,6 +484,7 @@ async def cursed_keys(message):
         await message.reply(str(len(message.guild.get_role(player_role_id).members)))
 
 
+# Todo: look over and verify the purge code will work
 async def purge(message):
     """
     method removes all members with the unverified role from Rikoland
@@ -502,12 +503,36 @@ async def purge(message):
                 await member.kick(reason='Server purge.')
                 num_kicked += 1
             except discord.Forbidden:
-                await message.channel.send('unable to ban <@' + str(member.id) + '>')
+                await message.channel.send('unable to kick <@' + str(member.id) + '>')
         await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
     else:
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
-
+async def prune(message):
+    """
+    Removes inactive members from the server
+    Last docstring edit: -Autumn V1.14.4
+    Last method edit: -Autumn V1.14.4
+    :param message:
+    :return: NoneType
+    """
+    if message.author.guild is not None and message.author.guild_permissions.kick_members:
+        # only run if in a guild and the user could do this manually.
+        members = message.guild.members
+        ignore_roles = [667970355733725184, 970723533846106165, 716173532245131265, 678102571063443499,
+                        667246861328842774, 655755488100745247, 1006767850196840510, 911988983825842177,
+                        932681590159601664, 936554410442620950, 903902681242931261, 612939346479153172,
+                        915042582445322290, 612554353764597760]
+        for member in members:
+            for role in member.roles:
+                if role.id in ignore_roles:
+                    continue
+                else:
+                    member,
+    else:
+        await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
+                            'or both.')
+        
 async def join_pos(message):
     """
     Displays the number a user joined the server in.
@@ -630,14 +655,14 @@ async def on_ready():
 
     await client.change_presence(activity=game)
     await client.get_user(eclipse_id).send('Running, and active')
-    # artfight_load()
 
-
-switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'verify': verify, 'setcode': setcode,
-            'modmail': modmail, 'quit': end, 'profile': profile, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'save': save, 'huh': huh,
-            'kick': kick, 'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
-            'setup': setup, 'artfight': artfight}
+switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
+            'setcode': setcode, 'modmail': modmail, 'quit': end, 'profile': profile, 'setref': set_ref, 'ref': ref,
+            'addref': add_ref, 'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys,
+            'cursedkey': cursed_keys, 'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys,
+            'cursedkey': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'huh': huh, 'kick': kick,
+            'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup,
+            'uptime': uptime}
 
 scan_ignore = [688611557508513854]
 
@@ -667,38 +692,40 @@ async def on_message(message):
         pass
     else:
         await AntiScam.scan_message(message)
+    try:
+        if content[0] == prefix:
     
-    if content[0] == prefix:
-
-        # split the message to determine what command is being called
-        command = message.content[1:].lower().split(' ', 1)
-
-        # search the switcher for the command called. If the command is not found, do nothing
-        try:
-            method = switcher[command[0]]
-        except KeyError:
-            return
-        
-        await method(message)
-        if command[0] == 'print':
-            # Used to transfer data from Discord directly to the command line. Very simple shortcut
-            print(message.content)
-    elif cursed_keys_running and message.guild is not None:
-        # TODO: Make this a separate function.
-        # Check if the message author has the game role
-        if message.guild.get_role(player_role_id) in message.author.roles:
-            # If the message author has the role, scan their message for any cursed keys
-            for key in crsd_keys:
-                if key in message.content.lower():
-                    await message.author.remove_roles(message.guild.get_role(player_role_id))
-                    await message.reply('You have been cursed for using the key: ' + key)
-
-                    if len(message.guild.get_role(player_role_id).members) == 1:
-                        # This code detects if there is a winner
-                        cursed_keys_running = False
-                        await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) +
-                                                   '> wins the game!')
-                    break
+            # split the message to determine what command is being called
+            command = message.content[1:].lower().split(' ', 1)
+    
+            # search the switcher for the command called. If the command is not found, do nothing
+            try:
+                method = switcher[command[0]]
+            except KeyError:
+                return
+            
+            await method(message)
+            if command[0] == 'print':
+                # Used to transfer data from Discord directly to the command line. Very simple shortcut
+                print(message.content)
+        elif cursed_keys_running and message.guild is not None:
+            # TODO: Make this a separate function.
+            # Check if the message author has the game role
+            if message.guild.get_role(player_role_id) in message.author.roles:
+                # If the message author has the role, scan their message for any cursed keys
+                for key in crsd_keys:
+                    if key in message.content.lower():
+                        await message.author.remove_roles(message.guild.get_role(player_role_id))
+                        await message.reply('You have been cursed for using the key: ' + key)
+    
+                        if len(message.guild.get_role(player_role_id).members) == 1:
+                            # This code detects if there is a winner
+                            cursed_keys_running = False
+                            await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) +
+                                                       '> wins the game!')
+                        break
+    except IndexError:
+        pass
 
 
 def run_sunreek():

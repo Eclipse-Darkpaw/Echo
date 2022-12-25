@@ -28,13 +28,8 @@ client = None
 class Application:
     def __init__(self, applicant, channel, applicant_guild,):
         global counter
-        global active_forms
-        global incomplete_forms
         
         counter += 1
-        active_forms += 1
-        incomplete_forms += 1
-        
         
         self.applicant = applicant
         self.channel = channel
@@ -78,14 +73,16 @@ class Application:
                         similarity = SequenceMatcher(None, code, response.content).ratio()
                         if debug:
                             print(similarity)
-                        if similarity >= 0.5:
+                        if response.content[1:7] == 'verify':
+                            pass
+                        elif similarity >= 0.5:
                             self.responses.append(self.passguesses)
                             break
                         guesses -= 1
                         question = 'Incorrect password ' + str(guesses) + ' attempts remaining'
                         
                         if guesses <= 0:
-                            await dm.send('No guesses remain.')
+                            await dm.send('No guesses remain. You have been removed from the server.')
                             return -1, self.passguesses
                         else:
                             continue
@@ -112,9 +109,12 @@ class Application:
 
         embed = discord.Embed(title='Application #' + str(self.count))
         try:
-            icon_url = self.applicant.guild_avatar.url
+            try:
+                icon_url = self.applicant.guild_avatar.url
+            except AttributeError:
+                icon_url = self.applicant.avatar.url
         except AttributeError:
-            icon_url = self.applicant.avatar.url
+            icon_url = "https://media.discordapp.net/attachments/842662532808179734/1054686812410482729/frowning-face-with-open-mouth_1f626.png"
         embed.set_author(name=self.applicant.name, icon_url=icon_url)
         
         for i in range(len(application_questions)):
@@ -133,11 +133,15 @@ async def verify(message, client_in):
     The method that primarily handles member verification. All members must verify from this method. Sends DM to user,
     asks user questions, then sends answers to the moderators in a designated chat
     Last docstring edit: -Autumn V3.1.0
-    Last method edit: -Autumn V3.1.1
+    Last method edit: -Autumn V3.3.4
     :param message: Discord message calling the method
     :param client_in: Bot client handling IO functions
     :return: NoneType
     """
+    if message.guild is None:
+        await message.reply("You must use this in a server")
+        return
+    
     global active_forms
     global incomplete_forms
     global submitted_forms
@@ -145,18 +149,34 @@ async def verify(message, client_in):
     
     client = client_in
     msg_guild = message.guild
-
+    
     # Check if member is verified
     with open(file_path) as file:
         data = json.load(file)
     
-    application_channel = int(data[str(message.guild.id)]['channels']['application'])
-    verified_role_id = int(data[str(message.guild.id)]['roles']['member'])
-    questioning_role_id = int(data[str(message.guild.id)]['roles']['questioning'])
-    unverified_role_id = int(data[str(message.guild.id)]['roles']['unverified'])
+    try:
+        application_channel = int(data[str(message.guild.id)]['channels']['application'])
+    except KeyError:
+        await message.reply("Unable to begin verification. Please inform the moderators about this issue.\n"
+                            "Error code -1")
+    
+    try:
+        verified_role_id = int(data[str(message.guild.id)]['roles']['member'])
+    except KeyError:
+        await message.reply("Unable to begin verification. Roles crucial roles are unassigned")
+        
+    try:
+        questioning_role_id = int(data[str(message.guild.id)]['roles']['questioning'])
+    except KeyError:
+        questioning_role_id = None
+        
+    try:
+        unverified_role_id = int(data[str(message.guild.id)]['roles']['unverified'])
+    except KeyError:
+        unverified_role_id = None
     
     if verified_role_id in message.guild.get_member(message.author.id).roles:   # what the fuck?
-        await message.channel.send('You are already verified', client_in)
+        await message.channel.send('You are already verified')
         return
 
     applicant = message.author
@@ -167,19 +187,16 @@ async def verify(message, client_in):
     try:
         questioning_error_code, guesses = await application.question()
     except discord.errors.Forbidden:
-        await message.channel.send('<@!'+str(message.author.id)+'> I cannot send you a message. Change your privacy '
-                                                                'settings in User Settings->Privacy & Safety')
-        active_forms -= 1
-        incomplete_forms -= 1
+        await message.channel.send(f'<@!{message.author.id}> I cannot send you a message. Change your privacy '
+                                   f'settings in User Settings->Privacy & Safety')
         return
 
     if questioning_error_code == -1:    # Got password wrong too many times
         
         try:                            # kicks the user and sends a message.
             # TODO: change to application channel
-            await message.guild.get_channel(application_channel).send('<@!'+str(message.author.id)+'> kicked for '
-                                                                                                 'excessive '
-                                                                                       'password guesses.\n' + str(guesses))
+            await message.guild.get_channel(application_channel).send(f'<@!{message.author.id}> kicked for excessive'
+                                                                      f' password guesses.\n{guesses}')
             await message.guild.kick(message.author, reason='Too many failed password attempts')
         except discord.Forbidden:       # User cannot be kicked
             
@@ -193,6 +210,8 @@ async def verify(message, client_in):
     applied = await channel.send(content=f'<@{message.author.id}>', embed=application.gen_embed())
     emojis = ['✅', '❓', '🚫', '❗']
     for emoji in emojis:
+        if questioning_role_id is None and emoji == emojis[1]:
+            continue
         await applied.add_reaction(emoji)
 
     def check(reaction, user):
@@ -202,29 +221,30 @@ async def verify(message, client_in):
         :param user:
         :return: boolean
         """
-        return user != client.user and user.guild_permissions.manage_roles and str(reaction.emoji) in emojis and\
-               reaction.message == applied
+        return (user != client.user and
+                user.guild is not None and
+                user.guild_permissions.manage_roles and
+                str(reaction.emoji) in emojis and
+                reaction.message == applied)
 
-    incomplete_forms -= 1
-    submitted_forms += 1
     while True:
         reaction, user = await client.wait_for('reaction_add', check=check)
         if str(reaction.emoji) == '✅':
-            
-            await application.applicant.add_roles(message.guild.get_role(verified_role_id))
+            try:
+                await application.applicant.add_roles(message.guild.get_role(verified_role_id))
+            except discord.Forbidden:
+                await channel.send('Unable to give role. Please check my permissions.')
+                continue
 
             try:
                 await message.author.send('You have been approved.')
             except discord.Forbidden:
-                await channel.send('Unable to DM <@!'+str(message.author.id)+'>')
+                await channel.send(f'Unable to DM <@!{message.author.id}>')
 
             await application.applicant.remove_roles(msg_guild.get_role(questioning_role_id))
             await application.applicant.remove_roles(msg_guild.get_role(unverified_role_id))
-            await channel.send('<@!'+str(message.author.id)+'> approved')
-
-            active_forms -= 1
-            submitted_forms -= 1
-
+            await channel.send(f'<@!{message.author.id}> approved')
+            
             await applied.add_reaction('🆗')
             break
         elif str(reaction.emoji) == '❓':
@@ -247,9 +267,10 @@ async def verify(message, client_in):
             
             reason = await read_line(client,
                                      msg_guild.get_channel(application_channel),
-                                     'Why was <@!' + str(message.author.id) + '> denied? Write `cancel` to cancel.',
+                                     f'Why was <@!{message.author.id}> denied? Write `cancel` to cancel.',
                                      user,
-                                     delete_prompt=False, delete_response=False)
+                                     delete_prompt=False,
+                                     delete_response=False)
 
             if reason.content == 'cancel':
                 await channel.send('Action cancelled')
@@ -257,25 +278,26 @@ async def verify(message, client_in):
                 continue
             else:
                 await message.author.send('Your application was denied for:\n> ' + reason.content)
-                await channel.send('<@!'+str(message.author.id)+'> was denied for:\n> '+reason.content)
-                active_forms -= 1
-                submitted_forms -= 1
+                await channel.send(f'<@!{message.author.id}> was denied for:\n> '+reason.content)
                 await applied.add_reaction('🆗')
                 break
         elif str(reaction.emoji) == '❗':
-            reason = await read_line(client, msg_guild.get_channel(application_channel), 'Why was <@!' +
-                                     str(message.author.id) + '> banned? write `cancel` to cancel.', user,
-                                     delete_prompt=False, delete_response=False)
+            reason = await read_line(client,
+                                     msg_guild.get_channel(application_channel),
+                                     f'Why was <@!{message.author.id}> banned? write `cancel` to cancel.',
+                                     user,
+                                     delete_prompt=False,
+                                     delete_response=False)
+            
             reason = reason.content
+            
             if reason == 'cancel':
                 await channel.send('Ban cancelled')
                 await reaction.remove(user)
             else:
                 try:
                     await message.guild.ban(user=application.applicant, reason=reason)
-                    await channel.send('<@{}> banned for\n> {}'.format(message.author.id, reason))
-                    active_forms -= 1
-                    submitted_forms -= 1
+                    await channel.send(f'<@{message.author.id}> banned for\n> {reason}')
                     await applied.add_reaction('🆗')
                     break
                 except discord.Forbidden:

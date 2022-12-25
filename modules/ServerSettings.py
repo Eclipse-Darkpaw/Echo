@@ -22,15 +22,15 @@ async def setup(message, client):
         for i in range(len(responses)):
             if str(responses[i][1]).lower() == 'none':
                 msg += f'\n**{responses[i][0]}:** {responses[i][1]}'
-            elif 0 <= i < 4:
+            elif 0 <= i < 5:
                 msg += f'\n**{responses[i][0]}:** <#{responses[i][1]}>'
-            elif 4 <= i < 8:
+            elif 5 <= i < 10:
                 msg += f'\n**{responses[i][0]}:** <@&{responses[i][1]}>'
             else:
                 msg += f'\n**{responses[i][0]}:** {responses[i][1]}'
         await progress.edit(content=msg)
 
-    channels = ['application', 'questioning', 'mailbox', 'log']
+    channels = ['application', 'questioning', 'mailbox', 'log', 'warn log']
     channelIDs = {}
     for channel in channels:
         while True:
@@ -53,7 +53,7 @@ async def setup(message, client):
             except IndexError:
                 await message.reply('No channels were mentioned')
     
-    roles = ['member', 'unverified', 'questioning', 'suspended']
+    roles = ['member', 'unverified', 'questioning', 'suspended', 'mod']
     roleIDs = {}
     for role in roles:
         while True:
