@@ -11,7 +11,7 @@ prefix = '>'
 version_num = '2.0.0'
 
 
-eclipse_id = 440232487738671124
+eclipse_id = 749443249302929479
 
 intents = discord.Intents.default()
 intents.members = True

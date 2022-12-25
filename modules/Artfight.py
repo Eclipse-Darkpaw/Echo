@@ -85,11 +85,12 @@ async def artfight_submit(message, team_num, client):
 
     artfight_questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch'
                           '\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
-                          'Please reply with the number of OCs/characters in your submission',
+                          'Please reply with the number of OCs/characters belonging to the other team in your '
+                          'submission',
                           'Is this shaded? Respond "Y" if yes, anything else for no',
                           'Is there a background? Respond "Y" if yes, anything else for no',
-                          'What is the title of this piece?',
-                          'Who are you attacking? you may type it out in the server, then paste it here.']
+                          'Did you follow the prompt? Respond "Y" if yes, anything else for no',
+                          'What is the title of this piece?']
     responses = []
     try:
         image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author,
@@ -97,45 +98,50 @@ async def artfight_submit(message, team_num, client):
         link = image.attachments[0].url
 
         for question in artfight_questions:
-            question = '<@!' + str(message.author.id) + '> ' + question
+            question = f'<@!{message.author.id}> {question}'
             response = await read_line(client, dm, question, message.author, delete_prompt=False, delete_response=False)
             responses.append(response)
     except discord.Forbidden:
-        message.reply('Unable to DM You, please change your privacy settings.')
+        await message.reply('Unable to DM You, please change your privacy settings.')
         return -1
 
-    if int(responses[0].content) == 1:
+    if responses[0].content[0] == '1':
         base = 5
-    elif int(responses[0].content) == 2:
+    elif responses[0].content[0] == '2':
         base = 10
-    elif int(responses[0].content) == 3:
+    elif responses[0].content[0] == '3':
         base = 20
-    elif int(responses[0].content) == 4:
+    elif responses[0].content[0] == '4':
         base = 30
     else:
-        await dm.send('Unable to score your submission')
+        await dm.send(f'Unable to score your submission. \n`Expected int 1-4, was given "{responses[0].content}"`')
+        return -2
+    
+    try:
+        num_chars = int(responses[1].content)
+    except ValueError:
+        await dm.send(f'Unable to score your submission. \n`Expected int, was given "{responses[1].content}"`')
         return -2
 
-    num_chars = int(responses[1].content)
-
-    if responses[2].content.lower() == 'y':
+    if responses[2].content[0].lower() == 'y':
         shaded = 10
     else:
         shaded = 0
 
-    if responses[3].content.lower() == 'y':
+    if responses[3].content[0].lower() == 'y':
         bg = 20
     else:
         bg = 0
 
-    if num_chars > 5:
-        num_chars = 5
+    if responses[4].content[0].lower() == 'y':
+        prompt = 1
+    else:
+        prompt = 0
 
-    score = (base + shaded) * num_chars + bg
+    score = prompt * ((base + shaded) * num_chars + bg)
 
-    embed = discord.Embed(title=responses[4].content, description=responses[5].content)
-    embed.add_field(name='Author', value='A Submission from <@'+str(message.author.id)+'>')
-    embed.add_field(name='Score', value=str(score)+' ornaments')
+    embed = discord.Embed(title=responses[5].content, description=f'A Submission from <@{message.author.id}>')
+    embed.add_field(name='Score', value=str(score)+' ornaments', inline=False)
     embed.set_image(url=link)
     embed.color = message.author.color
 
@@ -151,14 +157,16 @@ async def artfight_submit(message, team_num, client):
         elif team_num == 2:
             artfight_team2_score += score
             pass
-        await dm.send('Submission sent!')
+        
         data[str(message.guild.id)]['artfight']['scores']['team1'] = artfight_team1_score
         data[str(message.guild.id)]['artfight']['scores']['team2'] = artfight_team2_score
         
         with open(server_settings_path, 'w') as file:
             file.write(json.dumps(data, indent=4))
-        
+        await dm.send('Score counted!\n'
+                      'Sending Submission')
         return embed
+        
     else:
         await dm.send('Submission cancelled. please redo')
         return -2
@@ -243,20 +251,23 @@ async def artfight(message, client):
         if message.channel.id == data[str(message.guild.id)]['artfight']['channel']:
             if artfight_team1 in message.author.roles:
                 embed = await artfight_submit(message, 1, client)
-
-                if embed == -1:
-                    await message.reply('Error: Please retry your submission')
-                    return
             elif artfight_team2 in message.author.roles:
                 embed = await artfight_submit(message, 2, client)
-
-                if embed == -1:
-                    await message.reply('Error: Please retry your submission')
-                    return
             else:
                 await message.reply('You are not on an artfight team!')
                 return
-            await message.reply(embed=embed)
+            if type(embed) is int:
+                if embed == -1:
+                    return
+                elif embed == -2:
+                    await message.reply('Unable to score submission. Given bad values. Please retry')
+                    return
+                else:
+                    await message.reply('An unknown error occurred, please retry your submission.')
+            else:
+                await message.reply(embed=embed)
+                dm = await message.author.create_dm()
+                await dm.send('Submitted')
         else:
             await message.reply(f'You can only use this in <#{artfight_channel}>!')
     elif command[1] == 'remove' and message.author.guild_permissions.manage_roles:

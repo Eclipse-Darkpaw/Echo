@@ -4,6 +4,7 @@ import os
 import sys
 
 project_version = '3.3.0'
+eclipse_id = 749443249302929479
 
 start_time = time.time()
 # todo: add uptime feature
@@ -11,7 +12,7 @@ start_time = time.time()
 
 
 class Message:
-    def __init__(self, content, channel, target_message = None):
+    def __init__(self, content, channel, target_message=None):
         self.content = content
         self.channel = channel
         self.author = target_message.author
@@ -58,8 +59,7 @@ def get_user_id(message, arg=1):
     
     :param message:
     :param arg:
-    :return: Returns a user ID as an int. returns -1 if unable to complete task. works in 100% of cases if used right,
-    so don't worry about it ever returning -1.
+    :return: Returns a user ID as an int. returns -1 if unable to complete task.
     """
     command = message.content.split(' ')
     if len(command) == arg:
