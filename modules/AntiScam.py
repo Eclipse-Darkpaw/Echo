@@ -3,8 +3,10 @@ import json
 
 from fileManagement import resource_file_path
 
-blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)"]
+blacklist = ['@everyone', 'https://', 'gift', 'nitro', 'steam', '@here', 'free', 'who is first? :)', "who's first? :)",
+             'btc', 'eth', 'airdrop', 'crypto', 'nft', 'dm me via', 't.me/DavidMurray']
 code = 'plsdontban'
+
 
 async def scan_message(message):
     """
