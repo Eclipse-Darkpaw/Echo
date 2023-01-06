@@ -205,7 +205,7 @@ async def remove_warn(message):
         data[str(message.guild.id)] = {}
     
     # Check the user has permission to use the command
-    if message.author.guild_permissions.manage_roles:
+    if message.author.guild_permissions.kick_members:
         user_id = get_user_id(message)
         
         # check to make sure the user id could be found
