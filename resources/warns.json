@@ -33,6 +33,14 @@
                 "issuer_name": "Eclipse_Darkpaw#0207",
                 "reason": "Fighting"
             }
+        ],
+        "422376785116790814": [
+            {
+                "time": 1672969159,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "posting disturbing content in <#1057821464721621133>"
+            }
         ]
     }
 }
