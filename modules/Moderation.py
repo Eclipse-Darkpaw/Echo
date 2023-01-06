@@ -125,6 +125,15 @@ async def warn(message):
             await message.guild.get_member(user_id).add_roles(message.guild.get_role(data[str(message.guild.id)][
                                                                                          'roles']['suspended']))
             await warn_log.send(f'<@{user_id}> suspended for {num_warns} warns in one week')
+            thread_name = f'{message.author.name} {time.strftime("%Y-%m-%d", time.gmtime(time.time()))} supsension (' \
+                          f'TBD)'
+            suspension = message.guild.get_channel(data[str(message.guild.id)]['channels']['suspended'])
+            try:
+                thread = await suspension.create_thread(name=thread_name, auto_archive_duration=1440)
+                await thread.send(f'<@{user_id}> You have been suspended by <@{message.author.id}> for excessive '
+                                  f'infractions. If you have any questions, please send them in this thread.')
+            except discord.Forbidden:
+                await message.channel.send(f'<@{user_id}> suspended. unable to create thread')
     else:
         # user does not have permission to assign warns
         await message.channel.send('You are not allowed to use that command')
