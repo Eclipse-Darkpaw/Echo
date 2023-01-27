@@ -370,6 +370,17 @@ async def on_message(message):
         pass
 
 
+@client.event
+async def on_member_update(before, after):
+    if (before.guild.id == 1054121991365468281 and
+            before.guild.get_role(1054160602349703188) not in before.roles and
+            before.guild.get_role(1054160602349703188) in after.roles):
+        welcome = [f"<@{after.id}> is our newest bean lover",
+                   f"<@{after.id}> has stumbled into the bean sanctuary",
+                   f"<@{after.id}> has arrived looking for beans"]
+        await before.guild.get_channel(1054137434725691393).send(content=welcome[random.choice(welcome)])
+
+
 def run_pawbot():
     """
     Function allows the host to pick whether to run the live bot, or run the test bot in a closed environment, without
