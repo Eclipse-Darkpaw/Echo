@@ -17940,3 +17940,922 @@ WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 23ae7079aa660915b9c9ee2887526de3).
+ERROR:discord.client:Ignoring exception in on_ready
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\sunreek.py", line 659, in on_ready
+    async for message in client.get_guild(612550152514961408).get_member(eclipse_id).history(limit=10):
+AttributeError: 'NoneType' object has no attribute 'get_member'
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 741a2d90b40258b30b5af5b0d17a74a3).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b12b12013d19f7923b581d9b91626dee).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 0e67ab6bb46d34d33720ed5d990f4684).
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b12b12013d19f7923b581d9b91626dee.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 0e67ab6bb46d34d33720ed5d990f4684.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 63945433f21e95dbae80be134b008052).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b51a91f2c64379378d50cea56e5ce54b).
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+ERROR:discord.client:Attempting a reconnect in 1.10s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 627, in connect
+    await self.ws.poll_event()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 646, in poll_event
+    raise ConnectionClosed(self.socket, shard_id=self.shard_id, code=code) from None
+discord.errors.ConnectionClosed: Shard ID None WebSocket closed with 1000
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 63945433f21e95dbae80be134b008052.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session b51a91f2c64379378d50cea56e5ce54b.
+ERROR:discord.client:Attempting a reconnect in 1.12s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1020, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 969, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs)  # type: ignore  # noqa
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1040, in create_connection
+    sock = await self._connect_sock(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 954, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 704, in sock_connect
+    return await self._proactor.connect(sock, address)
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 458, in wait_for
+    fut.result()
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 460, in wait_for
+    raise exceptions.TimeoutError() from exc
+asyncio.exceptions.TimeoutError
+ERROR:discord.client:Attempting a reconnect in 0.04s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1020, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 969, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs)  # type: ignore  # noqa
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1040, in create_connection
+    sock = await self._connect_sock(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 954, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 704, in sock_connect
+    return await self._proactor.connect(sock, address)
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 458, in wait_for
+    fut.result()
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 460, in wait_for
+    raise exceptions.TimeoutError() from exc
+asyncio.exceptions.TimeoutError
+ERROR:discord.client:Attempting a reconnect in 0.58s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 0.05s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 13.28s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 7.22s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 1.22s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1020, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 969, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs)  # type: ignore  # noqa
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1040, in create_connection
+    sock = await self._connect_sock(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 954, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 704, in sock_connect
+    return await self._proactor.connect(sock, address)
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 458, in wait_for
+    fut.result()
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 460, in wait_for
+    raise exceptions.TimeoutError() from exc
+asyncio.exceptions.TimeoutError
+ERROR:discord.client:Attempting a reconnect in 45.13s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 11.34s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 7.77s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1020, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 969, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs)  # type: ignore  # noqa
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1040, in create_connection
+    sock = await self._connect_sock(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 954, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 704, in sock_connect
+    return await self._proactor.connect(sock, address)
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 458, in wait_for
+    fut.result()
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 460, in wait_for
+    raise exceptions.TimeoutError() from exc
+asyncio.exceptions.TimeoutError
+ERROR:discord.client:Attempting a reconnect in 142.33s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 7.36s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1020, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 969, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs)  # type: ignore  # noqa
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1080, in create_connection
+    transport, protocol = await self._create_connection_transport(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1110, in _create_connection_transport
+    await waiter
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 458, in wait_for
+    fut.result()
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 460, in wait_for
+    raise exceptions.TimeoutError() from exc
+asyncio.exceptions.TimeoutError
+INFO:discord.gateway:Shard ID None session has been invalidated.
+ERROR:discord.client:Attempting a reconnect in 31.91s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-b.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 280.26s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 45.35s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 81.13s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 248.18s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 1012.52s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway-us-east1-c.discord.gg:443 ssl:default [getaddrinfo failed]
+ERROR:discord.client:Attempting a reconnect in 189.72s
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 999, in _create_direct_connection
+    hosts = await asyncio.shield(host_resolved)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 865, in _resolve_host
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\resolver.py", line 31, in resolve
+    infos = await self._loop.getaddrinfo(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 855, in getaddrinfo
+    return await self.run_in_executor(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\concurrent\futures\thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 624, in connect
+    self.ws = await asyncio.wait_for(coro, timeout=60.0)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\tasks.py", line 447, in wait_for
+    return fut.result()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\gateway.py", line 372, in from_client
+    socket = await client.http.ws_connect(str(url))
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\http.py", line 536, in ws_connect
+    return await self.__session.ws_connect(url, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 754, in _ws_connect
+    resp = await self.request(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\client.py", line 520, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 535, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 892, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\aiohttp\connector.py", line 1011, in _create_direct_connection
+    raise ClientConnectorError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host gateway.discord.gg:443 ssl:default [getaddrinfo failed]
+INFO:discord.gateway:Shard ID None session has been invalidated.
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 4a05299450fb14ce7a420de4c2ded5c5).
+INFO:discord.gateway:Shard ID None session has been invalidated.
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: cf061ffaf14c4e711d83e9bbc0857fb7).
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 4a05299450fb14ce7a420de4c2ded5c5.
+WARNING:discord.gateway:Can't keep up, shard ID None websocket is 41.4s behind.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cf061ffaf14c4e711d83e9bbc0857fb7.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 907da355cd480d9819de1642fad82346).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: cbd80424285694ef73f40072c8672f6b).
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 907da355cd480d9819de1642fad82346.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 907da355cd480d9819de1642fad82346.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 907da355cd480d9819de1642fad82346.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
