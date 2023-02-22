@@ -6,6 +6,7 @@ import modules.General as General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
+import random
 import os
 import sys
 import time
@@ -378,7 +379,7 @@ async def on_member_update(before, after):
         welcome = [f"<@{after.id}> is our newest bean lover",
                    f"<@{after.id}> has stumbled into the bean sanctuary",
                    f"<@{after.id}> has arrived looking for beans"]
-        await before.guild.get_channel(1054137434725691393).send(content=welcome[random.choice(welcome)])
+        await before.guild.get_channel(1054137434725691393).send(content=random.choice(welcome))
 
 
 def run_pawbot():

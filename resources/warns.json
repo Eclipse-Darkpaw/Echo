@@ -24,16 +24,33 @@
                 "issuer_id": 749443249302929479,
                 "issuer_name": "Eclipse_Darkpaw#0207",
                 "reason": "excessive violence in <#1054137434725691393>"
-            }
-        ],
-        "782400723853246484": [
+            },
             {
-                "time": 1672425827,
+                "time": 1675905528,
                 "issuer_id": 749443249302929479,
                 "issuer_name": "Eclipse_Darkpaw#0207",
-                "reason": "Fighting"
+                "reason": "Discussing topics that are too heavy in general chat"
+            },
+            {
+                "time": 1675909046,
+                "issuer_id": 626455771441266707,
+                "issuer_name": "Zenith#1234",
+                "reason": "didn't change since last time"
+            },
+            {
+                "time": 1676067446,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "posting intentionally disturbing images in <#1054137434725691393>"
+            },
+            {
+                "time": 1676072532,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "posting gory/disturbing content in suspended chat"
             }
         ],
+        "782400723853246484": [],
         "422376785116790814": [
             {
                 "time": 1672969159,
@@ -54,6 +71,53 @@
                 "issuer_id": 749443249302929479,
                 "issuer_name": "Eclipse_Darkpaw#0207",
                 "reason": "postin inappropriate memes in <#1054216785194405959>"
+            }
+        ],
+        "905529060522864640": [
+            {
+                "time": 1674880819,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "Please dont post excessively gorey content in chat"
+            }
+        ],
+        "1061368056288383047": [
+            {
+                "time": 1675475847,
+                "issuer_id": 966409366108532828,
+                "issuer_name": "RZ54#5031",
+                "reason": "Nonsensical video in general"
+            },
+            {
+                "time": 1676664997,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "asking a moderator to send violent content"
+            }
+        ],
+        "434480702747181056": [
+            {
+                "time": 1675905075,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "Kinkshaming"
+            }
+        ],
+        "334646324962263041": [],
+        "546894704730439683": [
+            {
+                "time": 1676825091,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "please do not post cub porn in the server"
+            }
+        ],
+        "1041383586403721258": [
+            {
+                "time": 1676929542,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "fighting the mods"
             }
         ]
     }

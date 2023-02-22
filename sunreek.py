@@ -508,6 +508,7 @@ async def purge(message):
     else:
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
+
 async def prune(message):
     """
     Removes inactive members from the server
@@ -532,6 +533,7 @@ async def prune(message):
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
+        
         
 async def join_pos(message):
     """
