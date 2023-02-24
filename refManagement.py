@@ -140,7 +140,11 @@ async def ref(message, nsfw=False):
 
         msg = await message.channel.send('Finding ref, please wait')
         try:
-            ref_sheet = open(ref_path(target))
+            if nsfw:
+                path = nsfw_ref_path(target)
+            else:
+                path = ref_path(target)
+            ref_sheet = open(path)
             await msg.edit(content='Ref Found! Uploading, Please wait!')
             await message.reply(content=ref_sheet.read())
         except FileNotFoundError:
