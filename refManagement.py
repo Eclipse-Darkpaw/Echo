@@ -118,7 +118,11 @@ async def ref(message, nsfw=False):
             await msg.edit(content='Ref Found! Uploading, Please wait!')
             await message.reply(content=ref_sheet.read())
         except FileNotFoundError:
-            await msg.edit(content='User has not set their ref.')
+            if nsfw:
+                await msg.edit(content='User has not set NSFW ref. Retrieving SFW ref')
+                await ref(message, False)
+            else:
+                await msg.edit(content='User has not set their SFW ref.')
     elif command[1] == 'set':
         set_ref(message)
         message.reply('Ref set!')
@@ -141,6 +145,11 @@ async def ref(message, nsfw=False):
             await message.reply(content=ref_sheet.read())
         except FileNotFoundError:
             await msg.edit(content='User has not set their ref.')
+            if nsfw:
+                await msg.edit(content='User has not set NSFW ref. Retrieving SFW ref')
+                await ref(message, False)
+            else:
+                await msg.edit(content='User has not set their SFW ref.')
 
 
 async def oc(message):
