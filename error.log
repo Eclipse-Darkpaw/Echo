@@ -18859,3 +18859,12 @@ INFO:discord.gateway:Shard ID None has successfully RESUMED session 907da355cd48
 INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
 INFO:discord.gateway:Shard ID None has successfully RESUMED session 907da355cd480d9819de1642fad82346.
 INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session 907da355cd480d9819de1642fad82346.
+INFO:discord.gateway:Shard ID None has successfully RESUMED session cbd80424285694ef73f40072c8672f6b.
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 4a934b8314a8210b11a8733ae54290fe).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 82fd4538014b9a27c5a456ae102ef673).

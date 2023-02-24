@@ -34,6 +34,10 @@ def char_path(target_id, char):
     return resource_file_path + 'refs\\' + str(target_id) + '\\' + str(char) + '.refs'
 
 
+def nsfw_ref_path(target_id):
+    return resource_file_path + f'nsfw\\refs\\{target_id}.nsfwref'
+
+
 def folder_path(target_id, folder):
     return resource_file_path + 'refs\\{}\\{}'.format(target_id, folder)
 

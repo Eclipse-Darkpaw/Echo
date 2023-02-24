@@ -1,16 +1,21 @@
 import discord
 import os
-from fileManagement import ref_path, oc_folder_path, oc_path
+from fileManagement import ref_path, oc_folder_path, oc_path, nsfw_ref_path
 from main import get_user_id, Message
 from random import randint
 
 
-async def set_ref(message):
+async def set_ref(message, nsfw=False):
     try:
         trim = message.content[8:]
         command = trim.split('\n')
-
-        with open(ref_path(message.author.id), 'w') as refs:
+        
+        if nsfw:
+            path = nsfw_ref_path(message.author.id)
+        else:
+            path = ref_path(message.author.id)
+        
+        with open(path, 'w') as refs:
             for line in command:
                 try:
                     refs.write(line + '\n')
@@ -23,14 +28,19 @@ async def set_ref(message):
         await message.channel.send('No ref_sheet attached!')
 
 
-async def add_ref(message):
+async def add_ref(message, nsfw=False):
     """add_ref method
     adds a ref to a user's ref document"""
     try:
         trim = message.content[8:]
         command = trim.split('\n')
+        
+        if nsfw:
+            path = nsfw_ref_path(message.author.id)
+        else:
+            path = ref_path(message.author.id)
 
-        with open(ref_path(message.author.id), 'a') as refs:
+        with open(path, 'a') as refs:
             for line in command:
                 try:
                     refs.write(line + '\n')
@@ -47,7 +57,7 @@ async def add_ref(message):
         await message.channel.send('No ref attached!')
 
 
-async def random_ref(message, refs_in_guild=True):
+async def random_ref(message, refs_in_guild=True, nsfw=False):
     """
     >random ref (all)
     :param message:
@@ -86,7 +96,7 @@ async def random_ref(message, refs_in_guild=True):
         await message.channel.send('<@' + str(target_id) + ">'s ref sheet")
 
 
-async def ref(message):
+async def ref(message, nsfw=False):
     # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE
     command = message.content.split(' ', 2)
 
@@ -99,7 +109,12 @@ async def ref(message):
 
         msg = await message.channel.send('Finding ref, please wait')
         try:
-            ref_sheet = open(ref_path(target))
+        
+            if nsfw:
+                path = nsfw_ref_path(message.author.id)
+            else:
+                path = ref_path(message.author.id)
+            ref_sheet = open(path)
             await msg.edit(content='Ref Found! Uploading, Please wait!')
             await message.reply(content=ref_sheet.read())
         except FileNotFoundError:
@@ -112,9 +127,6 @@ async def ref(message):
         message.reply('Ref added!')
     elif command[1] == 'random':
         random_ref(message, len(command)==2)
-        
-            
-        
     else:
         target = get_user_id(message)
 
