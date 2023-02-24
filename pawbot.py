@@ -12,6 +12,7 @@ import sys
 import time
 
 from fileManagement import resource_file_path, server_settings_path
+from refManagement import ref, set_ref, add_ref
 from main import eclipse_id
 
 # Keep imports in alphabetical order
@@ -24,7 +25,7 @@ with open(server_settings_path) as file:
     data = json.load(file)
 
 prefix = '>'
-version_num = '3.3.4'
+version_num = '3.4.0'
 
 
 intents = discord.Intents.default()
@@ -293,16 +294,38 @@ async def help_message(message):
         await message.reply(embed=kick_embed)
         
 
-
 async def huh(message):
     """
     Easter egg
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: Unknown
+    Last method edit: -Autumn V 3.4.0
     :param message:
     :return: None
     """
-    await message.reply("We've been trying to reach you about your car's extended warranty")
+    await message.reply("We're no Strangers to love\n"
+                        "You know the rules and so do I!~\n"
+                        "A full commitments what I'm thinkin' of\n"
+                        "You wouldn't get this from, Any other guy.\n"
+                        "\n"
+                        "I just wanna tell you how I'm feeling\n"
+                        "gotta make you, understand!\n"
+                        "\n"
+                        "Never gonna give you up, Never gonna let you down\n"
+                        "Never gonna run around, and desert you\n"
+                        "Never gonna make you cry, Never gonna say goodbye\n"
+                        "Never gonna tell a lie, and hurt you")
+
+
+async def nsfw_ref(message):
+    await ref(message, nsfw=True)
+
+
+async def nsfw_add_ref(message):
+    await add_ref(message, nsfw=True)
+
+
+async def nsfw_set_ref(message):
+    await set_ref(message, nsfw=True)
 
 
 @client.event
@@ -323,7 +346,7 @@ async def on_ready():
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
             'setcode': setcode, 'modmail': modmail, 'quit': end, 'fuck': sys.exit, 'huh': huh, 'kick': kick,
             'ban': ban, 'setup': setup, 'uptime': uptime, 'warn': Mod.warn, 'listwarns': Mod.show_warns,
-            'removewarn': Mod.remove_warn}
+            'removewarn': Mod.remove_warn, 'ref': nsfw_ref, 'setref': nsfw_set_ref, 'addref': nsfw_add_ref}
 
 scan_ignore = [1054172309147095130]
 

@@ -40,6 +40,39 @@ async def modmail(message, client):
     await message.guild.get_channel(mail_inbox).send(embed=mail)
 
 
+async def suspend(message, user_id, reason):
+    # check message isn't in DMs
+    if message.guild is None:
+        await message.channel.send('Unable to warn in DMs. Please use this in a guild.')
+        return
+    
+    # load the json file
+    with open(server_warns_path) as file:
+        data = json.load(file)
+
+    try:
+        warn_log_id = data[str(message.guild.id)]['channels']['warn log']
+    except KeyError:
+        await message.channel.send('Unable to log to warn channel.')
+        return
+
+    warn_log = message.guild.get_channel(warn_log_id)
+    
+    await message.guild.get_member(user_id).add_roles(message.guild.get_role(data[str(message.guild.id)][
+                                                                                 'roles']['suspended']))
+    await warn_log.send(f'<@{user_id}> suspended for {reason}.')
+    
+    thread_name = f'{message.author.name} {time.strftime("%Y-%m-%d", time.gmtime(time.time()))} supsension (' \
+                  f'TBD)'
+    suspension = message.guild.get_channel(data[str(message.guild.id)]['channels']['suspended'])
+    try:
+        thread = await suspension.create_thread(name=thread_name, auto_archive_duration=1440)
+        await thread.send(f'<@{user_id}> You have been suspended by <@{message.author.id}> for excessive '
+                          f'infractions. If you have any questions, please send them in this thread.')
+    except discord.Forbidden:
+        await message.channel.send(f'<@{user_id}> suspended. unable to create thread')
+
+
 async def warn(message):
     """
     Gives a user a warning
@@ -122,6 +155,7 @@ async def warn(message):
         
         # suspend if more than 2 warns in the last week
         if num_warns > 2:
+            await suspend(message, user_id, f'{num_warns} warns in one week')
             await message.guild.get_member(user_id).add_roles(message.guild.get_role(data[str(message.guild.id)][
                                                                                          'roles']['suspended']))
             await warn_log.send(f'<@{user_id}> suspended for {num_warns} warns in one week')
