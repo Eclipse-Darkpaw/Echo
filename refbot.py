@@ -6,6 +6,7 @@ import discord
 import os
 import sys
 
+import main
 import modules.General as General
 
 # custom imports from other files
@@ -16,7 +17,7 @@ from refManagement import ref, set_ref, add_ref, oc, random_ref
 prefix = '>'
 version_num = '3.3.0'
 
-eclipse_id = 440232487738671124
+eclipse_id = main.eclipse_id
 
 intents = discord.Intents.default()
 intents.message_content = True
