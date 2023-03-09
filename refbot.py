@@ -6,6 +6,7 @@ import discord
 import os
 import sys
 
+import main
 import modules.General as General
 
 # custom imports from other files
@@ -16,6 +17,7 @@ from main import eclipse_id
 prefix = '>'
 version_num = '3.3.0'
 
+eclipse_id = main.eclipse_id
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True

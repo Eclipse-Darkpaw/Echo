@@ -1,6 +1,8 @@
 import discord
 import json
 import logging
+
+import main
 import modules.AntiScam as AntiScam
 import modules.Artfight as Artfight
 import modules.General as General
@@ -26,7 +28,7 @@ with open(resource_file_path + 'servers.json') as file:
 prefix = '}'
 version_num = '3.3.4'
 
-eclipse_id = 749443249302929479
+eclipse_id = main.eclipse_id
 
 intents = discord.Intents.default()
 intents.message_content = True
