@@ -8,15 +8,13 @@ import modules.Verification as Verif
 import sys
 import time
 
-from main import read_line
+from main import read_line, eclipse_id
 from refbot import profile
 from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 version_num = '3.3.0'
 
 prefix = '>'
-
-eclipse_id = 440232487738671124
 
 intents = discord.Intents.default()
 intents.message_content = True
