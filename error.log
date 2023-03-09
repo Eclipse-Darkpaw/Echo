@@ -18973,3 +18973,51 @@ AttributeError: 'User' object has no attribute 'guild_permissions'
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 19856c83d6943fef125ea1c94d2011aa).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: da097c4a2aebb06b26b9a00d6aa963b3).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: fc11874dd18301181bb05c5a1a96c7ef).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 892f057d539e19a30e242495876f5f28).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 0e75224872fc2e33796db27ffb86677b).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: d29f2acc76f3d8d3bdeff2692a1648e3).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 8cf94fc3abf921147b6bdefeb6fc5750).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f6afbeb0a889c99b133b59cd06a34e90).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 05c276c8c48bc65a400da5ee1c25c73e).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: dfcd3f89862525f7733bbd39bd5032ca).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c9343d27a705b84ed0ced978fd2d623e).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 3a99e53ba11eb123a0cc35e2cd9fdc31).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 049c6d13cb3e4b735cb1ea8a2a9c72c2).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 7f869156cae9162870557d86d221b50f).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: bc1aa0e10abdc24e25d1951b57c516eb).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 5ff6ace00588b4b472d3dd1d855179e5).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b7fde08458d041ef1fcf36813f23c816).
