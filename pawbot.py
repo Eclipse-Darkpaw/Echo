@@ -1,6 +1,5 @@
 import discord
 import json
-import logging
 import modules.AntiScam as AntiScam
 import modules.General as General
 import modules.Moderation as Mod
@@ -11,7 +10,7 @@ import os
 import sys
 import time
 
-from fileManagement import resource_file_path, server_settings_path
+from fileManagement import server_settings_path
 from refManagement import ref, set_ref, add_ref
 from main import eclipse_id
 
@@ -19,13 +18,11 @@ from main import eclipse_id
 
 start_time = time.time()
 
-logging.basicConfig(filename='error.log', encoding='utf-8')
-
 with open(server_settings_path) as file:
     data = json.load(file)
 
 prefix = '>'
-version_num = '3.4.0'
+version_num = '3.4.2'
 
 
 intents = discord.Intents.default()
@@ -438,6 +435,8 @@ async def on_member_update(before, after):
         welcome = [f"<@{after.id}> is our newest bean lover",
                    f"<@{after.id}> has stumbled into the bean sanctuary",
                    f"<@{after.id}> has arrived looking for beans"]
+
+        welcome += ". Please remember to stop by <#1054672645527969802> for your roles."
         await before.guild.get_channel(1054137434725691393).send(content=random.choice(welcome))
 
 

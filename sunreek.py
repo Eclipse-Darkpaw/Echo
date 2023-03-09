@@ -1,7 +1,5 @@
 import discord
 import json
-import logging
-
 import main
 import modules.AntiScam as AntiScam
 import modules.Artfight as Artfight
@@ -20,13 +18,11 @@ from refManagement import ref, set_ref, add_ref, oc, random_ref
 
 start_time = time.time()
 
-logging.basicConfig(filename='error.log', encoding='utf-8')
-
 with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.3.4'
+version_num = '3.4.2'
 
 eclipse_id = main.eclipse_id
 
