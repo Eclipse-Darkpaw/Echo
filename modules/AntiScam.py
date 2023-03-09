@@ -12,7 +12,6 @@ from fileManagement import resource_file_path
 whitelist = ['https://discord.gift/',   # legitimate nitro gifting
              # common domains that get flagged falsely
              'https://tenor.com', 'https://store.steampowered.com/app/', 'https://twitter.com',
-             'https://www.deviantart.com',
              # not common, but aren't scams
              'https://www.nzwe.com/', 'https://tinyurl.com/3vznrzkr', 'https://youtu.be/dQw4w9WgXcQ']
 
@@ -71,8 +70,13 @@ async def scan_message(message):
         index = content.find(word)
         if index != -1:
             flags += 1
-    print(flags)
-
+    
+    # if a word in the white list appears, remove a flag.
+    for word in whitelist:
+        index = content.find(word)
+        if index != -1:
+            flags -= 1
+            
     if flags < 2 and bans == 0:
         return
     else:
@@ -87,7 +91,8 @@ async def scan_message(message):
         embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar.url)
         embed.add_field(name='message', value=content, inline=False)
         embed.add_field(name='Flags', value=str(flags))
-        embed.add_field(name='Banned Strings', value=str(bans), inline=False)
+        embed.add_field(name='Banned Strings', value=str(bans))
+        embed.add_field(name='', value='', inline=False)
         embed.add_field(name='Sender ID', value=message.author.id)
         embed.add_field(name='Channel ID', value=message.channel.id)
         embed.add_field(name='Message ID', value=message.id)
