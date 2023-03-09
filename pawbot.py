@@ -406,8 +406,7 @@ async def on_message(message):
             await AntiScam.scan_message(message)
     content = message.content.lower()
     
-    if message.guild is None or content.find(AntiScam.code) != -1 or \
-            message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
+    if message.guild is None or content.find(AntiScam.code) != -1 or message.channel.id in scan_ignore:
         pass
     else:
         await AntiScam.scan_message(message)

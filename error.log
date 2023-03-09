@@ -18868,3 +18868,156 @@ INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 4a934b8
 WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
 INFO:discord.client:logging in using static token
 INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 82fd4538014b9a27c5a456ae102ef673).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: d626f59bd827240f373ef74c93c62d90).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 1fb1a916e613af530f1398efcb6adff6).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 3c85f8527a77dc16af37d6997ddffe3b).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 74833e042ac97e94db4052133a123627).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f649aefb0445bf65cbc0b7d3396369ef).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 713f73b2da160b3447b0dcf2072ed78d).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 6b6953d6a0bb6751160fa4c8eb3b8090).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 92d46213386be2c6940a8ac800cef9bd).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 00ad443c876a3fdc3cf58010d2b1353b).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 49634c929e756c425de186c7762687c7).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 2a929cb3c157f3c4042deb39e6247e27).
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\Echo\refManagement.py", line 117, in ref
+    ref_sheet = open(path)
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Users\\user\\Desktop\\Echo\\resources\\nsfw\\refs\\749443249302929479.nsfwref'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\pawbot.py", line 389, in on_message
+    await method(message)
+  File "C:\Users\user\Desktop\Echo\pawbot.py", line 320, in nsfw_ref
+    await ref(message, nsfw=True)
+  File "C:\Users\user\Desktop\Echo\refManagement.py", line 122, in ref
+    await msg.edit('User has not set NSFW ref. Retrieving SFW ref')
+TypeError: Message.edit() takes 1 positional argument but 2 were given
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 8b3a36a5ab39dc34c3454f85dd6a020d).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 22800f7cf5fb5c32fca6ec6b7ea9a6da).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: d01d56c41f538dcaf36d1053a26ade35).
+ERROR:asyncio:Task exception was never retrieved
+future: <Task finished name='discord.py: on_message' coro=<Client._run_event() done, defined at C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py:401> exception=SystemExit(<Message id=1078607795215159367 channel=<TextChannel id=1054137434725691393 name='🌎-general' position=24 nsfw=False news=False category_id=1054121993135476796> type=<MessageType.default: 0> author=<Member id=749443249302929479 name='Eclipse_Darkpaw' discriminator='0207' bot=False nick='Autumn' guild=<Guild id=1054121991365468281 name='Beans Sanctuary' shard_id=0 chunked=True member_count=484>> flags=<MessageFlags value=0>>)>
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 828, in run
+    asyncio.run(runner())
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 628, in run_until_complete
+    self.run_forever()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 595, in run_forever
+    self._run_once()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1881, in _run_once
+    handle._run()
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\pawbot.py", line 389, in on_message
+    await method(message)
+SystemExit: <Message id=1078607795215159367 channel=<TextChannel id=1054137434725691393 name='🌎-general' position=24 nsfw=False news=False category_id=1054121993135476796> type=<MessageType.default: 0> author=<Member id=749443249302929479 name='Eclipse_Darkpaw' discriminator='0207' bot=False nick='Autumn' guild=<Guild id=1054121991365468281 name='Beans Sanctuary' shard_id=0 chunked=True member_count=484>> flags=<MessageFlags value=0>>
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\pawbot.py", line 389, in on_message
+    await method(message)
+  File "C:\Users\user\Desktop\Echo\pawbot.py", line 202, in help_message
+    if message.author.guild_permissions.manage_roles:
+AttributeError: 'User' object has no attribute 'guild_permissions'
+ERROR:discord.client:Ignoring exception in on_message
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python310\lib\site-packages\discord\client.py", line 409, in _run_event
+    await coro(*args, **kwargs)
+  File "C:\Users\user\Desktop\Echo\pawbot.py", line 389, in on_message
+    await method(message)
+  File "C:\Users\user\Desktop\Echo\pawbot.py", line 118, in end
+    await General.quit(message, client)
+  File "C:\Users\user\Desktop\Echo\modules\General.py", line 41, in quit
+    if message.author.guild_permissions.administrator:
+AttributeError: 'User' object has no attribute 'guild_permissions'
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 19856c83d6943fef125ea1c94d2011aa).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: da097c4a2aebb06b26b9a00d6aa963b3).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: fc11874dd18301181bb05c5a1a96c7ef).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 892f057d539e19a30e242495876f5f28).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 0e75224872fc2e33796db27ffb86677b).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: d29f2acc76f3d8d3bdeff2692a1648e3).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 8cf94fc3abf921147b6bdefeb6fc5750).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f6afbeb0a889c99b133b59cd06a34e90).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 05c276c8c48bc65a400da5ee1c25c73e).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: dfcd3f89862525f7733bbd39bd5032ca).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c9343d27a705b84ed0ced978fd2d623e).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 3a99e53ba11eb123a0cc35e2cd9fdc31).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 049c6d13cb3e4b735cb1ea8a2a9c72c2).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 7f869156cae9162870557d86d221b50f).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: bc1aa0e10abdc24e25d1951b57c516eb).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 5ff6ace00588b4b472d3dd1d855179e5).
+WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+INFO:discord.client:logging in using static token
+INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: b7fde08458d041ef1fcf36813f23c816).
