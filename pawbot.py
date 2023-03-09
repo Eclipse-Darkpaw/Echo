@@ -190,6 +190,15 @@ async def help_message(message):
         embed.add_field(name=f'`{prefix}version_num/version`',
                         value='displays the bots current version.',
                         inline=False)
+        embed.add_field(name=f'`{prefix}ref [member tag/member id]`',
+                        value="gets a user's ref sheet",
+                        inline=False)
+        embed.add_field(name='`'+prefix+'setref [ref/description]`',
+                        value="Sets a user's ref. Over writes any existing refs",
+                        inline=False)
+        embed.add_field(name='`' + prefix + 'addref [ref/description]`',
+                        value="Adds a ref to the Users's ref list",
+                        inline=False)
         embed.add_field(name='`' + prefix + 'verify`',
                         value='Verifies an un verified member.',
                         inline=False)
@@ -199,7 +208,7 @@ async def help_message(message):
         embed.add_field(name='`' + prefix + 'huh`',
                         value='???',
                         inline=False)
-        if message.author.guild_permissions.manage_roles:
+        if message.guild is not None and message.author.guild_permissions.manage_roles:
             embed.add_field(name='`' + prefix + 'quit`',
                             value='quits the bot.\n Mod only.',
                             inline=False)
@@ -241,7 +250,7 @@ async def help_message(message):
         help_embed.set_author(name=client.user.name, icon_url=icon_url)
         help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
         await message.channel.send(embed=help_embed)
-    elif command[1] == 'warn' and message.author.guild_permissions.manage_roles:
+    elif command[1] == 'warn' and message.guild is not None and message.author.guild_permissions.manage_roles:
             warn_embed = discord.Embed(title=f'Beansbot `{prefix}warn` Command',
                                        description='>warn <user> <reason>',
                                        color=message.author.color)
@@ -252,14 +261,14 @@ async def help_message(message):
                             value='the reason for the warn that will be logged',
                             inline=False)
             await message.reply(embed=warn_embed)
-    elif command[1] == 'listwarns' and message.author.guild_permissions.manage_roles:
+    elif command[1] == 'listwarns' and message.guild is not None and message.author.guild_permissions.manage_roles:
         list_embed = discord.Embed(title=f'Beansbot `{prefix}listwarns` Command',
                                    description='>listwarns <user>',
                                    color=message.author.color)
         list_embed.add_field(name='User',
                              value='The user to search for')
         await message.reply(embed=list_embed)
-    elif command[1] == 'removewarn' and message.author.guild_permissions.manage_roles:
+    elif command[1] == 'removewarn' and message.guild is not None and message.author.guild_permissions.manage_roles:
         remove_embed = discord.Embed(title=f'Beansbot `{prefix}removewarn` Command',
                                      description=f'{prefix}removewarn <user> <warn number>',
                                      color=message.author.color)
@@ -270,7 +279,7 @@ async def help_message(message):
                                value='Which warn to remove from the user',
                                inline=False)
         await message.reply(embed=remove_embed)
-    elif command[1] == 'kick' and message.author.guild_permissions.kick_members:
+    elif command[1] == 'kick' and (message.guild is not None and message.author.guild_permissions.kick_members):
         kick_embed = discord.Embed(title=f'Beansbot `{prefix}kick` Command',
                                    description=f'{prefix}kick <user> [reason]',
                                    color=message.author.color)
@@ -281,7 +290,7 @@ async def help_message(message):
                              value='The reason for the kick. This will show up in the audit log',
                              inline=False)
         await message.reply(embed=kick_embed)
-    elif command[1] == 'ban' and message.author.guild_permissions.ban_members:
+    elif command[1] == 'ban' and (message.guild is not None and message.author.guild_permissions.ban_members):
         kick_embed = discord.Embed(title=f'Beansbot `{prefix}ban` Command',
                                    description=f'{prefix}ban <user> [reason]',
                                    color=message.author.color)
@@ -292,6 +301,34 @@ async def help_message(message):
                              value='The reason for the ban. This will show up in the audit log',
                              inline=False)
         await message.reply(embed=kick_embed)
+    elif command[1] == 'ref':
+        ref_embed = discord.Embed(title='`'+prefix+'ref` Command List',
+                                  description='Displays a users primary ref.',
+                                  color=0x45FFFF)
+        try:
+            icon_url = client.user.guild_avatar.url
+        except AttributeError:
+            icon_url = client.user.avatar.url
+        ref_embed.set_author(name=client.user.name,
+                             icon_url=icon_url)
+
+        ref_embed.add_field(name='No argument',
+                            value='Displays your ref',
+                            inline=False)
+        ref_embed.add_field(name='`User ID/Tagged User/Nickname`',
+                            value='Searches for a user\'s profile. Tagging the desired user, or using their member ID '
+                                  'yeilds the most accurate results.',
+                            inline=False)
+        ref_embed.add_field(name='`set <string/ref>`',
+                            value='Changes your ref to say what you want. Only emotes from this server can be used.',
+                            inline=False)
+        ref_embed.add_field(name='`random [all]`',
+                            value="Retrieves a random user's ref sheet. Is limited to members in the guild the message "
+                                  "comes from, unless you add `all` to the end of the command or run the command in "
+                                  "DMs",
+                            inline=False)
+
+        await message.channel.send(embed=ref_embed)
         
 
 async def huh(message):
@@ -369,8 +406,7 @@ async def on_message(message):
             await AntiScam.scan_message(message)
     content = message.content.lower()
     
-    if message.guild is None or content.find(AntiScam.code) != -1 or \
-            message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
+    if message.guild is None or content.find(AntiScam.code) != -1 or message.channel.id in scan_ignore:
         pass
     else:
         await AntiScam.scan_message(message)
