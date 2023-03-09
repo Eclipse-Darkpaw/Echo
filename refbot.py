@@ -12,13 +12,12 @@ import modules.General as General
 # custom imports from other files
 from profile import display_profile, set_bio, edit_field, add_field, delete_field
 from refManagement import ref, set_ref, add_ref, oc, random_ref
-
+from main import eclipse_id
 
 prefix = '>'
 version_num = '3.3.0'
 
 eclipse_id = main.eclipse_id
-
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
