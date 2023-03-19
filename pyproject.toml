@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Echo"
-version = "3.3.0"
+version = "3.4.2"
 description = "A collection of discord bots for moderation, reference sheet management, and scam prevention."
 authors = ["Eclipse Darkpaw <random-college-bi.tumblr.com>"]
 
