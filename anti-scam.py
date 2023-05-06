@@ -46,6 +46,7 @@ async def setup(message):
     """
     await Settings.setup(message, client)
 
+
 async def ping(message):
     """
     Returns how long it takes the bot to send a message
