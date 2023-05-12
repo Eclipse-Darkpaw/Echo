@@ -228,83 +228,88 @@ async def verify(message, client_in):
                 reaction.message == applied)
 
     while True:
-        reaction, user = await client.wait_for('reaction_add', check=check)
-        if str(reaction.emoji) == '✅':
-            try:
-                await application.applicant.add_roles(message.guild.get_role(verified_role_id))
-            except discord.Forbidden:
-                await channel.send('Unable to give role. Please check my permissions.')
-                continue
-
-            try:
-                await message.author.send('You have been approved.')
-            except discord.Forbidden:
-                await channel.send(f'Unable to DM <@!{message.author.id}>')
-
-            await application.applicant.remove_roles(msg_guild.get_role(questioning_role_id))
-            await application.applicant.remove_roles(msg_guild.get_role(unverified_role_id))
-            await channel.send(f'<@!{message.author.id}> approved')
-            
-            await applied.add_reaction('🆗')
-            break
-        elif str(reaction.emoji) == '❓':
-            await application.applicant.add_roles(msg_guild.get_role(questioning_role_id))
-            
-            questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
-            thread_name = f'{message.author.name} Questioning'
-            try:
-                thread = await questioning_room.create_thread(name=thread_name, auto_archive_duration=1440)
-                await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@{user.id}>.')
-                await message.author.send(f'You have been pulled into questioning in <#{thread.id}>.')
-                await channel.send(f'<@!{message.author.id}> is being questioned in <#{thread.id}>')
-            except discord.errors.Forbidden:
-                await channel.send(f'<@!{message.author.id}> is being questioned')
-                await message.author.send('You have been pulled into questioning.')
-                await message.guild.get_channel(application_channel).send('```Error 403: Forbidden.\nUnable to create '
-                                                                          'thread. Please check my permissions. ```')
-        elif str(reaction.emoji) == '🚫':
-            # add a confirm feature
-            
-            reason = await read_line(client,
-                                     msg_guild.get_channel(application_channel),
-                                     f'Why was <@!{message.author.id}> denied? Write `cancel` to cancel.',
-                                     user,
-                                     delete_prompt=False,
-                                     delete_response=False)
-
-            if reason.content == 'cancel':
-                await channel.send('Action cancelled')
-                await reaction.remove(user)
-                continue
-            else:
-                await message.author.send('Your application was denied for:\n> ' + reason.content)
-                await channel.send(f'<@!{message.author.id}> was denied for:\n> '+reason.content)
+        try:
+            reaction, user = await client.wait_for('reaction_add', check=check)
+            if str(reaction.emoji) == '✅':
+                try:
+                    await application.applicant.add_roles(message.guild.get_role(verified_role_id))
+                except discord.Forbidden:
+                    await channel.send('Unable to give role. Please check my permissions.')
+                    continue
+    
+                try:
+                    await message.author.send('You have been approved.')
+                except discord.Forbidden:
+                    await channel.send(f'Unable to DM <@!{message.author.id}>')
+    
+                await application.applicant.remove_roles(msg_guild.get_role(questioning_role_id))
+                await application.applicant.remove_roles(msg_guild.get_role(unverified_role_id))
+                await channel.send(f'<@!{message.author.id}> approved')
+                
                 await applied.add_reaction('🆗')
                 break
-        elif str(reaction.emoji) == '❗':
-            reason = await read_line(client,
-                                     msg_guild.get_channel(application_channel),
-                                     f'Why was <@!{message.author.id}> banned? write `cancel` to cancel.',
-                                     user,
-                                     delete_prompt=False,
-                                     delete_response=False)
-            
-            reason = reason.content
-            
-            if reason == 'cancel':
-                await channel.send('Ban cancelled')
-                await reaction.remove(user)
-            else:
+            elif str(reaction.emoji) == '❓':
+                await application.applicant.add_roles(msg_guild.get_role(questioning_role_id))
+                
+                questioning_room = message.guild.get_channel(int(data[str(message.guild.id)]['channels']['questioning']))
+                thread_name = f'{message.author.name} Questioning'
                 try:
-                    await message.guild.ban(user=application.applicant, reason=reason)
-                    await channel.send(f'<@{message.author.id}> banned for\n> {reason}')
+                    thread = await questioning_room.create_thread(name=thread_name, auto_archive_duration=1440)
+                    await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@{user.id}>.')
+                    await message.author.send(f'You have been pulled into questioning in <#{thread.id}>.')
+                    await channel.send(f'<@!{message.author.id}> is being questioned in <#{thread.id}>')
+                except discord.errors.Forbidden:
+                    await channel.send(f'<@!{message.author.id}> is being questioned')
+                    await message.author.send('You have been pulled into questioning.')
+                    await message.guild.get_channel(application_channel).send('```Error 403: Forbidden.\nUnable to create '
+                                                                              'thread. Please check my permissions. ```')
+            elif str(reaction.emoji) == '🚫':
+                # add a confirm feature
+                
+                reason = await read_line(client,
+                                         msg_guild.get_channel(application_channel),
+                                         f'Why was <@!{message.author.id}> denied? Write `cancel` to cancel.',
+                                         user,
+                                         delete_prompt=False,
+                                         delete_response=False)
+    
+                if reason.content == 'cancel':
+                    await channel.send('Action cancelled')
+                    await reaction.remove(user)
+                    continue
+                else:
+                    await message.author.send('Your application was denied for:\n> ' + reason.content)
+                    await channel.send(f'<@!{message.author.id}> was denied for:\n> '+reason.content)
                     await applied.add_reaction('🆗')
                     break
-                except discord.Forbidden:
-                    await channel.send('Error 403: Forbidden. Insufficient permissions.')
-                except discord.HTTPException:
-                    await channel.send('Ban failed. Please try again, by reacting to the message again.')
-
+            elif str(reaction.emoji) == '❗':
+                reason = await read_line(client,
+                                         msg_guild.get_channel(application_channel),
+                                         f'Why was <@!{message.author.id}> banned? write `cancel` to cancel.',
+                                         user,
+                                         delete_prompt=False,
+                                         delete_response=False)
+                
+                reason = reason.content
+                
+                if reason == 'cancel':
+                    await channel.send('Ban cancelled')
+                    await reaction.remove(user)
+                else:
+                    try:
+                        await message.guild.ban(user=application.applicant, reason=reason)
+                        await channel.send(f'<@{message.author.id}> banned for\n> {reason}')
+                        await applied.add_reaction('🆗')
+                        break
+                    except discord.Forbidden:
+                        await channel.send('Error 403: Forbidden. Insufficient permissions.')
+                    except discord.HTTPException:
+                        await channel.send('Ban failed. Please try again, by reacting to the message again.')
+        except discord.errors.NotFound:
+            await channel.send(f'Unable to perform action. <@{message.author.id}> cannot be found')
+            await applied.add_reaction('🆗')
+            break
+            
 
 async def setcode(message, codeword):
     """

@@ -39,7 +39,9 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            '@everyone who will catch this gift?)',
            # miscellaneous
            'discord free nitro from steam', 'wow join and check it! @everyone',
-           "take nitro faster, it's already running out", "yo i accidentally got 2 nitros and dont need the other one"]
+           "take nitro faster, it's already running out", "yo i accidentally got 2 nitros and dont need the other one",
+           # spam links
+           "temu.com"]
 code = 'plsdontban'
 
 
