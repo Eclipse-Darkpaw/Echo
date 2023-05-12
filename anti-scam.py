@@ -119,7 +119,7 @@ async def on_message(message):
     if message.guild is None or content.find(AntiScam.code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
-        await AntiScam.scan_message(message, client)
+        await AntiScam.scan_message(message)
 
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
