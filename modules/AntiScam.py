@@ -34,9 +34,9 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            'ethlegit.com', 't.me/DavidMurray', 'discorgs.icu/login/nitro', 'steancomiunitly.com/glfts',
            'discerdapp.com', 'discorgs.icu'
            # server invites
-           "https://discord.gg/anastasyxxx",
+           "https://discord.gg/anastasyxxx", "https://discord.gg/t9eKqS8gnG",
            # confirmed scam messages
-           '@everyone who will catch this gift?)',
+           '@everyone who will catch this gift?)', 'join the best 18+ server with only free stuff',
            # miscellaneous
            'discord free nitro from steam', 'wow join and check it! @everyone',
            "take nitro faster, it's already running out", "yo i accidentally got 2 nitros and dont need the other one",

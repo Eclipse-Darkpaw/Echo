@@ -436,8 +436,7 @@ async def on_member_update(before, after):
                    f"<@{after.id}> has stumbled into the bean sanctuary",
                    f"<@{after.id}> has arrived looking for beans"]
 
-        welcome += ". Please remember to stop by <#1054672645527969802> for your roles."
-        await before.guild.get_channel(1054137434725691393).send(content=random.choice(welcome))
+        await before.guild.get_channel(1054137434725691393).send(content=f"{random.choice(welcome)}. Please remember to stop by <#1054672645527969802> for your roles.")
 
 
 def run_pawbot():

@@ -385,7 +385,9 @@ async def help_message(message):
 
 
 cursed_keys_running = False
+blessed_keys_running = False
 crsd_keys = []
+blessed_keys = []
 player_role_id = 863630913686077450
 
 
@@ -475,6 +477,99 @@ async def cursed_keys(message):
     elif command[1] == 'stop':
         if message.author.guild_permissions.manage_roles:
             cursed_keys_running = False
+            await message.reply('Game Stopped')
+        else:
+            await message.reply('Invalid Permissions')
+    elif command[1] == 'numleft':
+        await message.reply(str(len(message.guild.get_role(player_role_id).members)))
+
+
+async def blessed_keys(message):
+    """
+        Handles all Blessed Key game functions and methods.
+        Last docstring edit: -Autumn V3.5.0
+        Last method edit: -Autumn V3.5.0
+        :param message:
+        :return:
+    """
+    # TODO: USE A SWITCH HERE DUMBASS!!!
+    global cursed_keys_running
+    global blessed_keys
+    
+    command = message.content[1:].split(' ', 2)
+    if len(command) == 1 or command[1] == 'help':
+        overview = discord.Embed(title='Blessed Ky Overview',
+                                 description='Welcome, to a brutal game called "Blessed Key" (Idea by Reek)\n\n'
+                                             'The main of the game is to use a certain key/letter on your keyboard '
+                                             'in every message you send, but still try to make sure everyone '
+                                             'understands what you are trying to say. The last survivor standing wins '
+                                             'and will be given a custom role',
+                                 color=0x45ffff)
+        overview.add_field(name='RULES',
+                           value="-You can't the leave the game until you lose and the bot will remove your roles to "
+                                 "get rid of the curse"
+                                 "\n-Once you make a mistake, you will be instantly disqualified"
+                                 "\n-This challenge will apply to every chat on this server, so be careful"
+                                 "\n-you have to use a letter in every single sentence"
+                                 "\n-Abusing rule loop hole is not allowed"
+                                 "\n-Using emoji contain that key also not permitted"
+                                 "\n-If you don't talk in general, you'll also lose (we check)",
+                           inline=False)
+        await message.reply(embed=overview)
+        overview.add_field(name='QnA', value='', inline=False)
+        overview.add_field(name='Q: What does "crsd ky" mean?',
+                           value='A: It\'s "Cursed Key" but get rid of the vowels cause they are cursed.')
+        overview.add_field(name='Q: What made you come up with this game?',
+                           value='A: Isybel is upset she can\'t curse in my server, so she cursed me by removing my '
+                                 'ability to use the letter "a" and I took it as a challenge xD (But I lost rip) ')
+        overview.add_field(name='Q: What do I do if i got removed but dont think I should\'ve been?',
+                           value='A: contact a moderator, and we\'ll look into your case and determine if you should '
+                                 'still be in the game or not')
+    elif command[1] == 'list':
+        if len(blessed_keys) == 0:
+            await message.reply('there are no blessed keys')
+        else:
+            await message.reply('blessed keys are: ' + str(blessed_keys))
+    elif command[1] == 'join':
+        if not blessed_keys_keys_running:
+            if message.guild.get_role(player_role_id) in message.author.roles:
+                await message.reply('You are already a part of this game!')
+            else:
+                await message.author.add_roles(message.guild.get_role(player_role_id))
+                await message.reply('Joined the game!')
+        else:
+            await message.reply("Unable to join. a game is already running")
+    elif command[1] == 'leave':
+        await message.author.remove_roles(message.guild.get_role(player_role_id))
+        await message.reply('You have been removed from the game')
+    elif command[1] == 'set':
+        chars = command[2].split(' ')
+        keys = []
+        for char in chars:
+            if len(char) > 1:
+                pass
+            else:
+                keys.append(char.lower())
+                blessed_keys = keys
+        await message.reply('Blessed Keys set: ' + str(blessed_keys))
+    elif command[1] == 'start':
+        if message.author.guild_permissions.manage_roles:
+            cursed_keys_running = True
+            if len(blessed_keys) == 0:
+                await message.reply('Unable to start game! No Cursed Keys set!')
+            else:
+                await message.reply(f'<@&863630913686077450> The game is starting! blessed Keys are ' + str(
+                        blessed_keys))
+        else:
+            await message.reply('Invalid permissions')
+    elif command[1] == 'resetPlayers':
+        if message.author.guild_permissions.manage_roles:
+            for member in message.guild.get_role(player_role_id).members:
+                await member.remove_roles(message.guild.get_role(player_role_id))
+        await message.reply('Players reset')
+    elif command[1] == 'stop':
+        if message.author.guild_permissions.manage_roles:
+            blessed_keys_running = False
             await message.reply('Game Stopped')
         else:
             await message.reply('Invalid Permissions')
@@ -624,7 +719,7 @@ async def member_num(message):
         await message.reply('There is no member in position %d' % position)
     else:
         name = pos.name
-        await message.reply('Member in postion %d has the ID %d' % (position, name))
+        await message.reply('Member in position %d has the ID %d' % (position, name))
 
 
 async def artfight(message):
@@ -660,7 +755,7 @@ switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version
             'setcode': setcode, 'modmail': modmail, 'quit': end, 'profile': profile, 'setref': set_ref, 'ref': ref,
             'addref': add_ref, 'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys,
             'cursedkey': cursed_keys, 'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys,
-            'cursedkey': cursed_keys, 'oc': oc, 'purge': purge, 'join_pos': join_pos, 'huh': huh, 'kick': kick,
+            'oc': oc, 'purge': purge, 'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blessed_keys,
             'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup,
             'uptime': uptime}
 
@@ -678,6 +773,7 @@ async def on_message(message):
     :return: None
     """
     global cursed_keys_running
+    global blessed_keys_running
 
     if message.author.bot:
         return
@@ -708,7 +804,7 @@ async def on_message(message):
             if command[0] == 'print':
                 # Used to transfer data from Discord directly to the command line. Very simple shortcut
                 print(message.content)
-        elif cursed_keys_running and message.guild is not None:
+        if cursed_keys_running and message.guild is not None:
             # TODO: Make this a separate function.
             # Check if the message author has the game role
             if message.guild.get_role(player_role_id) in message.author.roles:
@@ -723,6 +819,23 @@ async def on_message(message):
                             cursed_keys_running = False
                             await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) +
                                                        '> wins the game!')
+                        break
+        if blessed_keys_running and message.guild is not None:
+            # TODO: Make this a separate function.
+            # Check if the message author has the game role
+            if message.guild.get_role(player_role_id) in message.author.roles:
+                # If the message author has the role, scan their message for any cursed keys
+                for key in blessed_keys:
+                    if key not in message.content.lower():
+                        await message.author.remove_roles(message.guild.get_role(player_role_id))
+                        await message.reply('You have been cursed for not using the key: ' + key)
+                
+                        if len(message.guild.get_role(player_role_id).members) == 1:
+                            # This code detects if there is a winner
+                            cursed_keys_running = False
+                            await message.channel.send(
+                                '<@!' + str(message.guild.get_role(player_role_id).members[0].id) +
+                                '> wins the game!')
                         break
     except IndexError:
         pass
