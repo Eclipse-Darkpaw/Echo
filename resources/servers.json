@@ -109,6 +109,15 @@
             "unverified": 1054520414921039943,
             "questioning": 1054172422066143354,
             "suspended": 1054172546444050435
-        }
+        },
+        "password": true,
+        "questions": ["Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)",
+                         "What is your nickname?",
+                         "How old are you?",
+                         "When is your birthday? Please format it like January 1, 1970",
+                         "Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)",
+                         "Why do you want to join?"
+        ],
+        "questions_display": ["Server Password", "Nickname", "Age", "Birthday", "Link source", "Reason for join"]
     }
 }
