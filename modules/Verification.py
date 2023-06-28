@@ -16,7 +16,7 @@ counter = 0
 active_forms = 0
 incomplete_forms = 0
 submitted_forms = 0
-application_questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)',
+questions = ['Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)',
                          'What is your nickname?',
                          'How old are you?',
                          'Where did you get the link from? Please be specific. If it was a user, please use the full '
@@ -28,6 +28,8 @@ client = None
 class Application:
     def __init__(self, applicant, channel, applicant_guild,):
         global counter
+        global file_path
+        global questions
         
         counter += 1
         
@@ -37,6 +39,24 @@ class Application:
         self.count = counter
         self.responses = []
         self.passguesses = []
+
+        try:
+            with open(file_path) as file:
+                data = json.load(file)
+                self.application_questions = data[str(applicant_guild.id)]["questions"]
+        except KeyError:
+            print("exception!")
+            self.application_questions = application_questions
+        
+        try:
+            with open(file_path) as file:
+                data = json.load(file)
+                self.application_questions_display = data[str(applicant_guild.id)]["questions_display"]
+        except KeyError:
+            print("exception!")
+            self.application_questions = application_questions
+        
+        
 
     async def question(self):
         """
@@ -54,10 +74,14 @@ class Application:
         with open(file_path) as file:
             data = json.load(file)
         
+        # find the server code word if there is one.
         code = data[str(self.applicant_guild.id)]['codeword']
+        
+        #dm the applicant and ask them questions
         dm = await self.applicant.create_dm()
-        for question in application_questions:
-            if question == application_questions[0]:
+        for question in self.application_questions:
+            if question == self.application_questions[0]:
+                # server password checker
                 if code is None:
                     pass
                 else:
@@ -75,6 +99,7 @@ class Application:
                             print(similarity)
                         if response.content[1:7] == 'verify':
                             pass
+                        # compares user input to the real password. above a certain threshold gets
                         elif similarity >= 0.5:
                             self.responses.append(self.passguesses)
                             break
@@ -105,7 +130,6 @@ class Application:
         Last method edit: -Autumn V3.0.0
         :return:
         """
-        global application_questions
 
         embed = discord.Embed(title='Application #' + str(self.count))
         try:
@@ -117,8 +141,8 @@ class Application:
             icon_url = "https://media.discordapp.net/attachments/842662532808179734/1054686812410482729/frowning-face-with-open-mouth_1f626.png"
         embed.set_author(name=self.applicant.name, icon_url=icon_url)
         
-        for i in range(len(application_questions)):
-            embed.add_field(name=application_questions[i], value=self.responses[i])
+        for i in range(len(self.application_questions_display)):
+            embed.add_field(name=self.application_questions_display[i], value=self.responses[i])
 
         embed.add_field(name='User ID', value=str(self.applicant.id), inline=False)
 

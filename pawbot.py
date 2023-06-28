@@ -436,7 +436,8 @@ async def on_member_update(before, after):
                    f"<@{after.id}> has stumbled into the bean sanctuary",
                    f"<@{after.id}> has arrived looking for beans"]
 
-        await before.guild.get_channel(1054137434725691393).send(content=f"{random.choice(welcome)}. Please remember to stop by <#1054672645527969802> for your roles.")
+        await before.guild.get_channel(1054137434725691393).send(content=f"~ {random.choice(welcome)}. Please "
+                                                                         f"remember to stop by <#1054672645527969802> for your roles.")
 
 
 def run_pawbot():
@@ -465,7 +466,7 @@ def run_pawbot():
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         
-        client.run(os.environ.get('TESTBOT_TOKEN'))  # must say client.run(os.environ.get('TESTBOT_TOKEN'))
+        client.run("MTEyMzQyNjU0NTU0NjA1MTU4NA.GCLHvs.NicxxU7dg57A--pVOQDbpMaQtCG3JWr-dcplmM")  # must say client.run(os.environ.get('TESTBOT_TOKEN'))
 
 
 if __name__ == '__main__':
