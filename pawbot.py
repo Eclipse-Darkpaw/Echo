@@ -9,6 +9,7 @@ import random
 import os
 import sys
 import time
+import socket
 
 from fileManagement import server_settings_path
 from refManagement import ref, set_ref, add_ref
@@ -16,13 +17,27 @@ from main import eclipse_id
 
 # Keep imports in alphabetical order
 
+'''
+print('Opening server connection')
+s = socket.socket()
+host = socket.gethostname()
+port = 49977
+s.bind((host, port))
+s.listen(5)
+print('Connection open. Waiting for client.')
+
+c, addr = s.accept()
+print("Got connection from", addr)
+c.send(b'Connected to bot. Please stand by for boot sequence.')
+
+print('Server Connection Open')'''
 start_time = time.time()
 
 with open(server_settings_path) as file:
     data = json.load(file)
 
 prefix = '>'
-version_num = '3.4.2'
+version_num = '3.4.0'
 
 
 intents = discord.Intents.default()
@@ -112,7 +127,7 @@ async def end(message):
     :param message: Message calling the bot
     :return: None
     """
-    await General.quit(message, client)
+    await General.quit(message, client, c)
 
 
 async def modmail(message):
@@ -370,11 +385,13 @@ async def on_ready():
     Last method edit: -Autumn V1.16.3
     :return: None
     """
+    #global c
     
     print('We have logged in as {0.user}'.format(client))
     
     await client.change_presence(activity=game)
     await client.get_user(eclipse_id).send('Running, and active')
+    #c.send(b'Bot online. The connection will remain open during the duration of the session.')
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
@@ -407,24 +424,24 @@ async def on_message(message):
         pass
     else:
         await AntiScam.scan_message(message)
-    try:
-        if content[0] == prefix:
-            
-            # split the message to determine what command is being called
-            command = message.content[1:].lower().split(' ', 1)
-            
-            # search the switcher for the command called. If the command is not found, do nothing
-            try:
-                method = switcher[command[0]]
-            except KeyError:
-                return
-            
-            await method(message)
-            if command[0] == 'print':
-                # Used to transfer data from Discord directly to the command line. Very simple shortcut
-                print(message.content)
-    except IndexError:
-        pass
+    #try:
+    if content[0] == prefix:
+        
+        # split the message to determine what command is being called
+        command = message.content[1:].lower().split(' ', 1)
+        
+        # search the switcher for the command called. If the command is not found, do nothing
+        try:
+            method = switcher[command[0]]
+        except KeyError:
+            return
+        
+        await method(message)
+        if command[0] == 'print':
+            # Used to transfer data from Discord directly to the command line. Very simple shortcut
+            print(message.content)
+    #except IndexError:
+        #pass
 
 
 @client.event
@@ -450,6 +467,7 @@ def run_pawbot():
     :return: None
     """
     global prefix
+    global c
     
     if len(sys.argv) > 1:
         inp = int(sys.argv[1])
@@ -462,11 +480,14 @@ def run_pawbot():
         # Main bot client. Do not use for tests
         
         client.run(os.environ.get('PAWBOT_TOKEN'))  # must say client.run(os.environ.get('SUNREEK_TOKEN'))
+        c.send(b'Live environment online.')
     
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         
-        client.run("MTEyMzQyNjU0NTU0NjA1MTU4NA.GCLHvs.NicxxU7dg57A--pVOQDbpMaQtCG3JWr-dcplmM")  # must say client.run(os.environ.get('TESTBOT_TOKEN'))
+        client.run("MTEyMzQyNjU0NTU0NjA1MTU4NA.G4DK11.65V-m6lXTNwekAvLbXGWEt84Den84qxe87ly4E")  # must say client.run(os.environ.get('TESTBOT_TOKEN'))
+        #c.send(b'Test environment online.')
+    #c.close()
 
 
 if __name__ == '__main__':
