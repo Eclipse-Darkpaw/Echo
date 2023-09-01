@@ -54,7 +54,7 @@ class Application:
                 self.application_questions = data[str(applicant_guild.id)]["questions"]
         except KeyError:
             print("exception!")
-            self.application_questions = application_questions
+            self.application_questions = questions
         
         try:
             with open(file_path) as file:
@@ -62,7 +62,7 @@ class Application:
                 self.application_questions_display = data[str(applicant_guild.id)]["questions_display"]
         except KeyError:
             print("exception!")
-            self.application_questions = application_questions
+            self.application_questions_display = questions
             
 
     async def question(self):
@@ -72,7 +72,7 @@ class Application:
         Last method edit: -Autumn V3.2.0
         :return:
         """
-        global application_questions
+
         global client
         
         # Done: change to false for live deployment
