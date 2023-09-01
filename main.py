@@ -3,7 +3,7 @@ import discord
 import os
 import sys
 
-project_version = '3.3.0'
+project_version = '3.4.0'
 eclipse_id = 749443249302929479
 
 start_time = time.time()
@@ -51,6 +51,7 @@ async def read_line(client, channel, prompt, target, delete_prompt=True, delete_
         await show.delete()
 
     return msg
+
 
 
 # NOTE: THIS METHOD NEEDS MEMBERS INTENT ACTIVE

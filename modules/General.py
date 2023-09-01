@@ -2,6 +2,8 @@ import discord
 import sys
 import time
 
+import main
+
 
 async def ping(message):
     """
@@ -29,7 +31,7 @@ async def version(message, version_num):
     await message.channel.send('I am currently running version ' + version_num)
 
 
-async def quit(message, client):
+async def quit(message, client, c=None):
     """
     Quits the bot, and closes the program. Replys and updates the game status to alert users to it quitting.
     :param message: message that called the quit command
@@ -38,9 +40,12 @@ async def quit(message, client):
     :return: N/A. program closes
     """
     global game
-    if message.author.guild_permissions.administrator:
+    
+    if message.author.id == main.eclipse_id or message.author.guild_permissions.administrator:
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
+        if c is not None:
+            c.send(b'quit()')
         sys.exit()
     else:
         await message.channel.send('You do not have permission to turn me off!')

@@ -7,7 +7,7 @@ from fileManagement import resource_file_path
 """
 Handles all tasks related to member verification.
 Last Docstring edit: -Autumn V3.0.0
-Last File edit: -Autumn V3.0.0
+Last File edit: -Autumn V3.4.0
 """
 
 file_path = resource_file_path + 'servers.json'
@@ -26,7 +26,15 @@ client = None
 
 
 class Application:
-    def __init__(self, applicant, channel, applicant_guild,):
+    def __init__(self, applicant, channel, applicant_guild):
+        """
+        Stores user membership application data
+        Last docstring edit: -Autumn V3.4.0
+        Last method edit: -Autumn V3.4.0
+        :param applicant: user applying
+        :param channel: application channel
+        :param applicant_guild: Guild applied from
+        """
         global counter
         global file_path
         global questions
@@ -39,7 +47,7 @@ class Application:
         self.count = counter
         self.responses = []
         self.passguesses = []
-
+        self.attempts = 1
         try:
             with open(file_path) as file:
                 data = json.load(file)
@@ -55,8 +63,7 @@ class Application:
         except KeyError:
             print("exception!")
             self.application_questions = application_questions
-        
-        
+            
 
     async def question(self):
         """
@@ -77,12 +84,16 @@ class Application:
         # find the server code word if there is one.
         code = data[str(self.applicant_guild.id)]['codeword']
         
-        #dm the applicant and ask them questions
+        # dm the applicant and ask them questions
         dm = await self.applicant.create_dm()
+        
         for question in self.application_questions:
             if question == self.application_questions[0]:
                 # server password checker
+                # only ask for code if the code is not None and no guesses have been made
                 if code is None:
+                    pass
+                elif len(self.passguesses) != 0:
                     pass
                 else:
                     guesses = 3
@@ -119,19 +130,65 @@ class Application:
                                            delete_prompt=False,
                                            delete_response=False)
                 self.responses.append(response.content)
-        await dm.send('Please wait while your application is reviewed. I will need to DM you when your application is '
-                      'fully processed.')
-        return 1, self.passguesses
 
-    def gen_embed(self):
+        embed = discord.Embed(title=f'Application #{self.count}, Attempt #{self.attempts}')
+        try:
+            try:
+                icon_url = self.applicant.guild_avatar.url
+            except AttributeError:
+                icon_url = self.applicant.avatar.url
+        except AttributeError:
+            icon_url = "https://media.discordapp.net/attachments/842662532808179734/1054686812410482729" \
+                       "/frowning-face-with-open-mouth_1f626.png"
+        embed.set_author(name=self.applicant.name, icon_url=icon_url)
+        
+        confirm_msg = await self.applicant.send(content="Is this information accurate? React with ✅ if yes or 🚫 if not",
+                                    embed=self.gen_embed(1))
+        
+        emojis = ['✅', '🚫']
+
+        for emoji in emojis:
+            await confirm_msg.add_reaction(emoji)
+
+        def check(reaction, user):
+            """
+            Checks for reactions on a message.
+            :param reaction:
+            :param user:
+            :return: boolean
+            """
+            return (user != client.user)
+
+        reaction, user = await client.wait_for('reaction_add', check=check)
+        if str(reaction.emoji) == '✅':
+            await confirm_msg.add_reaction('🆗')
+            await dm.send(
+                'Please wait while your application is reviewed. I will need to DM you when your application is '
+                'fully processed.')
+            return 1, self.passguesses
+            
+        elif str(reaction.emoji) == '🚫':
+            await confirm_msg.add_reaction('🆗')
+            application_channel = self.applicant_guild.get_channel(data[str(self.applicant_guild.id)]['channels'][
+                                                                       'application'])
+            await application_channel.send(content=f'<@{self.applicant.id}>', embed=self.gen_embed())
+            await dm.send("Please restart")
+            self.responses = [self.passguesses]
+            self.attempts += 1
+
+            return -2, self.passguesses
+   
+
+    def gen_embed(self, type=0):
         """
         generates the embed for the application.
-        Last docstring edit: -Autumn V3.0.0
-        Last method edit: -Autumn V3.0.0
+        Last docstring edit: -Autumn V3.4.0
+        Last method edit: -Autumn V3.4.0
+        :param type: Type of embed to generate. 0 = for mods, 1 = for users
         :return:
         """
 
-        embed = discord.Embed(title='Application #' + str(self.count))
+        embed = discord.Embed(title=f'Application #{self.count}, Attempt #{self.attempts}')
         try:
             try:
                 icon_url = self.applicant.guild_avatar.url
@@ -142,7 +199,10 @@ class Application:
         embed.set_author(name=self.applicant.name, icon_url=icon_url)
         
         for i in range(len(self.application_questions_display)):
-            embed.add_field(name=self.application_questions_display[i], value=self.responses[i])
+            if type == 0:
+                embed.add_field(name=self.application_questions_display[i], value=self.responses[i])
+            elif type == 1:
+                embed.add_field(name=self.application_questions[i], value=self.responses[i])
 
         embed.add_field(name='User ID', value=str(self.applicant.id), inline=False)
 
@@ -207,13 +267,16 @@ async def verify(message, client_in):
     application = Application(applicant, message.channel, message.guild)
     
     channel = message.guild.get_channel(application_channel)
-
+    
     try:
         questioning_error_code, guesses = await application.question()
     except discord.errors.Forbidden:
         await message.channel.send(f'<@!{message.author.id}> I cannot send you a message. Change your privacy '
                                    f'settings in User Settings->Privacy & Safety')
         return
+    
+    while questioning_error_code == -2:
+        questioning_error_code, guesses = await application.question()
 
     if questioning_error_code == -1:    # Got password wrong too many times
         
@@ -297,7 +360,7 @@ async def verify(message, client_in):
                                          delete_prompt=False,
                                          delete_response=False)
     
-                if reason.content == 'cancel':
+                if reason.content.lower() == 'cancel':
                     await channel.send('Action cancelled')
                     await reaction.remove(user)
                     continue
@@ -316,7 +379,7 @@ async def verify(message, client_in):
                 
                 reason = reason.content
                 
-                if reason == 'cancel':
+                if reason.lower() == 'cancel':
                     await channel.send('Ban cancelled')
                     await reaction.remove(user)
                 else:
