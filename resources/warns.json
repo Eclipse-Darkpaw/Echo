@@ -152,6 +152,68 @@
                 "issuer_name": "Wicc\u26a1#7678",
                 "reason": "random, nonconsensual roleplay in DMs"
             }
+        ],
+        "979141701895602218": [
+            {
+                "time": 1683916296,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "please don't try and ruin someones kink by bringing up how implausible it is irl and how it would kill them"
+            }
+        ],
+        "891173641310597172": [
+            {
+                "time": 1684006800,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "please read user bios before DMing or friend requesting"
+            },
+            {
+                "time": 1684006835,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#0207",
+                "reason": "do not enter user DMs and ask for a private video call"
+            }
+        ],
+        "372809710648164352": [
+            {
+                "time": 1686004012,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#6576",
+                "reason": " do not post animals being killed in <#1054216785194405959>"
+            }
+        ],
+        "968659972999229474": [
+            {
+                "time": 1686851218,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "Eclipse_Darkpaw#6576",
+                "reason": "keep ads to <#1054475673252679701> and out of <#1054137434725691393>"
+            }
+        ],
+        "784476086150103061": [
+            {
+                "time": 1689962898,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox#0",
+                "reason": "dont post media with racial slurs"
+            }
+        ],
+        "780944067768483880": [
+            {
+                "time": 1689982247,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox#0",
+                "reason": "please do not post videos about questionable topics"
+            }
+        ],
+        "403253406896095232": [
+            {
+                "time": 1691951448,
+                "issuer_id": 782400723853246484,
+                "issuer_name": "anamasu1204#0",
+                "reason": "fighting with mod, restarting drama that had already ended"
+            }
         ]
     }
 }
