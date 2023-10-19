@@ -315,8 +315,10 @@ async def verify(message, client_in):
                     user.guild_permissions.manage_roles and
                     str(reaction.emoji) in emojis and
                     reaction.message == applied)
+            return out
         except AttributeError:
             print(str(user.id))
+            return False
 
     while True:
         try:
