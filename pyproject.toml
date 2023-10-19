@@ -5,8 +5,8 @@ description = "A collection of discord bots for moderation, reference sheet mana
 authors = ["Autumn <@Autumna1Equin0x>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-discord = "^2.1.0"
+python = "^3.11"
+discord = "^2.3.2"
 
 [tool.poetry.dev-dependencies]
 

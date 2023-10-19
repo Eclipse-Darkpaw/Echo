@@ -214,6 +214,34 @@
                 "issuer_name": "anamasu1204#0",
                 "reason": "fighting with mod, restarting drama that had already ended"
             }
+        ],
+        "1149502160699130038": [
+            {
+                "time": 1695177156,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox#0",
+                "reason": " Ban evasion"
+            },
+            {
+                "time": 1695177302,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox#0",
+                "reason": "alt of <@1139940317676720228>"
+            },
+            {
+                "time": 1695177419,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox#0",
+                "reason": "im letting the bot create the thread"
+            }
+        ],
+        "948692688469893160": [
+            {
+                "time": 1697214585,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "do not put children in nsfw channels"
+            }
         ]
     }
 }

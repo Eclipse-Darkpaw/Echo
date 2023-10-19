@@ -1,5 +1,6 @@
 import discord
 import json
+import time
 
 from main import read_line
 from difflib import SequenceMatcher
@@ -399,7 +400,12 @@ async def verify(message, client_in):
             await channel.send(f'Unable to perform action. <@{message.author.id}> cannot be found')
             await applied.add_reaction('🆗')
             break
-            
+        # except AttributeError as er: #user.guild_permissions no longer works
+            # await channel.send(f'An unknown error occured, pleasetry again. <@749443249302929479> see the logs at '
+            #                    f'<t:{int(time.time())}:T> for more details')
+            # print(er)
+
+
 
 async def setcode(message, codeword):
     """
