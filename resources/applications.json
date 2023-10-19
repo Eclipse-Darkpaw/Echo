@@ -1,11 +1,13 @@
 {
-	serverID :
-	{
-		UserID: {
-			messageID:{
-
+	"serverID": {
+		"ApplicationID": {
+			"UserID":0,
+			"MessageID": 0,
+			"responses": {
+				"Password Attempts": [],
+				"age":0,
+				"birthday": ""
 			}
-
 		}
 	}
 }

@@ -217,7 +217,7 @@ async def verify(message, client_in):
     The method that primarily handles member verification. All members must verify from this method. Sends DM to user,
     asks user questions, then sends answers to the moderators in a designated chat
     Last docstring edit: -Autumn V3.1.0
-    Last method edit: -Autumn V3.3.4
+    Last method edit: -Autumn V3.4.1.0
     :param message: Discord message calling the method
     :param client_in: Bot client handling IO functions
     :return: NoneType
@@ -308,11 +308,14 @@ async def verify(message, client_in):
         :param user:
         :return: boolean
         """
-        return (user != client.user and
-                user.guild is not None and
-                user.guild_permissions.manage_roles and
-                str(reaction.emoji) in emojis and
-                reaction.message == applied)
+        try:
+            out = (user != client.user and
+                    user.guild is not None and
+                    user.guild_permissions.manage_roles and
+                    str(reaction.emoji) in emojis and
+                    reaction.message == applied)
+        except AttributeError:
+            print(str(user.id))
 
     while True:
         try:
