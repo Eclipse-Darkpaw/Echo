@@ -3,7 +3,7 @@ import discord
 import os
 import sys
 
-project_version = '3.4.0'
+project_version = '3.4.1.1'
 eclipse_id = 749443249302929479
 
 start_time = time.time()
