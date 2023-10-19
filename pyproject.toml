@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "Echo"
-version = "3.4.2"
+version = "3.4.1.1"
 description = "A collection of discord bots for moderation, reference sheet management, and scam prevention."
-authors = ["Eclipse Darkpaw <random-college-bi.tumblr.com>"]
+authors = ["Autumn <@Autumna1Equin0x>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
