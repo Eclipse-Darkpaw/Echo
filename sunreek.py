@@ -12,8 +12,8 @@ import sys
 import time
 
 from fileManagement import resource_file_path
-from profile import display_profile, set_bio
-from refManagement import ref, set_ref, add_ref, oc, random_ref
+#from profile import display_profile, set_bio
+from modules.refManagement import ref, set_ref, add_ref, oc, random_ref
 # Keep imports in alphabetical order
 
 start_time = time.time()
@@ -116,27 +116,6 @@ async def end(message):
     :return: None
     """
     await General.quit(message, client)
-
-
-async def profile(message, client=None):
-    """
-    Displays a users profile
-    Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
-    :param message: message calling the bot
-    :return: None
-    """
-    command = message.content.split(' ', 2)
-    if len(command) == 1:
-        await display_profile(message, client)
-    if command[1] == 'edit':
-        try:
-            set_bio(message.author, command[2])
-            await message.channel.send('Bio set')
-        except ValueError:
-            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
-    else:
-        await display_profile(message, client)
 
 
 async def modmail(message):
@@ -752,12 +731,11 @@ async def on_ready():
     await client.get_user(eclipse_id).send('Running, and active')
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
-            'setcode': setcode, 'modmail': modmail, 'quit': end, 'profile': profile, 'setref': set_ref, 'ref': ref,
-            'addref': add_ref, 'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys,
-            'cursedkey': cursed_keys, 'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys,
-            'oc': oc, 'purge': purge, 'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blessed_keys,
-            'ban': ban, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup,
-            'uptime': uptime}
+            'setcode': setcode, 'modmail': modmail, 'quit': end, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
+            'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys, 'cursedkey': cursed_keys,
+            'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'oc': oc, 'purge': purge,
+            'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blessed_keys, 'ban': ban,
+            'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup, 'uptime': uptime}
 
 scan_ignore = [688611557508513854]
 

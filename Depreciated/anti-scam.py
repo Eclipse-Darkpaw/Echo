@@ -10,7 +10,7 @@ import time
 
 from main import read_line, eclipse_id
 from refbot import profile
-from refManagement import ref, set_ref, add_ref, oc, random_ref
+from modules.refManagement import ref, set_ref, add_ref, oc, random_ref
 
 version_num = '3.3.0'
 
