@@ -440,7 +440,7 @@ async def on_member_update(before, after):
                                                                          f"remember to stop by <#1054672645527969802> for your roles.")
 
 
-def run_pawbot():
+def run_bot():
     """
     Function allows the host to pick whether to run the live bot, or run the test bot in a closed environment, without
     switching programs. This allows the live code to run parallel to the testing code and prevent constant restarts to
@@ -455,13 +455,13 @@ def run_pawbot():
         inp = int(sys.argv[1])
     else:
         inp = int(input('input token num\n'
-                        '1. Pawbot\n'
+                        '1. Gemini\n'
                         '2. Testing Environment\n'))
     
     if inp == 1:
         # Main bot client. Do not use for tests
         
-        client.run(os.environ.get('PAWBOT_TOKEN'))  # must say client.run(os.environ.get('SUNREEK_TOKEN'))
+        client.run(os.environ.get('BEDROOM_BOT_TOKEN'))  # must say client.run(os.environ.get('SUNREEK_TOKEN'))
     
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
@@ -470,4 +470,4 @@ def run_pawbot():
 
 
 if __name__ == '__main__':
-    run_pawbot()
+    run_bot()

@@ -4,8 +4,8 @@ import os
 import sys
 
 
-from profile import display_profile, set_bio
-from refManagement import ref, set_ref, add_ref, oc
+from Depreciated.profile import display_profile, set_bio
+from modules.refManagement import ref, set_ref, add_ref, oc
 from fileManagement import warn_log_path
 from main import read_line, get_user_id
 

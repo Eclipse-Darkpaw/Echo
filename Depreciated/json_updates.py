@@ -31,7 +31,7 @@ def ref_update(root, files, refs):
 
 def update_files():
     dictionary = {}
-    for (root, dirs, files) in os.walk('resources'):
+    for (root, dirs, files) in os.walk('../resources'):
         directory = root.split('\\')
         switch = {'profile': profile_update, 'refs': ref_update}
         try:
@@ -41,7 +41,7 @@ def update_files():
         except KeyError:
             continue
     json_object = json.dumps(dictionary, indent=4)
-    with open('resources/global_files.json', 'w') as file:
+    with open('../resources/global_files.json', 'w') as file:
         file.write(json_object)
 
 
