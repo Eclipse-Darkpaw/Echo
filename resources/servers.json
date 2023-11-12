@@ -111,13 +111,38 @@
             "suspended": 1054172546444050435
         },
         "password": true,
-        "questions": ["Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)",
-                         "What is your nickname?",
-                         "How old are you?",
-                         "When is your birthday? Please format it like January 1, 1970",
-                         "Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)",
-                         "Why do you want to join?"
+        "questions": [
+            "Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)",
+            "What is your nickname?",
+            "How old are you?",
+            "When is your birthday? Please format it like January 1, 1970",
+            "Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)",
+            "Why do you want to join?"
         ],
-        "questions_display": ["Server Password", "Nickname", "Age", "Birthday", "Link source", "Reason for join"]
+        "questions_display": [
+            "Server Password",
+            "Nickname",
+            "Age",
+            "Birthday",
+            "Link source",
+            "Reason for join"
+        ]
+    },
+    "1173096613464522833": {
+        "name": "Autumn's Bedroom",
+        "codeword": "Autumn's soles~",
+        "channels": {
+            "application": 1173389727383163032,
+            "questioning": 1173389797683904522,
+            "mailbox": 1173390140668919970,
+            "log": 1173358677865017365,
+            "warn log": 1173358559858262077
+        },
+        "roles": {
+            "member": 1173283162357518536,
+            "questioning": 1173390395376414720,
+            "suspended": 1173371322986942495,
+            "mod": 1173283338069491763
+        }
     }
 }
