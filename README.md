@@ -22,13 +22,18 @@ https://www.pivotaltracker.com/n/projects/2462509
 
 ## Change Log
 
+### 3.5.0
+* Restructured files and moved the heirarchy
+
+### V3.4.1
+* Attempted to fix bug in `Verification.py` that would cause applications to be dropped
+
 ### V3.0.0
 * began overhaul
 * added error logging
 * added server setup
 * fixed verification
 * reduced duplicate code in the files
-* 
 
 ### V2.0.2/Anti-scam V2.1.0
 Author - Autumn
