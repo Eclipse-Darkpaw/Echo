@@ -4,7 +4,7 @@ import os
 import sys
 
 # from profile import profile
-from refManagement import ref, set_ref, add_ref
+from modules.refManagement import ref, set_ref, add_ref
 
 
 prefix = '>'
