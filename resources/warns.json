@@ -242,6 +242,14 @@
                 "issuer_name": "autumnal.equinox",
                 "reason": "do not put children in nsfw channels"
             }
+        ],
+        "313140388796039178": [
+            {
+                "time": 1698814770,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "Do not ask to ERP with people who have already said no. use <#1057000875731718254>"
+            }
         ]
     }
 }
