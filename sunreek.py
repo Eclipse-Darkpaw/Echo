@@ -734,7 +734,7 @@ switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version
             'setcode': setcode, 'modmail': modmail, 'quit': end, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys, 'cursedkey': cursed_keys,
             'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'oc': oc, 'purge': purge,
-            'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blessed_keys, 'ban': ban,
+            'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blessed_keys, 'ban': ban, 'artfight': artfight,
             'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup, 'uptime': uptime}
 
 scan_ignore = [688611557508513854]

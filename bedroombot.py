@@ -426,20 +426,6 @@ async def on_message(message):
     except IndexError:
         pass
 
-
-@client.event
-async def on_member_update(before, after):
-    if (before.guild.id == 1054121991365468281 and
-            before.guild.get_role(1054160602349703188) not in before.roles and
-            before.guild.get_role(1054160602349703188) in after.roles):
-        welcome = [f"<@{after.id}> is our newest bean lover",
-                   f"<@{after.id}> has stumbled into the bean sanctuary",
-                   f"<@{after.id}> has arrived looking for beans"]
-
-        await before.guild.get_channel(1054137434725691393).send(content=f"<@&1122978815744950352> {random.choice(welcome)}. Please "
-                                                                         f"remember to stop by <#1054672645527969802> for your roles.")
-
-
 def run_bot():
     """
     Function allows the host to pick whether to run the live bot, or run the test bot in a closed environment, without
