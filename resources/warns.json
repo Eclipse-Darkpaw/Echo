@@ -250,6 +250,22 @@
                 "issuer_name": "autumnal.equinox",
                 "reason": "Do not ask to ERP with people who have already said no. use <#1057000875731718254>"
             }
+        ],
+        "513297683142934530": [
+            {
+                "time": 1699981023,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "Do not post gore in chat"
+            }
+        ],
+        "1127589891010744401": [
+            {
+                "time": 1700015409,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": " Do not promote your stream in <#1054137434725691393>, please keep it in <#1054475673252679701> or <#1146438044094824449>"
+            }
         ]
     }
 }

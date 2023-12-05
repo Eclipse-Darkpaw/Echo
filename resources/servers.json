@@ -78,21 +78,6 @@
             "suspended": 1011845104996188270
         }
     },
-    "758472902197772318": {
-        "name": "The Meadow",
-        "codeword": "Orange",
-        "channels": {
-            "application": 813991832593367051,
-            "questioning": 1046323171743248384,
-            "log": 933539437357432892
-        },
-        "roles": {
-            "member": 758487413257011271,
-            "unverified": 813996107126276127,
-            "questioning": 1046323062775226509,
-            "suspended": 773401156935352390
-        }
-    },
     "1054121991365468281": {
         "name": "Beans Sanctuary",
         "codeword": "B34NS",
@@ -142,7 +127,25 @@
             "member": 1173283162357518536,
             "questioning": 1173390395376414720,
             "suspended": 1173371322986942495,
-            "mod": 1173283338069491763
-        }
+            "mod": 1173283338069491763,
+            "unverified": 1173390435033559173
+        },
+        "password": true,
+        "questions": [
+            "Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts to fill the form)",
+            "What is your nickname?",
+            "How old are you?",
+            "When is your birthday? Please format it like January 1, 1970",
+            "Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)",
+            "Why do you want to join?"
+        ],
+        "questions_display": [
+            "Server Password",
+            "Nickname",
+            "Age",
+            "Birthday",
+            "Link source",
+            "Reason for join"
+        ]
     }
 }
