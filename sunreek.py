@@ -30,7 +30,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-game = discord.Game(f'{prefix}help for commands')
+game = discord.Game(f'with some tests')
 client = discord.Client(intents=intents)
 
 artfight_enabled = False

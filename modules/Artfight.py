@@ -1,6 +1,7 @@
 import discord
 import json
 import sunreek
+import datetime
 
 from difflib import SequenceMatcher
 from fileManagement import server_settings_path
@@ -78,98 +79,116 @@ async def artfight_submit(message, team_num, client):
     with open(server_settings_path) as file:
         data = json.load(file)
         
+    startday = 11
+    
     artfight_team1_score = data[str(message.guild.id)]['artfight']['scores']['team1']
     artfight_team2_score = data[str(message.guild.id)]['artfight']['scores']['team2']
 
     dm = await message.author.create_dm()
-
-    artfight_questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch'
-                          '\n3:Black&White Lineart\n4:Flat colored\nPlease reply with the corrosponding number',
-                          'Please reply with the number of OCs/characters belonging to the other team in your '
-                          'submission',
-                          'Is this shaded? Respond "Y" if yes, anything else for no',
-                          'Is there a background? Respond "Y" if yes, anything else for no',
-                          'Did you follow the prompt? Respond "Y" if yes, anything else for no',
-                          'What is the title of this piece?']
-    responses = []
-    try:
-        image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author,
-                                delete_prompt=False, delete_response=False)
-        link = image.attachments[0].url
-
-        for question in artfight_questions:
-            question = f'<@!{message.author.id}> {question}'
-            response = await read_line(client, dm, question, message.author, delete_prompt=False, delete_response=False)
-            responses.append(response)
-    except discord.Forbidden:
-        await message.reply('Unable to DM You, please change your privacy settings.')
-        return -1
-
-    if responses[0].content[0] == '1':
-        base = 5
-    elif responses[0].content[0] == '2':
-        base = 10
-    elif responses[0].content[0] == '3':
-        base = 20
-    elif responses[0].content[0] == '4':
-        base = 30
-    else:
-        await dm.send(f'Unable to score your submission. \n`Expected int 1-4, was given "{responses[0].content}"`')
-        return -2
+    artfight_day = int(datetime.datetime.now().strftime("%d")) - startday
+    await dm.send(f'It is currently Artfight Day {artfight_day}. Please '
+                          f'make sure you are following the prompt for today')
+    while True:
+        responses = []
+        try:
+            artfight_questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch'
+                                  '\n3:Black&White Lineart\n4:Full colored\nPlease reply with the corresponding number',
+                                  'Please reply with the number of OCs/characters belonging to the other team in your '
+                                  'submission',
+                                  'Is this shaded? Respond "Y" if yes, anything else for no',
+                                  'Is there a background? Respond "Y" if yes, anything else for no',
+                                  f'Did you follow the prompt for day '
+                                  f'{artfight_day}? Respond "Y" if yes, '
+                                  f'anything else for no',
+                                  'What is the title of this piece?']
+            image = await read_line(client, dm, 'What image are you submitting? Only submit one image.', message.author,
+                                    delete_prompt=False, delete_response=False)
+            link = image.attachments[0].url
+        
+            for question in artfight_questions:
+                question = f'<@!{message.author.id}> {question}'
+                response = await read_line(client, dm, question, message.author, delete_prompt=False, delete_response=False)
+                responses.append(response)
+        except discord.Forbidden:
+            await message.reply('Unable to DM You, please change your privacy settings.')
+            return -1
+        
+        # What type of art is it?
+        if responses[0].content[0] == '1':
+            base = 5
+        elif responses[0].content[0] == '2':
+            base = 10
+        elif responses[0].content[0] == '3':
+            base = 20
+        elif responses[0].content[0] == '4':
+            base = 30
+        else:
+            await dm.send(f'Unable to score your submission. \n`Expected int 1-4, was given "{responses[0].content}"`')
+            return -2
+        
+        # Score how many characters there are in a piece
+        try:
+            num_chars = int(responses[1].content)
+        except ValueError:
+            await dm.send(f'Unable to score your submission. \n`Expected int, was given "{responses[1].content}"`')
+            return -2
+        
+        # is the piece shaded
+        if responses[2].content[0].lower() == 'y':
+            shaded = 10
+        else:
+            shaded = 0
+        
+        # is there a background
+        if responses[3].content[0].lower() == 'y':
+            bg = 20
+        else:
+            bg = 0
+        
+        # Did they follow the prompt?
+        if responses[4].content[0].lower() == 'y':
+            prompt = 1
+        else:
+            prompt = 0
+        
+        # calculate day multiplier
+        if artfight_day % 4 == 0:
+            day_multiplier = 2
+            await dm.send(f'Because today is day {artfight_day}, points are doubled!')
+        else:
+            day_multiplier = 1
+            
+        score = (prompt * ((base + shaded) * num_chars + bg)) * day_multiplier
     
-    try:
-        num_chars = int(responses[1].content)
-    except ValueError:
-        await dm.send(f'Unable to score your submission. \n`Expected int, was given "{responses[1].content}"`')
-        return -2
-
-    if responses[2].content[0].lower() == 'y':
-        shaded = 10
-    else:
-        shaded = 0
-
-    if responses[3].content[0].lower() == 'y':
-        bg = 20
-    else:
-        bg = 0
-
-    if responses[4].content[0].lower() == 'y':
-        prompt = 1
-    else:
-        prompt = 0
-
-    score = prompt * ((base + shaded) * num_chars + bg)
-
-    embed = discord.Embed(title=responses[5].content, description=f'A Submission from <@{message.author.id}>')
-    embed.add_field(name='Score', value=str(score)+' ornaments', inline=False)
-    embed.set_image(url=link)
-    embed.color = message.author.color
-
-    await dm.send(embed=embed)
-    response = await read_line(client, dm, 'Do you want to submit this? "Y" for yes.', message.author,
-                               delete_prompt=False, delete_response=False)
-
-    if response.content.lower() == 'y':
-
-        if team_num == 1:
-            artfight_team1_score += score
-            pass
-        elif team_num == 2:
-            artfight_team2_score += score
-            pass
-        
-        data[str(message.guild.id)]['artfight']['scores']['team1'] = artfight_team1_score
-        data[str(message.guild.id)]['artfight']['scores']['team2'] = artfight_team2_score
-        
-        with open(server_settings_path, 'w') as file:
-            file.write(json.dumps(data, indent=4))
-        await dm.send('Score counted!\n'
-                      'Sending Submission')
-        return embed
-        
-    else:
-        await dm.send('Submission cancelled. please redo')
-        return -2
+        embed = discord.Embed(title=responses[5].content, description=f'A Submission from <@{message.author.id}>')
+        embed.add_field(name='Score', value=str(score)+' ornaments', inline=False)
+        embed.set_image(url=link)
+        embed.color = message.author.color
+    
+        await dm.send(embed=embed)
+        response = await read_line(client, dm, 'Do you want to submit this? "Y" for yes.', message.author,
+                                   delete_prompt=False, delete_response=False)
+    
+        if response.content.lower() == 'y':
+    
+            if team_num == 1:
+                artfight_team1_score += score
+                pass
+            elif team_num == 2:
+                artfight_team2_score += score
+                pass
+            
+            data[str(message.guild.id)]['artfight']['scores']['team1'] = artfight_team1_score
+            data[str(message.guild.id)]['artfight']['scores']['team2'] = artfight_team2_score
+            
+            with open(server_settings_path, 'w') as file:
+                file.write(json.dumps(data, indent=4))
+            await dm.send('Score counted!\n'
+                          'Sending Submission')
+            return embed
+            
+        else:
+            await dm.send('Submission cancelled. Restarting the grading.')
 
 
 async def artfight(message, client):
