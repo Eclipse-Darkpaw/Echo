@@ -7,6 +7,7 @@ Import statements are crucial statments that allow the bot to run code you didn'
 import discord
 import sys
 import time
+import os
 
 # The version number isn't a necessary feature, but it is useful to confirm the bot is running the
 # most recent version of the code
