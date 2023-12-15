@@ -1,3 +1,5 @@
+import datetime
+
 import discord
 import json
 import main
@@ -702,7 +704,10 @@ async def member_num(message):
 
 
 async def artfight(message):
-    await Artfight.artfight(message, client)
+    month = int(datetime.datetime.now().strftime('%m'))
+    day = int(datetime.datetime.now().strftime('%d'))
+    if month <= 11:
+        await Artfight.artfight(message, client, month, day)
 
 
 async def huh(message):
