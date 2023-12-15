@@ -191,7 +191,7 @@ async def artfight_submit(message, team_num, client):
             await dm.send('Submission cancelled. Restarting the grading.')
 
 
-async def artfight(message, client):
+async def artfight(message, client, month, day):
     with open(server_settings_path) as file:
         data = json.load(file)
     try:
@@ -227,7 +227,7 @@ async def artfight(message, client):
                                        'score.\nMod only.',
                                  inline=False)
         await message.channel.send(embed=artfight_embed)
-    elif command[1] == 'join':
+    elif command[1] == 'join' and month == 12 and 10 <= day < 18:
         if artfight_team1 in message.author.roles or artfight_team2 in message.author.roles:
             await message.reply("You are already on a team")
             return
@@ -260,7 +260,7 @@ async def artfight(message, client):
         score_embed.add_field(name=f'{artfight_team2.name} Score', value=str(artfight_team2_score))
         await message.reply(embed=score_embed)
         return
-    elif command[1] == 'submit':
+    elif command[1] == 'submit' and month == 12 and 11 < day < 25:
         roles = message.author.roles
         role_ids = []
 
