@@ -24,7 +24,7 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.4.2'
+version_num = '3.5.1'
 
 eclipse_id = main.eclipse_id
 
@@ -32,7 +32,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-game = discord.Game(f'with some tests')
+game = discord.Game('}help for commands')
 client = discord.Client(intents=intents)
 
 artfight_enabled = False
