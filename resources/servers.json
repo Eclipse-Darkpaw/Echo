@@ -147,5 +147,39 @@
             "Link source",
             "Reason for join"
         ]
+    },
+    "1179279483501551616": {
+        "name": "YikYak Furries",
+        "codeword": "orange",
+        "channels": {
+            "application": 1187943602987474945,
+            "questioning": 1187943571249168384,
+            "mailbox": 1187974900787462174,
+            "log": 1187973167889797161,
+            "warn log": 1187975429345263696
+        },
+        "roles": {
+            "member": 1179286768261013525,
+            "unverified": 1179286797159768084,
+            "questioning": 1187943636353159249,
+            "suspended": 1179286594621030470,
+            "mod": 1179286444863410176
+        },
+        "questions": [
+            "Server Password?\n**NOT YOUR DISCORD PASSWORD**\n(you have 3 attempts)",
+            "What is your nickname?",
+            "**(OPTIONAL) For access to 18+ chats.**\nHow old are you?",
+            "**(OPTIONAL) For access to 18+ chats.**\n When is your birthday? Please format it like January 1, 1970",
+            "Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)",
+            "Why do you want to join?"
+        ],
+        "questions_display": [
+            "Server Password",
+            "Nickname",
+            "Age",
+            "Birthday",
+            "Link source",
+            "Reason for join"
+        ]
     }
 }

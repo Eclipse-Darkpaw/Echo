@@ -44,8 +44,9 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            "temu.com"]
 code = 'plsdontban'
 
-
+counter = 0
 async def scan_message(message):
+    global counter
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
     does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
@@ -55,7 +56,13 @@ async def scan_message(message):
     :return: None
     """
     with open(resource_file_path + 'servers.json') as file:
-        log_channel = json.load(file)[str(message.guild.id)]['channels']['log']
+        try:
+            log_channel = json.load(file)[str(message.guild.id)]['channels']['log']
+        except KeyError:
+            if counter % 50 == 0:
+                await message.channel.send("Anti-scam scanning is currently offline.")
+            counter += 1
+            return
 
     flags = 0
     bans = 0
