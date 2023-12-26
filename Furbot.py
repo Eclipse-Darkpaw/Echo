@@ -350,16 +350,29 @@ async def huh(message):
                         "Never gonna tell a lie, and hurt you")
 
 
+nsfw_channels = [1187947561710006392, 1187947530592465026, 1187947493250564226, 1188266928796610661,
+                 1189090482094084106, 1189323678249390120]
+
+
 async def nsfw_ref(message):
-    await ref(message, nsfw=True)
+    if message.channel.id in nsfw_channels:
+        await ref(message, nsfw=True)
+    else:
+        await ref(message, nsfw=False)
 
 
 async def nsfw_add_ref(message):
-    await add_ref(message, nsfw=True)
+    if message.channel.id in nsfw_channels:
+        await add_ref(message, nsfw=True)
+    else:
+        await add_ref(message, nsfw=False)
 
 
 async def nsfw_set_ref(message):
-    await set_ref(message, nsfw=True)
+    if message.channel.id in nsfw_channels:
+        await set_ref(message, nsfw=True)
+    else:
+        await set_ref(message, nsfw=False)
 
 
 @client.event
