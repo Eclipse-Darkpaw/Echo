@@ -192,6 +192,7 @@ async def artfight_submit(message, team_num, client):
 
 
 async def artfight(message, client, month, day):
+    print(f'{month}-{day}')
     with open(server_settings_path) as file:
         data = json.load(file)
     try:
@@ -227,7 +228,7 @@ async def artfight(message, client, month, day):
                                        'score.\nMod only.',
                                  inline=False)
         await message.channel.send(embed=artfight_embed)
-    elif command[1] == 'join' and month == 12 and 10 <= day < 18:
+    elif command[1] == 'join' and month == 12 and 10 <= day < 17:
         if artfight_team1 in message.author.roles or artfight_team2 in message.author.roles:
             await message.reply("You are already on a team")
             return

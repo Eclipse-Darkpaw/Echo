@@ -266,6 +266,20 @@
                 "issuer_name": "autumnal.equinox",
                 "reason": " Do not promote your stream in <#1054137434725691393>, please keep it in <#1054475673252679701> or <#1146438044094824449>"
             }
+        ],
+        "1037894076453879919": [
+            {
+                "time": 1703623337,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "do not use transphobic terms to describe trans people"
+            },
+            {
+                "time": 1703623363,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "please use chats for what they are meant for"
+            }
         ]
     }
 }

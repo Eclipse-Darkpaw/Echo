@@ -356,22 +356,28 @@ nsfw_channels = [1187947561710006392, 1187947530592465026, 1187947493250564226, 
 
 async def nsfw_ref(message):
     if message.channel.id in nsfw_channels:
+        await message.reply('Uploading NSFW Ref')
         await ref(message, nsfw=True)
     else:
+        await message.reply('Uploading SFW Ref')
         await ref(message, nsfw=False)
 
 
 async def nsfw_add_ref(message):
     if message.channel.id in nsfw_channels:
+        await message.reply('Adding to NSFW Ref')
         await add_ref(message, nsfw=True)
     else:
+        await message.reply('Adding to SFW Ref')
         await add_ref(message, nsfw=False)
 
 
 async def nsfw_set_ref(message):
     if message.channel.id in nsfw_channels:
+        await message.reply('Setting NSFW Ref')
         await set_ref(message, nsfw=True)
     else:
+        await message.reply('Setting SFW Ref')
         await set_ref(message, nsfw=False)
 
 
