@@ -368,7 +368,7 @@ async def help_message(message):
 cursed_keys_running = False
 blessed_keys_running = False
 crsd_keys = []
-blessed_keys = []
+blsd_keys = []
 player_role_id = 863630913686077450
 
 
@@ -475,7 +475,8 @@ async def blessed_keys(message):
     """
     # TODO: USE A SWITCH HERE DUMBASS!!!
     global cursed_keys_running
-    global blessed_keys
+    global blessed_keys_running
+    global blsd_keys
     
     command = message.content[1:].split(' ', 2)
     if len(command) == 1 or command[1] == 'help':
@@ -507,12 +508,12 @@ async def blessed_keys(message):
                            value='A: contact a moderator, and we\'ll look into your case and determine if you should '
                                  'still be in the game or not')
     elif command[1] == 'list':
-        if len(blessed_keys) == 0:
+        if len(blsd_keys) == 0:
             await message.reply('there are no blessed keys')
         else:
-            await message.reply('blessed keys are: ' + str(blessed_keys))
+            await message.reply('blessed keys are: ' + str(blsd_keys))
     elif command[1] == 'join':
-        if not blessed_keys_keys_running:
+        if not blessed_keys_running:
             if message.guild.get_role(player_role_id) in message.author.roles:
                 await message.reply('You are already a part of this game!')
             else:
@@ -531,16 +532,16 @@ async def blessed_keys(message):
                 pass
             else:
                 keys.append(char.lower())
-                blessed_keys = keys
-        await message.reply('Blessed Keys set: ' + str(blessed_keys))
+                blsd_keys = keys
+        await message.reply('Blessed Keys set: ' + str(blsd_keys))
     elif command[1] == 'start':
         if message.author.guild_permissions.manage_roles:
             cursed_keys_running = True
-            if len(blessed_keys) == 0:
+            if len(blsd_keys) == 0:
                 await message.reply('Unable to start game! No Cursed Keys set!')
             else:
                 await message.reply(f'<@&863630913686077450> The game is starting! blessed Keys are ' + str(
-                        blessed_keys))
+                        blsd_keys))
         else:
             await message.reply('Invalid permissions')
     elif command[1] == 'resetPlayers':
@@ -594,16 +595,14 @@ async def prune(message):
     if message.author.guild is not None and message.author.guild_permissions.kick_members:
         # only run if in a guild and the user could do this manually.
         members = message.guild.members
-        ignore_roles = [667970355733725184, 970723533846106165, 716173532245131265, 678102571063443499,
-                        667246861328842774, 655755488100745247, 1006767850196840510, 911988983825842177,
-                        932681590159601664, 936554410442620950, 903902681242931261, 612939346479153172,
-                        915042582445322290, 612554353764597760]
+        ignore_roles = [612554353764597760, 612939346479153172, 655755488100745247, 1078607646199926844,
+                        1199610730899578960, 1069839195553669192]
         for member in members:
             for role in member.roles:
                 if role.id in ignore_roles:
                     continue
                 else:
-                    member,
+                    await member.kick(reason="*T H E   P U R G E*")
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
@@ -739,7 +738,7 @@ switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version
             'setcode': setcode, 'modmail': modmail, 'quit': end, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys, 'cursedkey': cursed_keys,
             'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'oc': oc, 'purge': purge,
-            'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blessed_keys, 'ban': ban, 'artfight': artfight,
+            'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blsd_keys, 'ban': ban, 'artfight': artfight,
             'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup, 'uptime': uptime}
 
 scan_ignore = [688611557508513854]
@@ -808,7 +807,7 @@ async def on_message(message):
             # Check if the message author has the game role
             if message.guild.get_role(player_role_id) in message.author.roles:
                 # If the message author has the role, scan their message for any cursed keys
-                for key in blessed_keys:
+                for key in blsd_keys:
                     if key not in message.content.lower():
                         await message.author.remove_roles(message.guild.get_role(player_role_id))
                         await message.reply('You have been cursed for not using the key: ' + key)
