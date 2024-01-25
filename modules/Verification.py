@@ -348,7 +348,8 @@ async def verify(message, client_in):
                 thread_name = f'{message.author.name} Questioning'
                 try:
                     thread = await questioning_room.create_thread(name=thread_name, auto_archive_duration=1440)
-                    await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@{user.id}>.')
+                    await thread.send(f'<@{message.author.id}>, You have been pulled into questioning by <@'
+                                      f'{user.id}>. <@155149108183695360> will be here for logging')
                     await message.author.send(f'You have been pulled into questioning in <#{thread.id}>.')
                     await channel.send(f'<@!{message.author.id}> is being questioned in <#{thread.id}>')
                 except discord.errors.Forbidden:
@@ -390,7 +391,7 @@ async def verify(message, client_in):
                     await reaction.remove(user)
                 else:
                     try:
-                        await message.guild.ban(user=application.applicant, reason=reason)
+                        await message.guild.ban(user=application.applicant, reason=reason, delete_message_seconds=0)
                         await channel.send(f'<@{message.author.id}> banned for\n> {reason}')
                         await applied.add_reaction('🆗')
                         break
@@ -406,7 +407,6 @@ async def verify(message, client_in):
             # await channel.send(f'An unknown error occured, pleasetry again. <@749443249302929479> see the logs at '
             #                    f'<t:{int(time.time())}:T> for more details')
             # print(er)
-
 
 
 async def setcode(message, codeword):
