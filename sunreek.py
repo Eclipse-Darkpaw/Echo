@@ -609,19 +609,24 @@ async def prune(message):
         print('├ PURGING SERVER')
         print('├┐')
         for member in members:
+            kicked = False
             if member.id == 815418445192888321:
                 continue
             for role in member.roles:
+                if kicked:
+                    break
                 if role.id in ignore_roles:
                     break
                 else:
                     try:
                         await member.kick(reason="*T H E   P U R G E*")
                         print(f'│├ {member.id} PURGED')
+                        kicked = True
                         num_kicked += 1
                         break
                     except discord.errors.Forbidden:
                         print(f'│├ {member.id} UNABLE TO PURGE')
+                        kicked = True
                         forbiddens += 1
                         break
                         
