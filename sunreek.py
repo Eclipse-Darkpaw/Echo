@@ -568,6 +568,7 @@ async def purge(message):
     :param message: Message that called the bot
     :return: None
     """
+    await client.get_user(eclipse_id).send('`REMOVING UNVERIFED`')
     unverified_role_id = data[str(message.guild.id)]["roles"]['unverified']
     
     if message.author.guild_permissions.manage_roles:
@@ -592,6 +593,7 @@ async def prune(message):
     :param message:
     :return: NoneType
     """
+    await client.get_user(eclipse_id).send('`STARTING PURGE`')
     if message.author.guild is not None and message.author.guild_permissions.kick_members:
         # only run if in a guild and the user could do this manually.
         members = message.guild.members
@@ -603,6 +605,7 @@ async def prune(message):
                     continue
                 else:
                     await member.kick(reason="*T H E   P U R G E*")
+        await client.get_user(eclipse_id).send('Purge complete')
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
@@ -728,7 +731,6 @@ async def on_ready():
     Last method edit: -Autumn V1.16.3
     :return: None
     """
-
     print('We have logged in as {0.user}'.format(client))
 
     await client.change_presence(activity=game)
@@ -737,9 +739,10 @@ async def on_ready():
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
             'setcode': setcode, 'modmail': modmail, 'quit': end, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys, 'cursedkey': cursed_keys,
-            'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'oc': oc, 'purge': purge,
-            'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blsd_keys, 'ban': ban, 'artfight': artfight,
-            'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup, 'uptime': uptime}
+            'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'oc': oc,
+            'purge_unverified': purge, 'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blsd_keys,
+            'ban': ban, 'artfight': artfight, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
+            'setup': setup, 'uptime': uptime, 'purge': prune}
 
 scan_ignore = [688611557508513854]
 
