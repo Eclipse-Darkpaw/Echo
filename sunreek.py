@@ -604,6 +604,7 @@ async def prune(message):
         ignore_roles = [612554353764597760, 612939346479153172, 655755488100745247, 1078607646199926844,
                         1199610730899578960, 1069839195553669192]
         num_kicked = 0
+        forbiddens = 0
         print('├ GETTING MEMBER LIST')
         print('├ PURGING SERVER')
         print('├┐')
@@ -612,11 +613,18 @@ async def prune(message):
                 continue
             for role in member.roles:
                 if role.id in ignore_roles:
-                    continue
+                    break
                 else:
-                    await member.kick(reason="*T H E   P U R G E*")
-                    print(f'│├ {member.id} PURGED')
-                    num_kicked += 1
+                    try:
+                        await member.kick(reason="*T H E   P U R G E*")
+                        print(f'│├ {member.id} PURGED')
+                        num_kicked += 1
+                        break
+                    except discord.errors.Forbidden:
+                        print(f'│├ {member.id} UNABLE TO PURGE')
+                        forbiddens += 1
+                        break
+                        
         await client.get_user(eclipse_id).send(f'Purge complete. {num_kicked} purged.')
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
