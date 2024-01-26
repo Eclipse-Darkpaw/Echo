@@ -621,8 +621,8 @@ async def prune(message):
                     break
                 else:
                     try:
-                        await member.kick(reason="*T H E   P U R G E*")
-                        print(f'│├ {member.id} PURGED')
+                        #await member.kick(reason="*T H E   P U R G E*")
+                        print(f'│├ <@{member.id}> PURGED')
                         kicked = True
                         num_kicked += 1
                         break
