@@ -616,6 +616,7 @@ async def prune(message):
                 if kicked:
                     break
                 if role.id in ignore_roles:
+                    kicked = True
                     break
                 else:
                     try:
