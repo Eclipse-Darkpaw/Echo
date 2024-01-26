@@ -572,15 +572,19 @@ async def purge(message):
     unverified_role_id = data[str(message.guild.id)]["roles"]['unverified']
     
     if message.author.guild_permissions.manage_roles:
+        print('├ FILTERING MEMBER LIST')
         unverified_ppl = message.guild.get_role(unverified_role_id).members
+        print('├ BEGINNING PURGE\n├┐')
         num_kicked = 0
         for member in unverified_ppl:
             try:
                 await member.kick(reason='Server purge.')
                 num_kicked += 1
+                print(F'│├ {member.id} KICKED')
             except discord.Forbidden:
                 await message.channel.send('unable to kick <@' + str(member.id) + '>')
         await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
+        print(f'├ {num_kicked} MEMBERS KICKED')
     else:
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
