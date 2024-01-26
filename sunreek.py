@@ -608,6 +608,7 @@ async def prune(message):
         print('├ PURGING SERVER')
         print('├┐')
         for member in members:
+            print(member.id)
             for role in member.roles:
                 if role.id in ignore_roles:
                     continue
