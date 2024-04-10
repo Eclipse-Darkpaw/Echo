@@ -257,6 +257,12 @@
                 "issuer_id": 749443249302929479,
                 "issuer_name": "autumnal.equinox",
                 "reason": "Do not post gore in chat"
+            },
+            {
+                "time": 1707888055,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "Do post media depicting suicide"
             }
         ],
         "1127589891010744401": [
@@ -279,6 +285,28 @@
                 "issuer_id": 749443249302929479,
                 "issuer_name": "autumnal.equinox",
                 "reason": "please use chats for what they are meant for"
+            },
+            {
+                "time": 1709751731,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "If a joke about someone doesn't land properly, just apologize for it instead of doubling down"
+            }
+        ],
+        "1005229354432864266": [
+            {
+                "time": 1707323486,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "Do not try to @ everyone"
+            }
+        ],
+        "1199415366527492187": [
+            {
+                "time": 1710948445,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "please be nice to other server members"
             }
         ]
     }
