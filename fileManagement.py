@@ -4,6 +4,7 @@ import os
 resource_file_path = f'{os.environ.get("HOMEDRIVE")}\\{os.environ.get("HOMEPATH")}\\Desktop\\Echo\\resources\\'
 server_settings_path = resource_file_path + 'servers.json'
 server_warns_path = resource_file_path + 'warns.json'
+log_path = '\\logs'
 
 
 def get_leaderboard_path(guild_id):
@@ -52,3 +53,6 @@ def warn_log_path(user_id):
 
 def ref_folder_path():
     return resource_file_path + 'refs'
+
+def scam_log_path():
+    return f'{log_path}\\scam.log'
