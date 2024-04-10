@@ -6,7 +6,7 @@ This code is designed to protect servers from users who attempt to scam an entir
 import discord
 import json
 
-from fileManagement import resource_file_path
+from fileManagement import resource_file_path, scam_log_path
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
 whitelist = ['https://discord.gift/',   # legitimate nitro gifting
@@ -26,7 +26,9 @@ blacklist = ['@everyone', '@here',  # attempting to ping the server
              # intentional misspellings
              'dlsscord', 'dlscord', 'glfts', 'disords', 'stean'
              # random character strings found in scam links
-             'yn2gdpaajhagd3km26rfgvtp', '4uowwt7enombq0b', 'bferdhabecvcw', 'x0kd211hpmjf']
+             'yn2gdpaajhagd3km26rfgvtp', '4uowwt7enombq0b', 'bferdhabecvcw', 'x0kd211hpmjf',
+             # NSFW ADVERTISEMENTS
+             'Best NSFW content']
 
 # these immediately are flagged and removed. These are part of confirmed scams and should be handled immediately.
 banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.fun', 'disordgifts.com',
@@ -34,14 +36,17 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            'ethlegit.com', 't.me/DavidMurray', 'discorgs.icu/login/nitro', 'steancomiunitly.com/glfts',
            'discerdapp.com', 'discorgs.icu'
            # server invites
-           "https://discord.gg/anastasyxxx", "https://discord.gg/t9eKqS8gnG",
+           "https://discord.gg/anastasyxxx", "https://discord.gg/t9eKqS8gnG", "https://discord.gg/sexybabe","https://discord.gg/sexgirls",
            # confirmed scam messages
            '@everyone who will catch this gift?)', 'join the best 18+ server with only free stuff',
+           "Best NSFW content + give away nitro", "Teen Porn and Onlyfan Leaks here",
            # miscellaneous
            'discord free nitro from steam', 'wow join and check it! @everyone',
            "take nitro faster, it's already running out", "yo i accidentally got 2 nitros and dont need the other one",
            # spam links
-           "temu.com"]
+           "temu.com",
+           # ZWSP
+           '​']
 code = 'plsdontban'
 
 counter = 0
@@ -87,7 +92,7 @@ async def scan_message(message):
             flags -= 1
             
     if flags < 2 and bans == 0:
-        return
+        return # skips messages with less than 2 flags and no bans
     else:
         if flags >= 3 or bans > 0:
             await message.delete()
@@ -109,3 +114,9 @@ async def scan_message(message):
         if flags < 3 and bans == 0:
             embed.add_field(name='URL', value=message.jump_url, inline=False)
         await channel.send(embed=embed)
+        with open('w', scam_log_path) as log:
+            # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
+            log.write(f'{message.id},{message.created_at},{message.guild.id},{message.author.id},'
+                      f'{message.channel.id},{flags},{bans},"{message.content}"')
+            
+        
