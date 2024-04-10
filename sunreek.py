@@ -789,6 +789,7 @@ async def on_message(message):
 
     if message.author.bot:
         return
+    await message.author.add_roles(message.guild.fetch_roles(1069839195553669192))
     
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
@@ -846,8 +847,7 @@ async def on_message(message):
                             # This code detects if there is a winner
                             cursed_keys_running = False
                             await message.channel.send(
-                                '<@!' + str(message.guild.get_role(player_role_id).members[0].id) +
-                                '> wins the game!')
+                                f'<@!{message.guild.get_role(player_role_id).members[0].id}> wins the game!')
                         break
     except IndexError:
         pass
