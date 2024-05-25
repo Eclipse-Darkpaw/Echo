@@ -90,7 +90,7 @@ async def scan_message(message):
             if word == '​':
                 words.append('Zero Width Space')
             elif word == 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*':
-                words.append('X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*')
+                words.append('Standard EICARS Test String')
             else:
                 words.append(word)
     
@@ -136,4 +136,4 @@ async def scan_message(message):
         with open(scam_log_path(), 'a') as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
             log.write(f'{message.id},{message.created_at},{message.guild.id},{message.author.id},'
-                      f'{message.channel.id},{flags},{bans},{lst.replace(","," - ")},"{message.content}\n"')
+                      f'{message.channel.id},{flags},{bans},{lst.replace(","," - ")},"{message.content}"\n')
