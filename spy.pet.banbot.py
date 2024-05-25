@@ -1,31 +1,29 @@
 """
-Welcome to Autumna1Equin0x's free to use Ban bot! This bot was coded by Autumna1Equin0x (Autumn). I made the bot to ban spy.pet
-accounts, and used it in my own servers. I give you full permission to modify my code as you see fit, just as long as you give
-me credit for the parts I made.
+Welcome to Autumna1Equin0x's free to use Ban bot! This bot was coded by Autumna1Equin0x (Autumn). I made the bot to ban
+spy.pet accounts, and used it in my own servers. I give you full permission to modify my code as you see fit,
+just as long as you give me credit for the parts I made.
 
-To use this script, add a custom bot to the server you want, and make sure it has ban perms. Paste the token into the token variable.
-Once the bot is added and the token is pasted, type ">run" in the server you want to ban the accounts in. The bot will automatically
-ban any members in the list of accounts.
+To use this script, add a custom bot to the server you want, and make sure it has ban perms. Paste the token into the
+token variable. Once the bot is added and the token is pasted, type ">run" in the server you want to ban the accounts
+in. The bot will automatically ban any members in the list of accounts.
 
 NOTE: I made this at like 2 am so there's gonna be spelling errors
 """
 
 '''
-Import statements are crucial statments that allow the bot to run code you didn't create yourself
+Import statements are crucial statements that allow the bot to run code you didn't create yourself
 - The discord module includes all the code that allows the bot to connect to the Discord API
 - The sys module allows you to run system commands
 - The time module allows you to time how long some task takes
 '''
 import discord
 import sys
-import time
-import os
-from main import eclipse_id
+
 
 # This is the bot prefix. This tells the bot what to look for at the start of a message.
 prefix = '>'
 
-# This is the bot Token. It's like the bots password. DO NOT SHARE THE TOKEN WITH ANYONE.
+# This is the bot Token. It's like the bot's password. DO NOT SHARE THE TOKEN WITH ANYONE.
 token = ''  # paste token between the quotes
 
 # list of accounts to ban
