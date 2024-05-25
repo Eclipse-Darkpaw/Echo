@@ -22,8 +22,7 @@ with open(server_settings_path) as file:
     data = json.load(file)
 
 prefix = '>'
-version_num = '3.4.0'
-
+version_num = '3.5.0'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -101,7 +100,7 @@ async def version(message):
     :param message: Message calling the bot
     :return: None
     """
-    General.version(message, version_num)
+    await General.version(message, version_num)
 
 
 async def end(message):
@@ -113,17 +112,6 @@ async def end(message):
     :return: None
     """
     await General.quit(message, client)
-
-
-async def modmail(message):
-    """
-    Sends a message to the moderators. Alerts the user if an error occurs during the process
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: Unknown
-    :param message: Message that called the bot
-    :return: None
-    """
-    await Mod.modmail(message, client)
 
 
 async def kick(message):
@@ -155,14 +143,12 @@ async def ban(message):
 
 async def help_message(message):
     """
-    Displays the Bot's help message. Square brackets are optional arguments, angle brackets are required.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.8
+    Displays the bots help message. Square brackets are optional arguments, angle brackets are required.
+    Last docstring edit: -Autumn V3.5.0
+    Last method edit: -Autumn V3.5.0
     :param message:
     :return:
     """
-    # TODO: USE A SWITCH HERE!!!
-    # TODO: UPDATE FOR BEANSBOT!!!!!!!!!
     command = message.content[1:].split(' ')
     if len(command) == 1:
         embed = discord.Embed(title="Beansbot Command list",
@@ -170,7 +156,7 @@ async def help_message(message):
                                           'arguments',
                               color=message.author.color)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         embed.set_author(name=client.user.name, icon_url=icon_url)
@@ -190,17 +176,14 @@ async def help_message(message):
         embed.add_field(name=f'`{prefix}ref [member tag/member id]`',
                         value="gets a user's ref sheet",
                         inline=False)
-        embed.add_field(name='`'+prefix+'setref [ref/description]`',
+        embed.add_field(name='`' + prefix + 'setref [ref/description]`',
                         value="Sets a user's ref. Over writes any existing refs",
                         inline=False)
         embed.add_field(name='`' + prefix + 'addref [ref/description]`',
-                        value="Adds a ref to the Users's ref list",
+                        value="Adds a ref to the User's ref list",
                         inline=False)
         embed.add_field(name='`' + prefix + 'verify`',
                         value='Verifies an un verified member.',
-                        inline=False)
-        embed.add_field(name='`' + prefix + 'modmail`',
-                        value='Sends a private message to the moderators.',
                         inline=False)
         embed.add_field(name='`' + prefix + 'huh`',
                         value='???',
@@ -208,9 +191,6 @@ async def help_message(message):
         if message.guild is not None and message.author.guild_permissions.manage_roles:
             embed.add_field(name='`' + prefix + 'quit`',
                             value='quits the bot.\n Mod only.',
-                            inline=False)
-            embed.add_field(name=f'`{prefix}fuck`',
-                            value='Emergency stops the bot in the event of catastrophic failure',
                             inline=False)
             embed.add_field(name=f'`{prefix}warn <User> <reason>`',
                             value='warns a user for the given reason',
@@ -241,23 +221,23 @@ async def help_message(message):
         help_embed = discord.Embed(title="Beansbot Command list",
                                    color=message.author.color)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         help_embed.set_author(name=client.user.name, icon_url=icon_url)
         help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
         await message.channel.send(embed=help_embed)
     elif command[1] == 'warn' and message.guild is not None and message.author.guild_permissions.manage_roles:
-            warn_embed = discord.Embed(title=f'Beansbot `{prefix}warn` Command',
-                                       description='>warn <user> <reason>',
-                                       color=message.author.color)
-            warn_embed.add_field(name='User',
-                            value='The user to be warned, Use their Name, discord ID or tag them.',
-                            inline=False)
-            warn_embed.add_field(name='reason',
-                            value='the reason for the warn that will be logged',
-                            inline=False)
-            await message.reply(embed=warn_embed)
+        warn_embed = discord.Embed(title=f'Beansbot `{prefix}warn` Command',
+                                   description='>warn <user> <reason>',
+                                   color=message.author.color)
+        warn_embed.add_field(name='User',
+                             value='The user to be warned, Use their Name, discord ID or tag them.',
+                             inline=False)
+        warn_embed.add_field(name='reason',
+                             value='the reason for the warn that will be logged',
+                             inline=False)
+        await message.reply(embed=warn_embed)
     elif command[1] == 'listwarns' and message.guild is not None and message.author.guild_permissions.manage_roles:
         list_embed = discord.Embed(title=f'Beansbot `{prefix}listwarns` Command',
                                    description='>listwarns <user>',
@@ -299,22 +279,22 @@ async def help_message(message):
                              inline=False)
         await message.reply(embed=kick_embed)
     elif command[1] == 'ref':
-        ref_embed = discord.Embed(title='`'+prefix+'ref` Command List',
+        ref_embed = discord.Embed(title='`' + prefix + 'ref` Command List',
                                   description='Displays a users primary ref.',
                                   color=0x45FFFF)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         ref_embed.set_author(name=client.user.name,
                              icon_url=icon_url)
-
+        
         ref_embed.add_field(name='No argument',
                             value='Displays your ref',
                             inline=False)
         ref_embed.add_field(name='`User ID/Tagged User/Nickname`',
                             value='Searches for a user\'s profile. Tagging the desired user, or using their member ID '
-                                  'yeilds the most accurate results.',
+                                  'yields the most accurate results.',
                             inline=False)
         ref_embed.add_field(name='`set <string/ref>`',
                             value='Changes your ref to say what you want. Only emotes from this server can be used.',
@@ -324,9 +304,9 @@ async def help_message(message):
                                   "comes from, unless you add `all` to the end of the command or run the command in "
                                   "DMs",
                             inline=False)
-
-        await message.channel.send(embed=ref_embed)
         
+        await message.channel.send(embed=ref_embed)
+
 
 async def huh(message):
     """
@@ -378,9 +358,9 @@ async def on_ready():
 
 
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
-            'setcode': setcode, 'modmail': modmail, 'quit': end, 'fuck': sys.exit, 'huh': huh, 'kick': kick,
-            'ban': ban, 'setup': setup, 'uptime': uptime, 'warn': Mod.warn, 'listwarns': Mod.show_warns,
-            'removewarn': Mod.remove_warn, 'ref': nsfw_ref, 'setref': nsfw_set_ref, 'addref': nsfw_add_ref}
+            'setcode': setcode, 'quit': end, 'huh': huh, 'kick': kick, 'ban': ban, 'setup': setup, 'uptime': uptime,
+            'warn': Mod.warn, 'listwarns': Mod.show_warns, 'removewarn': Mod.remove_warn, 'ref': nsfw_ref,
+            'setref': nsfw_set_ref, 'addref': nsfw_add_ref}
 
 scan_ignore = [1054172309147095130]
 
@@ -435,9 +415,10 @@ async def on_member_update(before, after):
         welcome = [f"<@{after.id}> is our newest bean lover",
                    f"<@{after.id}> has stumbled into the bean sanctuary",
                    f"<@{after.id}> has arrived looking for beans"]
-
-        await before.guild.get_channel(1054137434725691393).send(content=f"<@&1122978815744950352> {random.choice(welcome)}. Please "
-                                                                         f"remember to stop by <#1054672645527969802> for your roles.")
+        
+        await before.guild.get_channel(1054137434725691393).send(
+            content=f"<@&1122978815744950352> {random.choice(welcome)}. Please "
+                    f"remember to stop by <#1054672645527969802> for your roles.")
 
 
 def run_pawbot():

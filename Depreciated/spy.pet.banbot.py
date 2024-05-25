@@ -7,7 +7,7 @@ To use this script, add a custom bot to the server you want, and make sure it ha
 token variable. Once the bot is added and the token is pasted, type ">run" in the server you want to ban the accounts
 in. The bot will automatically ban any members in the list of accounts.
 
-NOTE: I made this at like 2 am so there's gonna be spelling errors
+NOTE: I made this at like 2 am so there's going to be spelling errors
 """
 
 '''
@@ -309,7 +309,7 @@ intents.members = True
 client = discord.Client(intents=intents)
 
 
-class PsuedoMember:
+class PseudoMember:
     """
     Fake member class for compatibility with discords API
     """
@@ -328,7 +328,7 @@ async def run(message):
     print('├┐')
     for target in accounts:
         try:
-            await message.guild.ban(PsuedoMember(target),
+            await message.guild.ban(PseudoMember(target),
                                     reason='spy.pet account https://gist.github.com/Dziurwa14/05db50c66e4dcc67d129838e1b9d739a',
                                     delete_message_seconds=0)
             print(f'│├ <@{target}> BANNED')

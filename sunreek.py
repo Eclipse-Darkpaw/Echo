@@ -14,7 +14,6 @@ import sys
 import time
 
 from fileManagement import resource_file_path
-#from profile import display_profile, set_bio
 from modules.refManagement import ref, set_ref, add_ref, oc, random_ref
 # Keep imports in alphabetical order
 
@@ -24,7 +23,7 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.5.1'
+version_num = '3.5.2'
 
 eclipse_id = main.eclipse_id
 
@@ -102,11 +101,11 @@ async def version(message):
     """
     Displays the version of the bot being used
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.3.0
+    Last method edit: -Autumn V3.5.2
     :param message: Message calling the bot
     :return: None
     """
-    General.version(message, version_num)
+    await General.version(message, version_num)
 
 
 async def end(message):
@@ -162,11 +161,10 @@ async def help_message(message):
     """
     Displays the Bot's help message. Square brackets are optional arguments, angle brackets are required.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.8
+    Last method edit: -Autumn V3.5.2
     :param message:
     :return:
     """
-    # TODO: USE A SWITCH HERE!!!
     command = message.content[1:].split(' ')
     if len(command) == 1:
         embed = discord.Embed(title="SunReek Command list",
@@ -174,7 +172,7 @@ async def help_message(message):
                                           'arguments',
                               color=0x45FFFF)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         embed.set_author(name=client.user.name, icon_url=icon_url)
@@ -224,44 +222,21 @@ async def help_message(message):
                         inline=False)
         embed.add_field(name='`' + prefix + 'random_ref`',
                         value='Same as `' + prefix + 'ref random`',
-                        inline='False')
+                        inline=False)
         await message.channel.send(embed=embed)
     elif command[1] == 'help':
         help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         help_embed.set_author(name=client.user.name, icon_url=icon_url)
         help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
         await message.channel.send(embed=help_embed)
-    elif command[1] == 'profile':
-        profile_embed = discord.Embed(title='Profile Command list',
-                                      description='Displays a users profile',
-                                      color=0x45FFFF)
-
-        try:
-            icon_url = client.user.guild_avatar.url
-        except AttributeError:
-            icon_url = client.user.avatar.url
-        profile_embed.set_author(name=client.user.name, icon_url=icon_url)
-
-        profile_embed.add_field(name='No argument',
-                                value='Displays your profile',
-                                inline=False)
-        profile_embed.add_field(name='`User ID/Tagged User/Nickname`',
-                                value='Searches for a user\'s profile. Tagging the desired user, or using their member '
-                                      'ID yields the most accurate results.',
-                                inline=False)
-        profile_embed.add_field(name='`edit <string>`',
-                                value='Changes your profile to say what you want. Only emotes from this server can be '
-                                      'used.',
-                                inline=False)
-        await message.channel.send(embed=profile_embed)
     elif command[1] == 'crsdky':
         crsdky_embed = discord.Embed(title="`}crsdky Command list", color=0x45FFFF)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         crsdky_embed.set_author(name=client.user.name, icon_url=icon_url)
@@ -270,7 +245,7 @@ async def help_message(message):
                                value='Used by going `}crsdky [argument]`, ',
                                inline=False)
         crsdky_embed.add_field(name='`rules` or no argument',
-                               value='Give an overview of the game Cursd Ky',
+                               value='Give an overview of the game Crsd Ky',
                                inline=False)
         crsdky_embed.add_field(name='`list`',
                                value='lists the current cursed keys',
@@ -297,7 +272,7 @@ async def help_message(message):
                                        value='Starts the round, and prevents new players from joining',
                                        inline=False)
             mod_crsdky_embed.add_field(name='`stop`',
-                                       value='Pauses the round until the `start` command is recieved',
+                                       value='Pauses the round until the `start` command is received',
                                        inline=False)
             mod_crsdky_embed.add_field(name='`resetPlayer`',
                                        value='Removes all players from the game',
@@ -308,7 +283,7 @@ async def help_message(message):
                                   description='Displays a users primary ref.',
                                   color=0x45FFFF)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         ref_embed.set_author(name=client.user.name, icon_url=icon_url)
@@ -328,7 +303,7 @@ async def help_message(message):
                               description='Manages a users OC\'s ref.',
                               color=0x45FFFF)
         try:
-            icon_url = client.user.guild_avatar.url
+            icon_url = client.user.display_avatar.url
         except AttributeError:
             icon_url = client.user.avatar.url
         embed.set_author(name=client.user.name, icon_url=icon_url)
@@ -376,18 +351,17 @@ async def cursed_keys(message):
     """
     Handles all crsdky game functions and methods.
     Last docstring edit: -Autumn V1.14.5
-    Last method edit: -Autumn V1.14.8
+    Last method edit: -Autumn V3.5.2
     :param message:
     :return:
     """
-    # TODO: USE A SWITCH HERE DUMBASS!!!
     global cursed_keys_running
     global crsd_keys
 
     command = message.content[1:].split(' ', 2)
     if len(command) == 1 or command[1] == 'help':
-        overview = discord.Embed(title='Cursd Ky Overview',
-                                 description='Welcome, to a brutal game called "CURSD KY" (Idea by Reek and Isybel)\n\n'
+        overview = discord.Embed(title='Crsd Ky Overview',
+                                 description='Welcome, to a brutal game called "CRSD KY" (Idea by Reek and Isybel)\n\n'
                                              ' The main of the game is to avoid a certain key/letter on your keyboard '
                                              '(mostly vowels), But still try to make sure everyone understands what you'
                                              ' are trying to say. The last survivor standing wins and will be given a '
@@ -469,11 +443,10 @@ async def blessed_keys(message):
     """
         Handles all Blessed Key game functions and methods.
         Last docstring edit: -Autumn V3.5.0
-        Last method edit: -Autumn V3.5.0
+        Last method edit: -Autumn V3.5.2
         :param message:
         :return:
     """
-    # TODO: USE A SWITCH HERE DUMBASS!!!
     global cursed_keys_running
     global blessed_keys_running
     global blsd_keys
@@ -564,11 +537,11 @@ async def purge(message):
     """
     method removes all members with the unverified role from Rikoland
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.4
+    Last method edit: -Autumn V3.5.2
     :param message: Message that called the bot
     :return: None
     """
-    await client.get_user(eclipse_id).send('`REMOVING UNVERIFED`')
+    await client.get_user(eclipse_id).send('`REMOVING UNVERIFIED`')
     unverified_role_id = data[str(message.guild.id)]["roles"]['unverified']
     
     if message.author.guild_permissions.manage_roles:
@@ -592,8 +565,9 @@ async def purge(message):
 async def prune(message):
     """
     Removes inactive members from the server
+    Does this do its job? V3.5.2
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.4
+    Last method edit: -Autumn V3.5.2
     :param message:
     :return: NoneType
     """
@@ -604,7 +578,7 @@ async def prune(message):
         ignore_roles = [612554353764597760, 612939346479153172, 655755488100745247, 1078607646199926844,
                         1199610730899578960, 1069839195553669192]
         num_kicked = 0
-        forbiddens = 0
+        forbidden = 0
         print('├ GETTING MEMBER LIST')
         print('├ PURGING SERVER')
         print('├┐')
@@ -621,7 +595,7 @@ async def prune(message):
                     break
                 else:
                     try:
-                        #await member.kick(reason="*T H E   P U R G E*")
+                        # await member.kick(reason="*T H E   P U R G E*")
                         print(f'│├ <@{member.id}> PURGED')
                         kicked = True
                         num_kicked += 1
@@ -629,61 +603,13 @@ async def prune(message):
                     except discord.errors.Forbidden:
                         print(f'│├ {member.id} UNABLE TO PURGE')
                         kicked = True
-                        forbiddens += 1
+                        forbidden += 1
                         break
                         
         await client.get_user(eclipse_id).send(f'Purge complete. {num_kicked} purged.')
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
-        
-        
-async def join_pos(message):
-    """
-    Displays the number a user joined the server in.
-    Last docstring edit: -Autumn V1.14.5
-    Last function edit: -Autumn V1.16.3
-    :param message: The message that called the command
-    :return: NoneType
-    """
-    command = message.content.split(' ')
-    if len(command) == 1:
-        target = message.author.id
-    else:
-        try:
-            target = int(command[1])
-        except ValueError:
-            await message.reply('Value Error: Please make sure the ID is a number')
-            return -1
-
-    pos = get_join_rank(target, message.guild)
-    if pos == -1:
-        await message.reply('Member <@%d> is not in the guild' % (target,))
-    else:
-        name = message.guild.get_member(target).name
-        await message.reply('Member %s joined in position %d' % (name, pos))
-
-
-def get_join_rank(target_id, target_guild):  # Call it with the ID of the user and the guild
-    """
-    Returns the rank at which a user joined the server.
-    :param target_id:
-    :param target_guild:
-    :return:
-    """
-    members = target_guild.members
-
-    def sortby(a):
-        return a.joined_at.timestamp()
-
-    members.sort(key=sortby)
-
-    i = 0
-    for member in members:
-        i += 1
-        if member.id == target_id:
-            return i
-    return -1
 
 
 def get_member_position(position, target_guild):
@@ -709,6 +635,7 @@ def get_member_position(position, target_guild):
 async def member_num(message):
     """
     I have no idea what this is. I need to make more detailed analysis later
+    Does this even work? -Autumn V3.5.2
     :param message:
     :return:
     """
@@ -721,7 +648,7 @@ async def member_num(message):
         try:
             position = int(command[1])
         except ValueError:
-            await message.reply('Value Error: Please make sure the positon is a number')
+            await message.reply('Value Error: Please make sure the position is a number')
             return
 
     pos = get_member_position(position, message.guild)
@@ -767,7 +694,7 @@ switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version
             'setcode': setcode, 'modmail': modmail, 'quit': end, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys, 'cursedkey': cursed_keys,
             'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'oc': oc,
-            'purge_unverified': purge, 'join_pos': join_pos, 'huh': huh, 'kick': kick, 'blessedkey': blsd_keys,
+            'purge_unverified': purge, 'huh': huh, 'kick': kick, 'blessedkey': blsd_keys,
             'ban': ban, 'artfight': artfight, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
             'setup': setup, 'uptime': uptime, 'purge': prune}
 
@@ -789,7 +716,7 @@ async def on_message(message):
 
     if message.author.bot:
         return
-    #await message.author.add_roles(message.guild.fetch_roles(1069839195553669192))
+    # await message.author.add_roles(message.guild.fetch_roles(1069839195553669192))
     
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
@@ -830,8 +757,8 @@ async def on_message(message):
                         if len(message.guild.get_role(player_role_id).members) == 1:
                             # This code detects if there is a winner
                             cursed_keys_running = False
-                            await message.channel.send('<@!' + str(message.guild.get_role(player_role_id).members[0].id) +
-                                                       '> wins the game!')
+                            await message.channel.send(f'<@!{message.guild.get_role(player_role_id).members[0].id}> '
+                                                       f'wins the game!')
                         break
         if blessed_keys_running and message.guild is not None:
             # TODO: Make this a separate function.

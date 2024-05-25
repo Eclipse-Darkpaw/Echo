@@ -4,14 +4,12 @@ import discord
 import modules.AntiScam as AntiScam
 import modules.General as General
 import sys
-from main import read_line
+from main import read_line, eclipse_id
 from fileManagement import resource_file_path
 
-version_num = '3.3.0'
+version_num = '3.3.1'
 
 prefix = '>'
-
-eclipse_id = 749443249302929479
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -111,10 +109,10 @@ async def version(message):
 
 async def quit(message):
     """
-    Quits the bot, and closes the program. Replys and updates the game status to alert users to it quitting.
-    :param message: message that called the quit command
+    Quits the bot, and closes the program. Replies and updates the game status to alert users to it quitting.
     Last docstring edit: -Autumn V1.2.2
     Last method edit: Unknown
+    :param message: message that called the quit command
     :return: N/A. program closes
     """
     await General.quit(message, client)

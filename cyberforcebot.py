@@ -1,9 +1,9 @@
-'''
-Import statements are crucial statments that allow the bot to run code you didn't create yourself
+"""
+Import statements are crucial statements that allow the bot to run code you didn't create yourself
 - The discord module includes all the code that allows the bot to connect to the Discord API
 - The sys module allows you to run system commands
 - The time module allows you to time how long some task takes
-'''
+"""
 import discord
 import sys
 import time
@@ -11,12 +11,12 @@ import os
 
 # The version number isn't a necessary feature, but it is useful to confirm the bot is running the
 # most recent version of the code
-version_num = '1.0.0'
+version_num = '1.0.1'
 
 # This is the bot prefix. This tells the bot what to look for at the start of a message.
 prefix = '>'
 
-# This is the bot Token. It's like the bots password. DO NOT SHARE THE TOKEN WITH ANYONE.          
+# This is the bot Token. It's like the bot's password. DO NOT SHARE THE TOKEN WITH ANYONE.
 token = os.getenv('CYBERFORCE_BOT_TOKEN')
 
 # This sets the bot's Activity status. It allows the bot to go into more detail about its current
@@ -35,8 +35,8 @@ client = discord.Client(intents=intents)
 async def ping(message):
     """
     Returns how long it takes the bot to edit a message, as well as demonstrates the bot can send
-    and recieve messages
-    Last docstring edit: -Autumn V1.0.0
+    and receive messages
+    Last docstring edit: -Autumn V1.0.1
     Last method edit: -Autumn V1.0.0
     :param message: message that called the quit command
     :return: None
@@ -50,8 +50,8 @@ async def ping(message):
 
 async def version(message):
     """
-    Returns the current version of the bot. Useful for testing the bot can send and recieve messages
-    Last docstring edit: -Autumn V1.0.0
+    Returns the current version of the bot. Useful for testing the bot can send and receive messages
+    Last docstring edit: -Autumn V1.0.1
     Last method edit: -Autumn V1.0.0
     :param message: message that called the command
     :return: None
@@ -61,16 +61,16 @@ async def version(message):
 
 async def end(message):
     """
-    Quits the bot, and closes the program. Replys and updates the game status to alert users to it
+    Quits the bot, and closes the program. Replies and updates the game status to alert users to it
     quitting.
-    :param message: message that called the quit command
-    Last docstring edit: -Autumn V1.0.0
+    Last docstring edit: -Autumn V1.0.1
     Last method edit: -Autumn V1.0.0
+    :param message: message that called the quit command
     :return: None
     """
     global game
     # The global key word tells python to look for the variable outside the function named game
-    if message.author.guild_permissions.administrator: #makes sure the bot is being 
+    if message.author.guild_permissions.administrator:  # makes sure the bot is being
         await message.channel.send('Goodbye :wave:')
         await client.change_presence(activity=discord.Game('Going offline'))
         sys.exit()
@@ -92,6 +92,7 @@ async def hug(message):
     await message.channel.send('You give Gemini a hug. You can smell a faint citrus scent when you do.')
 # ADD NEW METHODS HERE!
 
+
 @client.event
 async def on_ready():
     """
@@ -105,13 +106,15 @@ async def on_ready():
     await client.change_presence(activity=game)
 
 
-'''The switcher allows you to call a command with out using a large series of if/else statments.
-Its much easier to work with when dealing with Strings, like in discord bots, and allows the
-functions to be called in a much more efficient way. However, this requires each function to have
-the same parameters. If you want each function to have different parameters, you need to handle it
-in the function.'''
+'''
+The switcher allows you to call a command with out using a large series of if/else statements. Its much easier to
+work with when dealing with Strings, like in discord bots, and allows the functions to be called in a much more
+efficient way. However, this requires each function to have the same parameters. If you want each function to have
+different parameters, you need to handle it in the function.
+'''
 switcher = {'ping': ping, 'version': version, 'quit': end, 'microwave': microwave, 'hug': hug}
-mamaswitch = {'mama': mama}
+mama_switch = {'mama': mama}
+
 
 @client.event
 async def on_message(message):
@@ -131,18 +134,14 @@ async def on_message(message):
             await method(message)
         except KeyError:
             pass
-        if command[0] == 'print':
-            print(message.content)
     if message.content.startswith(';'):
         command = message.content[1:].lower().split(' ', 1)
         try:
-            method = mamaswitch[command[0]]
+            method = mama_switch[command[0]]
             await method(message)
         except KeyError:
             pass
         
-    
-
 
 '''This is what begins the entire bot, and tells the bot to run
 THIS LINE MUST BE AT THE END OF THE SCRIPT.
