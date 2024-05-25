@@ -308,6 +308,14 @@
                 "issuer_name": "autumnal.equinox",
                 "reason": "please be nice to other server members"
             }
+        ],
+        "960951614531858522": [
+            {
+                "time": 1713592417,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "do not be rude to other server members"
+            }
         ]
     }
 }
