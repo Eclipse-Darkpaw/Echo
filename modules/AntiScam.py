@@ -85,7 +85,10 @@ async def scan_message(message):
         index = content.find(word)
         if index != -1:
             bans += 1
-            words.append(word)
+            if word == '​':
+                words.append('Zero Width Space')
+            else:
+                words.append(word)
     
     # scan the plain blacklist next, count the number of blacklisted words
     for word in blacklist:
@@ -115,15 +118,16 @@ async def scan_message(message):
         embed.add_field(name='message', value=content, inline=False)
         embed.add_field(name='Flags', value=str(flags))
         embed.add_field(name='Banned Strings', value=str(bans))
-        embed.add_field(name='Words Flagged', value='words', inline=False)
+        embed.add_field(name='Words Flagged', value=words, inline=False)
         embed.add_field(name='Sender ID', value=message.author.id)
         embed.add_field(name='Channel ID', value=message.channel.id)
         embed.add_field(name='Message ID', value=message.id)
-        
+        lst = str(words)
+        lst.replace('​','Zero Width Space Character')
         if flags < 3 and bans == 0:
             embed.add_field(name='URL', value=message.jump_url, inline=False)
         await channel.send(embed=embed)
-        with open('w', scam_log_path()) as log:
+        with open(scam_log_path(), 'a') as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
             log.write(f'{message.id},{message.created_at},{message.guild.id},{message.author.id},'
-                      f'{message.channel.id},{flags},{bans},{str(words).replace(","," - ")},"{message.content}"')
+                      f'{message.channel.id},{flags},{bans},{lst.replace(","," - ")},"{message.content}"')
