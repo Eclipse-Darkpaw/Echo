@@ -123,7 +123,7 @@ async def scan_message(message):
         if flags < 3 and bans == 0:
             embed.add_field(name='URL', value=message.jump_url, inline=False)
         await channel.send(embed=embed)
-        with open('w', bytes(scam_log_path)) as log:
+        with open('w', scam_log_path()) as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
             log.write(f'{message.id},{message.created_at},{message.guild.id},{message.author.id},'
-                      f'{message.channel.id},{flags},{bans},"{message.content}"')
+                      f'{message.channel.id},{flags},{bans},{str(words).replace(","," - ")},"{message.content}"')
