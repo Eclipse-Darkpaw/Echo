@@ -10,8 +10,8 @@ import main
 import modules.General as General
 
 # custom imports from other files
-from profile import display_profile, set_bio, edit_field, add_field, delete_field
-from modules.refManagement import ref, set_ref, add_ref, oc, random_ref
+
+from modules.refManagement import ref, set_ref, add_ref, random_ref
 from main import eclipse_id
 
 prefix = '>'
@@ -231,36 +231,6 @@ async def list_servers(message):
     await message.reply(servers)
 
 
-async def profile(message):
-    """
-    Displays a users profile
-    Last docstring edit: -Autumn | V2.1.0
-    Last function edit: -Autumn | Unknown Version
-    :param message: message calling the bot
-    :return: None
-    """
-    command = message.content.split(' ', 2)
-    if len(command) == 1:
-        await display_profile(message, client)
-    elif command[1] == 'edit':
-        try:
-            set_bio(message.author, command[2])
-            await message.channel.send('Bio set')
-        except KeyError:
-            await message.channel.send('Error. Bio not set, please use ASCII characters and custom emotes.')
-    elif command[1] == 'field':
-        command = message.content.split(' ', 3)
-        if command[2] == 'add':
-            await add_field(message, client)
-        elif command[2] == 'edit':
-            await edit_field(message)
-        elif command[2] == 'delete':
-            await delete_field(message)
-        else:
-            await message.channel.send()
-    else:
-        await display_profile(message, client)
-
 
 @client.event
 async def on_ready():
@@ -278,8 +248,8 @@ async def on_ready():
     await client.get_user(eclipse_id).send('Running, and active')
 
 
-switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'quit': end, 'profile': profile, 'ref': ref,
-            'setref': set_ref, 'addref': add_ref, 'oc': oc, 'random_ref': random_ref,
+switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'quit': end, 'ref': ref,
+            'setref': set_ref, 'addref': add_ref, 'random_ref': random_ref,
             'randomref': random_ref, 'rr': random_ref, 'num_servers': num_servers, 'list_servers': list_servers}
 
 
@@ -321,7 +291,8 @@ def run_refbot():
     else:
         inp = int(input('Input a bot num\n1. refbot\n2. testbot\n')) - 1
         
-    client.run(os.environ.get(tokens[inp]))
+    client.run()
+    
 
 if __name__ == '__main__':
     run_refbot()
