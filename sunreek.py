@@ -789,7 +789,7 @@ async def on_message(message):
 
     if message.author.bot:
         return
-    await message.author.add_roles(message.guild.fetch_roles(1069839195553669192))
+    #await message.author.add_roles(message.guild.fetch_roles(1069839195553669192))
     
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
