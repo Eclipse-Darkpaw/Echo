@@ -51,7 +51,9 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            # spam links
            "temu.com",
            # ZWSP
-           '​']
+           '​',
+           # Standard EICARS test string
+           'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*']
 code = 'plsdontban'
 
 counter = 0
@@ -108,6 +110,8 @@ async def scan_message(message):
     else:
         if flags >= 3 or bans > 0:
             await message.delete()
+            await message.channel.send('Your message has been deleted. If this was an error, please send the code '
+                                       '`plsdontban` somewhere in your message to get around our filters.')
         
         content = message.content.replace('@', '@ ')
         
@@ -130,4 +134,4 @@ async def scan_message(message):
         with open(scam_log_path(), 'a') as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
             log.write(f'{message.id},{message.created_at},{message.guild.id},{message.author.id},'
-                      f'{message.channel.id},{flags},{bans},{lst.replace(","," - ")},"{message.content}"')
+                      f'{message.channel.id},{flags},{bans},{lst.replace(","," - ")},"{message.content}\n"')
