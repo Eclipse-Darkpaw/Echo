@@ -447,7 +447,9 @@ def run_pawbot():
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
         
-        client.run(os.environ.get('TESTBOT_TOKEN'))  # must say client.run(os.environ.get('TESTBOT_TOKEN'))
+        client.run(os.environ.get('TESTBOT_TOKEN'))  # must say client.run(os.environ.get('TESTBOT_TOKEN')
+    elif inp == 3:
+        client.run(os.environ.get('PAWBOT_TEST'))
 
 
 if __name__ == '__main__':
