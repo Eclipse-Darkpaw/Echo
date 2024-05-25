@@ -8,7 +8,7 @@ import json
 
 from fileManagement import resource_file_path, scam_log_path
 
-version = "1.16.0"
+version = "1.17.0"
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
 whitelist = ['https://discord.gift/',  # legitimate nitro gifting
@@ -75,7 +75,7 @@ async def scan_message(message):
                 await message.channel.send("Anti-scam scanning is currently offline.")
             counter += 1
             return
-    
+    words = []
     flags = 0
     bans = 0
     content = message.content.lower()
@@ -85,12 +85,14 @@ async def scan_message(message):
         index = content.find(word)
         if index != -1:
             bans += 1
+            words.append(word)
     
     # scan the plain blacklist next, count the number of blacklisted words
     for word in blacklist:
         index = content.find(word)
         if index != -1:
             flags += 1
+            words.append(word)
     
     # if a word in the white list appears, remove a flag.
     for word in whitelist:
@@ -113,7 +115,7 @@ async def scan_message(message):
         embed.add_field(name='message', value=content, inline=False)
         embed.add_field(name='Flags', value=str(flags))
         embed.add_field(name='Banned Strings', value=str(bans))
-        embed.add_field(name='', value='', inline=False)
+        embed.add_field(name='Words Flagged', value='words', inline=False)
         embed.add_field(name='Sender ID', value=message.author.id)
         embed.add_field(name='Channel ID', value=message.channel.id)
         embed.add_field(name='Message ID', value=message.id)
