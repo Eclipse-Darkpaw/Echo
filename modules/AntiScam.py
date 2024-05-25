@@ -7,27 +7,29 @@ import discord
 import json
 
 from fileManagement import resource_file_path, scam_log_path
-version = "1.15.1"
+
+version = "1.16.0"
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
-whitelist = ['https://discord.gift/',   # legitimate nitro gifting
+whitelist = ['https://discord.gift/',  # legitimate nitro gifting
              # common domains that get flagged falsely
              'https://tenor.com', 'https://store.steampowered.com/app/', 'https://twitter.com',
              # not common, but aren't scams
              'https://www.nzwe.com/', 'https://tinyurl.com/3vznrzkr', 'https://youtu.be/dQw4w9WgXcQ']
 
-# these are potential scams. Its probably a false positive if only 2 are hit, but a true positive if 3 are hit.
+# these are potential scams. It's probably a false positive if only 2 are hit, but a true positive if 3 are hit.
 blacklist = ['@everyone', '@here',  # attempting to ping the server
              'https://', 'gift', 'nitro', 'steam', 'free', 'https://discord.gg'
              # miscellaneous messages included in real scam messages
-             'who is first? :)', "who's first? :)",'teen porn',
+                                                           'who is first? :)', "who's first? :)", 'teen porn',
              # crypto related terms
              'airdrop', 'crypto', 'nft', 'dm me via', ' btc', 'btc ', '/btc/', '\\btc\\', ' eth', 'eth ', '/eth/',
              '\\eth\\', 'bitcoin', 'etherium',
              # intentional misspellings
              'dlsscord', 'dlscord', 'glfts', 'disords', 'stean'
              # random character strings found in scam links
-             'yn2gdpaajhagd3km26rfgvtp', '4uowwt7enombq0b', 'bferdhabecvcw', 'x0kd211hpmjf',
+                                                        'yn2gdpaajhagd3km26rfgvtp', '4uowwt7enombq0b', 'bferdhabecvcw',
+             'x0kd211hpmjf',
              # NSFW ADVERTISEMENTS
              'Best nsfw content', 'onlyfans leaks']
 
@@ -37,7 +39,8 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            'ethlegit.com', 't.me/davidmurray', 'discorgs.icu/login/nitro', 'steancomiunitly.com/glfts',
            'discerdapp.com', 'discorgs.icu'
            # server invites
-           "https://discord.gg/anastasyxxx", "https://discord.gg/t9eKqS8gnG", "https://discord.gg/sexybabe","https://discord.gg/sexgirls",
+                             "https://discord.gg/anastasyxxx", "https://discord.gg/t9eKqS8gnG",
+           "https://discord.gg/sexybabe", "https://discord.gg/sexgirls",
            "https://discord.gg/xxxpornx",
            # confirmed scam messages and fragments
            '@everyone who will catch this gift?)', 'join the best 18+ server with only free stuff',
@@ -52,6 +55,8 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
 code = 'plsdontban'
 
 counter = 0
+
+
 async def scan_message(message):
     global counter
     """
@@ -70,7 +75,7 @@ async def scan_message(message):
                 await message.channel.send("Anti-scam scanning is currently offline.")
             counter += 1
             return
-
+    
     flags = 0
     bans = 0
     content = message.content.lower()
@@ -92,17 +97,17 @@ async def scan_message(message):
         index = content.find(word)
         if index != -1:
             flags -= 1
-            
+    
     if flags < 2 and bans == 0:
-        return # skips messages with less than 2 flags and no bans
+        return  # skips messages with less than 2 flags and no bans
     else:
         if flags >= 3 or bans > 0:
             await message.delete()
-
+        
         content = message.content.replace('@', '@ ')
-
+        
         channel = message.guild.get_channel(log_channel)
-
+        
         embed = discord.Embed(title='Possible Scam in #' + str(message.channel.name), color=0xFF0000)
         embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar.url)
         embed.add_field(name='message', value=content, inline=False)
@@ -112,13 +117,11 @@ async def scan_message(message):
         embed.add_field(name='Sender ID', value=message.author.id)
         embed.add_field(name='Channel ID', value=message.channel.id)
         embed.add_field(name='Message ID', value=message.id)
-
+        
         if flags < 3 and bans == 0:
             embed.add_field(name='URL', value=message.jump_url, inline=False)
         await channel.send(embed=embed)
-        with open('w', scam_log_path) as log:
+        with open('w', bytes(scam_log_path)) as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
             log.write(f'{message.id},{message.created_at},{message.guild.id},{message.author.id},'
                       f'{message.channel.id},{flags},{bans},"{message.content}"')
-            
-        

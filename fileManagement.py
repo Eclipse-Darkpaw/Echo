@@ -54,5 +54,6 @@ def warn_log_path(user_id):
 def ref_folder_path():
     return resource_file_path + 'refs'
 
+
 def scam_log_path():
     return f'{log_path}\\scam.log'

@@ -22,6 +22,10 @@ https://www.pivotaltracker.com/n/projects/2462509
 
 ## Change Log
 
+### 3.5.2
+* removed `fuck` command from bots
+* removed profiles from `global_files.json`
+* grammar formatting changes
 ### 3.5.0
 * Restructured files and moved the heirarchy
 
