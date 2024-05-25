@@ -53,7 +53,7 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            # ZWSP
            '​',
            # Standard EICARS test string
-           'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*']
+           'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'.lower()]
 code = 'plsdontban'
 
 counter = 0
@@ -65,7 +65,7 @@ async def scan_message(message):
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
     does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.14.5
+    Last method edit: -Autumn V3.5.2
     :param message: the message sent
     :return: None
     """
@@ -89,6 +89,8 @@ async def scan_message(message):
             bans += 1
             if word == '​':
                 words.append('Zero Width Space')
+            elif word == 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*':
+                words.append('X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*')
             else:
                 words.append(word)
     
