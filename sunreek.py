@@ -14,7 +14,7 @@ import sys
 import time
 
 from fileManagement import resource_file_path
-from modules.refManagement import ref, set_ref, add_ref, oc, random_ref
+from modules.refManagement import ref, set_ref, add_ref, random_ref
 # Keep imports in alphabetical order
 
 start_time = time.time()
@@ -183,9 +183,6 @@ async def help_message(message):
         embed.add_field(name='`'+prefix+'verify`',
                         value='Verifies an un verified member.',
                         inline=False)
-        embed.add_field(name='`'+prefix+'modmail`',
-                        value='Sends a private message to the moderators.',
-                        inline=False)
         embed.add_field(name='`'+prefix+'version_num`',
                         value='What version the bot is currently on',
                         inline=False)
@@ -204,9 +201,6 @@ async def help_message(message):
         embed.add_field(name='`'+prefix+'crsdky [arguments]`',
                         value='commands for the CursedKeys game. will show the list of cursed keys if argument is left '
                               'off',
-                        inline=False)
-        embed.add_field(name='`'+prefix+'OC`',
-                        value="Manages a users OCs",
                         inline=False)
         embed.add_field(name='`'+prefix+'quit`',
                         value='quits the bot.\n Mod only.',
@@ -298,28 +292,6 @@ async def help_message(message):
                             value='Changes your ref to say what you want. Only emotes from this server can be used.',
                             inline=False)
         await message.channel.send(embed=ref_embed)
-    elif command[1] == 'OC':
-        embed = discord.Embed(title='`' + prefix + 'OC` Command List',
-                              description='Manages a users OC\'s ref.',
-                              color=0x45FFFF)
-        try:
-            icon_url = client.user.display_avatar.url
-        except AttributeError:
-            icon_url = client.user.avatar.url
-        embed.set_author(name=client.user.name, icon_url=icon_url)
-        embed.add_field(name='add [OC name] [description/attachment]',
-                        value='Adds a new OC',
-                        inline=False)
-        embed.add_field(name='edit [OC name] [description/attachment]',
-                        value='Edits an existing OC',
-                        inline=False)
-        embed.add_field(name='show [OC owner ID/tagged] [OC name]',
-                        value='Shows an OC',
-                        inline=False)
-        embed.add_field(name='tree [OC owner ID/tagged]',
-                        value='Shows a user\'s OCs',
-                        inline=False)
-        await message.channel.send(embed=embed)
     elif command[1] == 'artfight':
         artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List',
                                        description='This is the commands for the annual Art Fight',
@@ -693,10 +665,10 @@ async def on_ready():
 switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
             'setcode': setcode, 'modmail': modmail, 'quit': end, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
             'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys, 'cursedkey': cursed_keys,
-            'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'oc': oc,
-            'purge_unverified': purge, 'huh': huh, 'kick': kick, 'blessedkey': blsd_keys,
-            'ban': ban, 'artfight': artfight, 'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref,
-            'setup': setup, 'uptime': uptime, 'purge': prune}
+            'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'purge_unverified': purge,
+            'huh': huh, 'kick': kick, 'blessedkey': blsd_keys, 'ban': ban, 'artfight': artfight,
+            'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup, 'uptime': uptime,
+            'purge': prune}
 
 scan_ignore = [688611557508513854]
 
