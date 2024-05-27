@@ -1,55 +1,55 @@
 import os
 
 # TODO: change to actual file path for launch
-bot_path = f'{os.environ.get("HOMEDRIVE")}\\{os.environ.get("HOMEPATH")}\\Desktop\\Echo\\'
-resource_file_path = f'{bot_path}\\resources\\'
+bot_path = '/home/autumn/Desktop/Echo'
+resource_file_path = f'{bot_path}/resources/'
 server_settings_path = resource_file_path + 'servers.json'
 server_warns_path = resource_file_path + 'warns.json'
-log_path = f'{bot_path}\\logs'
+log_path = f'{bot_path}/logs'
 
 
 def get_leaderboard_path(guild_id):
-    return resource_file_path + 'Guild-files\\{}\\.leaderboard'.format(guild_id)
+    return resource_file_path + 'Guild-files/{}/.leaderboard'.format(guild_id)
 
 
 def profile_path(target_id):
-    return resource_file_path + 'profile\\{}.profile'.format(target_id)
+    return resource_file_path + 'profile/{}.profile'.format(target_id)
 
 
 def ref_path(target_id):
-    return resource_file_path + 'refs\\{}.refs'.format(target_id)
+    return resource_file_path + 'refs/{}.refs'.format(target_id)
 
 
 def oc_folder_path(target_id):
-    return resource_file_path + 'refs\\{}'.format(target_id)
+    return resource_file_path + 'refs/{}'.format(target_id)
 
 
 def oc_path(target_id, oc_name):
-    return resource_file_path + 'refs\\{}\\{}.ref'.format(target_id, oc_name)
+    return resource_file_path + 'refs/{}/{}.ref'.format(target_id, oc_name)
 
 
 def sona_path(target_id):
-    return resource_file_path + 'refs\\' + str(target_id) + '\\00.refs'
+    return resource_file_path + 'refs/' + str(target_id) + '/00.refs'
 
 
 def char_path(target_id, char):
-    return resource_file_path + 'refs\\' + str(target_id) + '\\' + str(char) + '.refs'
+    return resource_file_path + 'refs/' + str(target_id) + '/' + str(char) + '.refs'
 
 
 def nsfw_ref_path(target_id):
-    return resource_file_path + f'nsfw\\refs\\{target_id}.nsfwref'
+    return resource_file_path + f'nsfw/refs/{target_id}.nsfwref'
 
 
 def folder_path(target_id, folder):
-    return resource_file_path + 'refs\\{}\\{}'.format(target_id, folder)
+    return resource_file_path + 'refs/{}/{}'.format(target_id, folder)
 
 
 def artfight_scores():
-    return resource_file_path + 'artfight\\artfight.scores'
+    return resource_file_path + 'artfight/artfight.scores'
 
 
 def warn_log_path(user_id):
-    return resource_file_path + 'warns\\{}'.format(user_id)
+    return resource_file_path + 'warns/{}'.format(user_id)
 
 
 def ref_folder_path():
@@ -57,4 +57,4 @@ def ref_folder_path():
 
 
 def scam_log_path():
-    return f'{log_path}\\scam.log'
+    return f'{log_path}/scam.log'
