@@ -313,6 +313,23 @@
                 "issuer_name": "autumnal.equinox",
                 "reason": "do not be rude to other server members"
             }
+        ],
+        "1018867368090415205": [
+            {
+                "time": 1718898400,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "Do not post transphobic memes in the server"
+            }
+        ],
+        "381662405513445386": [],
+        "973356359464677406": [
+            {
+                "time": 1718923913,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "not repost memes that were deleted"
+            }
         ]
     }
 }
