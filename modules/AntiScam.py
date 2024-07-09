@@ -15,7 +15,8 @@ whitelist = ['https://discord.gift/',  # legitimate nitro gifting
              # common domains that get flagged falsely
              'https://tenor.com', 'https://store.steampowered.com/app/', 'https://twitter.com',
              # not common, but aren't scams
-             'https://www.nzwe.com/', 'https://tinyurl.com/3vznrzkr', 'https://youtu.be/dQw4w9WgXcQ']
+             'https://www.nzwe.com/', 'https://tinyurl.com/3vznrzkr', 'https://youtu.be/dQw4w9WgXcQ',
+             'https://open.spotify.com', 'https://toyhou.se', 'https://artfight.net']
 
 # these are potential scams. It's probably a false positive if only 2 are hit, but a true positive if 3 are hit.
 blacklist = ['@everyone', '@here',  # attempting to ping the server
@@ -53,7 +54,7 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            # ZWSP
            '​',
            # Standard EICARS test string
-           'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'.lower()]
+           'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'.lower()]
 code = 'plsdontban'
 
 counter = 0
@@ -90,7 +91,7 @@ async def scan_message(ctx: discord.Interaction):
             bans += 1
             if word == '​':
                 words.append('Zero Width Space')
-            elif word == 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*':
+            elif word == 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*':
                 words.append('Standard EICARS Test String')
             else:
                 words.append(word)
@@ -137,4 +138,5 @@ async def scan_message(ctx: discord.Interaction):
         with open(scam_log_path(), 'a') as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
             log.write(f'{ctx.message.id},{ctx.message.created_at},{ctx.message.guild.id},{ctx.message.author.id},'
-                      f'{ctx.id},{flags},{bans},{lst.replace(","," - ")},"{ctx.message.content}"\n')
+                      f'{ctx.id},{flags},{bans},{lst.replace(","," - ")},"{ctx.message.content.replace(
+                          '\n', '\\n')}"\n')
