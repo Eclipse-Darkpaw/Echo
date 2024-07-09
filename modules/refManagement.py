@@ -9,8 +9,13 @@ class RefManagement(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(name='ref-set')
     async def set_ref(self, ctx: discord.Interaction):
+        """
+        sets a users ref. Overwrites existing ref. max 5 images
+        :param ctx:
+        :return:
+        """
         try:
             trim = ctx.message.content[8:]
             command = trim.split('\n')
@@ -32,10 +37,13 @@ class RefManagement(commands.Cog):
         except IndexError:
             await ctx.send('No ref_sheet attached!')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(name='ref-add')
     async def add_ref(self, ctx):
-        """add_ref method
-        adds a ref to a user's ref document"""
+        """
+        Adds refs to a users list. max 5 images
+        :param ctx:
+        :return:
+        """
         try:
 
             if ctx.channel.nsfw:
@@ -61,7 +69,12 @@ class RefManagement(commands.Cog):
 
     @commands.hybrid_command()
     async def ref(self, ctx: discord.Interaction, user: discord.User = None):
-
+        """
+        retrieves a users ref sheet
+        :param ctx:
+        :param user: User to search for
+        :return:
+        """
         if user is None:
             target = ctx.author.id
         else:
