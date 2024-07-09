@@ -12,7 +12,7 @@ import sys
 import time
 
 from discord.ext import commands
-from fileManagement import server_settings_path
+from fileManagement import server_settings_path, resource_file_path
 from main import eclipse_id
 
 # Keep imports in alphabetical order
