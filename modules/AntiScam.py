@@ -82,7 +82,7 @@ async def scan_message(ctx: discord.Interaction):
     words = []
     flags = 0
     bans = 0
-    content = ctx.message.content.lower()
+    content = ctx.content.lower()
 
     # scan the banned word list first. if any appear, delete immediately.
     for word in banlist:
