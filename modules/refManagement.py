@@ -83,6 +83,6 @@ class RefManagement(commands.Cog):
                 path = ref_path(target)
                 ref_sheet = open(path)
                 await msg.edit(content='Ref Found! Uploading, Please wait!')
-                await ctx.reply(content=ref_sheet.read())
+                await msg.edit(content=ref_sheet.read())
             else:
                 await msg.edit(content='User has not set their SFW ref.')
