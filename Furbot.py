@@ -170,7 +170,7 @@ async def help_message(message):
         except AttributeError:
             icon_url = client.user.avatar.url
         embed.set_author(name=client.user.name, icon_url=icon_url)
-        
+
         embed.add_field(name='`' + prefix + 'help`',
                         value="That's this command!",
                         inline=False)
@@ -304,7 +304,7 @@ async def help_message(message):
             icon_url = client.user.avatar.url
         ref_embed.set_author(name=client.user.name,
                              icon_url=icon_url)
-        
+
         ref_embed.add_field(name='No argument',
                             value='Displays your ref',
                             inline=False)
@@ -320,7 +320,7 @@ async def help_message(message):
                                   "comes from, unless you add `all` to the end of the command or run the command in "
                                   "DMs",
                             inline=False)
-        
+
         await message.channel.send(embed=ref_embed)
 
 
@@ -385,9 +385,9 @@ async def on_ready():
     Last method edit: -Autumn V1.16.3
     :return: None
     """
-    
+
     print('We have logged in as {0.user}'.format(client))
-    
+
     await client.change_presence(activity=game)
     await client.get_user(eclipse_id).send('Running, and active')
 
@@ -412,28 +412,28 @@ async def on_message(message):
     """
     if message.author.bot:
         return
-    
+
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-            await AntiScam.scan_message(message)
+            await AntiScam.scan_message(message, client)
     content = message.content.lower()
-    
+
     if message.guild is None or content.find(AntiScam.code) != -1 or message.channel.id in scan_ignore:
         pass
     else:
-        await AntiScam.scan_message(message)
+        await AntiScam.scan_message(message, client)
     try:
         if content[0] == prefix:
-            
+
             # split the message to determine what command is being called
             command = message.content[1:].lower().split(' ', 1)
-            
+
             # search the switcher for the command called. If the command is not found, do nothing
             try:
                 method = switcher[command[0]]
             except KeyError:
                 return
-            
+
             await method(message)
             if command[0] == 'print':
                 # Used to transfer data from Discord directly to the command line. Very simple shortcut
@@ -452,22 +452,22 @@ def run_furbot():
     :return: None
     """
     global prefix
-    
+
     if len(sys.argv) > 1:
         inp = int(sys.argv[1])
     else:
         inp = int(input('input token num\n'
                         '1. furbot\n'
                         '2. Testing Environment\n'))
-    
+
     if inp == 1:
         # Main bot client. Do not use for tests
-        
+
         client.run(os.environ.get('FURBOT_TOKEN'))  # must say client.run(os.environ.get('SUNREEK_TOKEN'))
-    
+
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
-        
+
         client.run(os.environ.get('TESTBOT_TOKEN'))  # must say client.run(os.environ.get('TESTBOT_TOKEN'))
 
 

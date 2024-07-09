@@ -46,7 +46,7 @@ async def setup(message):
     :return: None
     """
     await Settings.setup(message, client)
-    
+
 
 async def verify(message):
     """
@@ -95,7 +95,7 @@ async def uptime(message):
     days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
     await message.reply(time.strftime(f'Online for {days-1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
                                       time.gmtime(time.time() - start_time)))
-    
+
 
 async def version(message):
     """
@@ -422,7 +422,7 @@ async def blessed_keys(message):
     global cursed_keys_running
     global blessed_keys_running
     global blsd_keys
-    
+
     command = message.content[1:].split(' ', 2)
     if len(command) == 1 or command[1] == 'help':
         overview = discord.Embed(title='Blessed Ky Overview',
@@ -515,7 +515,7 @@ async def purge(message):
     """
     await client.get_user(eclipse_id).send('`REMOVING UNVERIFIED`')
     unverified_role_id = data[str(message.guild.id)]["roles"]['unverified']
-    
+
     if message.author.guild_permissions.manage_roles:
         print('├ FILTERING MEMBER LIST')
         unverified_ppl = message.guild.get_role(unverified_role_id).members
@@ -577,7 +577,7 @@ async def prune(message):
                         kicked = True
                         forbidden += 1
                         break
-                        
+
         await client.get_user(eclipse_id).send(f'Purge complete. {num_kicked} purged.')
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
@@ -689,29 +689,29 @@ async def on_message(message):
     if message.author.bot:
         return
     # await message.author.add_roles(message.guild.fetch_roles(1069839195553669192))
-    
+
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-            await AntiScam.scan_message(message)
+            await AntiScam.scan_message(message, client)
     content = message.content.lower()
 
     if message.guild is None or content.find(AntiScam.code) != -1 or \
             message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
         pass
     else:
-        await AntiScam.scan_message(message)
+        await AntiScam.scan_message(message, client)
     try:
         if content[0] == prefix:
-    
+
             # split the message to determine what command is being called
             command = message.content[1:].lower().split(' ', 1)
-    
+
             # search the switcher for the command called. If the command is not found, do nothing
             try:
                 method = switcher[command[0]]
             except KeyError:
                 return
-            
+
             await method(message)
             if command[0] == 'print':
                 # Used to transfer data from Discord directly to the command line. Very simple shortcut
@@ -725,7 +725,7 @@ async def on_message(message):
                     if key in message.content.lower():
                         await message.author.remove_roles(message.guild.get_role(player_role_id))
                         await message.reply('You have been cursed for using the key: ' + key)
-    
+
                         if len(message.guild.get_role(player_role_id).members) == 1:
                             # This code detects if there is a winner
                             cursed_keys_running = False
@@ -741,7 +741,7 @@ async def on_message(message):
                     if key not in message.content.lower():
                         await message.author.remove_roles(message.guild.get_role(player_role_id))
                         await message.reply('You have been cursed for not using the key: ' + key)
-                
+
                         if len(message.guild.get_role(player_role_id).members) == 1:
                             # This code detects if there is a winner
                             cursed_keys_running = False
@@ -767,7 +767,7 @@ def run_sunreek():
         inp = int(sys.argv[1])
     else:
         inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
-    
+
     if inp == 1:
         # Main bot client. Do not use for tests
 
