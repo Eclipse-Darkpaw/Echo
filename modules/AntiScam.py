@@ -57,7 +57,7 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
 code = 'plsdontban'
 
 counter = 0
-
+# TODO: add an auto suspend feature
 
 async def scan_message(message):
     global counter
@@ -81,7 +81,7 @@ async def scan_message(message):
     flags = 0
     bans = 0
     content = message.content.lower()
-    
+
     # scan the banned word list first. if any appear, delete immediately.
     for word in banlist:
         index = content.find(word)
@@ -93,20 +93,20 @@ async def scan_message(message):
                 words.append('Standard EICARS Test String')
             else:
                 words.append(word)
-    
+
     # scan the plain blacklist next, count the number of blacklisted words
     for word in blacklist:
         index = content.find(word)
         if index != -1:
             flags += 1
             words.append(word)
-    
+
     # if a word in the white list appears, remove a flag.
     for word in whitelist:
         index = content.find(word)
         if index != -1:
             flags -= 1
-    
+
     if flags < 2 and bans == 0:
         return  # skips messages with less than 2 flags and no bans
     else:
@@ -114,11 +114,11 @@ async def scan_message(message):
             await message.delete()
             await message.channel.send('Your message has been deleted. If this was an error, please send the code '
                                        '`plsdontban` somewhere in your message to get around our filters.')
-        
+
         content = message.content.replace('@', '@ ')
-        
+
         channel = message.guild.get_channel(log_channel)
-        
+
         embed = discord.Embed(title='Possible Scam in #' + str(message.channel.name), color=0xFF0000)
         embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar.url)
         embed.add_field(name='message', value=content, inline=False)
