@@ -22,7 +22,7 @@ Import statements are crucial statements that allow the bot to run code you didn
 import discord
 import sys
 import time
-
+from discord.ext import commands
 # The version number isn't a necessary feature, but it is useful to confirm the bot is running the
 # most recent version of the code
 version_num = '1.1.0'
@@ -43,8 +43,7 @@ intents.message_content = True
 intents.members = True
 
 # The client is the bot's discord account. It allows the bot to connect to discord and run commands
-client = discord.Client(intents=intents)
-
+bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 async def ping(message):
     """
@@ -93,9 +92,15 @@ async def end(message):
 
 
 # ADD NEW METHODS HERE!
+@bot.command()
+async def sync(interaction: discord.Interaction):
+    await interaction.send('Syncing Tree', ephemeral=False)
+    guild = discord.Object(id=interaction.guild.id)
+    bot.tree.copy_global_to(guild=guild)
+    await bot.tree.sync(guild=guild)
+    await interaction.send("tree synced", ephemeral=True)
 
-
-@client.event
+@bot.event
 async def on_ready():
     """
     Confirms the bot is online, and has started. It prints a message to the command line, and
@@ -104,8 +109,9 @@ async def on_ready():
     Last method edit: -Autumn V1.0.0
     :return: None
     """
-    print('We have logged in as {0.user}'.format(client))
-    await client.change_presence(activity=game)
+    print('We have logged in as {0.user}'.format(bot))
+    await bot.change_presence(activity=game)
+
 
 
 '''The switcher allows you to call a command with out using a large series of if/else statements.
@@ -116,7 +122,7 @@ in the function.'''
 switcher = {'ping': ping, 'version': version, 'quit': end}
 
 
-@client.event
+@bot.event
 async def on_message(message):
     """
     When a message happens, it scans the first character for the bot prefix. If the first character
@@ -127,7 +133,7 @@ async def on_message(message):
     :param message: the message that was just sent
     :return: None
     """
-    
+
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
@@ -139,8 +145,8 @@ async def on_message(message):
             print(message.content)  # allows for fast transfer of data from discord to your command
             # line
 
-
+import os
 '''This is what begins the entire bot, and tells the bot to run
 THIS LINE MUST BE AT THE END OF THE SCRIPT.
 IF THIS LINE IS NOT LAST, ANYTHING AFTER IT WILL NOT LOAD.'''
-client.run(token)
+bot.run(os.environ.get('PAWBOT_TEST'))
