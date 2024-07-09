@@ -21,11 +21,15 @@ https://www.pivotaltracker.com/n/projects/2462509
 
 
 ## Change Log
+### 4.0.0 / Slash command update
+* Added slash command support.
+* Minor UI modications
 
 ### 3.5.2
 * removed `fuck` command from bots
 * removed profiles from `global_files.json`
 * grammar formatting changes
+
 ### 3.5.0
 * Restructured files and moved the heirarchy
 
