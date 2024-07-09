@@ -59,7 +59,8 @@ code = 'plsdontban'
 counter = 0
 # TODO: add an auto suspend feature
 
-async def scan_message(message):
+
+async def scan_message(ctx: discord.Interaction):
     global counter
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
@@ -71,16 +72,16 @@ async def scan_message(message):
     """
     with open(resource_file_path + 'servers.json') as file:
         try:
-            log_channel = json.load(file)[str(message.guild.id)]['channels']['log']
+            log_channel = json.load(file)[str(ctx.guild.id)]['channels']['log']
         except KeyError:
             if counter % 50 == 0:
-                await message.channel.send("Anti-scam scanning is currently offline.")
+                await ctx.send("Anti-scam scanning is currently offline.")
             counter += 1
             return
     words = []
     flags = 0
     bans = 0
-    content = message.content.lower()
+    content = ctx.message.content.lower()
 
     # scan the banned word list first. if any appear, delete immediately.
     for word in banlist:
@@ -111,29 +112,29 @@ async def scan_message(message):
         return  # skips messages with less than 2 flags and no bans
     else:
         if flags >= 3 or bans > 0:
-            await message.delete()
-            await message.channel.send('Your message has been deleted. If this was an error, please send the code '
+            await ctx.message.delete()
+            await ctx.send('Your message has been deleted. If this was an error, please send the code '
                                        '`plsdontban` somewhere in your message to get around our filters.')
 
-        content = message.content.replace('@', '@ ')
+        content = ctx.message.content.replace('@', '@ ')
 
-        channel = message.guild.get_channel(log_channel)
+        channel = ctx.guild.get_channel(log_channel)
 
-        embed = discord.Embed(title='Possible Scam in #' + str(message.channel.name), color=0xFF0000)
-        embed.set_author(name='@' + str(message.author.name), icon_url=message.author.avatar.url)
+        embed = discord.Embed(title='Possible Scam in #' + str(ctx.channel.name), color=0xFF0000)
+        embed.set_author(name='@' + str(ctx.author.name), icon_url=ctx.author.avatar.url)
         embed.add_field(name='message', value=content, inline=False)
         embed.add_field(name='Flags', value=str(flags))
         embed.add_field(name='Banned Strings', value=str(bans))
         embed.add_field(name='Words Flagged', value=words, inline=False)
-        embed.add_field(name='Sender ID', value=message.author.id)
-        embed.add_field(name='Channel ID', value=message.channel.id)
-        embed.add_field(name='Message ID', value=message.id)
+        embed.add_field(name='Sender ID', value=ctx.author.id)
+        embed.add_field(name='Channel ID', value=ctx.channel.id)
+        embed.add_field(name='Message ID', value=ctx.message.id)
         lst = str(words)
         lst.replace('​','Zero Width Space Character')
         if flags < 3 and bans == 0:
-            embed.add_field(name='URL', value=message.jump_url, inline=False)
+            embed.add_field(name='URL', value=ctx.message.jump_url, inline=False)
         await channel.send(embed=embed)
         with open(scam_log_path(), 'a') as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
-            log.write(f'{message.id},{message.created_at},{message.guild.id},{message.author.id},'
-                      f'{message.channel.id},{flags},{bans},{lst.replace(","," - ")},"{message.content}"\n')
+            log.write(f'{ctx.message.id},{ctx.message.created_at},{ctx.message.guild.id},{ctx.message.author.id},'
+                      f'{ctx.id},{flags},{bans},{lst.replace(","," - ")},"{ctx.message.content}"\n')

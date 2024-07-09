@@ -9,8 +9,9 @@ from discord.ext import commands
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
     @commands.hybrid_command()
-    async def ping(self, ctx):
+    async def ping(self, ctx: discord.Interaction):
         """
         Returns how long it takes the bot to send a message
         Last docstring edit: -Autumn V4.0.0
@@ -25,9 +26,9 @@ class General(commands.Cog):
         await x.edit(content=edit)
 
     @commands.hybrid_command()
-    async def quit(self, ctx):
+    async def quit(self, ctx: discord.Interaction):
         """
-        Quits the bot, and closes the program. Replys and updates the game status to alert users to it quitting.
+        Quits the active bot. Admin only.
         Last docstring edit: -Autumn V4.0.0
         Last method edit: -Autumn V4.0.0
         :param ctx: message that called the quit command
@@ -40,3 +41,24 @@ class General(commands.Cog):
             sys.exit()
         else:
             await ctx.send('You do not have permission to turn me off!')
+
+    @commands.hybrid_command(name='huh')
+    async def huh(self, ctx: discord.Interaction):
+        """
+        Easter egg
+        Last docstring edit: -Autumn V1.14.4
+        Last method edit: -Autumn V 4.0.0
+        :param ctx: Message calling the command
+        """
+        await ctx.channel.send("We're no Strangers to love\n"
+                               "You know the rules and so do I!~\n"
+                               "A full commitments what I'm thinkin' of\n"
+                               "You wouldn't get this from, Any other guy.\n"
+                               "\n"
+                               "I just wanna tell you how I'm feeling\n"
+                               "gotta make you, understand!\n"
+                               "\n"
+                               "Never gonna give you up, Never gonna let you down\n"
+                               "Never gonna run around, and desert you\n"
+                               "Never gonna make you cry, Never gonna say goodbye\n"
+                               "Never gonna tell a lie, and hurt you")

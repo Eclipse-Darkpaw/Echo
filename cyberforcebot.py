@@ -17,7 +17,7 @@ version_num = '1.0.1'
 prefix = '>'
 
 # This is the bot Token. It's like the bot's password. DO NOT SHARE THE TOKEN WITH ANYONE.
-token = os.getenv('CYBERFORCE_BOT_TOKEN')
+token = os.getenv()
 
 # This sets the bot's Activity status. It allows the bot to go into more detail about its current
 # status
@@ -78,18 +78,17 @@ async def end(message):
         await message.channel.send('You do not have permission to turn me off!')
 
 
-async def mama(message):
-    await message.channel.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
+async def mama(ctx):
+    await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
 
 
-async def microwave(message):
-    await message.channel.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you '
-                               'hug her')
-    await message.channel.send('https://i.imgur.com/eOPKEV4.gif')
+async def microwave(ctx):
+    await ctx.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug her')
+    await ctx.send('https://i.imgur.com/eOPKEV4.gif')
 
 
-async def hug(message):
-    await message.channel.send('You give Gemini a hug. You can smell a faint citrus scent when you do.')
+async def hug(ctx):
+    await ctx.send('You give Gemini a hug. You can smell a faint citrus scent when you do.')
 # ADD NEW METHODS HERE!
 
 
@@ -141,9 +140,6 @@ async def on_message(message):
             await method(message)
         except KeyError:
             pass
-        
 
-'''This is what begins the entire bot, and tells the bot to run
-THIS LINE MUST BE AT THE END OF THE SCRIPT.
-IF THIS LINE IS NOT LAST, ANYTHING AFTER IT WILL NOT LOAD.'''
-client.run(token)
+
+client.run(os.getenv('CYBERFORCE_BOT_TOKEN'))
