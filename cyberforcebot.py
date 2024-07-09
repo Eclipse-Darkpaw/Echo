@@ -60,7 +60,7 @@ async def version(ctx: discord.Interaction):
 
 @bot.tree.command()
 async def mama(ctx):
-    await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
+    await ctx.channel.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
 
 
 @bot.tree.command()
@@ -70,8 +70,9 @@ async def microwave(ctx):
     :param ctx:
     :return:
     """
-    await ctx.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug her')
-    await ctx.send('https://i.imgur.com/eOPKEV4.gif')
+    await ctx.channel.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug '
+                           'her')
+    await ctx.channel.send('https://i.imgur.com/eOPKEV4.gif')
 
 
 @bot.tree.command()
@@ -81,7 +82,7 @@ async def hug(ctx):
     :param ctx:
     :return:
     """
-    await ctx.send('You give Gemini a hug. You can smell a faint citrus scent when you do.')
+    await ctx.channel.send('You give Gemini a hug. You can smell a faint citrus scent when you do.')
 # ADD NEW METHODS HERE!
 
 @bot.command()
