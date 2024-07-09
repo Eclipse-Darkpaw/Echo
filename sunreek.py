@@ -1,20 +1,20 @@
-import datetime
-
 import discord
 import json
-import main
 import modules.AntiScam as AntiScam
-import modules.Artfight as Artfight
 import modules.General as General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
+import modules.refManagement as Ref
+import random
 import os
 import sys
 import time
 
-from fileManagement import resource_file_path
-from modules.refManagement import ref, set_ref, add_ref, random_ref
+from discord.ext import commands
+from fileManagement import server_settings_path
+from main import eclipse_id
+
 # Keep imports in alphabetical order
 
 start_time = time.time()
@@ -23,68 +23,20 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '3.5.2'
-
-eclipse_id = main.eclipse_id
+version_num = '4.0.0'
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-game = discord.Game('}help for commands')
-client = discord.Client(intents=intents)
+bot = commands.Bot(command_prefix=prefix, intents=intents)
 
-artfight_enabled = False
-
-
-async def setup(message):
-    """
-    sets up the bot for initial usage
-    Last docstring edit: -Autumn V3.0.0
-    Last method edit: -Autumn V3.2.0
-    :param message:
-    :return: None
-    """
-    await Settings.setup(message, client)
+game = discord.Game(f'{prefix}help for commands')
+client = bot
 
 
-async def verify(message):
-    """
-    The method that primarily handles member verification. All members must verify from this method. Sends DM to user,
-    asks user questions, then sends answers to the moderators in a designated chat
-    Last docstring edit: -Autumn V1.14.5
-    Last method edit: -Autumn V3.0.0
-    :param message: Discord message calling the method
-    :return: NoneType
-    """
-    if len(message.content) > 8:
-        return
-    await Verif.verify(message, client_in=client)
-
-
-async def setcode(message):
-    """
-    Sets the server passcode.
-    Last docstring edit: -Autumn V3.2.0
-    Last method edit: -Autumn V3.1.2
-    :param message:
-    :return:
-    """
-    await Verif.setcode(message, message.content.split(' ', 1)[1])
-
-
-async def ping(message):
-    """
-    Displays the time it takes for the bot to send a message upon a message being received.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.3.0
-    :param message: Message calling the bot
-    :return: None
-    """
-    await General.ping(message)
-
-
-async def uptime(message):
+@bot.tree.command()
+async def uptime(ctx):
     """
     Displays the time the bot has been running for.
     Last docstring edit: -Autumn V3.3.4
@@ -92,224 +44,31 @@ async def uptime(message):
     :param message: message calling the bot
     :return: None
     """
+    await ctx.message.delete()
     days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
-    await message.reply(time.strftime(f'Online for {days-1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
+    await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
                                       time.gmtime(time.time() - start_time)))
 
 
-async def version(message):
+@bot.tree.command()
+async def version(ctx):
     """
     Displays the version of the bot being used
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.5.2
-    :param message: Message calling the bot
-    :return: None
-    """
-    await General.version(message, version_num)
-
-
-async def end(message):
-    """
-    Quits the bot. Sends a message and updates the game status to alert users the bot is quiting.
-    Last docstring edit: -Autumn V1.14.4
     Last method edit: -Autumn V3.3.0
     :param message: Message calling the bot
     :return: None
     """
-    await General.quit(message, client)
+    await ctx.send(f'I am currently running version {version_num}')
 
 
-async def modmail(message):
-    """
-    Sends a message to the moderators. Alerts the user if an error occurs during the process
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: Unknown
-    :param message: Message that called the bot
-    :return: None
-    """
-    await Mod.modmail(message, client)
-
-
-async def kick(message):
-    """
-    Method designed to kick users from the server the command originated.
-    >kick [user] [reason]
-    Last docstring edit: -Autumn V1.16.0
-    Last method edit: -Autumn V1.16.0
-    Method added: V1.16.0
-    :param message:The message that called the command
-    :return: None
-    """
-    await Mod.kick(message)
-
-
-async def ban(message):
-    """
-    Method designed to ban users from the server the command originated. Deletes User messages from the last 24
-    hours
-    >ban [user] [reason]
-    Last docstring edit: -Autumn V1.16.0
-    Last method edit: -Autumn V3.3.0
-    Method added: -Autumn V1.16.0
-    :param message:The message that called the command
-    :return: None
-    """
-    await Mod.ban(message)
-
-
-async def help_message(message):
-    """
-    Displays the Bot's help message. Square brackets are optional arguments, angle brackets are required.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.5.2
-    :param message:
-    :return:
-    """
-    command = message.content[1:].split(' ')
-    if len(command) == 1:
-        embed = discord.Embed(title="SunReek Command list",
-                              description='Square brackets are optional arguments. Angle brackets are required '
-                                          'arguments',
-                              color=0x45FFFF)
-        try:
-            icon_url = client.user.display_avatar.url
-        except AttributeError:
-            icon_url = client.user.avatar.url
-        embed.set_author(name=client.user.name, icon_url=icon_url)
-
-        embed.add_field(name='`'+prefix+'help`',
-                        value="That's this command!",
-                        inline=False)
-        embed.add_field(name='`'+prefix+'verify`',
-                        value='Verifies an un verified member.',
-                        inline=False)
-        embed.add_field(name='`'+prefix+'version_num`',
-                        value='What version the bot is currently on',
-                        inline=False)
-        embed.add_field(name='`'+prefix+'profile [member tag/member id]/[edit]`',
-                        value="Gets a tagged user's profile or your profile",
-                        inline=False)
-        embed.add_field(name='`'+prefix+'ref [member tag/member id]`',
-                        value="gets a user's ref sheet",
-                        inline=False)
-        embed.add_field(name='`'+prefix+'setref <attachment>`',
-                        value="Sets a user's ref. Overwrites all current ref data",
-                        inline=False)
-        embed.add_field(name='`'+prefix+'addref <attachment>`',
-                        value="Adds another ref to your file.",
-                        inline=False)
-        embed.add_field(name='`'+prefix+'crsdky [arguments]`',
-                        value='commands for the CursedKeys game. will show the list of cursed keys if argument is left '
-                              'off',
-                        inline=False)
-        embed.add_field(name='`'+prefix+'quit`',
-                        value='quits the bot.\n Mod only.',
-                        inline=False)
-        embed.add_field(name='`' + prefix + 'join_pos [target ID]`',
-                        value='Shows the position a member joined in. shows message author if target is left blank',
-                        inline=False)
-        embed.add_field(name='`' + prefix + 'artfight`',
-                        value='Commands for the annual artfight',
-                        inline=False)
-        embed.add_field(name='`' + prefix + 'huh`',
-                        value='???',
-                        inline=False)
-        embed.add_field(name='`' + prefix + 'random_ref`',
-                        value='Same as `' + prefix + 'ref random`',
-                        inline=False)
-        await message.channel.send(embed=embed)
-    elif command[1] == 'help':
-        help_embed = discord.Embed(title="SunReek Command list", color=0x45FFFF)
-        try:
-            icon_url = client.user.display_avatar.url
-        except AttributeError:
-            icon_url = client.user.avatar.url
-        help_embed.set_author(name=client.user.name, icon_url=icon_url)
-        help_embed.add_field(name='`' + prefix + 'help [bot command]`', value="That's this command!", inline=False)
-        await message.channel.send(embed=help_embed)
-    elif command[1] == 'crsdky':
-        crsdky_embed = discord.Embed(title="`}crsdky Command list", color=0x45FFFF)
-        try:
-            icon_url = client.user.display_avatar.url
-        except AttributeError:
-            icon_url = client.user.avatar.url
-        crsdky_embed.set_author(name=client.user.name, icon_url=icon_url)
-
-        crsdky_embed.add_field(name='Notes',
-                               value='Used by going `}crsdky [argument]`, ',
-                               inline=False)
-        crsdky_embed.add_field(name='`rules` or no argument',
-                               value='Give an overview of the game Crsd Ky',
-                               inline=False)
-        crsdky_embed.add_field(name='`list`',
-                               value='lists the current cursed keys',
-                               inline=False)
-        crsdky_embed.add_field(name='`join`',
-                               value='Joins the game of crsdky. Users cannot join after the game starts.',
-                               inline=False)
-        crsdky_embed.add_field(name='`leave`',
-                               value='leaves the game of crsdky',
-                               inline=False)
-        crsdky_embed.add_field(name='`numleft`',
-                               value='Shows the number of players left.',
-                               inline=False)
-        await message.channel.send(embed=crsdky_embed)
-        if message.author.guild_permissions.manage_roles:
-            mod_crsdky_embed = discord.Embed(title='`}crsdky` Mod Commands', color=message.author.color)
-            mod_crsdky_embed.add_field(name='Notes',
-                                       value='All these commands require the user to have moderator permissions.',
-                                       inline=False)
-            mod_crsdky_embed.add_field(name='`set <char list>`',
-                                       value='Sets the cursed keys. Takes lowercase letters and symbols.',
-                                       inline=False)
-            mod_crsdky_embed.add_field(name='`start`',
-                                       value='Starts the round, and prevents new players from joining',
-                                       inline=False)
-            mod_crsdky_embed.add_field(name='`stop`',
-                                       value='Pauses the round until the `start` command is received',
-                                       inline=False)
-            mod_crsdky_embed.add_field(name='`resetPlayer`',
-                                       value='Removes all players from the game',
-                                       inline=False)
-            await message.channel.send(embed=mod_crsdky_embed)
-    elif command[1] == 'ref':
-        ref_embed = discord.Embed(title='`'+prefix+'ref` Command List',
-                                  description='Displays a users primary ref.',
-                                  color=0x45FFFF)
-        try:
-            icon_url = client.user.display_avatar.url
-        except AttributeError:
-            icon_url = client.user.avatar.url
-        ref_embed.set_author(name=client.user.name, icon_url=icon_url)
-        ref_embed.add_field(name='No argument',
-                            value='Displays your ref',
-                            inline=False)
-        ref_embed.add_field(name='`User ID/Tagged User/Nickname`',
-                            value='Searches for a user\'s profile. Tagging the desired user, or using their member ID '
-                                  'yields the most accurate results.',
-                            inline=False)
-        ref_embed.add_field(name='`set <string/ref>`',
-                            value='Changes your ref to say what you want. Only emotes from this server can be used.',
-                            inline=False)
-        await message.channel.send(embed=ref_embed)
-    elif command[1] == 'artfight':
-        artfight_embed = discord.Embed(title='`'+prefix+'artfight` Command List',
-                                       description='This is the commands for the annual Art Fight',
-                                       color=0x45FFFF)
-        artfight_embed.add_field(name='join',
-                                 value='Assigns a user to a team ',
-                                 inline=False)
-        artfight_embed.add_field(name='scores',
-                                 value='shows the team scores',
-                                 inline=False)
-        artfight_embed.add_field(name='submit',
-                                 value='This is how you submit art. See <#787316128614973491> for scoring.',
-                                 inline=False)
-        artfight_embed.add_field(name='remove [1/2] [score to remove]',
-                                 value='Takes score away from a team (1/2). Use negative numbers to add '
-                                       'score.\nMod only.',
-                                 inline=False)
-        await message.channel.send(embed=artfight_embed)
+@bot.command()
+async def sync(interaction: discord.Interaction):
+    await interaction.send('Syncing Tree', ephemeral=False)
+    guild = discord.Object(id=interaction.guild.id)
+    bot.tree.copy_global_to(guild=guild)
+    await bot.tree.sync(guild=guild)
+    await interaction.send("tree synced", ephemeral=True)
 
 
 cursed_keys_running = False
@@ -584,172 +343,49 @@ async def prune(message):
                             'or both.')
 
 
-def get_member_position(position, target_guild):
-    """
-    Unknown function.
-    Last docstring edit: -Autumn V1.16.3
-    Last function edit: Unknown
-    :param position:
-    :param target_guild: Guild the member is in
-    :return:
-    """
-    # TODO: Analyze function and correct the docstring
-    members = target_guild.members
-
-    def sort_by(a):
-        return a.joined_at.timestamp()
-
-    members.sort(key=sort_by)
-
-    return members[position-1]
-
-
-async def member_num(message):
-    """
-    I have no idea what this is. I need to make more detailed analysis later
-    Does this even work? -Autumn V3.5.2
-    :param message:
-    :return:
-    """
-    # TODO: Analyze function and correct the docstring
-    command = message.content.split(' ')
-    if len(command) == 1:
-        await message.reply('Missing Argument: Member number')
-        return
-    else:
-        try:
-            position = int(command[1])
-        except ValueError:
-            await message.reply('Value Error: Please make sure the position is a number')
-            return
-
-    pos = get_member_position(position, message.guild)
-    if pos == -1:
-        await message.reply('There is no member in position %d' % position)
-    else:
-        name = pos.name
-        await message.reply('Member in position %d has the ID %d' % (position, name))
-
-
-async def artfight(message):
-    month = int(datetime.datetime.now().strftime('%m'))
-    day = int(datetime.datetime.now().strftime('%d'))
-    if month <= 11:
-        await Artfight.artfight(message, client, month, day)
-
-
-async def huh(message):
-    """
-    Easter egg
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: Unknown
-    :param message:
-    :return: None
-    """
-    await message.reply("We've been trying to reach you about your car's extended warranty")
-
-
-@client.event
+@bot.event
 async def on_ready():
     """
     Method called when the bot boots and is fully online
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V1.16.3
+    Last method edit: -Autumn V4.0.0
     :return: None
     """
+
     print('We have logged in as {0.user}'.format(client))
 
     await client.change_presence(activity=game)
     await client.get_user(eclipse_id).send('Running, and active')
 
-switcher = {'help': help_message, 'ping': ping, 'version_num': version, 'version': version, 'verify': verify,
-            'setcode': setcode, 'modmail': modmail, 'quit': end, 'setref': set_ref, 'ref': ref, 'addref': add_ref,
-            'crsdky': cursed_keys, 'crsdkey': cursed_keys, 'crsedky': cursed_keys, 'cursedkey': cursed_keys,
-            'cursdky': cursed_keys, 'cursdkey': cursed_keys, 'cursedky': cursed_keys, 'purge_unverified': purge,
-            'huh': huh, 'kick': kick, 'blessedkey': blsd_keys, 'ban': ban, 'artfight': artfight,
-            'random_ref': random_ref, 'randomref': random_ref, 'rr': random_ref, 'setup': setup, 'uptime': uptime,
-            'purge': prune}
+    print('loading cogs')
+    await bot.add_cog(Mod.Moderation(bot))
+    await bot.add_cog(General.General(bot))
+    await bot.add_cog(Settings.Settings(bot))
+    await bot.add_cog(Ref.RefManagement(bot))
+    await bot.add_cog(Verif.Verification(bot))
+    print('Cogs loaded')
+
 
 scan_ignore = [688611557508513854]
 
 
-@client.event
-async def on_message(message):
+@bot.event
+async def on_message(ctx: discord.Interaction):
     """
-    The primary method called. This method determines what was called, and calls the appropriate message, as well as
-    handling all message scanning. This is called every time a message the bot can see is sent.
+    Calls methods for every message.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.3.0
-    :param message:
-    :return: None
+    Last method edit: -Autumn V4.0.0
+    :param ctx: The interaction calling the function
     """
-    global cursed_keys_running
-    global blessed_keys_running
+    await bot.process_commands(ctx)
 
-    if message.author.bot:
+    if ctx.author.bot:
         return
-    # await message.author.add_roles(message.guild.fetch_roles(1069839195553669192))
 
-    if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
-        if not message.author.guild_permissions.mention_everyone:
-            await AntiScam.scan_message(message, client)
-    content = message.content.lower()
+    content = ctx.content.lower()
 
-    if message.guild is None or content.find(AntiScam.code) != -1 or \
-            message.author.guild_permissions.administrator or message.channel.id in scan_ignore:
-        pass
-    else:
-        await AntiScam.scan_message(message, client)
-    try:
-        if content[0] == prefix:
-
-            # split the message to determine what command is being called
-            command = message.content[1:].lower().split(' ', 1)
-
-            # search the switcher for the command called. If the command is not found, do nothing
-            try:
-                method = switcher[command[0]]
-            except KeyError:
-                return
-
-            await method(message)
-            if command[0] == 'print':
-                # Used to transfer data from Discord directly to the command line. Very simple shortcut
-                print(message.content)
-        if cursed_keys_running and message.guild is not None:
-            # TODO: Make this a separate function.
-            # Check if the message author has the game role
-            if message.guild.get_role(player_role_id) in message.author.roles:
-                # If the message author has the role, scan their message for any cursed keys
-                for key in crsd_keys:
-                    if key in message.content.lower():
-                        await message.author.remove_roles(message.guild.get_role(player_role_id))
-                        await message.reply('You have been cursed for using the key: ' + key)
-
-                        if len(message.guild.get_role(player_role_id).members) == 1:
-                            # This code detects if there is a winner
-                            cursed_keys_running = False
-                            await message.channel.send(f'<@!{message.guild.get_role(player_role_id).members[0].id}> '
-                                                       f'wins the game!')
-                        break
-        if blessed_keys_running and message.guild is not None:
-            # TODO: Make this a separate function.
-            # Check if the message author has the game role
-            if message.guild.get_role(player_role_id) in message.author.roles:
-                # If the message author has the role, scan their message for any cursed keys
-                for key in blsd_keys:
-                    if key not in message.content.lower():
-                        await message.author.remove_roles(message.guild.get_role(player_role_id))
-                        await message.reply('You have been cursed for not using the key: ' + key)
-
-                        if len(message.guild.get_role(player_role_id).members) == 1:
-                            # This code detects if there is a winner
-                            cursed_keys_running = False
-                            await message.channel.send(
-                                f'<@!{message.guild.get_role(player_role_id).members[0].id}> wins the game!')
-                        break
-    except IndexError:
-        pass
+    if not (ctx.guild is None or content.find(AntiScam.code) != -1 or ctx.channel.id in scan_ignore):
+        await AntiScam.scan_message(ctx)
 
 
 def run_sunreek():

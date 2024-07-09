@@ -110,16 +110,16 @@ async def on_message(message):
 
     if message.author.bot:
         return
-
+    
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-            await AntiScam.scan_message(message, client)
+            await AntiScam.scan_message(message)
     content = message.content.lower()
 
     if message.guild is None or content.find(AntiScam.code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
-        await AntiScam.scan_message(message, client)
+        await AntiScam.scan_message(message)
 
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)

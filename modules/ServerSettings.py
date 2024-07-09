@@ -1,8 +1,81 @@
 import discord
 import json
 
+from discord.ext import commands
 from main import read_line
 from fileManagement import resource_file_path
+
+
+class Settings(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.hybrid_command()
+    async def channel_setup(self, ctx,
+                            application: discord.TextChannel = None,
+                            questioning: discord.TextChannel = None,
+                            mailbox: discord.TextChannel = None,
+                            scam_log: discord.TextChannel = None,
+                            warn_log: discord.TextChannel = None):
+        with open(resource_file_path + 'servers.json') as file:
+            data = json.load(file)
+
+        server_data = {}
+
+        channels = ['application', 'questioning', 'mailbox', 'log', 'warn log']
+        if application is not None:
+            server_data['application'] = application.id
+        if questioning is not None:
+            server_data['questioning'] = questioning.id
+        if mailbox is not None:
+            server_data['mailbox'] = mailbox.id
+        if scam_log is not None:
+            server_data['log'] = scam_log.id
+        if warn_log is not None:
+            server_data['warn_log'] = warn_log.id
+
+        data[str(ctx.guild.id)]['roles'] = server_data
+        with open(resource_file_path + 'servers.json', 'w') as file:
+            file.write(json.dumps(data, indent=4))
+            await ctx.reply('Channels set.')
+
+    @commands.hybrid_command()
+    async def roles_setup(self, ctx,
+                          member: discord.Role = None,
+                          questioning: discord.Role = None,
+                          unverified: discord.Role = None,
+                          suspended: discord.Role = None,
+                          mod: discord.Role = None):
+        with open(resource_file_path + 'servers.json') as file:
+            data = json.load(file)
+
+        server_data = {}
+
+        if member is not None:
+            server_data['member'] = member.id
+        if questioning is not None:
+            server_data['questioning'] = questioning.id
+        if unverified is not None:
+            server_data['unverified'] = unverified.id
+        if suspended is not None:
+            server_data['suspended'] = suspended.id
+        if mod is not None:
+            server_data['mod'] = mod.id
+
+        data[str(ctx.guild.id)]['roles'] = server_data
+        with open(resource_file_path + 'servers.json', 'w') as file:
+            file.write(json.dumps(data, indent=4))
+            await ctx.reply('Roles set.')
+
+    @commands.hybrid_command()
+    async def codeword_setup(self, ctx, codeword):
+        with open(resource_file_path + 'servers.json') as file:
+            data = json.load(file)
+
+        data[str(ctx.guild.id)]['codeword'] = codeword
+        with open(resource_file_path + 'servers.json', 'w') as file:
+            file.write(json.dumps(data, indent=4))
+            await ctx.reply('Code set.')
 
 
 async def setup(message, client):
@@ -16,7 +89,7 @@ async def setup(message, client):
     """
     progress = await message.channel.send("**__Assignments__**")
     responses = []
-    
+
     async def update_progress():
         msg = "**__Assignments__**"
         for i in range(len(responses)):
@@ -52,7 +125,7 @@ async def setup(message, client):
                 break
             except IndexError:
                 await message.reply('No channels were mentioned')
-    
+
     roles = ['member', 'unverified', 'questioning', 'suspended', 'mod']
     roleIDs = {}
     for role in roles:
@@ -67,7 +140,7 @@ async def setup(message, client):
                 responses.append((role, 'none'))
                 await update_progress()
                 break
-            
+
             try:
                 roleIDs[role] = response.role_mentions[0].id
                 responses.append((role, response.role_mentions[0].id))
@@ -75,7 +148,7 @@ async def setup(message, client):
                 break
             except IndexError:
                 await message.reply('No channels were mentioned')
-    
+
     codeword = -1
     while codeword == -1:
         response = await read_line(client,
@@ -92,16 +165,12 @@ async def setup(message, client):
             break
         else:
             codeword = response.content
-    
+
     server_data = {"name": message.guild.name,
                    "codeword": codeword,
                    "channels": channelIDs,
                    "roles": roleIDs}
-    
-    with open(resource_file_path + 'servers.json') as file:
-        data = json.load(file)
-    data[str(message.guild.id)] = server_data
-    with open(resource_file_path + 'servers.json', 'w') as file:
-        file.write(json.dumps(data, indent=4))
-    
+
+
+
     await message.reply('Setup complete')
