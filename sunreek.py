@@ -35,7 +35,7 @@ game = discord.Game(f'{prefix}help for commands')
 client = bot
 
 
-@bot.tree.command()
+@bot.hybrid_command()
 async def uptime(ctx: discord.Interaction):
     """
     Displays the time the bot has been running for.
@@ -49,7 +49,7 @@ async def uptime(ctx: discord.Interaction):
                                       time.gmtime(time.time() - start_time)))
 
 
-@bot.tree.command()
+@bot.hybrid_command()
 async def version(ctx: discord.Interaction):
     """
     Displays the version of the bot being used
