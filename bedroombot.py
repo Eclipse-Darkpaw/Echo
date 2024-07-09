@@ -33,30 +33,29 @@ client = bot
 
 
 @bot.tree.command()
-async def uptime(ctx):
+async def uptime(ctx: discord.Interaction):
     """
     Displays the time the bot has been running for.
     Last docstring edit: -Autumn V3.3.4
-    Last method edit: -Autumn V3.3.4
+    Last method edit: -Autumn V4.0.0
     :param message: message calling the bot
     :return: None
     """
-    await ctx.message.delete()
     days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
     await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
                                       time.gmtime(time.time() - start_time)))
 
 
 @bot.tree.command()
-async def version(ctx):
+async def version(ctx: discord.Interaction):
     """
     Displays the version of the bot being used
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.3.0
+    Last method edit: -Autumn V4.0.0
     :param message: Message calling the bot
     :return: None
     """
-    await ctx.send(f'I am currently running version {version_num}')
+    await ctx.channel.send(f'I am currently running version {version_num}')
 
 
 @bot.command()
