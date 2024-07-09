@@ -32,7 +32,7 @@ game = discord.Game(f'{prefix}help for commands')
 client = bot
 
 
-@bot.tree.command()
+@bot.hyrbid_command()
 async def uptime(ctx: discord.Interaction):
     """
     Displays the time the bot has been running for.
@@ -42,11 +42,11 @@ async def uptime(ctx: discord.Interaction):
     :return: None
     """
     days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
-    await ctx.message.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
+    await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
                                       time.gmtime(time.time() - start_time)))
 
 
-@bot.tree.command()
+@bot.hybrid_command()
 async def version(ctx: discord.Interaction):
     """
     Displays the version of the bot being used
@@ -58,31 +58,31 @@ async def version(ctx: discord.Interaction):
     await ctx.channel.send(f'I am currently running version {version_num}')
 
 
-@bot.tree.command()
+@bot.hybrid_command()
 async def mama(ctx):
-    await ctx.message.reply('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
+    await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
 
 
-@bot.tree.command()
+@bot.hybrid_command()
 async def microwave(ctx):
     """
     Microwave Gemini
     :param ctx:
     :return:
     """
-    await ctx.message.reply('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug '
+    await ctx.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug '
                            'her')
-    await ctx.channel.send('https://i.imgur.com/eOPKEV4.gif')
+    await ctx.send('https://i.imgur.com/eOPKEV4.gif')
 
 
-@bot.tree.command()
+@bot.hybrid_command()
 async def hug(ctx):
     """
     Hug Gemini
     :param ctx:
     :return:
     """
-    await ctx.message.reply('You give Gemini a hug. You can smell a faint citrus scent when you do.')
+    await ctx.reply('You give Gemini a hug. You can smell a faint citrus scent when you do.')
 # ADD NEW METHODS HERE!
 
 @bot.command()
