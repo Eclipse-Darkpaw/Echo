@@ -10,13 +10,23 @@ class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(name='set-channels')
     async def channel_setup(self, ctx,
                             application: discord.TextChannel = None,
                             questioning: discord.TextChannel = None,
                             mailbox: discord.TextChannel = None,
                             scam_log: discord.TextChannel = None,
                             warn_log: discord.TextChannel = None):
+        """
+
+        :param ctx:
+        :param application:
+        :param questioning:
+        :param mailbox:
+        :param scam_log:
+        :param warn_log:
+        :return:
+        """
         with open(resource_file_path + 'servers.json') as file:
             data = json.load(file)
 
@@ -39,7 +49,7 @@ class Settings(commands.Cog):
             file.write(json.dumps(data, indent=4))
             await ctx.reply('Channels set.')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(name='set-roles')
     async def roles_setup(self, ctx,
                           member: discord.Role = None,
                           questioning: discord.Role = None,
@@ -67,7 +77,7 @@ class Settings(commands.Cog):
             file.write(json.dumps(data, indent=4))
             await ctx.reply('Roles set.')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(name='set-code')
     async def codeword_setup(self, ctx, codeword):
         with open(resource_file_path + 'servers.json') as file:
             data = json.load(file)

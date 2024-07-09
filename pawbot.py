@@ -55,7 +55,7 @@ async def version(ctx: discord.Interaction):
     :param message: Message calling the bot
     :return: None
     """
-    await ctx.channel.send(f'I am currently running version {version_num}')
+    await ctx.send(f'I am currently running version {version_num}')
 
 
 @bot.command()
