@@ -37,7 +37,7 @@ async def setup(message):
     """
     progress = await message.channel.send("**__Assignments__**")
     responses = []
-
+    
     async def update_progress():
         msg = "**__Assignments__**"
         for i in range(len(responses)):
@@ -72,16 +72,16 @@ async def setup(message):
                 break
             except IndexError:
                 await message.reply('No channels were mentioned')
-
+                
     server_data = {"name": message.guild.name,
                    "channels": channelIDs}
-
+    
     with open(resource_file_path + 'servers.json') as file:
         data = json.load(file)
     data[str(message.guild.id)] = server_data
     with open(resource_file_path + 'servers.json', 'w') as file:
         file.write(json.dumps(data, indent=4))
-
+    
     await message.reply('Setup complete')
 
 
@@ -143,20 +143,20 @@ async def on_message(message):
     :param message: the message sent
     :return: n/a
     """
-
+    
     if message.author.bot:
         return
-
+    
     if message.content.find('@here') != -1 or message.content.find('@everyone') != -1:
         if not message.author.guild_permissions.mention_everyone:
-            await AntiScam.scan_message(message, client)
+            await AntiScam.scan_message(message)
     content = message.content.lower()
-
+    
     if message.guild is None or content.find(AntiScam.code) != -1 or message.author.guild_permissions.administrator:
         pass
     else:
         await AntiScam.scan_message(message, client)
-
+    
     if message.content.startswith(prefix):
         command = message.content[1:].lower().split(' ', 1)
         try:
@@ -173,7 +173,7 @@ def run_antiscam():
         inp = int(sys.argv[1])
     else:
         inp = int(input('Input a bot num\n1. Anti-scam\n'))
-
+    
     if inp == 1:
         client.run(os.environ.get('PUBLIC_ANTI-SCAM_TOKEN'))
 
