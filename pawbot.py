@@ -19,9 +19,6 @@ from main import eclipse_id
 
 start_time = time.time()
 
-with open(server_settings_path) as file:
-    data = json.load(file)
-
 prefix = '>'
 version_num = '4.0.0'
 
@@ -71,28 +68,6 @@ async def sync(interaction: discord.Interaction):
     await interaction.send("tree synced", ephemeral=True)
 
 
-@bot.tree.command(name='huh')
-async def huh(ctx: discord.Interaction):
-    """
-    Easter egg
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V 4.0.0
-    :param ctx: Message calling the command
-    """
-    await ctx.channel.send("We're no Strangers to love\n"
-                           "You know the rules and so do I!~\n"
-                           "A full commitments what I'm thinkin' of\n"
-                           "You wouldn't get this from, Any other guy.\n"
-                           "\n"
-                           "I just wanna tell you how I'm feeling\n"
-                           "gotta make you, understand!\n"
-                           "\n"
-                           "Never gonna give you up, Never gonna let you down\n"
-                           "Never gonna run around, and desert you\n"
-                           "Never gonna make you cry, Never gonna say goodbye\n"
-                           "Never gonna tell a lie, and hurt you")
-
-
 @bot.event
 async def on_ready():
     """
@@ -112,8 +87,7 @@ async def on_ready():
     await bot.add_cog(General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
-    await bot.add_cog(AntiScam.AntiScam(bot))
-    await bot.add_cog(Verif.Verfication(bot))
+    await bot.add_cog(Verif.Verification(bot))
     print('Cogs loaded')
 
 
@@ -121,7 +95,7 @@ scan_ignore = [1054172309147095130]
 
 
 @bot.event
-async def on_message(ctx):
+async def on_message(ctx: discord.Interaction):
     """
     Calls methods for every message.
     Last docstring edit: -Autumn V1.14.4
