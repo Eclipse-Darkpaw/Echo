@@ -32,7 +32,7 @@ game = discord.Game(f'{prefix}help for commands')
 client = bot
 
 
-@bot.hyrbid_command()
+@bot.hyrbid_command
 async def uptime(ctx: discord.Interaction):
     """
     Displays the time the bot has been running for.
@@ -46,7 +46,7 @@ async def uptime(ctx: discord.Interaction):
                                       time.gmtime(time.time() - start_time)))
 
 
-@bot.hybrid_command()
+@bot.hybrid_command
 async def version(ctx: discord.Interaction):
     """
     Displays the version of the bot being used
@@ -58,12 +58,12 @@ async def version(ctx: discord.Interaction):
     await ctx.channel.send(f'I am currently running version {version_num}')
 
 
-@bot.hybrid_command()
+@bot.hybrid_command
 async def mama(ctx):
     await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
 
 
-@bot.hybrid_command()
+@bot.hybrid_command
 async def microwave(ctx):
     """
     Microwave Gemini
@@ -75,7 +75,7 @@ async def microwave(ctx):
     await ctx.send('https://i.imgur.com/eOPKEV4.gif')
 
 
-@bot.hybrid_command()
+@bot.hybrid_command
 async def hug(ctx):
     """
     Hug Gemini
