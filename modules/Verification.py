@@ -221,8 +221,7 @@ class Verification(commands.Cog):
     @commands.guild_only()
     async def verify(self, ctx):
         """
-        The method that primarily handles member verification. All members must verify from this method. Sends DM to user,
-        asks user questions, then sends answers to the moderators in a designated chat
+        Verifiies members age and have read the rules
         Last docstring edit: -Autumn V4.0.0
         Last method edit: -Autumn V4.0.0
         :param message: Discord message calling the method
