@@ -5,16 +5,8 @@ import time
 from fileManagement import server_settings_path, server_warns_path
 from main import read_line, get_user_id
 
-async def timeout(message, client):
-    """
-    testing timeout functionality
-    :param message:
-    :param client:
-    :return:
-    """
 
-
-async def modmail(message, client): # DEPRECIATE
+async def modmail(message, client):
     """
     Sends a message to the moderators. Alerts the user if an error occurs during the process
     Last docstring edit: -Autumn V1.14.4
@@ -48,20 +40,7 @@ async def modmail(message, client): # DEPRECIATE
     await message.guild.get_channel(mail_inbox).send(embed=mail)
 
 
-async def suspend(message, user_id, reason, moderator=None):
-    """
-    Suspends a user from the server indefinitely.
-    :param message: Message triggering suspension
-    :param user_id: User id to suspend
-    :param reason: Reason for warn
-    :param moderator: Mod responsible for the suspension
-    :return: None
-    """
-    # TODO: Allow self to create automated warnings without sending a `>warn` message
-
-    if moderator is None:
-        moderator = message.author
-
+async def suspend(message, user_id, reason):
     # check message isn't in DMs
     if message.guild is None:
         await message.channel.send('Unable to warn in DMs. Please use this in a guild.')
@@ -88,7 +67,7 @@ async def suspend(message, user_id, reason, moderator=None):
     suspension = message.guild.get_channel(data[str(message.guild.id)]['channels']['suspended'])
     try:
         thread = await suspension.create_thread(name=thread_name, auto_archive_duration=1440)
-        await thread.send(f'<@{user_id}> You have been suspended by <@{moderator.id}> for excessive '
+        await thread.send(f'<@{user_id}> You have been suspended by <@{message.author.id}> for excessive '
                           f'infractions. If you have any questions, please send them in this thread.')
     except discord.Forbidden:
         await message.channel.send(f'<@{user_id}> suspended. unable to create thread')
