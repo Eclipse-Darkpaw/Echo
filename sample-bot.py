@@ -25,25 +25,19 @@ import time
 from discord.ext import commands
 # The version number isn't a necessary feature, but it is useful to confirm the bot is running the
 # most recent version of the code
-version_num = '1.1.0'
+start_time = time.time()
 
-# This is the bot prefix. This tells the bot what to look for at the start of a message.
 prefix = '>'
+version_num = '4.0.0'
 
-# This is the bot Token. It's like the bot's password. DO NOT SHARE THE TOKEN WITH ANYONE.
-token = ''
-
-# This sets the bot's Activity status. It allows the bot to go into more detail about its current
-# status
-game = discord.Game('Scanning for pings')
-
-# Allows the bot permissions in the server
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-# The client is the bot's discord account. It allows the bot to connect to discord and run commands
 bot = commands.Bot(command_prefix=prefix, intents=intents)
+
+game = discord.Game(f'{prefix}help for commands')
+client = bot
 
 async def ping(message):
     """
