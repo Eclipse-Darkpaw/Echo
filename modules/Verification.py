@@ -265,7 +265,7 @@ class Verification(commands.Cog):
             unverified_role_id = None
 
         if verified_role_id in ctx.guild.get_member(ctx.author.id).roles:   # what the fuck?
-            await ctx.channel.send('You are already verified')
+            await ctx.reply('You are already verified')
             return
 
         applicant = ctx.author

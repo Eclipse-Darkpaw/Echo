@@ -46,7 +46,7 @@ class Moderation(commands.Cog):
             await thread.send(f'<@{user.id}> You have been suspended by <@{ctx.author.id}> for excessive '
                               f'infractions. If you have any questions, please send them in this thread.')
         except discord.Forbidden:
-            await ctx.channel.send(f'<@{user.id}> suspended. unable to create thread')
+            await ctx.reply(f'<@{user.id}> suspended. unable to create thread')
 
     @commands.hybrid_command()
     @commands.guild_only()
@@ -178,7 +178,7 @@ class Moderation(commands.Cog):
                                       f"Given by {warn['issuer_name']}(`{warn['issuer_id']}`) on <t:{warn['time']}:d>",
                                 inline=False)
                 counter += 1
-            await ctx.channel.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     @commands.hybrid_command()
     async def remove_warn(self, ctx: discord.Interaction, user: discord.User, warn: int):
