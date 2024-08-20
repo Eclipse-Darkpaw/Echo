@@ -1,18 +1,15 @@
 import discord
-import json
 import modules.AntiScam as AntiScam
 import modules.General as General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
 import modules.refManagement as Ref
-import random
 import os
 import sys
 import time
 
 from discord.ext import commands
-from fileManagement import server_settings_path
 from main import eclipse_id
 
 # Keep imports in alphabetical order
@@ -20,7 +17,6 @@ from main import eclipse_id
 start_time = time.time()
 
 prefix = '>'
-version_num = '4.0.0'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -46,25 +42,14 @@ async def uptime(ctx: discord.Interaction):
                                       time.gmtime(time.time() - start_time)))
 
 
-@bot.hybrid_command()
-async def version(ctx: discord.Interaction):
-    """
-    Displays the version of the bot being used
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
-    :param message: Message calling the bot
-    :return: None
-    """
-    await ctx.channel.send(f'I am currently running version {version_num}')
-
-
 @bot.command()
 async def sync(interaction: discord.Interaction):
-    await interaction.send('Syncing Tree', ephemeral=False)
-    guild = discord.Object(id=interaction.guild.id)
-    bot.tree.copy_global_to(guild=guild)
-    await bot.tree.sync(guild=guild)
-    await interaction.send("tree synced", ephemeral=True)
+    if interaction.message.author.id == 749443249302929479:
+        await interaction.send('Syncing Tree', ephemeral=False)
+        guild = discord.Object(id=interaction.guild.id)
+        bot.tree.copy_global_to(guild=guild)
+        await bot.tree.sync(guild=guild)
+        await interaction.send("tree synced", ephemeral=True)
 
 
 @bot.event

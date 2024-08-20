@@ -5,6 +5,7 @@ import time
 import main
 from discord.ext import commands
 
+version_num = '4.0.1'
 
 class General(commands.Cog):
     def __init__(self, bot):
@@ -62,3 +63,14 @@ class General(commands.Cog):
                                "Never gonna run around, and desert you\n"
                                "Never gonna make you cry, Never gonna say goodbye\n"
                                "Never gonna tell a lie, and hurt you")
+
+    @commands.hybrid_command()
+    async def version(self, ctx: discord.Interaction):
+        """
+        Displays the version of the bot being used
+        Last docstring edit: -Autumn V4.0.1
+        Last method edit: -Autumn V4.0.0
+        :param ctx: Message calling the bot
+        :return: None
+        """
+        await ctx.channel.send(f'I am currently running version {version_num}')
