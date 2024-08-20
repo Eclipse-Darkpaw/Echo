@@ -11,6 +11,37 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def __log_warn__(self, ctx):
+        # load the json file
+        with open(server_warns_path) as file:
+            data = json.load(file)
+
+        # make sure the guild has an existing log entry
+        # if it doesn't, make one
+        try:
+            data[str(ctx.guild.id)]
+        except KeyError:
+            data[str(ctx.guild.id)] = {}
+
+        # Check the user has permission to use the command
+        if ctx.author.guild_permissions.manage_roles:
+            # check if the user has previous warns
+            try:
+                warns = data[str(ctx.guild.id)][str(user.id)]
+            except KeyError:
+                # if no previous warns, create empty list
+                warns = []
+            # save current time for calculations
+            warn_time = int(time.time())
+
+            # add the new warn to the list
+            warns.append({'time': warn_time,
+                          'issuer_id': int(ctx.author.id),
+                          'issuer_name': str(ctx.author),
+                          'reason': reason,
+                          })
+
+
     @commands.hybrid_command()
     @commands.guild_only()
     async def suspend(self, ctx: discord.Interaction, user: discord.User, reason: str):
@@ -27,26 +58,63 @@ class Moderation(commands.Cog):
         with open(server_warns_path) as file:
             data = json.load(file)
 
+        # make sure the guild has an existing log entry
+        # if it doesn't, make one
         try:
-            warn_log_id = data[str(ctx.guild.id)]['channels']['warn log']
+            data[str(ctx.guild.id)]
         except KeyError:
-            await ctx.send('Unable to log to warn channel.')
-            return
+            data[str(ctx.guild.id)] = {}
 
-        warn_log = ctx.guild.get_channel(warn_log_id)
+        # Check the user has permission to use the command
+        if ctx.author.guild_permissions.manage_roles:
+            # check if the user has previous warns
+            try:
+                warns = data[str(ctx.guild.id)][str(user.id)]
+            except KeyError:
+                # if no previous warns, create empty list
+                warns = []
+            # save current time for calculations
+            warn_time = int(time.time())
 
-        await user.add_roles(ctx.guild.get_role(data[str(ctx.guild.id)]['roles']['suspended']))
-        await warn_log.send(f'<@{user.id}> suspended for {reason}.')
+            # add the new warn to the list
+            warns.append({'time': warn_time,
+                          'issuer_id': int(ctx.author.id),
+                          'issuer_name': str(ctx.author),
+                          'reason': reason,
+                          })
+            with open(server_warns_path, 'w') as file:
+                file.write(json.dumps(data, indent=4))
 
-        thread_name = f'{user.name} {time.strftime("%Y-%m-%d", time.gmtime(time.time()))} supsension (' \
-                      f'TBD)'
-        suspension = ctx.guild.get_channel(data[str(ctx.guild.id)]['channels']['suspended'])
-        try:
-            thread = await suspension.create_thread(name=thread_name, auto_archive_duration=1440)
-            await thread.send(f'<@{user.id}> You have been suspended by <@{ctx.author.id}> for excessive '
-                              f'infractions. If you have any questions, please send them in this thread.')
-        except discord.Forbidden:
-            await ctx.reply(f'<@{user.id}> suspended. unable to create thread')
+            # load the json file
+            with open(server_settings_path) as file:
+                data = json.load(file)
+
+            try:
+                warn_log_id = data[str(ctx.guild.id)]['channels']['warn log']
+            except KeyError:
+                await ctx.send('Unable to log to warn channel.')
+                return
+
+            warn_log = ctx.guild.get_channel(warn_log_id)
+
+            await user.add_roles(ctx.guild.get_role(data[str(ctx.guild.id)]['roles']['suspended']))
+            await warn_log.send(f'<@{user.id}> suspended for {reason}.')
+
+            thread_name = f'{user.name} {time.strftime("%Y-%m-%d", time.gmtime(time.time()))} supsension (' \
+                          f'TBD)'
+            suspension = ctx.guild.get_channel(data[str(ctx.guild.id)]['channels']['suspended'])
+            try:
+                thread = await suspension.create_thread(name=thread_name, auto_archive_duration=1440)
+                await thread.send(f'<@{user.id}> You have been suspended by <@{ctx.author.id}> for excessive '
+                                  f'infractions. If you have any questions, please send them in this thread.')
+                await ctx.reply(f'<@{user.id}> suspended.')
+            except discord.Forbidden:
+                await ctx.reply(f'<@{user.id}> suspended. unable to create thread')
+        else:
+            await ctx.reply('Invalid Permissions')
+
+
+
 
     @commands.hybrid_command()
     @commands.guild_only()
