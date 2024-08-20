@@ -288,6 +288,18 @@
                 "issuer_id": 749443249302929479,
                 "issuer_name": "autumnal.equinox",
                 "reason": "If a joke about someone doesn't land properly, just apologize for it instead of doubling down"
+            },
+            {
+                "time": 1722284863,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "Please be respectful to other server members (3 day ban awarded)"
+            },
+            {
+                "time": 1722663624,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "Immediately using the word we told you not to use, no less than 3 minutes after getting back"
             }
         ],
         "1005229354432864266": [
@@ -329,6 +341,14 @@
                 "issuer_id": 749443249302929479,
                 "issuer_name": "autumnal.equinox",
                 "reason": "not repost memes that were deleted"
+            }
+        ],
+        "749443249302929479": [
+            {
+                "time": 1722661234,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumnal.equinox",
+                "reason": "test"
             }
         ]
     }
