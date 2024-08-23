@@ -5,7 +5,7 @@ import time
 import main
 from discord.ext import commands
 
-version_num = '4.0.1'
+version_num = '4.0.2'
 
 class General(commands.Cog):
     def __init__(self, bot):
@@ -37,11 +37,11 @@ class General(commands.Cog):
         """
 
         if ctx.author.id == main.eclipse_id or ctx.author.guild_permissions.administrator:
-            await ctx.send('Goodbye :wave:')
+            await ctx.reply('Goodbye :wave:')
             await ctx.bot.change_presence(activity=discord.Game('Going offline'))
             sys.exit()
         else:
-            await ctx.send('You do not have permission to turn me off!')
+            await ctx.reply('You do not have permission to turn me off!')
 
     @commands.hybrid_command(name='huh')
     async def huh(self, ctx: discord.Interaction):
@@ -51,7 +51,7 @@ class General(commands.Cog):
         Last method edit: -Autumn V 4.0.0
         :param ctx: Message calling the command
         """
-        await ctx.channel.send("We're no Strangers to love\n"
+        await ctx.reply("We're no Strangers to love\n"
                                "You know the rules and so do I!~\n"
                                "A full commitments what I'm thinkin' of\n"
                                "You wouldn't get this from, Any other guy.\n"
@@ -73,4 +73,4 @@ class General(commands.Cog):
         :param ctx: Message calling the bot
         :return: None
         """
-        await ctx.channel.send(f'I am currently running version {version_num}')
+        await ctx.reply(f'I am currently running version {version_num}')
