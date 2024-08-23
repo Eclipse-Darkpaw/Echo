@@ -1,7 +1,7 @@
 import discord
 import json
 import modules.AntiScam as AntiScam
-import modules.General as General
+import modules.General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
@@ -20,7 +20,7 @@ from main import eclipse_id
 start_time = time.time()
 
 prefix = '>'
-version_num = '4.0.0'
+version_num = '4.0.1'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -46,6 +46,7 @@ async def uptime(ctx: discord.Interaction):
                                       time.gmtime(time.time() - start_time)))
 
 
+'''
 @bot.hybrid_command()
 async def version(ctx: discord.Interaction):
     """
@@ -56,6 +57,7 @@ async def version(ctx: discord.Interaction):
     :return: None
     """
     await ctx.send(f'I am currently running version {version_num}')
+'''
 
 
 @bot.command()
@@ -83,7 +85,7 @@ async def on_ready():
 
     print('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
-    await bot.add_cog(General.General(bot))
+    await bot.add_cog(modules.General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
