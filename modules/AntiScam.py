@@ -96,7 +96,7 @@ async def scan_message(ctx: discord.Interaction):
             bans += 1
             if word == '​':
                 words.append('Zero Width Space')
-            elif word == 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*':
+            elif word == 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'.lower():
                 words.append('Standard EICARS Test String')
             else:
                 words.append(word)
@@ -107,6 +107,7 @@ async def scan_message(ctx: discord.Interaction):
         if index != -1:
             flags += 1
             words.append(word)
+            print(word)
 
     # if a word in the white list appears, remove a flag.
     for word in whitelist:
@@ -118,7 +119,10 @@ async def scan_message(ctx: discord.Interaction):
         return  # skips messages with less than 2 flags and no bans
     else:
         if flags >= 3 or bans > 0:
-            await ctx.message.delete()
+            try:
+                await ctx.message.delete()
+            except AttributeError:
+                await ctx.delete()
             await ctx.send('Your message has been deleted. If this was an error, please send the code '
                                        '`plsdontban` somewhere in your message to get around our filters.')
 
