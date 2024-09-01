@@ -82,16 +82,16 @@ scan_ignore = [1054172309147095130]
 
 
 @bot.event
-async def on_message(ctx: discord.Interaction):
+async def on_message(msg: discord.Message):
     """
     Calls methods for every message.
     Last docstring edit: -Autumn V1.14.4
     Last method edit: -Autumn V4.0.0
     :param ctx: The interaction calling the function
     """
-    await bot.process_commands(ctx)
+    await bot.process_commands(msg)
 
-    if ctx.author.bot:
+    if msg.author.bot:
         return
 
     content = ctx.content.lower()

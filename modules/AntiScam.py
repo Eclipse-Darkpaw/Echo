@@ -61,7 +61,7 @@ counter = 0
 # TODO: add an auto suspend feature
 
 
-async def scan_message(ctx: discord.Interaction):
+async def scan_message(msg: discord.Message):
     global counter
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
@@ -73,17 +73,17 @@ async def scan_message(ctx: discord.Interaction):
     """
     with open(resource_file_path + 'servers.json') as file:
         try:
-            log_channel = json.load(file)[str(ctx.guild.id)]['channels']['log']
+            log_channel = json.load(file)[str(msg.guild.id)]['channels']['log']
         except KeyError as er:
             # send a message every 50 messages
             if counter % 50 == 0:
-                await ctx.channel.send(f'Error: Unable to locate log channel ID.')
+                await msg.channel.send(f'Error: Unable to locate log channel ID.')
             counter += 1
             return
     words = []
     flags = 0
     bans = 0
-    content = ctx.content.lower()
+    content = msg.content.lower()
 
     # scan the banned word list first. if any appear, delete immediately.
     for word in banlist:
@@ -114,36 +114,31 @@ async def scan_message(ctx: discord.Interaction):
         return  # skips messages with less than 2 flags and no bans
     else:
         if flags >= 3 or bans > 0:
-            try:
-                await ctx.message.delete()
-                await ctx.send('Your message has been deleted. If this was an error, please send the code '
-                                       '`plsdontban` somewhere in your message to get around our filters.')
-            except AttributeError:
-                channel = ctx.channel
-                await ctx.delete()
-                await channel.send('Your message has been deleted. If this was an error, please send the code '
-                                       '`plsdontban` somewhere in your message to get around our filters.')
+            channel = msg.channel
+            await msg.delete()
+            await channel.send('Your message has been deleted. If this was an error, please send the code '
+                                   '`plsdontban` somewhere in your message to get around our filters.')
 
-        content = ctx.message.content.replace('@', '@ ')
+        content = msg.content.replace('@', '@ ')
 
-        channel = ctx.guild.get_channel(log_channel)
+        channel = msg.guild.get_channel(log_channel)
 
-        embed = discord.Embed(title='Possible Scam in #' + str(ctx.channel.name), color=0xFF0000)
-        embed.set_author(name='@' + str(ctx.author.name), icon_url=ctx.author.avatar.url)
+        embed = discord.Embed(title='Possible Scam in #' + str(msg.channel.name), color=0xFF0000)
+        embed.set_author(name='@' + str(msg.author.name), icon_url=msg.author.avatar.url)
         embed.add_field(name='message', value=content, inline=False)
         embed.add_field(name='Flags', value=str(flags))
         embed.add_field(name='Banned Strings', value=str(bans))
         embed.add_field(name='Words Flagged', value=words, inline=False)
-        embed.add_field(name='Sender ID', value=ctx.author.id)
-        embed.add_field(name='Channel ID', value=ctx.channel.id)
-        embed.add_field(name='Message ID', value=ctx.message.id)
+        embed.add_field(name='Sender ID', value=msg.author.id)
+        embed.add_field(name='Channel ID', value=msg.channel.id)
+        embed.add_field(name='Message ID', value=msg.id)
         lst = str(words)
         lst.replace('​','Zero Width Space Character')
         if flags < 3 and bans == 0:
-            embed.add_field(name='URL', value=ctx.message.jump_url, inline=False)
+            embed.add_field(name='URL', value=msg.jump_url, inline=False)
         await channel.send(embed=embed)
         with open(scam_log_path(), 'a') as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
-            log.write(f'{ctx.message.id},{ctx.message.created_at},{ctx.message.guild.id},{ctx.message.author.id},'
-                      f'{ctx.id},{flags},{bans},{lst.replace(","," - ")},"{ctx.message.content.replace(
+            log.write(f'{msg.id},{msg.created_at},{msg.guild.id},{msg.author.id},'
+                      f'{msg.id},{flags},{bans},{lst.replace(",", " - ")},"{msg.content.replace(
                           '\n', '\\n')}"\n')
