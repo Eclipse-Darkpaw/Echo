@@ -74,6 +74,7 @@ async def scan_message(ctx: discord.Interaction):
     print("Scanning message")
     with open(resource_file_path + 'servers.json') as file:
         try:
+            print('log channel found')
             log_channel = json.load(file)[str(ctx.guild.id)]['channels']['log']
         except KeyError as er:
             # send a message every 50 messages
@@ -88,6 +89,7 @@ async def scan_message(ctx: discord.Interaction):
     content = ctx.content.lower()
 
     # scan the banned word list first. if any appear, delete immediately.
+    print(f'scanning ban list. {content}')
     for word in banlist:
         index = content.find(word)
         if index != -1:
