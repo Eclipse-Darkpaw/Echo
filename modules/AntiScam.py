@@ -74,7 +74,7 @@ async def scan_message(ctx: discord.Interaction):
     with open(resource_file_path + 'servers.json') as file:
         try:
             log_channel = json.load(file)[str(ctx.guild.id)]['channels']['log']
-        except KeyError er:
+        except KeyError as er:
             # send a message every 50 messages
             print(er)
             if counter % 50 == 0:
