@@ -76,7 +76,7 @@ async def scan_message(ctx: discord.Interaction):
             log_channel = json.load(file)[str(ctx.guild.id)]['channels']['log']
         except KeyError:
             if counter % 50 == 0:
-                await ctx.channel.send("Anti-scam scanning is currently offline.")
+                await ctx.send("Anti-scam scanning is currently offline.")
             counter += 1
             return
     words = []
