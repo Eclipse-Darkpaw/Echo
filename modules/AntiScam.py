@@ -121,9 +121,12 @@ async def scan_message(ctx: discord.Interaction):
         if flags >= 3 or bans > 0:
             try:
                 await ctx.message.delete()
+                await ctx.send('Your message has been deleted. If this was an error, please send the code '
+                                       '`plsdontban` somewhere in your message to get around our filters.')
             except AttributeError:
+                channel = ctx.channel
                 await ctx.delete()
-            await ctx.send('Your message has been deleted. If this was an error, please send the code '
+                await channel.send('Your message has been deleted. If this was an error, please send the code '
                                        '`plsdontban` somewhere in your message to get around our filters.')
 
         content = ctx.message.content.replace('@', '@ ')
