@@ -1,10 +1,10 @@
 import discord
 import json
-#import modules.AntiScam as AntiScam
+import modules.AntiScam as AntiScam
 import modules.General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
-#import modules.Verification as Verif
+import modules.Verification as Verif
 import modules.refManagement as Ref
 import random
 import os
