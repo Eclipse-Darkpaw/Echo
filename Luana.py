@@ -46,20 +46,6 @@ async def uptime(ctx: discord.Interaction):
                                       time.gmtime(time.time() - start_time)))
 
 
-'''
-@bot.hybrid_command()
-async def version(ctx: discord.Interaction):
-    """
-    Displays the version of the bot being used
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
-    :param message: Message calling the bot
-    :return: None
-    """
-    await ctx.send(f'I am currently running version {version_num}')
-'''
-
-
 @bot.command()
 async def sync(interaction: discord.Interaction):
     await interaction.send('Syncing Tree', ephemeral=False)
