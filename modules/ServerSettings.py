@@ -44,7 +44,7 @@ class Settings(commands.Cog):
         if warn_log is not None:
             server_data['warn_log'] = warn_log.id
 
-        data[str(ctx.guild.id)]['roles'] = server_data
+        data[str(ctx.guild.id)]['channels'] = server_data
         with open(resource_file_path + 'servers.json', 'w') as file:
             file.write(json.dumps(data, indent=4))
             await ctx.reply('Channels set.')
