@@ -5,7 +5,7 @@ import time
 import main
 from discord.ext import commands
 
-version_num = '4.0.2'
+version_num = '4.0.3'
 
 class General(commands.Cog):
     def __init__(self, bot):
