@@ -18,13 +18,13 @@ class Settings(commands.Cog):
                             scam_log: discord.TextChannel = None,
                             warn_log: discord.TextChannel = None):
         """
-
-        :param ctx:
-        :param application:
-        :param questioning:
+        Designates important channels
+        :param ctx: INteraction
+        :param application: Where Membership applications go
+        :param questioning: for quesitioning unverified applicants
         :param mailbox:
-        :param scam_log:
-        :param warn_log:
+        :param scam_log: where to log scams
+        :param warn_log: where to log warns
         :return:
         """
         with open(resource_file_path + 'servers.json') as file:
@@ -56,6 +56,16 @@ class Settings(commands.Cog):
                           unverified: discord.Role = None,
                           suspended: discord.Role = None,
                           mod: discord.Role = None):
+        """
+        Sets roles the bot uses
+        :param ctx: Interaction calling the command
+        :param member: Verified member role
+        :param questioning: questioning unverified role
+        :param unverified: Unverified member role
+        :param suspended: Suspended member role
+        :param mod: moderator role
+        :return:
+        """
         with open(resource_file_path + 'servers.json') as file:
             data = json.load(file)
 
