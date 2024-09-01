@@ -71,6 +71,7 @@ async def scan_message(ctx: discord.Interaction):
     :param message: the message sent
     :return: None
     """
+    print("Scanning message")
     with open(resource_file_path + 'servers.json') as file:
         try:
             log_channel = json.load(file)[str(ctx.guild.id)]['channels']['log']
