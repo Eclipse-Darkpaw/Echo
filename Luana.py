@@ -74,7 +74,7 @@ async def on_ready():
     await bot.add_cog(modules.General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
-    #await bot.add_cog(Verif.Verification(bot))
+    await bot.add_cog(Verif.Verification(bot))
     print('Cogs loaded')
 
 
