@@ -67,16 +67,18 @@ async def scan_message(ctx: discord.Interaction):
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
     does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.5.2
+    Last method edit: -Autumn V4.0.3
     :param message: the message sent
     :return: None
     """
     with open(resource_file_path + 'servers.json') as file:
         try:
             log_channel = json.load(file)[str(ctx.guild.id)]['channels']['log']
-        except KeyError:
+        except KeyError er:
+            # send a message every 50 messages
+            print(er)
             if counter % 50 == 0:
-                await ctx.channel.send("Anti-scam scanning is currently offline.")
+                await ctx.channel.send(f'Error: Please check the console for more info')
             counter += 1
             return
     words = []
