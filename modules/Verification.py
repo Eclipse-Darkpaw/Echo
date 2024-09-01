@@ -93,7 +93,7 @@ class Application:
         dm = await self.applicant.create_dm()
 
         for question in self.application_questions:
-            if question == self.application_questions[0]:
+            if code is not None and question == self.application_questions[0]:
                 # server password checker
                 # only ask for code if the code is not None and no guesses have been made
                 if code is None:
