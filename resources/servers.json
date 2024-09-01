@@ -195,6 +195,21 @@
             "unverified": 1279637236471697531,
             "suspended": 1279654032205414451,
             "mod": 1279591719091830845
-        }
+        },
+        "password": false,
+        "questions": [
+            "What is your nickname?",
+            "How old are you?",
+            "When is your birthday? Please format it like January 1, 1970",
+            "Where did you get the link from? Please be specific. If it was a user, please use the full name and numbers(e.g. Echo#0109)",
+            "Why do you want to join?"
+        ],
+        "questions_display": [
+            "Nickname",
+            "Age",
+            "Birthday",
+            "Link source",
+            "Reason for join"
+        ]
     }
 }
