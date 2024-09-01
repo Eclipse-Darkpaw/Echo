@@ -84,7 +84,10 @@ class Application:
             data = json.load(file)
 
         # find the server code word if there is one.
-        code = data[str(self.applicant_guild.id)]['codeword']
+        try:
+            code = data[str(self.applicant_guild.id)]['codeword']
+        except:
+            code = None
 
         # dm the applicant and ask them questions
         dm = await self.applicant.create_dm()
