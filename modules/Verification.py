@@ -176,15 +176,16 @@ class Application:
             await confirm_msg.add_reaction('🆗')
             application_channel = self.applicant_guild.get_channel(data[str(self.applicant_guild.id)]['channels'][
                                                                        'application'])
-            await application_channel.send(content=f'<@{self.applicant.id}>', embed=self.gen_embed())
+            await application_channel.send(content=f'<@{self.applicant.id}>', embed=self.gen_embed(rejected=True))
             await dm.send("Please restart")
-            self.responses = [self.passguesses]
+            if code is not None:
+                self.responses = [self.passguesses]
             self.attempts += 1
 
             return -2, self.passguesses
 
 
-    def gen_embed(self, type=0):
+    def gen_embed(self, type=0, rejected=False):
         """
         generates the embed for the application.
         Last docstring edit: -Autumn V3.4.0
@@ -192,8 +193,10 @@ class Application:
         :param type: Type of embed to generate. 0 = for mods, 1 = for users
         :return:
         """
-
-        embed = discord.Embed(title=f'Application #{self.count}, Attempt #{self.attempts}')
+        title = f'Application #{self.count}, Attempt #{self.attempts}'
+        if rejected:
+            title = f'{title} [INCOMPLETE]'
+        embed = discord.Embed(title=title)
         try:
             try:
                 icon_url = self.applicant.guild_avatar.url
@@ -289,8 +292,7 @@ class Verification(commands.Cog):
         if questioning_error_code == -1:    # Got password wrong too many times
 
             try:
-                await channel.send(f'<@!{ctx.author.id}> kicked for excessive'
-                                                                          f' password guesses.\n{guesses}')
+                await channel.send(f'<@!{ctx.author.id}> kicked for excessive password guesses.\n{guesses}')
                 await ctx.guild.kick(ctx.author, reason='Too many failed password attempts')
             except discord.Forbidden:       # User cannot be kicked
                 await channel.send("Unable to complete task. Please verify my "
