@@ -1,12 +1,10 @@
 import discord
 import json
-# import sunreek
 import datetime
 
 from discord.ext import commands
 
-from difflib import SequenceMatcher
-from fileManagement import server_settings_path, resource_file_path
+from fileManagement import server_settings_path, resource_file_path, artfight_members_path
 from main import read_line
 from random import randint
 
@@ -20,7 +18,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         self.team2_score = None
         self.channel = None
 
-    def timecheck(self, startday: int = 10, endday: int =17) -> bool:
+    def timecheck(self, startday: int = 10, endday: int = 17) -> bool:
         """
         returns True if between December 10 - 17. Ensures commands are run at the right time
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
@@ -86,6 +84,9 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :return: None
         """
         progress = None
+
+        self.team1_score = 0
+        self.team2_score = 0
 
         async def update_progress(progress=None) -> discord.Message:
             msg = "**__Assignments__**"
@@ -189,17 +190,15 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :param team: Team to join
         :return:
         """
-        month = int(datetime.datetime.now().strftime("%m"))
-        day = int(datetime.datetime.now().strftime("%d"))
 
         # Ensure the artfight is going on.
         if not self.timecheck():
             # If the time is wrong, stop users from using the command.
             await ctx.send("Artfight is not happening now.")
-            return
+            #return
 
         # Do not assign a team if a user is already on one
-        if self.teamcheck():
+        if self.teamcheck(ctx):
             await ctx.send("You are already on a team")
             return
 
@@ -225,6 +224,19 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             await ctx.reply(f"I have no idea what team you're trying to join. team <@&{team}> is not valid. Please try "
                             f"again")
             return
+
+        with open(artfight_members_path()) as file:
+            data = json.load(file)
+
+        try:
+            data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
+        except KeyError:
+            data[str(ctx.guild.id)] = {}
+            data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
+
+        with open(artfight_members_path(), 'w') as file:
+            file.write(json.dumps(data, indent=4))
+
         await ctx.reply(f'You have been added to <@&{team}>')
 
     @commands.hybrid_command(name='submit')
@@ -257,36 +269,38 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
         if artfight_day <= 0:
             await ctx.send('Artfight has not started yet.')
-            return
+            #return
 
         await dm.send(f'It is currently Artfight Day {artfight_day}. Please '
                       f'make sure you are following the prompt for today')
+        responses = []
+        artfight_questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch'
+                              '\n3:Black&White Lineart\n4:Full colored\nPlease reply with the corresponding number',
+                              'Please reply with the number of OCs/characters belonging to the other team in your '
+                              'submission',
+                              'Is this shaded? Respond "Y" if yes, anything else for no',
+                              'Is there a background? Respond "Y" if yes, anything else for no',
+                              f'Did you follow the prompt for day '
+                              f'{artfight_day}? Respond "Y" if yes, '
+                              f'anything else for no',
+                              'What is the title of this piece?']
         while True:
-            responses = []
             try:
-                artfight_questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch'
-                                      '\n3:Black&White Lineart\n4:Full colored\nPlease reply with the corresponding number',
-                                      'Please reply with the number of OCs/characters belonging to the other team in your '
-                                      'submission',
-                                      'Is this shaded? Respond "Y" if yes, anything else for no',
-                                      'Is there a background? Respond "Y" if yes, anything else for no',
-                                      f'Did you follow the prompt for day '
-                                      f'{artfight_day}? Respond "Y" if yes, '
-                                      f'anything else for no',
-                                      'What is the title of this piece?']
                 image = await read_line(self.bot, dm, 'What image are you submitting? Only submit one image.',
                                         ctx.author,
                                         delete_prompt=False, delete_response=False)
                 link = image.attachments[0].url
-
-                for question in artfight_questions:
-                    question = f'<@!{ctx.author.id}> {question}'
-                    response = await read_line(self.bot, dm, question, ctx.author, delete_prompt=False,
-                                               delete_response=False)
-                    responses.append(response)
+            except IndexError:
+                dm.send('No image attached.')
             except discord.Forbidden:
                 await ctx.reply('Unable to DM You, please change your privacy settings.')
                 return -1
+
+            for question in artfight_questions:
+                question = f'<@!{ctx.author.id}> {question}'
+                response = await read_line(self.bot, dm, question, ctx.author, delete_prompt=False,
+                                           delete_response=False)
+                responses.append(response)
 
             # What type of art is it?
             if responses[0].content[0] == '1':
@@ -298,15 +312,17 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             elif responses[0].content[0] == '4':
                 base = 30
             else:
-                await dm.send(f'Unable to score your submission. \n`Expected int 1-4, was given "{responses[0].content}"`')
-                return -2
+                await dm.send(f'Unable to score your submission. Please try again. \n`Expected int 1-4, was given '
+                              f'"{responses[0].content}"`')
+                continue
 
             # Score how many characters there are in a piece
             try:
                 num_chars = int(responses[1].content)
             except ValueError:
-                await dm.send(f'Unable to score your submission. \n`Expected int, was given "{responses[1].content}"`')
-                return -2
+                await dm.send(f'Unable to score your submission. Please try again. \n`Expected int, was given '
+                              f'"{responses[1].content}"`')
+                continue
 
             # is the piece shaded
             if responses[2].content[0].lower() == 'y':
@@ -356,9 +372,20 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
                 with open(server_settings_path, 'w') as file:
                     file.write(json.dumps(data, indent=4))
+
+                with open(artfight_members_path()) as file:
+                    data = json.load(file)
+
+                # Save the score to the user data file for tracking and validation
+                data[str(ctx.guild.id)][str(ctx.author.id)]['points'] += score
+
+                with open(artfight_members_path(), 'w') as file:
+                    file.write(json.dumps(data, indent=4))
+
                 await dm.send('Score counted!\n'
                               'Sending Submission')
                 await ctx.guild.get_channel(self.channel).send(embed=embed)
+                return
 
             else:
                 await dm.send('Submission cancelled. Restarting the grading.')
@@ -448,7 +475,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                 data[str(ctx.guild.id)]['artfight']['scores']['team2'] -= int(score)
             else:
                 await ctx.send(f"I have no idea what team you're trying to remove points from. team <@&{team}> is not "
-                                f"valid. Please try again")
+                               f"valid. Please try again")
                 return
 
             with open(server_settings_path, 'w') as file:
@@ -456,5 +483,25 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             await ctx.send(f'{score} ornaments removed from {name}. Data saved.')
         else:
             await ctx.send('Invalid argument')
+
+    @commands.hybrid_command(name='players')
+    @commands.guild_only()
+    async def players(self, ctx):
+        """
+        Lists all the players, what team theyre on, and points contributed
+        :param ctx:
+        :return:
+        """
+        with open(artfight_members_path()) as file:
+            data = json.load(file)
+
+        msg = '# Player List'
+        for user in data[str(ctx.guild.id)]:
+            msg = (f'{msg}\n<@{user}> - <@&{data[str(ctx.guild.id)][str(user)]['team']}> - '
+                   f'{data[str(ctx.guild.id)][str(user)]['points']}')
+
+        await ctx.send(msg)
+
+
 
 
