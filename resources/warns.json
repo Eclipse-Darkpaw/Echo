@@ -350,6 +350,14 @@
                 "issuer_name": "autumnal.equinox",
                 "reason": "test"
             }
+        ],
+        "936449056404811866": [
+            {
+                "time": 1729200666,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumna1equin0x.pet",
+                "reason": "Do not do things mods explictly said not to do."
+            }
         ]
     }
 }
