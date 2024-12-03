@@ -41,7 +41,6 @@ class Moderation(commands.Cog):
                           'reason': reason,
                           })
 
-
     @commands.hybrid_command()
     @commands.guild_only()
     async def suspend(self, ctx: discord.Interaction, user: discord.User, reason: str):
@@ -112,9 +111,6 @@ class Moderation(commands.Cog):
                 await ctx.reply(f'<@{user.id}> suspended. unable to create thread')
         else:
             await ctx.reply('Invalid Permissions')
-
-
-
 
     @commands.hybrid_command()
     @commands.guild_only()
