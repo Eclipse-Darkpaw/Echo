@@ -6,6 +6,7 @@ import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
 import modules.refManagement as Ref
+import modules.Artfight as Artfight
 import random
 import os
 import sys
@@ -23,7 +24,7 @@ with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
 prefix = '}'
-version_num = '4.0.0'
+version_num = '4.1.0'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -351,6 +352,7 @@ async def on_ready():
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
+    await bot.add_cog(Artfight.Artfight(bot))
     print('Cogs loaded')
 
 
