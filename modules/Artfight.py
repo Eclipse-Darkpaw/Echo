@@ -11,13 +11,6 @@ from main import read_line
 from random import randint
 
 
-class Team:
-    def __init__(self, id: int = 0, name: str = '', points: int = 0):
-        self.id = id
-        self.name = name
-        self.points = points
-
-
 class Artfight(commands.GroupCog, name="artfight", description="All the commands for the annual artfight"):
     def __init__(self, bot):
         self.bot = bot
@@ -267,7 +260,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             return
 
         await dm.send(f'It is currently Artfight Day {artfight_day}. Please '
-                              f'make sure you are following the prompt for today')
+                      f'make sure you are following the prompt for today')
         while True:
             responses = []
             try:
@@ -370,45 +363,6 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             else:
                 await dm.send('Submission cancelled. Restarting the grading.')
 
-    """@commands.hybrid_command()
-    @commands.guild_only()
-    async def artfight(self, ctx, message, month, day):
-        print(f'{month}-{day}')
-        with open(server_settings_path) as file:
-            data = json.load(file)
-        try:
-            artfight_team1_score = data[str(message.guild.id)]['artfight']['scores']['team1']
-            artfight_team2_score = data[str(message.guild.id)]['artfight']['scores']['team2']
-        except KeyError:
-            artfight_team1_score, artfight_team2_score = 0, 0
-
-        try:
-            team1 = message.guild.get_role(data[str(message.guild.id)]['artfight']['roles']['team1'])
-            team2 = message.guild.get_role(data[str(message.guild.id)]['artfight']['roles']['team2'])
-        except KeyError:
-            self.team1, self.team2 = None, None
-        artfight_channel = None
-
-        command = message.content[1:].split(' ', 3)
-
-        artfight_embed = discord.Embed(title='Artfight Command List',
-                                       description='This is the commands for the annual Art Fight',
-                                       color=0x45FFFF)
-        artfight_embed.add_field(name='join',
-                                 value='Assigns a user to a team ',
-                                 inline=False)
-        artfight_embed.add_field(name='scores',
-                                 value='shows the team scores',
-                                 inline=False)
-        artfight_embed.add_field(name='submit',
-                                 value='This is how you submit art. See <#787316128614973491> for scoring.',
-                                 inline=False)
-        artfight_embed.add_field(name='remove [1/2] [score to remove]',
-                                 value='Takes score away from a team (1/2). Use negative numbers to add '
-                                       'score.\nMod only.',
-                                 inline=False)
-        await message.channel.send(embed=artfight_embed)"""
-
     @commands.hybrid_command(name='score')
     @commands.guild_only()
     async def scores(self, ctx):
@@ -463,11 +417,9 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         await ctx.reply(content=msg, embed=score_embed)
         return
 
-
-
     @commands.hybrid_command(name='remove')
     @commands.guild_only()
-    async def remove(self, ctx, team, score):
+    async def remove(self, ctx, team: discord.Role, score: int):
         """
         Takes score away from a team (1/2). Use negative numbers to add score. Mod only.
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
@@ -477,19 +429,32 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :param score: Score to remove
         :return:
         """
+        # Do not take points if the roles are not set.
+        if self.team1 is None or self.team2 is None:
+            await ctx.send('Artfight roles not set. Unable to assign team.')
+            return
+
+        # Discord passes the full role object. We only need the ID for this to work.
+        name = team.name
+        team = team.id
+
         if ctx.author.guild_permissions.manage_roles:
             with open(server_settings_path) as file:
                 data = json.load(file)
 
-            if team == '1':
+            if team == self.team1:
                 data[str(ctx.guild.id)]['artfight']['scores']['team1'] -= int(score)
-                await ctx.reply(f'{score} ornaments removed from {self.team1.name}')
-            elif team == '2':
+            elif team == self.team2:
                 data[str(ctx.guild.id)]['artfight']['scores']['team2'] -= int(score)
-                await ctx.reply(f'{score} ornaments removed from {self.team2.name}')
+            else:
+                await ctx.send(f"I have no idea what team you're trying to remove points from. team <@&{team}> is not "
+                                f"valid. Please try again")
+                return
 
             with open(server_settings_path, 'w') as file:
                 file.write(json.dumps(data, indent=4))
-            await ctx.reply('Data saved')
+            await ctx.send(f'{score} ornaments removed from {name}. Data saved.')
         else:
-            await ctx.reply('Invalid argument')
+            await ctx.send('Invalid argument')
+
+
