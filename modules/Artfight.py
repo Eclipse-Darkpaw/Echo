@@ -420,6 +420,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :return:
         """
         if self.timecheck():
+            pass
 
         if ctx.author.guild_permissions.manage_roles:
             score_embed = discord.Embed(title='Team scores')
