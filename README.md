@@ -21,6 +21,9 @@ https://www.pivotaltracker.com/n/projects/2462509
 
 
 ## Change Log
+### 4.1.0 / Artfight update
+* Updated the artfight code to use slash commands.
+
 ### 4.0.0 / Slash command update
 * Added slash command support.
 * Minor UI modications
