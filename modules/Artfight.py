@@ -192,10 +192,10 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         """
 
         # Ensure the artfight is going on.
-        if not self.timecheck():
+        if not self.timecheck(startday=7):
             # If the time is wrong, stop users from using the command.
             await ctx.send("Artfight is not happening now.")
-            #return
+            return
 
         # Do not assign a team if a user is already on one
         if self.teamcheck(ctx):
@@ -269,7 +269,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
         if artfight_day <= 0:
             await ctx.send('Artfight has not started yet.')
-            #return
+            return
 
         await dm.send(f'It is currently Artfight Day {artfight_day}. Please '
                       f'make sure you are following the prompt for today')
@@ -357,15 +357,21 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             embed.color = ctx.author.color
 
             await dm.send(embed=embed)
-            response = await read_line(self.bot, dm, 'Do you want to submit this? "Y" for yes.', ctx.author,
+            response = await read_line(self.bot,
+                                       dm,
+                                       'Do you want to submit this?\n'
+                                       '"Y" for yes, "C" to cancel, anything else to restart.',
+                                       ctx.author,
                                        delete_prompt=False, delete_response=False)
 
             if response.content.lower() == 'y':
-
                 if team_num == 1:
                     self.team1_score += score
                 elif team_num == 2:
                     self.team2_score += score
+            if response.content.lower() == 'c':
+                await dm.send('Submission cancelled.')
+                return
 
                 data[str(ctx.guild.id)]['artfight']['scores']['team1'] = self.team1_score
                 data[str(ctx.guild.id)]['artfight']['scores']['team2'] = self.team2_score
