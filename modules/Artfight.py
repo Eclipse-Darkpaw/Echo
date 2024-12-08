@@ -207,8 +207,14 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             await ctx.send('Artfight roles not set. Unable to assign team.')
             return
 
-        # If no team is picked, assign a random one.
-        if team is None:
+        # If no team is picked, pick for the user. Pick the smaller team to keep teams balanced. otherwise do random
+        team1size = len(ctx.guild.get_role(self.team1).members)
+        team2size = len(ctx.guild.get_role(self.team2).members)
+        if team is None and team1size > team2size:
+            team = self.team2
+        elif team is None and team2size > team1size:
+            team = self.team1
+        elif team is None and team1size == team2size:
             teams = [self.team1, self.team2]
             team = teams[randint(0, 1)]
         else:
