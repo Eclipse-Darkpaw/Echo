@@ -219,6 +219,7 @@ class Application:
     def __str__(self):
         return 'Application for ' + str(self.applicant) + '\nWhere did you get the link from?'
 
+
 class Verification(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
