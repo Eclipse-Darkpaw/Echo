@@ -55,7 +55,7 @@ class Application:
                 data = json.load(file)
                 self.application_questions = data[str(applicant_guild.id)]["questions"]
         except KeyError:
-            print("exception!")
+            print("Key error 1 during verification")
             self.application_questions = questions
 
         try:
@@ -63,7 +63,7 @@ class Application:
                 data = json.load(file)
                 self.application_questions_display = data[str(applicant_guild.id)]["questions_display"]
         except KeyError:
-            print("exception!")
+            print("Key error 2 during verification")
             self.application_questions_display = questions
 
 
