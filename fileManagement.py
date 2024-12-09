@@ -1,7 +1,7 @@
 import os
 
 
-bot_path = ('home/autumn/Desktop/Echo')
+bot_path = ('/home/autumn/Desktop/Echo')
 resource_file_path = f'{bot_path}/resources/'
 server_settings_path = resource_file_path + 'servers.json'
 server_warns_path = resource_file_path + 'warns.json'
