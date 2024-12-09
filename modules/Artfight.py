@@ -236,9 +236,11 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
         try:
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
+            print('Saved 1')
         except KeyError:
             data[str(ctx.guild.id)] = {}
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
+            print('Saved 2')
 
         with open(artfight_members_path(), 'w') as file:
             file.write(json.dumps(data, indent=4))
@@ -375,32 +377,32 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                     self.team1_score += score
                 elif team_num == 2:
                     self.team2_score += score
-            if response.content.lower() == 'c':
+            elif response.content.lower() == 'c':
                 await dm.send('Submission cancelled.')
                 return
-
-                data[str(ctx.guild.id)]['artfight']['scores']['team1'] = self.team1_score
-                data[str(ctx.guild.id)]['artfight']['scores']['team2'] = self.team2_score
-
-                with open(server_settings_path, 'w') as file:
-                    file.write(json.dumps(data, indent=4))
-
-                with open(artfight_members_path()) as file:
-                    data = json.load(file)
-
-                # Save the score to the user data file for tracking and validation
-                data[str(ctx.guild.id)][str(ctx.author.id)]['points'] += score
-
-                with open(artfight_members_path(), 'w') as file:
-                    file.write(json.dumps(data, indent=4))
-
-                await dm.send('Score counted!\n'
-                              'Sending Submission')
-                await ctx.guild.get_channel(self.channel).send(embed=embed)
-                return
-
             else:
-                await dm.send('Submission cancelled. Restarting the grading.')
+                await dm.send('Submission not approved. Restarting')
+                continue
+
+            data[str(ctx.guild.id)]['artfight']['scores']['team1'] = self.team1_score
+            data[str(ctx.guild.id)]['artfight']['scores']['team2'] = self.team2_score
+
+            with open(server_settings_path, 'w') as file:
+                file.write(json.dumps(data, indent=4))
+
+            with open(artfight_members_path()) as file:
+                data = json.load(file)
+
+            # Save the score to the user data file for tracking and validation
+            data[str(ctx.guild.id)][str(ctx.author.id)]['points'] += score
+
+            with open(artfight_members_path(), 'w') as file:
+                file.write(json.dumps(data, indent=4))
+
+            await dm.send('Score counted!\n'
+                          'Sending Submission')
+            await ctx.guild.get_channel(self.channel).send(embed=embed)
+            return
 
     @commands.hybrid_command(name='score')
     @commands.guild_only()
@@ -504,15 +506,26 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :param ctx:
         :return:
         """
-        with open(artfight_members_path()) as file:
-            data = json.load(file)
+        if ctx.author.guild_permissions.manage_roles:
+            with open(artfight_members_path()) as file:
+                data = json.load(file)
 
-        msg = '# Player List'
-        for user in data[str(ctx.guild.id)]:
-            msg = (f'{msg}\n<@{user}> - <@&{data[str(ctx.guild.id)][str(user)]['team']}> - '
-                   f'{data[str(ctx.guild.id)][str(user)]['points']}')
-
-        await ctx.send(msg)
+            msg = '# Player List'
+            for user in data[str(ctx.guild.id)]:
+                txt = (f'<@{user}> - <@&{data[str(ctx.guild.id)][str(user)]['team']}> - '
+                       f'{data[str(ctx.guild.id)][str(user)]['points']}')
+                if len(f'{msg}\n{txt}') > 2000:
+                    await ctx.send(msg)
+                    msg = txt
+                else:
+                    msg = f'{msg}\n{txt}'
+            try:
+                #print(msg)
+                await ctx.send(msg)
+            except discord.errors.HTTPException:
+                await ctx.send('message too long')
+        else:
+            await ctx.send('You do not have permssion to use this.')
 
 
 
