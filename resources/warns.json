@@ -358,6 +358,22 @@
                 "issuer_name": "autumna1equin0x.pet",
                 "reason": "Do not do things mods explictly said not to do."
             }
+        ],
+        "1142194765782339745": [
+            {
+                "time": 1733782199,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumna1equin0x.pet",
+                "reason": "Keep paid services in <#1054475673252679701>"
+            }
+        ],
+        "256067354088177664": [
+            {
+                "time": 1733785809,
+                "issuer_id": 381662405513445386,
+                "issuer_name": "auntie_naff",
+                "reason": "do not post nsfw art that contains characters under 18. that's gonna be a two warning offensive."
+            }
         ]
     }
 }
