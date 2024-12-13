@@ -247,7 +247,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
         await ctx.reply(f'You have been added to <@&{team}>')
 
-    @commands.hybrid_command(name='submit')
+    @commands.hybrid_command()
     @commands.guild_only()
     async def submit(self, ctx) -> int:
         """
@@ -263,11 +263,13 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         if not team_num:
             await ctx.send('You must be on a team to use this command')
             return
+        else:
+            await ctx.send('Please check your dms to continue with your submission')
 
         with open(server_settings_path) as file:
             data = json.load(file)
 
-        startday = 11
+        startday = 12
 
         self.team1_score = data[str(ctx.guild.id)]['artfight']['scores']['team1']
         self.team2_score = data[str(ctx.guild.id)]['artfight']['scores']['team2']
@@ -299,7 +301,8 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                                         delete_prompt=False, delete_response=False)
                 link = image.attachments[0].url
             except IndexError:
-                dm.send('No image attached.')
+                await dm.send('No image attached. Please restart')
+                return -1
             except discord.Forbidden:
                 await ctx.reply('Unable to DM You, please change your privacy settings.')
                 return -1
@@ -322,7 +325,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             else:
                 await dm.send(f'Unable to score your submission. Please try again. \n`Expected int 1-4, was given '
                               f'"{responses[0].content}"`')
-                continue
+                return -1
 
             # Score how many characters there are in a piece
             try:
@@ -330,7 +333,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             except ValueError:
                 await dm.send(f'Unable to score your submission. Please try again. \n`Expected int, was given '
                               f'"{responses[1].content}"`')
-                continue
+                return -1
 
             # is the piece shaded
             if responses[2].content[0].lower() == 'y':
@@ -379,7 +382,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                     self.team2_score += score
             elif response.content.lower() == 'c':
                 await dm.send('Submission cancelled.')
-                return
+                return -1
             else:
                 await dm.send('Submission not approved. Restarting')
                 continue
