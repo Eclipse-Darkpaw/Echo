@@ -397,7 +397,17 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                 data = json.load(file)
 
             # Save the score to the user data file for tracking and validation
-            data[str(ctx.guild.id)][str(ctx.author.id)]['points'] += score
+            try:
+                data[str(ctx.guild.id)][str(ctx.author.id)]['points'] += score
+            except KeyError:
+                try:
+                    data[str(ctx.guild.id)][str(ctx.author.id)] = {}
+                    data[str(ctx.guild.id)][str(ctx.author.id)]['points'] += score
+                except KeyError:
+                    await dm.send('Tell Autumn youre not on the list and something is seriously wrong. '
+                                  'Also give them your points so they can put you on the list properly.')
+
+
 
             with open(artfight_members_path(), 'w') as file:
                 file.write(json.dumps(data, indent=4))
