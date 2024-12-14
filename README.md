@@ -60,3 +60,7 @@ Author - Autumn
 Author - Autumn
 * Updated README
 * Updated version_num in `anti-scam.py`, `echo.py`, `main.py`, `gardenbot.py`, `refbot.py`, and `sunreek.py`
+
+## Notes for Autumn
+When setting up a new linux box, put all the tokens in the environment variables in the .profile file using
+`export BOT_TOKEN=[token]`
