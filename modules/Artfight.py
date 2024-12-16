@@ -3,6 +3,7 @@ import json
 import datetime
 
 from discord.ext import commands
+from discord.ui import View, Button
 
 from fileManagement import server_settings_path, resource_file_path, artfight_members_path
 from main import read_line
@@ -10,6 +11,8 @@ from random import randint
 
 
 class Artfight(commands.GroupCog, name="artfight", description="All the commands for the annual artfight"):
+    artfight_role = 1317026586226331678
+
     def __init__(self, bot):
         self.bot = bot
         self.team1 = None
@@ -66,6 +69,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             self.team2_score = 0
             self.channel = None
             await ctx.send("Error loading data. No data loaded.")
+        return self
 
     @commands.hybrid_command(name='setup')
     @commands.guild_only()
@@ -261,7 +265,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
         # Return if user is not on a team. Users need a team to participate
         if not team_num:
-            await ctx.send('You must be on a team to use this command')
+            await ctx.send('You must be on a team to use this command. <@749443249302929479>')
             return
         else:
             await ctx.send('Please check your dms to continue with your submission')
@@ -523,10 +527,11 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             with open(artfight_members_path()) as file:
                 data = json.load(file)
 
+            playerCount = 0
             msg = '# Player List'
             for user in data[str(ctx.guild.id)]:
-                txt = (f'<@{user}> - <@&{data[str(ctx.guild.id)][str(user)]['team']}> - '
-                       f'{data[str(ctx.guild.id)][str(user)]['points']}')
+                playerCount += 1
+                txt = f'{playerCount}. <@{user}> - <@&{data[str(ctx.guild.id)][str(user)]['team']}> - {data[str(ctx.guild.id)][str(user)]['points']}'
                 if len(f'{msg}\n{txt}') > 2000:
                     await ctx.send(msg)
                     msg = txt
@@ -540,6 +545,104 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         else:
             await ctx.send('You do not have permssion to use this.')
 
+    @commands.hybrid_command(name="removemember")
+    @commands.guild_only()
+    async def remove_member(self, ctx, member: discord.Member):
+        """
+        Yeetus Deletus a member from artfight (purged from the botlist & gone with their roles)
+        :param ctx: The command context.
+        :param member: The Discord member to remove (mention or user object).
+        """
+        try:
+            with open(artfight_members_path(), "r") as file:
+                data = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            await ctx.send("The data file is missing or corrupted!")
+            return
 
+        guild_data = data.get(str(ctx.guild.id))
+        if not guild_data or str(member.id) not in guild_data:
+            await ctx.send(f"User {member.mention} not found in the specified guild!")
+            return
 
+        user_profile = guild_data[str(member.id)]
+        print(user_profile)
 
+        # Confirmation embed
+        embed = discord.Embed(title="Confirm User Removal", color=discord.Color.orange())
+        embed.add_field(name="User", value=member.mention, inline=False)
+        embed.add_field(
+            name="Team",
+            value=(ctx.guild.get_role(int(user_profile["team"])).mention if ctx.guild.get_role(int(user_profile["team"])) else "Unknown"),
+            inline=True
+        )
+
+        embed.add_field(name="Points", value=str(user_profile["points"]), inline=True)
+        embed.set_footer(text="Choose an action below")
+
+        # very ahem (not) clean, inline class, because yes
+        class InlineButtons(discord.ui.View):
+            def __init__(self):
+                super().__init__()
+                self.result = None
+
+            @discord.ui.button(label="Purge", style=discord.ButtonStyle.danger)
+            async def purge(self, interaction: discord.Interaction, button: discord.ui.Button):
+                try:
+                    # Remove the user from the file
+                    del data[str(ctx.guild.id)][str(member.id)]
+
+                    # Remove the guild if it is empty
+                    if not data[str(ctx.guild.id)]:
+                        del data[str(ctx.guild.id)]
+
+                    # Save the updated data
+                    with open(artfight_members_path(), "w") as file:
+                        json.dump(data, file, indent=4)
+                    
+                    await interaction.response.send_message(f"Member {member.mention} has been removed.", ephemeral=False)
+
+                    # Remove roles from member
+                    team_role = ctx.guild.get_role(int(user_profile["team"]))
+                    artfight_role = ctx.guild.get_role(Artfight.artfight_role)
+
+                    try:
+                        # Remove the team role from the member
+                        await member.remove_roles(team_role)
+                    except discord.Forbidden:
+                        await interaction.followup.send(f"I don't have the permissions to remove: {team_role.mention}", ephemeral=False)
+                    except discord.HTTPException:
+                        await interaction.followup.send(f"Something when wrong when trying to remove: {team_role.mention}", ephemeral=False)
+
+                    try:
+                        # Remove the artfight role from the member
+                        await member.remove_roles(artfight_role)
+                    except discord.Forbidden:
+                        await interaction.followup.send(f"I don't have the permissions to remove: {artfight_role.mention}", ephemeral=False)
+                    except discord.HTTPException:
+                        await interaction.followup.send(f"Something when wrong when trying to remove: {artfight_role.mention}", ephemeral=False)
+
+                    await interaction.followup.send(f"Roles: {team_role.mention} & {artfight_role.mention} removed from member: {member.mention}")
+                    self.result = "purge"
+                except KeyError:
+                    await interaction.response.send_message("Member not found in the file!", ephemeral=False)
+                    self.result = "error"
+                self.stop()
+
+            @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary)
+            async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+                await interaction.response.send_message("Action canceled.", ephemeral=False)
+                self.result = "cancel"
+                self.stop()
+
+        # Send the embed with buttons
+        view = InlineButtons()
+        await ctx.send(embed=embed, view=view)
+        await view.wait()
+
+        if view.result == "purge":
+            print(f"Member {member.id} removed from guild {ctx.guild.id}.")
+        elif view.result == "cancel":
+            print(f"Member {member.id} removal canceled.")
+        elif view.result == "error":
+            print(f"Failed to remove Member {member.id} from guild {ctx.guild.id}.")
