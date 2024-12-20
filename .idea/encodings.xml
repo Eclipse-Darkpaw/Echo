@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/async_timeout-3.0.1-py3-none-any.whl" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/attrs-21.4.0-py2.py3-none-any.whl" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/chardet-4.0.0-py2.py3-none-any.whl" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/yarl-1.7.2-cp310-cp310-win_amd64.whl" charset="UTF-8" />
-  </component>
-</project>
