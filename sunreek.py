@@ -13,6 +13,7 @@ import sys
 import time
 
 from discord.ext import commands
+from dotenv import load_dotenv
 from fileManagement import server_settings_path, resource_file_path
 from main import eclipse_id
 
@@ -20,15 +21,38 @@ from main import eclipse_id
 
 start_time = time.time()
 
+load_dotenv()
+
 with open(resource_file_path + 'servers.json') as file:
     data = json.load(file)
 
-prefix = '}'
+prefix = '}' # Default to }
 version_num = '4.1.0'
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
+
+token = None
+    
+if len(sys.argv) > 1:
+    inp = int(sys.argv[1])
+else:
+    inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
+
+if inp == 1:
+    # Main bot client. Do not use for tests
+
+    prefix = '}'
+    token = os.getenv('SUNREEK_TOKEN')
+elif inp == 2:
+    # Test Bot client. Allows for tests to be run in a secure environment.
+
+    prefix = '>'
+    token = os.getenv('SUNREEK_TEST_TOKEN')
+else:
+    print(f'argument: {inp} not supported, exiting...')
+    exit(1)
 
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
@@ -49,8 +73,6 @@ async def uptime(ctx: discord.Interaction):
     await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
                                       time.gmtime(time.time() - start_time)))
 
-
-
 @bot.command()
 async def sync(interaction: discord.Interaction):
     await interaction.send('Syncing Tree', ephemeral=False)
@@ -65,7 +87,6 @@ blessed_keys_running = False
 crsd_keys = []
 blsd_keys = []
 player_role_id = 863630913686077450
-
 
 async def cursed_keys(message):
     """
@@ -377,34 +398,5 @@ async def on_message(ctx: discord.Interaction):
     if not (ctx.guild is None or content.find(AntiScam.code) != -1 or ctx.channel.id in scan_ignore):
         await AntiScam.scan_message(ctx)
 
-
-def run_sunreek():
-    """
-    Function allows the host to pick whether to run the live bot, or run the test bot in a closed environment, without
-    switching programs. This allows the live code to run parallel to the testing code and prevent constant restarts to
-    test new features.
-    Last docstring edit: -Autumn V1.16.3
-    Last function edit: Unknown
-    :return: None
-    """
-    global prefix
-
-    if len(sys.argv) > 1:
-        inp = int(sys.argv[1])
-    else:
-        inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
-
-    if inp == 1:
-        # Main bot client. Do not use for tests
-
-        client.run(os.environ.get('SUNREEK_TOKEN'))     # must say client.run(os.environ.get('SUNREEK_TOKEN'))
-
-    elif inp == 2:
-        # Test Bot client. Allows for tests to be run in a secure environment.
-        prefix = '>'
-
-        client.run(os.environ.get('TESTBOT_TOKEN'))     # must say client.run(os.environ.get('TESTBOT_TOKEN'))
-
-
 if __name__ == '__main__':
-    run_sunreek()
+    client.run(token)
