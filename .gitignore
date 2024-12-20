@@ -1,2 +1,18 @@
 .env
-.vscode
+
+# IDEs
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual Environments
+.venv/
+.venv*/
+
+# OS-stuff (just in case)
+.DS_Store
+Thumbs.db
