@@ -388,9 +388,19 @@ async def on_message(ctx: discord.Interaction):
     Last method edit: -Autumn V4.0.0
     :param ctx: The interaction calling the function
     """
-    await bot.process_commands(ctx)
 
+    from modules.Artfight import Artfight as af
+    await bot.process_commands(ctx)
+    if ctx.author.id == 815418445192888321:
+        return
+    #TODO: remove these lines later to ignore ALL bot messages
     if ctx.author.bot:
+        if len(ctx.content) > 0 and ctx.content[0] == prefix:
+            artfight_cog = bot.cogs['artfight']
+            if ctx.content == f'{prefix}join':
+                await artfight_cog.join(ctx)
+            if f'{prefix}score' in ctx.content:
+                await artfight_cog.scores(ctx)
         return
 
     content = ctx.content.lower()
