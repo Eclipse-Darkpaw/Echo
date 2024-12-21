@@ -288,7 +288,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         await dm.send(f'It is currently Artfight Day {artfight_day}. Please '
                       f'make sure you are following the prompt for today')
         responses = []
-        artfight_questions = ['What type of submission is this?\n1:Black&White Sketch\n2:Color Sketch'
+        artfight_questions = ['What type of submission is this?\n1:Black&White Sketch/Black and White Rough Sketch\n2:Color Sketch/Color Rough Sketch'
                               '\n3:Black&White Lineart\n4:Full colored\nPlease reply with the corresponding number',
                               'Please reply with the number of OCs/characters belonging to the other team in your '
                               'submission',
