@@ -7,6 +7,7 @@ authors = ["Autumn <EchoBot@Autumna1Equin0x.pet>"]
 [tool.poetry.dependencies]
 python = "^3.11"
 discord = "^2.3.2"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 
