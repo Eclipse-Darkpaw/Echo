@@ -8,14 +8,13 @@ import modules.ServerSettings as Settings
 import modules.Verification as Verif
 import modules.refManagement as Ref
 import modules.Artfight as Artfight
-import random
 import os
 import sys
 import time
 
 from discord.ext import commands
 from dotenv import load_dotenv
-from fileManagement import server_settings_path, resource_file_path
+from fileManagement import resource_file_path
 from main import eclipse_id
 
 # Keep imports in alphabetical order
