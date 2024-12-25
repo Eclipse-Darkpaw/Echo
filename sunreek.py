@@ -43,7 +43,7 @@ def processArguments():
                 print(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
                 exit(1)
     else:
-        print('No start argument provided, please state the start mode: (1: main client, 2: test client), exiting...')
+        print('No start argument provided, please state the start mode: (1: main bot, 2: test bot), exiting...')
     if len(sys.argv) > 2 and sys.argv[2] == '--no-notif':
         global start_notif
         start_notif = False
@@ -61,8 +61,6 @@ intents.members = True
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 game = discord.Game(f'{prefix}help for commands')
-client = bot
-
 
 @bot.hybrid_command()
 async def uptime(ctx: discord.Interaction):
@@ -286,7 +284,7 @@ async def purge(message):
     :param message: Message that called the bot
     :return: None
     """
-    await client.get_user(eclipse_id).send('`REMOVING UNVERIFIED`')
+    await bot.get_user(eclipse_id).send('`REMOVING UNVERIFIED`')
     unverified_role_id = DATA[str(message.guild.id)]["roles"]['unverified']
 
     if message.author.guild_permissions.manage_roles:
@@ -316,7 +314,7 @@ async def prune(message):
     :param message:
     :return: NoneType
     """
-    await client.get_user(eclipse_id).send('`STARTING PURGE`')
+    await bot.get_user(eclipse_id).send('`STARTING PURGE`')
     if message.author.guild is not None and message.author.guild_permissions.kick_members:
         # only run if in a guild and the user could do this manually.
         members = message.guild.members
@@ -351,7 +349,7 @@ async def prune(message):
                         forbidden += 1
                         break
 
-        await client.get_user(eclipse_id).send(f'Purge complete. {num_kicked} purged.')
+        await bot.get_user(eclipse_id).send(f'Purge complete. {num_kicked} purged.')
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
@@ -366,10 +364,10 @@ async def on_ready():
     :return: None
     """
 
-    print(f'We have logged in as {client.user}')
+    print(f'We have logged in as {bot.user}')
 
-    await client.change_presence(activity=game)
-    if start_notif: client.get_user(eclipse_id).send('Running, and active')
+    await bot.change_presence(activity=game)
+    if start_notif: bot.get_user(eclipse_id).send('Running, and active')
 
     print('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
@@ -413,4 +411,4 @@ async def on_message(ctx: discord.Interaction):
         await AntiScam.scan_message(ctx)
 
 if __name__ == '__main__':
-    client.run(token=bot_token)
+    bot.run(token=bot_token)
