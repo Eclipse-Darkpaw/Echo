@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import discord
 import json
+import logging
 import modules.AntiScam as AntiScam
 import modules.General as General
 import modules.Moderation as Mod
@@ -19,40 +20,43 @@ from main import eclipse_id
 
 # Keep imports in alphabetical order
 
-start_time = time.time()
-
 load_dotenv()
 
-with open(resource_file_path + 'servers.json') as file:
-    data = json.load(file)
+VERSION_NUM = '4.1.0'
 
-prefix = '}' # Default to }
-version_num = '4.1.0'
+bot_token = None
+start_notif = True
+start_time = time.time()
+prefix = '}'
+
+def processArguments():
+    if len(sys.argv) > 1 and sys.argv[1].isdigit():
+        global bot_token, prefix
+
+        match sys.argv[1]:
+            case '1':
+                bot_token = os.getenv('SUNREEK_TOKEN')
+            case '2':
+                bot_token = os.getenv('SUNREEK_TEST_TOKEN')
+                prefix = '>'
+            case _:
+                print(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
+                exit(1)
+    else:
+        print('No start argument provided, please state the start mode: (1: main client, 2: test client), exiting...')
+    if len(sys.argv) > 2 and sys.argv[2] == '--no-notif':
+        global start_notif
+        start_notif = False
+        print(f'--no-notif is set, start notification will not be set')
+
+processArguments()
+
+with open(resource_file_path + 'servers.json') as file:
+    DATA = json.load(file)
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
-
-token = None
-    
-if len(sys.argv) > 1:
-    inp = int(sys.argv[1])
-else:
-    inp = int(input('input token num\n1. SunReek\n2. Testing Environment\n'))
-
-if inp == 1:
-    # Main bot client. Do not use for tests
-
-    prefix = '}'
-    token = os.getenv('SUNREEK_TOKEN')
-elif inp == 2:
-    # Test Bot client. Allows for tests to be run in a secure environment.
-
-    prefix = '>'
-    token = os.getenv('SUNREEK_TEST_TOKEN')
-else:
-    print(f'argument: {inp} not supported, exiting...')
-    exit(1)
 
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
@@ -283,7 +287,7 @@ async def purge(message):
     :return: None
     """
     await client.get_user(eclipse_id).send('`REMOVING UNVERIFIED`')
-    unverified_role_id = data[str(message.guild.id)]["roles"]['unverified']
+    unverified_role_id = DATA[str(message.guild.id)]["roles"]['unverified']
 
     if message.author.guild_permissions.manage_roles:
         print('├ FILTERING MEMBER LIST')
@@ -362,10 +366,10 @@ async def on_ready():
     :return: None
     """
 
-    print('We have logged in as {0.user}'.format(client))
+    print(f'We have logged in as {client.user}')
 
     await client.change_presence(activity=game)
-    await client.get_user(eclipse_id).send('Running, and active')
+    if start_notif: client.get_user(eclipse_id).send('Running, and active')
 
     print('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
@@ -409,4 +413,4 @@ async def on_message(ctx: discord.Interaction):
         await AntiScam.scan_message(ctx)
 
 if __name__ == '__main__':
-    client.run(token)
+    client.run(token=bot_token)
