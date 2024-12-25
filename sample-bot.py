@@ -37,7 +37,6 @@ intents.members = True
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 game = discord.Game(f'{prefix}help for commands')
-client = bot
 
 async def ping(message):
     """
@@ -79,7 +78,7 @@ async def end(message):
     # The global key word tells python to look for the variable outside the function named game
     if message.author.guild_permissions.administrator:  # makes sure the bot is being
         await message.channel.send('Goodbye :wave:')
-        await client.change_presence(activity=discord.Game('Going offline'))
+        await bot.change_presence(activity=discord.Game('Going offline'))
         sys.exit()
     else:
         await message.channel.send('You do not have permission to turn me off!')
