@@ -2,8 +2,8 @@ from os import path
 
 bot_path = path.dirname(path.abspath(__file__))
 resource_file_path = f'{bot_path}/resources/'
-server_settings_path = resource_file_path + 'servers.json'
-server_warns_path = resource_file_path + 'warns.json'
+server_settings_path = f'{resource_file_path}/servers.json'
+server_warns_path = f'{resource_file_path}/warns.json'
 log_path = f'{bot_path}/logs'
 
 
