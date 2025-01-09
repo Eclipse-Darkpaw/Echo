@@ -22,14 +22,18 @@ from main import eclipse_id
 
 load_dotenv()
 
-VERSION_NUM = '4.1.0'
+VERSION_NUM = '4.2.0'
 
 bot_token = None
 start_notif = True
 start_time = time.time()
 prefix = '}'
 
+
 def processArguments():
+    """
+    Necessary to determine what bot to run
+    """
     if len(sys.argv) > 1 and sys.argv[1].isdigit():
         global bot_token, prefix
 
@@ -49,6 +53,7 @@ def processArguments():
         start_notif = False
         print(f'--no-notif is set, start notification will not be set')
 
+
 processArguments()
 
 with open(resource_file_path + 'servers.json') as file:
@@ -61,6 +66,10 @@ intents.members = True
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 game = discord.Game(f'{prefix}help for commands')
+
+@bot.hybrid_command()
+async def fuck(ctx: discord.Interaction):
+    pass
 
 @bot.hybrid_command()
 async def uptime(ctx: discord.Interaction):
@@ -276,7 +285,8 @@ async def blessed_keys(message):
 
 
 # Todo: look over and verify the purge code will work
-async def purge(message):
+@bot.hybrid_command()
+async def purge(ctx: discord.Interaction, kick: bool):
     """
     method removes all members with the unverified role from Rikoland
     Last docstring edit: -Autumn V1.14.4
@@ -285,26 +295,33 @@ async def purge(message):
     :return: None
     """
     await bot.get_user(eclipse_id).send('`REMOVING UNVERIFIED`')
-    unverified_role_id = DATA[str(message.guild.id)]["roles"]['unverified']
+    unverified_role_id = DATA[str(ctx.guild.id)]["roles"]['unverified']
 
-    if message.author.guild_permissions.manage_roles:
+    if ctx.author.guild_permissions.manage_roles:
         print('├ FILTERING MEMBER LIST')
-        unverified_ppl = message.guild.get_role(unverified_role_id).members
+        unverified_ppl = ctx.guild.get_role(unverified_role_id).members
         print('├ BEGINNING PURGE\n├┐')
         num_kicked = 0
         for member in unverified_ppl:
             try:
-                await member.kick(reason='Server purge.')
-                num_kicked += 1
-                print(F'│├ {member.id} KICKED')
+                if kick:
+                    await member.kick(reason='Server purge.')
+                    num_kicked += 1
+                    print(F'│├ {member.id} KICKED')
+                else:
+                    num_kicked += 1
+                    print(F'│├ {member.id} TO BE KICKED')
             except discord.Forbidden:
-                await message.channel.send('unable to kick <@' + str(member.id) + '>')
+                await ctx.channel.send('unable to kick <@' + str(member.id) + '>')
         await message.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
-        print(f'├ {num_kicked} MEMBERS KICKED')
+        if kick:
+            print(f'├ {num_kicked} MEMBERS KICKED')
+        else:
+            print(f'├ {num_kicked} MEMBERS TO BE KICKED')
     else:
         await message.reply('Error 403: Forbidden\nInsufficient Permissions')
 
-
+@bot.hybrid_command()
 async def prune(message):
     """
     Removes inactive members from the server
@@ -375,7 +392,7 @@ async def on_ready():
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
-    await bot.add_cog(Artfight.Artfight(bot))
+    #await bot.add_cog(Artfight.Artfight(bot))
     print('Cogs loaded')
 
 
