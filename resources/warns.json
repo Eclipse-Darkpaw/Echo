@@ -374,6 +374,22 @@
                 "issuer_name": "auntie_naff",
                 "reason": "do not post nsfw art that contains characters under 18. that's gonna be a two warning offensive."
             }
+        ],
+        "290549847717838860": [
+            {
+                "time": 1735877790,
+                "issuer_id": 749443249302929479,
+                "issuer_name": "autumna1equin0x.pet",
+                "reason": "Be respectful to other users, even if you dont like them"
+            }
+        ],
+        "307714247276888074": [
+            {
+                "time": 1736565158,
+                "issuer_id": 782400723853246484,
+                "issuer_name": "anamasu1204",
+                "reason": "being rude to server members and administration"
+            }
         ]
     }
 }
