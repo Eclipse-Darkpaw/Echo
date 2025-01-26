@@ -13,7 +13,8 @@ import os
 import sys
 import time
 
-from discord.ext import commands
+from datetime import datetime, timezone
+from discord.ext import tasks, commands
 from dotenv import load_dotenv
 from fileManagement import resource_file_path
 from main import eclipse_id
@@ -62,6 +63,13 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 game = discord.Game(f'{prefix}help for commands')
 
+def get_log_channel(guild_id):
+    try:
+        with open(resource_file_path + "servers.json", "r") as file:
+            return json.load(file)[str(guild_id)]['channels']['log']
+    except FileNotFoundError or KeyError:
+        return None
+
 @bot.hybrid_command()
 async def uptime(ctx: discord.Interaction):
     """
@@ -82,7 +90,6 @@ async def sync(interaction: discord.Interaction):
     bot.tree.copy_global_to(guild=guild)
     await bot.tree.sync(guild=guild)
     await interaction.send("tree synced", ephemeral=True)
-
 
 cursed_keys_running = False
 blessed_keys_running = False
@@ -354,7 +361,6 @@ async def prune(message):
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
 
-
 @bot.event
 async def on_ready():
     """
@@ -367,7 +373,7 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    if start_notif: bot.get_user(eclipse_id).send('Running, and active')
+    #if start_notif: bot.get_user(eclipse_id).send('Running, and active')
 
     print('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
@@ -378,9 +384,112 @@ async def on_ready():
     await bot.add_cog(Artfight.Artfight(bot))
     print('Cogs loaded')
 
+    check_invite_pause.start()
 
 scan_ignore = [688611557508513854]
 
+# ==========
+# INVITE WATCHING
+# ==========
+
+def load_invite_watching_msg_ids():
+    try:
+        with open(resource_file_path + "invite_watching_msg_ids.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+
+def save_invite_watching_msg_ids(message_ids):
+    with open(resource_file_path + "invite_watching_msg_ids.json", "w") as file:
+        json.dump(message_ids, file)
+
+def construct_invite_status_msg(invites_paused_until, timestamp):
+    if invites_paused_until is None:
+        status = "**Invites Open** :green_circle:"
+        subtext = f"This message was last updated: <t:{int(timestamp.timestamp())}:R>"
+    elif invites_paused_until < timestamp:
+        status = "**Invites Open** :green_circle:\n> :warning: Likely Unintentional"
+        subtext = f"This message was last updated: <t:{int(timestamp.timestamp())}:R>"
+    else:
+        status = f"**Invites Paused** :yellow_circle:\n> :clock{timestamp.strftime('%I').lstrip('0')}:  Until: <t:{int(invites_paused_until.timestamp())}:f>"
+        subtext = f"This message was last updated: <t:{int(timestamp.timestamp())}:R>"
+
+    return f"{status}\n-# {subtext}"
+
+message_ids = load_invite_watching_msg_ids()
+sent_alerts = {}
+
+@tasks.loop(minutes=1)
+async def check_invite_pause():
+    for guild_id, data_list in message_ids.items():
+        guild = bot.get_guild(int(guild_id))
+        if guild:
+            invites_paused_until = guild.invites_paused_until
+            timestamp = datetime.now(timezone.utc)
+
+            for data in data_list:
+                channel = bot.get_channel(int(data['channel_id']))
+                if channel:
+                    message = await channel.fetch_message(int(data['message_id']))
+                    await message.edit(content=construct_invite_status_msg(invites_paused_until, timestamp))
+
+                    if invites_paused_until and invites_paused_until < timestamp:
+                        if not sent_alerts.get(guild_id, False):
+                            sent_alerts[guild_id] = True
+                            log_channel = get_log_channel(guild_id)
+
+                            if log_channel:
+                                await bot.get_channel(log_channel).send(":warning: **CAUTION**\nThe server invites may accidentally be open!")
+                    else:
+                        sent_alerts[guild_id] = False
+
+@bot.hybrid_command(name="stop-invite-status-msg")
+async def stopInviteStatusMessage(ctx, message_id: str):
+    guild_id_str = str(ctx.guild.id)
+    
+    if guild_id_str in message_ids:
+        print("found guild")
+        for data in message_ids[guild_id_str]:
+            print("found data")
+            try:
+                if data["message_id"] == int(message_id):
+                    print("found message")
+                    channel = bot.get_channel(data["channel_id"])
+                    message = await channel.fetch_message(int(message_id))
+                    await message.delete()
+
+                    message_ids[guild_id_str].remove(data)
+                    if not message_ids[guild_id_str]:
+                        del message_ids[guild_id_str]
+                    save_invite_watching_msg_ids(message_ids)
+
+                    await ctx.reply("Status message stopped and deleted.", ephemeral=True)
+                    return
+            except ValueError:
+                await ctx.reply("Please provide a valid integer for the message ID.", ephemeral=True)
+    await ctx.reply("Message not found or already deleted.", ephemeral=True)
+
+@bot.hybrid_command(name="set-invite-status-msg")
+async def inviteStatusMessage(ctx):
+    guild = ctx.guild
+    if guild:
+        invites_paused_until = guild.invites_paused_until
+        timestamp = datetime.now(timezone.utc)
+
+        message = await ctx.send(construct_invite_status_msg(invites_paused_until, timestamp))
+
+        if ctx.guild.id not in message_ids:
+            message_ids[ctx.guild.id] = []
+        
+        message_ids[ctx.guild.id].append({
+            "channel_id": ctx.channel.id,
+            "message_id": message.id
+        })
+        save_invite_watching_msg_ids(message_ids)
+
+# ==========
+# END INVITE WATCHING
+# ==========
 
 @bot.event
 async def on_message(ctx: discord.Interaction):
