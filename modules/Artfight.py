@@ -290,14 +290,15 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         responses = []
         artfight_questions = ['What type of submission is this?\n1:Black&White Sketch/Black and White Rough Sketch\n2:Color Sketch/Color Rough Sketch'
                               '\n3:Black&White Lineart\n4:Full colored\nPlease reply with the corresponding number',
-                              'Please reply with the number of OCs/characters belonging to the other team in your '
-                              'submission',
+                              'Please reply with the number of OCs/characters belonging to the **__other team__** in '
+                              'your submission',
                               'Is this shaded? Respond "Y" if yes, anything else for no',
                               'Is there a background? Respond "Y" if yes, anything else for no',
                               f'Did you follow the prompt for day '
                               f'{artfight_day}? Respond "Y" if yes, '
                               f'anything else for no',
                               'What is the title of this piece?']
+        # TODO: add a question about friendly fire OCS
         while True:
             try:
                 image = await read_line(self.bot, dm, 'What image are you submitting? Only submit one image.',
@@ -599,7 +600,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                     # Save the updated data
                     with open(artfight_members_path(), "w") as file:
                         json.dump(data, file, indent=4)
-                    
+
                     await interaction.response.send_message(f"Member {member.mention} has been removed.", ephemeral=False)
 
                     # Remove roles from member
