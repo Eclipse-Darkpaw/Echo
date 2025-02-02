@@ -35,17 +35,14 @@ def processArguments():
     """
     Necessary to determine what bot to run
     """
-
     if len(sys.argv) > 1 and sys.argv[1].isdigit():
         global bot_token, prefix
 
         match sys.argv[1]:
             case '1':
                 bot_token = os.getenv('SUNREEK_TOKEN')
-                print(bot_token)
             case '2':
                 bot_token = os.getenv('SUNREEK_TEST_TOKEN')
-
                 prefix = '>'
             case _:
                 print(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
@@ -324,7 +321,7 @@ async def purge(ctx: discord.Interaction, kick: bool):
             else:
                 num_kicked += 1
                 add = F'│├ <@{member.id}> FOUND\n'
-            
+
             if len(msg) + len(add) >= 2000:
                 await ctx.channel.send(msg)
                 msg = add
@@ -389,7 +386,6 @@ async def prune(message):
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
 
-
 @bot.event
 async def on_ready():
     """
@@ -402,8 +398,7 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    if start_notif:
-        await bot.get_user(eclipse_id).send('Running, and active')
+    if start_notif: bot.get_user(eclipse_id).send('Running, and active')
 
     print('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
@@ -477,7 +472,7 @@ async def check_invite_pause():
 @bot.hybrid_command(name="stop-invite-status-msg")
 async def stop_invite_status_message(ctx, message_id: str):
     guild_id_str = str(ctx.guild.id)
-    
+
     if guild_id_str in message_ids:
         print("found guild")
         for data in message_ids[guild_id_str]:
@@ -511,7 +506,7 @@ async def invite_status_message(ctx):
 
         if ctx.guild.id not in message_ids:
             message_ids[ctx.guild.id] = []
-        
+
         message_ids[ctx.guild.id].append({
             "channel_id": ctx.channel.id,
             "message_id": message.id
