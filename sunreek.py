@@ -38,7 +38,7 @@ start_time = time.time()
 prefix = '}'
 
 
-def processArguments():
+def process_arguments():
     """
     Detirmines as which bot to run.
     Sets runtime variables accordingly.
@@ -64,7 +64,7 @@ def processArguments():
         print(f'--no-notif is set, start notification will not be set')
 
 
-processArguments()
+process_arguments()
 
 with open(resource_file_path + 'servers.json') as file:
     DATA = json.load(file)
