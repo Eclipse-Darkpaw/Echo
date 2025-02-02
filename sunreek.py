@@ -530,6 +530,7 @@ async def invite_status_message(ctx):
 # END INVITE WATCHING
 # ==========
 
+scan_ignore = [688611557508513854]
 
 @bot.event
 async def on_message(ctx: discord.Interaction):
