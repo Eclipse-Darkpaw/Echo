@@ -22,8 +22,15 @@ from main import eclipse_id
 # Keep imports in alphabetical order
 
 load_dotenv()
+"""
+Without a specified path, load_dotenv() loads environment variables in this order:
+1. System environment variables (highest priority, unless overridden).
+2. .env file in the working directory (only for unset variables).
+Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv() 
+but can influence the environment before Python runs.
+"""
 
-VERSION_NUM = '4.2.0'
+VERSION_NUM = '4.2.1'
 
 bot_token = None
 start_notif = True
@@ -33,7 +40,9 @@ prefix = '}'
 
 def processArguments():
     """
-    Necessary to determine what bot to run
+    Detirmines as which bot to run.
+    Sets runtime variables accordingly.
+    
     """
     if len(sys.argv) > 1 and sys.argv[1].isdigit():
         global bot_token, prefix
