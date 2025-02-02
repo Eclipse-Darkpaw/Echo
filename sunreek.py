@@ -76,12 +76,45 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 game = discord.Game(f'{prefix}help for commands')
 
+@bot.event
+async def on_ready():
+    """
+    Method called when the bot boots and is fully online
+    Last docstring edit: -Autumn V1.14.4
+    Last method edit: -Autumn V4.0.0
+    :return: None
+    """
+
+    print(f'We have logged in as {bot.user}')
+
+    await bot.change_presence(activity=game)
+    if start_notif: bot.get_user(eclipse_id).send('Running, and active')
+
+    print('loading cogs')
+    await bot.add_cog(Mod.Moderation(bot))
+    await bot.add_cog(General.General(bot))
+    await bot.add_cog(Settings.Settings(bot))
+    await bot.add_cog(Ref.RefManagement(bot))
+    await bot.add_cog(Verif.Verification(bot))
+    #await bot.add_cog(Artfight.Artfight(bot))
+    print('Cogs loaded')
+
+    check_invite_pause.start()
+
+# ---
+# Utilities
+# ---
+
 def get_log_channel(guild_id):
     try:
         with open(resource_file_path + "servers.json", "r") as file:
             return json.load(file)[str(guild_id)]['channels']['log']
     except FileNotFoundError or KeyError:
         return None
+    
+# ---
+# Commands
+# ---
 
 @bot.hybrid_command()
 async def fuck(ctx: discord.Interaction):
@@ -393,34 +426,6 @@ async def prune(message):
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
-
-@bot.event
-async def on_ready():
-    """
-    Method called when the bot boots and is fully online
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
-    :return: None
-    """
-
-    print(f'We have logged in as {bot.user}')
-
-    await bot.change_presence(activity=game)
-    if start_notif: bot.get_user(eclipse_id).send('Running, and active')
-
-    print('loading cogs')
-    await bot.add_cog(Mod.Moderation(bot))
-    await bot.add_cog(General.General(bot))
-    await bot.add_cog(Settings.Settings(bot))
-    await bot.add_cog(Ref.RefManagement(bot))
-    await bot.add_cog(Verif.Verification(bot))
-    #await bot.add_cog(Artfight.Artfight(bot))
-    print('Cogs loaded')
-
-    check_invite_pause.start()
-
-
-scan_ignore = [688611557508513854]
 
 # ==========
 # INVITE WATCHING
