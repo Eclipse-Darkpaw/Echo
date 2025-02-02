@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import discord
 import json
-import logging
 import modules.AntiScam as AntiScam
 import modules.General as General
 import modules.Moderation as Mod
