@@ -130,10 +130,6 @@ def get_log_channel(guild_id):
 # ---
 
 @bot.hybrid_command()
-async def fuck(ctx: discord.Interaction):
-    pass
-
-@bot.hybrid_command()
 async def uptime(ctx: discord.Interaction):
     """
     Displays the time the bot has been running for.
