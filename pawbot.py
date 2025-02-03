@@ -31,44 +31,6 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 game = discord.Game(f'{prefix}help for commands')
 client = bot
 
-
-@bot.hybrid_command()
-async def uptime(ctx: discord.Interaction):
-    """
-    Displays the time the bot has been running for.
-    Last docstring edit: -Autumn V3.3.4
-    Last method edit: -Autumn V4.0.0
-    :param message: message calling the bot
-    :return: None
-    """
-    days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
-    await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
-                                      time.gmtime(time.time() - start_time)))
-
-
-'''
-@bot.hybrid_command()
-async def version(ctx: discord.Interaction):
-    """
-    Displays the version of the bot being used
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
-    :param message: Message calling the bot
-    :return: None
-    """
-    await ctx.send(f'I am currently running version {version_num}')
-'''
-
-
-@bot.command()
-async def sync(interaction: discord.Interaction):
-    await interaction.send('Syncing Tree', ephemeral=False)
-    guild = discord.Object(id=interaction.guild.id)
-    bot.tree.copy_global_to(guild=guild)
-    await bot.tree.sync(guild=guild)
-    await interaction.send("tree synced", ephemeral=True)
-
-
 @bot.event
 async def on_ready():
     """

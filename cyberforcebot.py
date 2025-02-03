@@ -31,23 +31,6 @@ bot = commands.Bot(command_prefix=prefix, intents=intents)
 game = discord.Game(f'{prefix}help for commands')
 client = bot
 
-
-@bot.hybrid_command()
-async def uptime(ctx: discord.Interaction):
-    """
-    Displays the time the bot has been running for.
-    Last docstring edit: -Autumn V3.3.4
-    Last method edit: -Autumn V4.0.0
-    :param message: message calling the bot
-    :return: None
-    """
-    days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
-    await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
-                                      time.gmtime(time.time() - start_time)))
-
-
-
-
 @bot.hybrid_command()
 async def mama(ctx):
     await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')

@@ -27,6 +27,27 @@ class General(commands.Cog):
         await x.edit(content=edit)
 
     @commands.hybrid_command()
+    async def uptime(self, ctx: discord.Interaction):
+        """
+        Displays the time the bot has been running for.
+        Last docstring edit: -Autumn V3.3.4
+        Last method edit: -FoxyHunter V4.3.0
+        :param message: message calling the bot
+        :return: None
+        """
+        days = int(time.strftime('%j', time.gmtime(time.time() - START_TIME)))
+        await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\nStarted <t:{int(START_TIME)}:R>',
+                                          time.gmtime(time.time() - START_TIME)))
+
+    @commands.hybrid_command()
+    async def sync(self, ctx: discord.Interaction):
+        await ctx.send('Syncing Tree', ephemeral=False)
+        guild = discord.Object(id=ctx.guild.id)
+        ctx.bot.tree.copy_global_to(guild=guild)
+        await ctx.bot.tree.sync(guild=guild)
+        await ctx.send("tree synced", ephemeral=True)
+
+    @commands.hybrid_command()
     async def quit(self, ctx: discord.Interaction):
         """
         Quits the active bot. Admin only.
