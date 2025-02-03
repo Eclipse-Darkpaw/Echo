@@ -1,26 +1,40 @@
+#!/usr/bin/python3
 import discord
-import json
+import os
+import platform
+
+from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
+"""
+Without a specified path, load_dotenv() loads environment variables in this order:
+1. System environment variables (highest priority, unless overridden).
+2. .env file in the working directory (only for unset variables).
+Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv() 
+but can influence the environment before Python runs.
+"""
+
+# Modules
 import modules.AntiScam as AntiScam
 import modules.General as General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
 import modules.refManagement as Ref
-import random
-import os
-import sys
-import time
 
-from discord.ext import commands
-from fileManagement import server_settings_path
-from main import eclipse_id
+# Utils
+from util.interactions import direct_message
+from util.logger import setup_logger
 
 # Keep imports in alphabetical order
 
-start_time = time.time()
+VERSION_NUM = '4.3.0'
+
+GUARDIANS = (env := os.getenv('GUARDIANS', '')) and env.split(',') or []
+LOGGER = setup_logger(log_file='logs/cyberforcebot_info.log')
 
 prefix = '>'
-version_num = '4.0.0'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -72,22 +86,31 @@ async def on_ready():
     """
     Method called when the bot boots and is fully online
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
+    Last method edit: -FoxyHunter V4.3.0
     :return: None
     """
 
-    print('We have logged in as {0.user}'.format(client))
+    LOGGER.info(f'We have logged in as {bot.user}')
 
     await client.change_presence(activity=game)
-    await client.get_user(eclipse_id).send('Running, and active')
+    await direct_message(
+        bot,
+        f'Running, and active\n'
+        '```yml\n'
+        f'system: {platform.system()}\n'
+        f'version: {platform.version()}\n'
+        f'python_version: {platform.python_version()}\n'
+        '```',
+        *GUARDIANS
+    )
 
-    print('loading cogs')
+    LOGGER.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
     await bot.add_cog(General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
-    print('Cogs loaded')
+    LOGGER.info('Cogs loaded')
 
 
 scan_ignore = [1054172309147095130]

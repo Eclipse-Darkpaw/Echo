@@ -1,25 +1,13 @@
 #!/usr/bin/python3
 import discord
 import json
-import modules.AntiScam as AntiScam
-import modules.General as General
-import modules.Moderation as Mod
-import modules.ServerSettings as Settings
-import modules.Verification as Verif
-import modules.refManagement as Ref
-import modules.Artfight as Artfight
 import os
 import platform
 import sys
-import time
 
 from datetime import datetime, timezone
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from util.fileManagement import resource_file_path
-from util.logger import setup_logger, logging
-
-# Keep imports in alphabetical order
 
 load_dotenv()
 """
@@ -30,24 +18,35 @@ Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv()
 but can influence the environment before Python runs.
 """
 
+import modules.AntiScam as AntiScam
+import modules.General as General
+import modules.Moderation as Mod
+import modules.ServerSettings as Settings
+import modules.Verification as Verif
+import modules.refManagement as Ref
+import modules.Artfight as Artfight
+
+from util.fileManagement import resource_file_path
+from util.interactions import direct_message
+from util.logger import setup_logger, logging
+
+# Keep imports in alphabetical order
+
 VERSION_NUM = '4.3.0'
 
-START_TIME = time.time()
-NOTIFY_ON_START = (env := os.getenv('NOTIFY_ON_START', '')) and env.split(',') or []
-
-logger = setup_logger(log_file='logs/sunreek_info.log')
+GUARDIANS = (env := os.getenv('GUARDIANS', '')) and env.split(',') or []
+LOGGER = setup_logger(log_file='logs/sunreek_info.log')
 
 bot_token = None
 start_notif = True
 prefix = '}'
-log_lvl = logging.WARNING
 
 def process_arguments():
     """
     Detirmines as which bot to run.
     Sets runtime variables accordingly.
     Last docstring edit: ~FoxyHunter V4.2.1
-    Last method edit: ~FoxyHunter V4.0.0
+    Last method edit: ~FoxyHunter V4.3.0
     """
     if len(sys.argv) > 1 and sys.argv[1].isdigit():
         global bot_token, prefix
@@ -59,15 +58,15 @@ def process_arguments():
                 bot_token = os.getenv('SUNREEK_TEST_TOKEN')
                 prefix = '>'
             case _:
-                logger.critical(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
+                LOGGER.critical(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
                 exit(1)
     else:
-        logger.critical('No start argument provided, please state the start mode: (1: main bot, 2: test bot), exiting...')
+        LOGGER.critical('No start argument provided, please state the start mode: (1: main bot, 2: test bot), exiting...')
         exit(1)
     if len(sys.argv) > 2 and sys.argv[2] == '--no-notif':
         global start_notif
         start_notif = False
-        logger.info(f'--no-notif is set, start notification will not be sent')
+        LOGGER.info(f'--no-notif is set, start notification will not be sent')
 
 
 process_arguments()
@@ -88,29 +87,33 @@ async def on_ready():
     """
     Method called when the bot boots and is fully online
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -FoxyHunter V4.2.1
+    Last method edit: -FoxyHunter V4.3.0
     :return: None
     """
 
-    logger.info(f'We have logged in as {bot.user}')
+    LOGGER.info(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-
     if start_notif:
-        for to_notify in NOTIFY_ON_START:
-            try:
-                await bot.get_user(int(to_notify)).send(f'Running, and active\n```yml\nsystem: {platform.system()}\nversion: {platform.version()}\npython_version: {platform.python_version()}\n```')
-            except ValueError:
-                logger.warning(f'invalid discord user id: {to_notify}')
+        await direct_message(
+            bot,
+            f'Running, and active\n'
+            '```yml\n'
+            f'system: {platform.system()}\n'
+            f'version: {platform.version()}\n'
+            f'python_version: {platform.python_version()}\n'
+            '```',
+            *GUARDIANS
+        )
 
-    logger.info('loading cogs')
+    LOGGER.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
     await bot.add_cog(General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
     #await bot.add_cog(Artfight.Artfight(bot))
-    logger.info('Cogs loaded')
+    LOGGER.info('Cogs loaded')
 
     check_invite_pause.start()
 
@@ -327,7 +330,7 @@ async def purge(ctx: discord.Interaction, kick: bool):
     """
     method removes all members with the unverified role from Rikoland
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -FoxyHunter V4.2.1
+    Last method edit: -FoxyHunter V4.3.0
     :param message: Message that called the bot
     :return: None
     """
@@ -359,9 +362,9 @@ async def purge(ctx: discord.Interaction, kick: bool):
         await ctx.channel.send(msg)
         await ctx.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
         if kick:
-            logger.debug(f'├ {num_kicked} MEMBERS KICKED')
+            LOGGER.debug(f'├ {num_kicked} MEMBERS KICKED')
         else:
-            logger.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
+            LOGGER.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
     else:
         await ctx.reply('Error 403: Forbidden\nInsufficient Permissions')
 
@@ -371,11 +374,11 @@ async def prune(message):
     Removes inactive members from the server
     Does this do its job? V3.5.2
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -FoxyHunter V4.2.1
+    Last method edit: -FoxyHunter V4.3.0
     :param message:
     :return: NoneType
     """
-    await bot.get_user(eclipse_id).send('`STARTING PURGE`')
+    await direct_message(bot, '`STARTING PURGE`', *GUARDIANS)
     if message.author.guild is not None and message.author.guild_permissions.kick_members:
         # only run if in a guild and the user could do this manually.
         members = message.guild.members
@@ -383,9 +386,9 @@ async def prune(message):
                         1199610730899578960, 1069839195553669192]
         num_kicked = 0
         forbidden = 0
-        logger.debug('├ GETTING MEMBER LIST')
-        logger.debug('├ PURGING SERVER')
-        logger.debug('├┐')
+        LOGGER.debug('├ GETTING MEMBER LIST')
+        LOGGER.debug('├ PURGING SERVER')
+        LOGGER.debug('├┐')
         for member in members:
             kicked = False
             if member.id == 815418445192888321:
@@ -394,23 +397,23 @@ async def prune(message):
                 if kicked:
                     break
                 if role.id in ignore_roles:
-                    logger.debug(f'│├ {member.id} SAFE')
+                    LOGGER.debug(f'│├ {member.id} SAFE')
                     kicked = True
                     break
                 else:
                     try:
                         # await member.kick(reason="*T H E   P U R G E*")
-                        logger.debug(f'│├ <@{member.id}> PURGED')
+                        LOGGER.debug(f'│├ <@{member.id}> PURGED')
                         kicked = True
                         num_kicked += 1
                         break
                     except discord.errors.Forbidden:
-                        logger.debug(f'│├ {member.id} UNABLE TO PURGE')
+                        LOGGER.debug(f'│├ {member.id} UNABLE TO PURGE')
                         kicked = True
                         forbidden += 1
                         break
 
-        await bot.get_user(eclipse_id).send(f'Purge complete. {num_kicked} purged.')
+        await direct_message(bot, f'Purge complete. {num_kicked} purged.', *GUARDIANS)
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
@@ -475,12 +478,12 @@ async def stop_invite_status_message(ctx, message_id: str):
     guild_id_str = str(ctx.guild.id)
 
     if guild_id_str in message_ids:
-        logger.debug("found guild")
+        LOGGER.debug("found guild")
         for data in message_ids[guild_id_str]:
-            logger.debug("found data")
+            LOGGER.debug("found data")
             try:
                 if data["message_id"] == int(message_id):
-                    logger.debug("found message")
+                    LOGGER.debug("found message")
                     channel = bot.get_channel(data["channel_id"])
                     message = await channel.fetch_message(int(message_id))
                     await message.delete()

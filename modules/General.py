@@ -1,11 +1,14 @@
 import discord
-import sys
+import logging
+import os
 import time
 
-import main
 from discord.ext import commands
 
-version_num = '4.0.3'
+VERSION_NUM = '4.3.0'
+START_TIME = time.time()
+GUARDIANS = (env := os.getenv('GUARDIANS', '')) and env.split(',') or []
+LOGGER = logging.getLogger('modules')
 
 class General(commands.Cog):
     def __init__(self, bot):
@@ -52,15 +55,16 @@ class General(commands.Cog):
         """
         Quits the active bot. Admin only.
         Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx: message that called the quit command
         :return: N/A. program closes
         """
 
-        if ctx.author.id == main.eclipse_id or ctx.author.guild_permissions.administrator:
+        if str(ctx.author.id) in GUARDIANS or ctx.author.guild_permissions.administrator:
+            LOGGER.info(f'{ctx.author.name} issued quit command')
             await ctx.reply('Goodbye :wave:')
             await ctx.bot.change_presence(activity=discord.Game('Going offline'))
-            sys.exit()
+            await ctx.bot.close()
         else:
             await ctx.reply('You do not have permission to turn me off!')
 
@@ -90,8 +94,8 @@ class General(commands.Cog):
         """
         Displays the version of the bot being used
         Last docstring edit: -Autumn V4.0.1
-        Last method edit: -Autumn V4.0.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx: Message calling the bot
         :return: None
         """
-        await ctx.reply(f'I am currently running version {version_num}')
+        await ctx.reply(f'I am currently running version {VERSION_NUM}')
