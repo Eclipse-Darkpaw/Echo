@@ -30,15 +30,15 @@ Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv()
 but can influence the environment before Python runs.
 """
 
-VERSION_NUM = '4.2.1'
+VERSION_NUM = '4.3.0'
 
+START_TIME = time.time()
 NOTIFY_ON_START = (env := os.getenv('NOTIFY_ON_START', '')) and env.split(',') or []
 
 logger = setup_logger(log_file='logs/sunreek_info.log')
 
 bot_token = None
 start_notif = True
-start_time = time.time()
 prefix = '}'
 log_lvl = logging.WARNING
 
@@ -142,9 +142,9 @@ async def uptime(ctx: discord.Interaction):
     :param message: message calling the bot
     :return: None
     """
-    days = int(time.strftime('%j', time.gmtime(time.time() - start_time)))
-    await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(start_time)}:R>',
-                                      time.gmtime(time.time() - start_time)))
+    days = int(time.strftime('%j', time.gmtime(time.time() - START_TIME)))
+    await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\n Started <t:{int(START_TIME)}:R>',
+                                      time.gmtime(time.time() - START_TIME)))
 
 @bot.command()
 async def sync(interaction: discord.Interaction):

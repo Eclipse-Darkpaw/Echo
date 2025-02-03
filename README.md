@@ -26,12 +26,13 @@ The Pivotal tracker project link containing all the plans for the codebase
 
 ## Change Log
 
-### 4.2.1 / Cleanup & minor improvements, strucuting & documenting of sunreek
+### 4.3.0 / Refactoring, restructure & Logging
 
+* Refactor Structure
+* Add Fancy (& file) logging support
 * Improve consistency, python style-guide adherance, ...
 * Increase runtime safety.
 * Improve in-code documention.
-* Slight Structure changes for reduced mental overhead.
 
 ### 4.2.0
 
