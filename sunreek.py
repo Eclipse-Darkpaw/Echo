@@ -9,6 +9,7 @@ import modules.Verification as Verif
 import modules.refManagement as Ref
 import modules.Artfight as Artfight
 import os
+import platform
 import sys
 import time
 
@@ -30,6 +31,8 @@ but can influence the environment before Python runs.
 """
 
 VERSION_NUM = '4.2.1'
+
+NOTIFY_ON_START = (env := os.getenv('NOTIFY_ON_START', '')) and env.split(',') or []
 
 logger = setup_logger(log_file='logs/sunreek_info.log')
 
@@ -92,9 +95,15 @@ async def on_ready():
     logger.info(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    if start_notif: bot.get_user(eclipse_id).send('Running, and active')
 
-    print('loading cogs')
+    if start_notif:
+        for to_notify in NOTIFY_ON_START:
+            try:
+                await bot.get_user(int(to_notify)).send(f'Running, and active\n```yml\nsystem: {platform.system()}\nversion: {platform.version()}\npython_version: {platform.python_version()}\n```')
+            except ValueError:
+                logger.warning(f'invalid discord user id: {to_notify}')
+
+    logger.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
     await bot.add_cog(General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
