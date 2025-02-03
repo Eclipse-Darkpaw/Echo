@@ -31,11 +31,7 @@ but can influence the environment before Python runs.
 
 VERSION_NUM = '4.2.1'
 
-logger = setup_logger(
-    log_file='logs/sunreek_info.log',
-    ignore_discord_logs_in_log_file=True,
-    file_log_level=logging.INFO
-    )
+logger = setup_logger(log_file='logs/sunreek_info.log')
 
 bot_token = None
 start_notif = True
@@ -105,7 +101,7 @@ async def on_ready():
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
     #await bot.add_cog(Artfight.Artfight(bot))
-    print('Cogs loaded')
+    logger.info('Cogs loaded')
 
     check_invite_pause.start()
 

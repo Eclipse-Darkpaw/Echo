@@ -1,36 +1,103 @@
 import logging
 import logging.handlers
-import sys
 import os
+import sys
 
-COLOURS = {
-    logging.DEBUG: "\033[36;1m",  # Bold Cyan
-    logging.INFO: "\033[32;1m",   # Bold Green
-    logging.WARNING: "\033[33;1m",  # Bold Yellow
-    logging.ERROR: "\033[31;1m",  # Bold Red
-    logging.CRITICAL: "\033[41;1m",  # Bold Red background
-}
+class ANSI:
+    _ESCAPE_CHAR = '\033'
+    _CSI = '['  # Control Sequence Introducer
+    _DELIMITER = ';'
+    _TERMINATOR = 'm'
 
-ORANGE = "\033[38;5;214m"  # Orange from 256-colour palette
-LIGHT_GREY = "\033[90m"  # Dark Grey
-ITALIC_GREY = "\033[3;90m"  # Italic Dark Grey
+    CODES = {
+        'transform': {
+            'reset': 0,
+            'bold': 1,
+            'italic': 3,
+            'underline': 4,
+            'reversed': 7
+        },
+        'foreground': {
+            'black': 30,
+            'red': 31,
+            'green': 32,
+            'yellow': 33,
+            'blue': 34,
+            'magenta': 35,
+            'cyan': 36,
+            'white': 37,
+            'bright_black': 90,
+            'bright_red': 91,
+            'bright_green': 92,
+            'bright_yellow': 93,
+            'bright_blue': 94,
+            'bright_magenta': 95,
+            'bright_cyan': 96,
+            'bright_white': 97
+        },
+        'background': {
+            'red': 49,
+            'green': 50,
+            'yellow': 51,
+            'blue': 52,
+            'magenta': 53,
+            'cyan': 54,
+            'white': 55
+        }
+    }
 
-RESET = "\033[0m"  # Reset all styles
+    @classmethod
+    def get_log_level_codes(cls, level):
+        log_level_colors = {
+            logging.DEBUG: cls.CODES['foreground']['cyan'],
+            logging.INFO: cls.CODES['foreground']['green'],
+            logging.WARNING: cls.CODES['foreground']['yellow'],
+            logging.ERROR: cls.CODES['foreground']['red'],
+            logging.CRITICAL: cls.CODES['foreground']['bright_red']
+        }
 
-class ColourFormatter(logging.Formatter):
+        return [cls.CODES['transform']['bold'], log_level_colors.get(level, cls.CODES['foreground']['white'])]
+    
+    @classmethod
+    def _build_sequence(cls, *codes):
+        return f'{cls._ESCAPE_CHAR}{cls._CSI}{cls._DELIMITER.join(map(str, codes))}{cls._TERMINATOR}'
+
+    @classmethod
+    def set_on_text(cls, text, *codes):
+        return f'{cls._build_sequence(*codes)}{text}{cls._build_sequence(cls.CODES['transform']['reset'])}'
+
+class FancyFormatter(logging.Formatter):
+    def __init__(self, fmt=None, datefmt=None, style='%', **kwargs):
+        super().__init__(fmt=fmt, datefmt=datefmt, style=style, **kwargs)
+
+    def formatTime(self, record, datefmt=None):
+        base_time = super().formatTime(record, datefmt)
+        return ANSI.set_on_text(base_time, ANSI.CODES['foreground']['bright_black'], ANSI.CODES['transform']['italic'])
+
     def format(self, record):
-        colour = COLOURS.get(record.levelno, RESET)
-        
-        timestamp = f"{LIGHT_GREY}{self.formatTime(record, self.datefmt)}{RESET}"
-        
-        levelname = f"{colour}{record.levelname:<8}{RESET}"
-        name = f"{ORANGE}{record.name}{RESET}"
-        message = record.getMessage()
-        
-        return f"{timestamp} [{levelname}] {name}: {message}"
+        record.levelname = ANSI.set_on_text(f'{record.levelname:<8}', *ANSI.get_log_level_codes(record.levelno))
+        record.name = ANSI.set_on_text(record.filename, ANSI.CODES['foreground']['blue'])
 
-def setup_logger(log_file = None, ignore_discord_logs_in_log_file=False,
-                 file_log_level=logging.INFO, console_logging=True, console_log_level=logging.INFO):
+        return super().format(record)
+
+def setup_logger(console_logging=True, console_log_level=logging.INFO,
+                 log_file=None, ignore_discord_logs_in_log_file=False, file_log_level=logging.INFO, max_file_size=2048, file_log_rotation_count=10):
+    """
+    Configures a logger that captures log messages, formats them, and outputs them to specified destinations, such as console and log files.
+
+    Last docstring edit: -FoxyHunter V4.3.0
+    Last method edit: -FoxyHunter V4.3.0
+    :param console_logging: (default=True) Whether or not to log to the console.
+    :param console_log_level: (default=logging.INFO) The log level of the console output.
+
+    :param log_file: (default=None) If you want to enable file logging; the path to the file location, the file does not need to exist yet.
+    :param ignore_discord_logs_in_log_file: (default=False) Wether or not to include logs from discord.py (discord & discord.http) in the log file.
+    :param file_log_level: (default=logging.INFO) Log level of the log file
+    :param max_file_size: (default=2048) Maximum log file size in KiB
+    :param file_log_rotation_count: (default=5) When the maximum log file is exceeded, a "backup is created, this number defines the maxiumum to rotate through.
+    
+    :return: logger
+    """
     script_name = os.path.basename(sys.argv[0])
     logger = logging.getLogger(script_name)
     logger.setLevel(min(file_log_level, console_log_level))
@@ -42,23 +109,27 @@ def setup_logger(log_file = None, ignore_discord_logs_in_log_file=False,
         file_handler = logging.handlers.RotatingFileHandler(
             filename=log_file,
             encoding='utf-8',
-            maxBytes=32 * 1024 * 1024,  # 32 MiB
-            backupCount=5,  # Rotate through 5 files
+            maxBytes=max_file_size*1024,
+            backupCount=file_log_rotation_count
         )
+        
         file_formatter = logging.Formatter(
             '[{asctime}] [{levelname:<8}] {name}: {message}', '%Y-%m-%d %H:%M:%S', style='{'
         )
+
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
         file_handler.setLevel(file_log_level)
 
     if console_logging:
         console_handler = logging.StreamHandler(sys.stdout)
-        console_formatter = ColourFormatter(
-            '[{asctime}] [{levelname:<8}] {name}: {message}', 
+
+        console_formatter = FancyFormatter(
+            '{asctime}   [{levelname:<8} ]  {name}: {message}', 
             datefmt='%Y-%m-%d %H:%M:%S', 
             style='{'
         )
+
         console_handler.setFormatter(console_formatter)
         logger.addHandler(console_handler)
         console_handler.setLevel(console_log_level)
@@ -68,7 +139,7 @@ def setup_logger(log_file = None, ignore_discord_logs_in_log_file=False,
         logging.getLogger('discord').addHandler(null_handler)
         logging.getLogger('discord.http').addHandler(null_handler)
 
-    # Capture logs for discord.py (and other libraries)
+    # Capture logs for discord.py
     logging.getLogger('discord').setLevel(min(file_log_level, console_log_level))
     logging.getLogger('discord').addHandler(console_handler)
 
