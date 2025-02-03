@@ -15,8 +15,8 @@ import time
 from datetime import datetime, timezone
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from fileManagement import resource_file_path
-from main import eclipse_id
+from util.fileManagement import resource_file_path
+from util.logger import setup_logger, logging
 
 # Keep imports in alphabetical order
 
@@ -31,17 +31,24 @@ but can influence the environment before Python runs.
 
 VERSION_NUM = '4.2.1'
 
+logger = setup_logger(
+    log_file='logs/sunreek_info.log',
+    ignore_discord_logs_in_log_file=True,
+    file_log_level=logging.INFO
+    )
+
 bot_token = None
 start_notif = True
 start_time = time.time()
 prefix = '}'
-
+log_lvl = logging.WARNING
 
 def process_arguments():
     """
     Detirmines as which bot to run.
     Sets runtime variables accordingly.
-    
+    Last docstring edit: ~FoxyHunter V4.2.1
+    Last method edit: ~FoxyHunter V4.0.0
     """
     if len(sys.argv) > 1 and sys.argv[1].isdigit():
         global bot_token, prefix
@@ -53,14 +60,15 @@ def process_arguments():
                 bot_token = os.getenv('SUNREEK_TEST_TOKEN')
                 prefix = '>'
             case _:
-                print(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
+                logger.critical(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
                 exit(1)
     else:
-        print('No start argument provided, please state the start mode: (1: main bot, 2: test bot), exiting...')
+        logger.critical('No start argument provided, please state the start mode: (1: main bot, 2: test bot), exiting...')
+        exit(1)
     if len(sys.argv) > 2 and sys.argv[2] == '--no-notif':
         global start_notif
         start_notif = False
-        print(f'--no-notif is set, start notification will not be set')
+        logger.info(f'--no-notif is set, start notification will not be sent')
 
 
 process_arguments()
@@ -81,11 +89,11 @@ async def on_ready():
     """
     Method called when the bot boots and is fully online
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
+    Last method edit: -FoxyHunter V4.2.1
     :return: None
     """
 
-    print(f'We have logged in as {bot.user}')
+    logger.info(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
     if start_notif: bot.get_user(eclipse_id).send('Running, and active')
@@ -339,7 +347,7 @@ async def purge(ctx: discord.Interaction, kick: bool):
     """
     method removes all members with the unverified role from Rikoland
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.5.2
+    Last method edit: -FoxyHunter V4.2.1
     :param message: Message that called the bot
     :return: None
     """
@@ -371,9 +379,9 @@ async def purge(ctx: discord.Interaction, kick: bool):
         await ctx.channel.send(msg)
         await ctx.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
         if kick:
-            print(f'├ {num_kicked} MEMBERS KICKED')
+            logger.debug(f'├ {num_kicked} MEMBERS KICKED')
         else:
-            print(f'├ {num_kicked} MEMBERS TO BE KICKED')
+            logger.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
     else:
         await ctx.reply('Error 403: Forbidden\nInsufficient Permissions')
 
@@ -383,7 +391,7 @@ async def prune(message):
     Removes inactive members from the server
     Does this do its job? V3.5.2
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V3.5.2
+    Last method edit: -FoxyHunter V4.2.1
     :param message:
     :return: NoneType
     """
@@ -395,9 +403,9 @@ async def prune(message):
                         1199610730899578960, 1069839195553669192]
         num_kicked = 0
         forbidden = 0
-        print('├ GETTING MEMBER LIST')
-        print('├ PURGING SERVER')
-        print('├┐')
+        logger.debug('├ GETTING MEMBER LIST')
+        logger.debug('├ PURGING SERVER')
+        logger.debug('├┐')
         for member in members:
             kicked = False
             if member.id == 815418445192888321:
@@ -406,18 +414,18 @@ async def prune(message):
                 if kicked:
                     break
                 if role.id in ignore_roles:
-                    print(f'│├ {member.id} SAFE')
+                    logger.debug(f'│├ {member.id} SAFE')
                     kicked = True
                     break
                 else:
                     try:
                         # await member.kick(reason="*T H E   P U R G E*")
-                        print(f'│├ <@{member.id}> PURGED')
+                        logger.debug(f'│├ <@{member.id}> PURGED')
                         kicked = True
                         num_kicked += 1
                         break
                     except discord.errors.Forbidden:
-                        print(f'│├ {member.id} UNABLE TO PURGE')
+                        logger.debug(f'│├ {member.id} UNABLE TO PURGE')
                         kicked = True
                         forbidden += 1
                         break
@@ -487,12 +495,12 @@ async def stop_invite_status_message(ctx, message_id: str):
     guild_id_str = str(ctx.guild.id)
 
     if guild_id_str in message_ids:
-        print("found guild")
+        logger.debug("found guild")
         for data in message_ids[guild_id_str]:
-            print("found data")
+            logger.debug("found data")
             try:
                 if data["message_id"] == int(message_id):
-                    print("found message")
+                    logger.debug("found message")
                     channel = bot.get_channel(data["channel_id"])
                     message = await channel.fetch_message(int(message_id))
                     await message.delete()
@@ -561,4 +569,4 @@ async def on_message(ctx: discord.Interaction):
         await AntiScam.scan_message(ctx)
 
 if __name__ == '__main__':
-    bot.run(token=bot_token)
+    bot.run(token=bot_token, log_handler=None)
