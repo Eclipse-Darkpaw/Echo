@@ -80,8 +80,8 @@ class FancyFormatter(logging.Formatter):
 
         return super().format(record)
 
-def setup_logger(console_logging=True, console_log_level=logging.INFO,
-                 log_file=None, ignore_discord_logs_in_log_file=False, file_log_level=logging.INFO, max_file_size=2048, file_log_rotation_count=10):
+def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_discord_logs=False,
+                 log_file=None, file_log_level=logging.INFO, max_file_size=2048, file_log_rotation_count=10):
     """
     Configures a logger that captures log messages, formats them, and outputs them to specified destinations, such as console and log files.
 
@@ -89,9 +89,9 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO,
     Last method edit: -FoxyHunter V4.3.0
     :param console_logging: (default=True) Whether or not to log to the console.
     :param console_log_level: (default=logging.INFO) The log level of the console output.
+    :param ignore_discord_logs: (default=False) Whether or not to include logs from discord.py (discord & discord.http) in the logs.
 
     :param log_file: (default=None) If you want to enable file logging; the path to the file location, the file does not need to exist yet.
-    :param ignore_discord_logs_in_log_file: (default=False) Wether or not to include logs from discord.py (discord & discord.http) in the log file.
     :param file_log_level: (default=logging.INFO) Log level of the log file
     :param max_file_size: (default=2048) Maximum log file size in KiB
     :param file_log_rotation_count: (default=5) When the maximum log file is exceeded, a "backup is created, this number defines the maxiumum to rotate through.
@@ -99,8 +99,14 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO,
     :return: logger
     """
     script_name = os.path.basename(sys.argv[0])
+
     logger = logging.getLogger(script_name)
+    modules_logger = logging.getLogger('modules')
+    utils_logger = logging.getLogger('utils')
+
     logger.setLevel(min(file_log_level, console_log_level))
+    modules_logger.setLevel(min(file_log_level, console_log_level))
+    utils_logger.setLevel(min(file_log_level, console_log_level))
 
     if logger.hasHandlers():
         logger.handlers.clear()
@@ -118,8 +124,11 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO,
         )
 
         file_handler.setFormatter(file_formatter)
-        logger.addHandler(file_handler)
         file_handler.setLevel(file_log_level)
+
+        logger.addHandler(file_handler)
+        modules_logger.addHandler(file_handler)
+        utils_logger.addHandler(file_handler)
 
     if console_logging:
         console_handler = logging.StreamHandler(sys.stdout)
@@ -131,19 +140,26 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO,
         )
 
         console_handler.setFormatter(console_formatter)
-        logger.addHandler(console_handler)
         console_handler.setLevel(console_log_level)
 
-    if ignore_discord_logs_in_log_file:
+        logger.addHandler(console_handler)
+        modules_logger.addHandler(console_handler)
+        utils_logger.addHandler(console_handler)
+
+    if ignore_discord_logs:
         null_handler = logging.NullHandler()
         logging.getLogger('discord').addHandler(null_handler)
         logging.getLogger('discord.http').addHandler(null_handler)
+    else:
+        discord_logger = logging.getLogger('discord')
+        discord_http_logger = logging.getLogger('discord.http')
 
-    # Capture logs for discord.py
-    logging.getLogger('discord').setLevel(min(file_log_level, console_log_level))
-    logging.getLogger('discord').addHandler(console_handler)
+        discord_logger.setLevel(min(file_log_level, console_log_level))
+        discord_logger.addHandler(console_handler)
+        discord_logger.addHandler(file_handler)
 
-    logging.getLogger('discord.http').setLevel(min(file_log_level, console_log_level))
-    logging.getLogger('discord.http').addHandler(console_handler)
+        discord_http_logger.setLevel(min(file_log_level, console_log_level))
+        discord_http_logger.addHandler(console_handler)
+        discord_http_logger.addHandler(file_handler)
 
     return logger

@@ -1,4 +1,6 @@
-import time
+import logging
+
+LOGGER = logging.getLogger('utils')
 
 # todo: add a master prefix only applicable to you as a back door
 
@@ -55,21 +57,20 @@ def get_user_id(message, arg=1):
     else:
         return -1
     
-async def direct_message(client, logger, message, *user_ids):
+async def direct_message(client, message, *user_ids):
     """
     Sends a DM to any amount of users
     Last docstring edit: -FoxyHunter V4.3.0
     Last method edit: -FoxyHunter V4.3.0
     :param client: bot client
     :param message: the message to send
-    :param logger: the logger to log with
     :param *user_ids: any amount of user ids (as strings or ints)
     """
     for user_id in user_ids:
         try:    
             user = client.get_user(int(user_id))
             if user is None:
-                logger.warning(f'No user found for id: {user_id}')
+                LOGGER.warning(f'No user found for id: {user_id}')
             await user.send(message)
         except ValueError:
-            logger.warning(f'Invalid discord id')
+            LOGGER.warning(f'Invalid discord id')
