@@ -54,3 +54,22 @@ def get_user_id(message, arg=1):
         return message.guild.get_member_named(command[1]).id
     else:
         return -1
+    
+async def direct_message(client, logger, message, *user_ids):
+    """
+    Sends a DM to any amount of users
+    Last docstring edit: -FoxyHunter V4.3.0
+    Last method edit: -FoxyHunter V4.3.0
+    :param client: bot client
+    :param message: the message to send
+    :param logger: the logger to log with
+    :param *user_ids: any amount of user ids (as strings or ints)
+    """
+    for user_id in user_ids:
+        try:    
+            user = client.get_user(int(user_id))
+            if user is None:
+                logger.warning(f'No user found for id: {user_id}')
+            await user.send(message)
+        except ValueError:
+            logger.warning(f'Invalid discord id')
