@@ -50,8 +50,6 @@ game = discord.Game(f'{bot_config.prefix}help for commands')
 
 DATA = FileWatcher(resource_file_path + 'servers.json')
 
-logger.info(DATA['612550152514961408']["roles"]['unverified'])
-
 @bot.event
 async def on_ready():
     """
@@ -395,6 +393,11 @@ async def prune(message):
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
+# TODO: Remove command before merging to main
+@bot.command()
+async def filewatch_testing(ctx: discord.Interaction):
+    await ctx.send(DATA['612550152514961408']['name'])
+
 
 if __name__ == '__main__':
     bot.run(token=bot_config.token, log_handler=None)
