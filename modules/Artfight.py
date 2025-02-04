@@ -5,10 +5,12 @@ import json
 from discord.ext import commands
 from random import randint
 
-from util import FilePaths, WatchedFiles, read_line
+from util import FilePaths, WatchedFiles, read_line, logging
 
 SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
 ARTIGHT_MEMBERS = WatchedFiles.get_file_data(FilePaths.artfight_members)
+
+_logger = logging.getLogger('modules')
 
 class Artfight(commands.GroupCog, name="artfight", description="All the commands for the annual artfight"):
     artfight_role = 1317026586226331678
@@ -233,11 +235,11 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
         try:
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
-            print('Saved 1')
+            _logger.debug('Saved 1')
         except KeyError:
             data[str(ctx.guild.id)] = {}
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
-            print('Saved 2')
+            _logger.debug('Saved 2')
 
         with open(FilePaths.artfight_members, 'w') as file:
             file.write(json.dumps(data, indent=4))
@@ -546,7 +548,6 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                 else:
                     msg = f'{msg}\n{txt}'
             try:
-                #print(msg)
                 await ctx.send(msg)
             except discord.errors.HTTPException:
                 await ctx.send('message too long')
@@ -574,7 +575,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             return
 
         user_profile = guild_data[str(member.id)]
-        print(user_profile)
+        _logger.info(f'user removed: {user_profile}')
 
         # Confirmation embed
         embed = discord.Embed(title="Confirm User Removal", color=discord.Color.orange())
@@ -649,8 +650,8 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         await view.wait()
 
         if view.result == "purge":
-            print(f"Member {member.id} removed from guild {ctx.guild.id}.")
+            _logger.info(f"Member {member.id} removed from guild {ctx.guild.id}.")
         elif view.result == "cancel":
-            print(f"Member {member.id} removal canceled.")
+            _logger.info(f"Member {member.id} removal canceled.")
         elif view.result == "error":
-            print(f"Failed to remove Member {member.id} from guild {ctx.guild.id}.")
+            _logger.info(f"Failed to remove Member {member.id} from guild {ctx.guild.id}.")
