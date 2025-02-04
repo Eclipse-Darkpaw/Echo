@@ -5,10 +5,12 @@ import time
 
 from discord.ext import commands
 
+from config import BotConfig
+
 VERSION_NUM = '4.3.0'
 START_TIME = time.time()
-GUARDIANS = (env := os.getenv('GUARDIANS', '')) and env.split(',') or []
-LOGGER = logging.getLogger('modules')
+GUARDIANS = BotConfig._retrieve_guardians()
+_Logger = logging.getLogger('modules')
 
 class General(commands.Cog):
     def __init__(self, bot):
@@ -61,7 +63,7 @@ class General(commands.Cog):
         """
 
         if str(ctx.author.id) in GUARDIANS or ctx.author.guild_permissions.administrator:
-            LOGGER.info(f'{ctx.author.name} issued quit command')
+            _Logger.info(f'{ctx.author.name} issued quit command')
             await ctx.reply('Goodbye :wave:')
             await ctx.bot.change_presence(activity=discord.Game('Going offline'))
             await ctx.bot.close()
