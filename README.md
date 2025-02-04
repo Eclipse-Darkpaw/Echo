@@ -26,10 +26,11 @@ The Pivotal tracker project link containing all the plans for the codebase
 
 ## Change Log
 
-### 4.3.0 / Refactoring, restructure & Logging
+### 4.3.0 / Refactoring, Fancy Logging & File Watching/Observing
 
 * Refactor Structure
 * Add Fancy (& file) logging support
+* Add non-breaking, optimised & threaded file watching support
 * Improve consistency, python style-guide adherance, ...
 * Increase runtime safety.
 * Improve in-code documention.
