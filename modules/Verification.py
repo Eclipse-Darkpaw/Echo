@@ -1,18 +1,19 @@
 import discord
 import json
-import time
 
 from discord.ext import commands
-from main import read_line
 from difflib import SequenceMatcher
-from fileManagement import resource_file_path
+
+from util import read_line, FilePaths, WatchedFiles, logging
 """
 Handles all tasks related to member verification.
 Last Docstring edit: -Autumn V3.0.0
 Last File edit: -Autumn V3.4.0
 """
 
-file_path = resource_file_path + 'servers.json'
+SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
+
+_logger = logging.getLogger('modules')
 
 counter = 0
 active_forms = 0
@@ -38,7 +39,6 @@ class Application:
         :param applicant_guild: Guild applied from
         """
         global counter
-        global file_path
         global questions
 
         counter += 1
@@ -51,19 +51,15 @@ class Application:
         self.passguesses = []
         self.attempts = 1
         try:
-            with open(file_path) as file:
-                data = json.load(file)
-                self.application_questions = data[str(applicant_guild.id)]["questions"]
+            self.application_questions = SERVERS_SETTINGS[str(applicant_guild.id)]["questions"]
         except KeyError:
-            print("Key error 1 during verification")
+            _logger.error("Key error 1 during verification")
             self.application_questions = questions
 
         try:
-            with open(file_path) as file:
-                data = json.load(file)
-                self.application_questions_display = data[str(applicant_guild.id)]["questions_display"]
+            self.application_questions_display = SERVERS_SETTINGS[str(applicant_guild.id)]["questions_display"]
         except KeyError:
-            print("Key error 2 during verification")
+            _logger.error("Key error 2 during verification")
             self.application_questions_display = questions
 
 
@@ -74,18 +70,11 @@ class Application:
         Last method edit: -Autumn V3.2.0
         :return:
         """
-
         global client
-
-        # Done: change to false for live deployment
-        debug = False
-
-        with open(file_path) as file:
-            data = json.load(file)
 
         # find the server code word if there is one.
         try:
-            code = data[str(self.applicant_guild.id)]['codeword']
+            code = SERVERS_SETTINGS[str(self.applicant_guild.id)]['codeword']
         except:
             code = None
 
@@ -111,8 +100,7 @@ class Application:
                                                    delete_response=False)
                         self.passguesses.append(response.content)
                         similarity = SequenceMatcher(None, code, response.content).ratio()
-                        if debug:
-                            print(similarity)
+                        _logger.debug(similarity)
                         if response.content[1:7] == 'verify':
                             pass
                         # compares user input to the real password. above a certain threshold gets
@@ -174,7 +162,7 @@ class Application:
 
         elif str(reaction.emoji) == '🚫':
             await confirm_msg.add_reaction('🆗')
-            application_channel = self.applicant_guild.get_channel(data[str(self.applicant_guild.id)]['channels'][
+            application_channel = self.applicant_guild.get_channel(SERVERS_SETTINGS[str(self.applicant_guild.id)]['channels'][
                                                                        'application'])
             await application_channel.send(content=f'<@{self.applicant.id}>', embed=self.gen_embed(rejected=True))
             await dm.send("Please restart")
@@ -247,27 +235,24 @@ class Verification(commands.Cog):
         msg_guild = ctx.guild
 
         # Check if member is verified
-        with open(file_path) as file:
-            data = json.load(file)
-
         try:
-            application_channel = int(data[str(ctx.guild.id)]['channels']['application'])
+            application_channel = int(SERVERS_SETTINGS[str(ctx.guild.id)]['channels']['application'])
         except KeyError:
             await ctx.reply("Unable to begin verification. Please inform the moderators about this issue.\n"
                                 "Error code -1")
 
         try:
-            verified_role_id = int(data[str(ctx.guild.id)]['roles']['member'])
+            verified_role_id = int(SERVERS_SETTINGS[str(ctx.guild.id)]['roles']['member'])
         except KeyError:
             await ctx.reply("Unable to begin verification. Roles crucial roles are unassigned")
 
         try:
-            questioning_role_id = int(data[str(ctx.guild.id)]['roles']['questioning'])
+            questioning_role_id = int(SERVERS_SETTINGS[str(ctx.guild.id)]['roles']['questioning'])
         except KeyError:
             questioning_role_id = None
 
         try:
-            unverified_role_id = int(data[str(ctx.guild.id)]['roles']['unverified'])
+            unverified_role_id = int(SERVERS_SETTINGS[str(ctx.guild.id)]['roles']['unverified'])
         except KeyError:
             unverified_role_id = None
 
@@ -325,7 +310,7 @@ class Verification(commands.Cog):
                         reaction.message == applied)
                 return out
             except AttributeError:
-                print(str(user.id))
+                _logger.warning(str(user.id))
                 return False
 
         while True:
@@ -352,7 +337,7 @@ class Verification(commands.Cog):
                 elif str(reaction.emoji) == '❓':
                     await application.applicant.add_roles(msg_guild.get_role(questioning_role_id))
 
-                    questioning_room = ctx.guild.get_channel(int(data[str(ctx.guild.id)]['channels']['questioning']))
+                    questioning_room = ctx.guild.get_channel(int(SERVERS_SETTINGS[str(ctx.guild.id)]['channels']['questioning']))
                     thread_name = f'{ctx.author.name} Questioning'
                     try:
                         thread = await questioning_room.create_thread(name=thread_name, auto_archive_duration=1440)
@@ -412,7 +397,3 @@ class Verification(commands.Cog):
                 await channel.send(f'Unable to perform action. <@{ctx.author.id}> cannot be found')
                 await applied.add_reaction('🆗')
                 break
-            # except AttributeError as er: #user.guild_permissions no longer works
-                # await channel.send(f'An unknown error occured, pleasetry again. <@749443249302929479> see the logs at '
-                #                    f'<t:{int(time.time())}:T> for more details')
-                # print(er)
