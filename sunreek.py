@@ -2,7 +2,7 @@
 import discord
 import platform
 
-from discord.ext import commands, tasks
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
