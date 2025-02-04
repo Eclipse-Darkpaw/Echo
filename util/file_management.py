@@ -12,11 +12,11 @@ class FilePaths:
     scam_log = f'{_logs_dir}/scam.log'
     
     @classmethod
-    def get_ref_path(cls, user_id):
+    def get_ref(cls, user_id):
         return f'{cls._data_dir}/refs/{user_id}.refs'
     
     @classmethod
-    def get_nsfw_ref_path(cls, user_id):
+    def get_nsfw_ref(cls, user_id):
         return f'{cls._data_dir}/nsfw/refs/{user_id}.nsfwref'
 
 class WatchedFiles:
