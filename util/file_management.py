@@ -6,21 +6,10 @@ class FilePaths:
     _data_dir = f'{_bot_path}/data'
     _logs_dir = f'{_bot_path}/logs'
 
-    @property
-    def servers_settings(cls):
-        return f'{cls._data_dir}/servers.json'
-    
-    @property
-    def servers_warns(cls):
-        return f'{cls._data_dir}/warns.json'
-    
-    @property
-    def artfight_members(cls):
-        return f'{cls._data_dir}/artfight-members.json'
-    
-    @property
-    def scam_log(cls):
-        return f'{cls._logs_dir}/scam.log'
+    servers_settings = f'{_data_dir}/servers.json'
+    servers_warns = f'{_data_dir}/warns.json'
+    artfight_members = f'{_data_dir}/artfight-members.json'
+    scam_log = f'{_logs_dir}/scam.log'
     
     @classmethod
     def get_ref_path(cls, user_id):
