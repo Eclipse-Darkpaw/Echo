@@ -2,9 +2,8 @@ import discord
 import json
 
 from discord.ext import commands
-from main import read_line
-from fileManagement import resource_file_path
 
+from util import read_line, FilePaths
 
 class Settings(commands.Cog):
     def __init__(self, bot):
@@ -27,7 +26,7 @@ class Settings(commands.Cog):
         :param warn_log: where to log warns
         :return:
         """
-        with open(resource_file_path + 'servers.json') as file:
+        with open(FilePaths.servers_settings) as file:
             data = json.load(file)
 
         server_data = {}
@@ -45,7 +44,7 @@ class Settings(commands.Cog):
             server_data['warn_log'] = warn_log.id
 
         data[str(ctx.guild.id)]['channels'] = server_data
-        with open(resource_file_path + 'servers.json', 'w') as file:
+        with open(FilePaths.servers_settings, 'w') as file:
             file.write(json.dumps(data, indent=4))
             await ctx.reply('Channels set.')
 
@@ -66,7 +65,7 @@ class Settings(commands.Cog):
         :param mod: moderator role
         :return:
         """
-        with open(resource_file_path + 'servers.json') as file:
+        with open(FilePaths.servers_settings) as file:
             data = json.load(file)
 
         server_data = {}
@@ -83,17 +82,17 @@ class Settings(commands.Cog):
             server_data['mod'] = mod.id
 
         data[str(ctx.guild.id)]['roles'] = server_data
-        with open(resource_file_path + 'servers.json', 'w') as file:
+        with open(FilePaths.servers_settings, 'w') as file:
             file.write(json.dumps(data, indent=4))
             await ctx.reply('Roles set.')
 
     @commands.hybrid_command(name='set-code')
     async def codeword_setup(self, ctx, codeword):
-        with open(resource_file_path + 'servers.json') as file:
+        with open(FilePaths.servers_settings) as file:
             data = json.load(file)
 
         data[str(ctx.guild.id)]['codeword'] = codeword
-        with open(resource_file_path + 'servers.json', 'w') as file:
+        with open(FilePaths.servers_settings, 'w') as file:
             file.write(json.dumps(data, indent=4))
             await ctx.reply('Code set.')
 
