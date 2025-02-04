@@ -83,23 +83,31 @@ async def on_ready():
     #await bot.add_cog(Artfight.Artfight(bot))
     logger.info('Cogs loaded')
 
-    check_invite_pause.start()
 
-# ---
-# Utilities
-# ---
+scan_ignore = [688611557508513854]
 
-def get_log_channel(guild_id):
-    try:
-        with open(resource_file_path + "servers.json", "r") as file:
-            return json.load(file)[str(guild_id)]['channels']['log']
-    except FileNotFoundError or KeyError:
-        return None
+@bot.event
+async def on_message(ctx: discord.Interaction):
+    """
+    Calls methods for every message.
+    Last docstring edit: -Autumn V1.14.4
+    Last method edit: -FoxyHunter V4.3.0
+    :param ctx: The interaction calling the function
+    """
+
+    from modules.Artfight import Artfight as af
+    await bot.process_commands(ctx)
+    if ctx.author.bot:
+        return
+
+    content = ctx.content.lower()
+
+    if not (ctx.guild is None or content.find(AntiScam.code) != -1 or ctx.channel.id in scan_ignore):
+        await AntiScam.scan_message(ctx)
     
 # ---
 # Commands
 # ---
-
 
 cursed_keys_running = False
 blessed_keys_running = False
@@ -385,139 +393,6 @@ async def prune(message):
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
-
-# ==========
-# INVITE WATCHING
-# ==========
-
-def load_invite_watching_msg_ids():
-    try:
-        with open(resource_file_path + "invite_watching_msg_ids.json", "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
-
-def save_invite_watching_msg_ids(msg_ids):
-    with open(resource_file_path + "invite_watching_msg_ids.json", "w") as f:
-        json.dump(msg_ids, f)
-
-def construct_invite_status_msg(invites_paused_until, timestamp):
-    if invites_paused_until is None:
-        status = "**Invites Open** :green_circle:"
-        subtext = f"This message was last updated: <t:{int(timestamp.timestamp())}:R>"
-    elif invites_paused_until < timestamp:
-        status = "**Invites Open** :green_circle:\n> :warning: Likely Unintentional"
-        subtext = f"This message was last updated: <t:{int(timestamp.timestamp())}:R>"
-    else:
-        status = f"**Invites Paused** :yellow_circle:\n> :clock{timestamp.strftime('%I').lstrip('0')}:  Until: <t:{int(invites_paused_until.timestamp())}:f>"
-        subtext = f"This message was last updated: <t:{int(timestamp.timestamp())}:R>"
-
-    return f"{status}\n-# {subtext}"
-
-message_ids = load_invite_watching_msg_ids()
-sent_alerts = {}
-
-@tasks.loop(minutes=1)
-async def check_invite_pause():
-    for guild_id, data_list in message_ids.items():
-        guild = bot.get_guild(int(guild_id))
-        if guild:
-            invites_paused_until = guild.invites_paused_until
-            timestamp = datetime.now(timezone.utc)
-
-            for data in data_list:
-                channel = bot.get_channel(int(data['channel_id']))
-                if channel:
-                    message = await channel.fetch_message(int(data['message_id']))
-                    await message.edit(content=construct_invite_status_msg(invites_paused_until, timestamp))
-
-                    if invites_paused_until and invites_paused_until < timestamp:
-                        if not sent_alerts.get(guild_id, False):
-                            sent_alerts[guild_id] = True
-                            log_channel = get_log_channel(guild_id)
-
-                            if log_channel:
-                                await bot.get_channel(log_channel).send(":warning: **CAUTION**\nThe server invites may accidentally be open!")
-                    else:
-                        sent_alerts[guild_id] = False
-
-@bot.hybrid_command(name="stop-invite-status-msg")
-async def stop_invite_status_message(ctx, message_id: str):
-    guild_id_str = str(ctx.guild.id)
-
-    if guild_id_str in message_ids:
-        logger.debug("found guild")
-        for data in message_ids[guild_id_str]:
-            logger.debug("found data")
-            try:
-                if data["message_id"] == int(message_id):
-                    logger.debug("found message")
-                    channel = bot.get_channel(data["channel_id"])
-                    message = await channel.fetch_message(int(message_id))
-                    await message.delete()
-
-                    message_ids[guild_id_str].remove(data)
-                    if not message_ids[guild_id_str]:
-                        del message_ids[guild_id_str]
-                    save_invite_watching_msg_ids(message_ids)
-
-                    await ctx.reply("Status message stopped and deleted.", ephemeral=True)
-                    return
-            except ValueError:
-                await ctx.reply("Please provide a valid integer for the message ID.", ephemeral=True)
-    await ctx.reply("Message not found or already deleted.", ephemeral=True)
-
-@bot.hybrid_command(name="set-invite-status-msg")
-async def invite_status_message(ctx):
-    guild = ctx.guild
-    if guild:
-        invites_paused_until = guild.invites_paused_until
-        timestamp = datetime.now(timezone.utc)
-
-        message = await ctx.send(construct_invite_status_msg(invites_paused_until, timestamp))
-
-        if ctx.guild.id not in message_ids:
-            message_ids[ctx.guild.id] = []
-
-        message_ids[ctx.guild.id].append({
-            "channel_id": ctx.channel.id,
-            "message_id": message.id
-        })
-        save_invite_watching_msg_ids(message_ids)
-
-# ==========
-# END INVITE WATCHING
-# ==========
-
-scan_ignore = [688611557508513854]
-
-@bot.event
-async def on_message(ctx: discord.Interaction):
-    """
-    Calls methods for every message.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
-    :param ctx: The interaction calling the function
-    """
-
-    from modules.Artfight import Artfight as af
-    await bot.process_commands(ctx)
-    if ctx.author.id == 815418445192888321:
-        return
-    #TODO: remove these lines later to ignore ALL bot messages
-    if ctx.author.bot:
-        if len(ctx.content) > 0 and ctx.content[0] == bot_config.prefix:
-            artfight_cog = bot.cogs['artfight']
-            if ctx.content == f'{bot_config.prefix}join':
-                await artfight_cog.join(ctx)
-            if f'{bot_config.prefix}score' in ctx.content:
-                await artfight_cog.scores(ctx)
-        return
-
-    content = ctx.content.lower()
-
-    if not (ctx.guild is None or content.find(AntiScam.code) != -1 or ctx.channel.id in scan_ignore):
-        await AntiScam.scan_message(ctx)
 
 if __name__ == '__main__':
     bot.run(token=bot_config.token, log_handler=None)
