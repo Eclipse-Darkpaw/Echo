@@ -21,29 +21,27 @@ import modules.General as General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
-import modules.refManagement as Ref
+import modules.RefManagement as Ref
+
+# Config
+from config import BotConfig
 
 # Utils
-from util.interactions import direct_message
-from util.logger import setup_logger
+from util import direct_message, setup_logger
 
 # Keep imports in alphabetical order
 
 VERSION_NUM = '4.3.0'
 
-GUARDIANS = (env := os.getenv('GUARDIANS', '')) and env.split(',') or []
-LOGGER = setup_logger(log_file='logs/cyberforcebot_info.log')
-
-prefix = '>'
+logger = setup_logger(log_file='logs/cyberforcebot_info.log')
+bot_config = BotConfig(botname='cyberforcebot')
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = commands.Bot(command_prefix=prefix, intents=intents)
-
-game = discord.Game(f'{prefix}help for commands')
-client = bot
+bot = commands.Bot(command_prefix=bot_config.prefix, intents=intents)
+game = discord.Game(f'{bot_config.prefix}help for commands')
 
 @bot.hybrid_command()
 async def mama(ctx):
@@ -70,16 +68,6 @@ async def hug(ctx):
     :return:
     """
     await ctx.reply('You give Gemini a hug. You can smell a faint citrus scent when you do.')
-# ADD NEW METHODS HERE!
-
-@bot.command()
-async def sync(interaction: discord.Interaction):
-    await interaction.send('Syncing Tree', ephemeral=False)
-    guild = discord.Object(id=interaction.guild.id)
-    bot.tree.copy_global_to(guild=guild)
-    await bot.tree.sync(guild=guild)
-    await interaction.send("tree synced", ephemeral=True)
-
 
 @bot.event
 async def on_ready():
@@ -90,9 +78,9 @@ async def on_ready():
     :return: None
     """
 
-    LOGGER.info(f'We have logged in as {bot.user}')
+    logger.info(f'We have logged in as {bot.user}')
 
-    await client.change_presence(activity=game)
+    await bot.change_presence(activity=game)
     await direct_message(
         bot,
         f'Running, and active\n'
@@ -101,16 +89,16 @@ async def on_ready():
         f'version: {platform.version()}\n'
         f'python_version: {platform.python_version()}\n'
         '```',
-        *GUARDIANS
+        *bot_config.guardians
     )
 
-    LOGGER.info('loading cogs')
+    logger.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
     await bot.add_cog(General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
-    LOGGER.info('Cogs loaded')
+    logger.info('Cogs loaded')
 
 
 scan_ignore = [1054172309147095130]
@@ -134,5 +122,5 @@ async def on_message(ctx: discord.Interaction):
     if not (ctx.guild is None or content.find(AntiScam.BYPASS_CODE) != -1 or ctx.channel.id in scan_ignore):
         await AntiScam.scan_message(ctx)
 
-
-client.run(os.getenv('CYBERFORCE_BOT_TOKEN'))
+if __name__ == '__main__':
+    bot.run(token=bot_config.token, log_handler=None)

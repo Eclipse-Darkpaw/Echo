@@ -20,14 +20,13 @@ import modules.General as General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
-import modules.refManagement as Ref
+import modules.RefManagement as Ref
 
 # Config
 from config import BotConfig
 
 # Utils
-from util.interactions import direct_message
-from util.logger import setup_logger
+from util import direct_message, setup_logger
 
 # Keep imports in alphabetical order
 

@@ -21,7 +21,7 @@ import modules.General
 import modules.Moderation as Mod
 import modules.ServerSettings as Settings
 import modules.Verification as Verif
-import modules.refManagement as Ref
+import modules.RefManagement as Ref
 
 # Config
 from config import BotConfig
