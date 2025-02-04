@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 import discord
 import json
-import os
 import platform
-import sys
 
 from datetime import datetime, timezone
 from discord.ext import commands, tasks
@@ -18,6 +16,7 @@ Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv()
 but can influence the environment before Python runs.
 """
 
+# Modules
 import modules.AntiScam as AntiScam
 import modules.General as General
 import modules.Moderation as Mod
@@ -26,61 +25,30 @@ import modules.Verification as Verif
 import modules.refManagement as Ref
 import modules.Artfight as Artfight
 
+# Config
+from config import BotConfig
+
+# Utils
 from util.fileManagement import resource_file_path
 from util.interactions import direct_message
 from util.logger import setup_logger, logging
 
 # Keep imports in alphabetical order
 
-VERSION_NUM = '4.3.0'
+VERSION = '4.3.0'
 
-GUARDIANS = (env := os.getenv('GUARDIANS', '')) and env.split(',') or []
-LOGGER = setup_logger(log_file='logs/sunreek_info.log')
-
-bot_token = None
-start_notif = True
-prefix = '}'
-
-def process_arguments():
-    """
-    Detirmines as which bot to run.
-    Sets runtime variables accordingly.
-    Last docstring edit: ~FoxyHunter V4.2.1
-    Last method edit: ~FoxyHunter V4.3.0
-    """
-    if len(sys.argv) > 1 and sys.argv[1].isdigit():
-        global bot_token, prefix
-
-        match sys.argv[1]:
-            case '1':
-                bot_token = os.getenv('SUNREEK_TOKEN')
-            case '2':
-                bot_token = os.getenv('SUNREEK_TEST_TOKEN')
-                prefix = '>'
-            case _:
-                LOGGER.critical(f'argument: {sys.argv[1]} can not be ran, only 1 or 2 are currently supported, exiting...')
-                exit(1)
-    else:
-        LOGGER.critical('No start argument provided, please state the start mode: (1: main bot, 2: test bot), exiting...')
-        exit(1)
-    if len(sys.argv) > 2 and sys.argv[2] == '--no-notif':
-        global start_notif
-        start_notif = False
-        LOGGER.info(f'--no-notif is set, start notification will not be sent')
-
-
-process_arguments()
-
-with open(resource_file_path + 'servers.json') as file:
-    DATA = json.load(file)
+logger = setup_logger(log_file='logs/sunreek_info.log')
+bot_config = BotConfig(botname='sunreek')
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = commands.Bot(command_prefix=prefix, intents=intents)
+bot = commands.Bot(command_prefix=bot_config.prefix, intents=intents)
+game = discord.Game(f'{bot_config.prefix}help for commands')
 
-game = discord.Game(f'{prefix}help for commands')
+with open(resource_file_path + 'servers.json') as file:
+    DATA = json.load(file)
 
 @bot.event
 async def on_ready():
@@ -91,10 +59,10 @@ async def on_ready():
     :return: None
     """
 
-    LOGGER.info(f'We have logged in as {bot.user}')
+    logger.info(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    if start_notif:
+    if bot_config.start_notif:
         await direct_message(
             bot,
             f'Running, and active\n'
@@ -103,17 +71,17 @@ async def on_ready():
             f'version: {platform.version()}\n'
             f'python_version: {platform.python_version()}\n'
             '```',
-            *GUARDIANS
+            *bot_config.guardians
         )
 
-    LOGGER.info('loading cogs')
+    logger.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
     await bot.add_cog(General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
     #await bot.add_cog(Artfight.Artfight(bot))
-    LOGGER.info('Cogs loaded')
+    logger.info('Cogs loaded')
 
     check_invite_pause.start()
 
@@ -362,9 +330,9 @@ async def purge(ctx: discord.Interaction, kick: bool):
         await ctx.channel.send(msg)
         await ctx.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
         if kick:
-            LOGGER.debug(f'├ {num_kicked} MEMBERS KICKED')
+            logger.debug(f'├ {num_kicked} MEMBERS KICKED')
         else:
-            LOGGER.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
+            logger.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
     else:
         await ctx.reply('Error 403: Forbidden\nInsufficient Permissions')
 
@@ -378,7 +346,7 @@ async def prune(message):
     :param message:
     :return: NoneType
     """
-    await direct_message(bot, '`STARTING PURGE`', *GUARDIANS)
+    await direct_message(bot, '`STARTING PURGE`', *bot_config.guardians)
     if message.author.guild is not None and message.author.guild_permissions.kick_members:
         # only run if in a guild and the user could do this manually.
         members = message.guild.members
@@ -386,9 +354,9 @@ async def prune(message):
                         1199610730899578960, 1069839195553669192]
         num_kicked = 0
         forbidden = 0
-        LOGGER.debug('├ GETTING MEMBER LIST')
-        LOGGER.debug('├ PURGING SERVER')
-        LOGGER.debug('├┐')
+        logger.debug('├ GETTING MEMBER LIST')
+        logger.debug('├ PURGING SERVER')
+        logger.debug('├┐')
         for member in members:
             kicked = False
             if member.id == 815418445192888321:
@@ -397,23 +365,23 @@ async def prune(message):
                 if kicked:
                     break
                 if role.id in ignore_roles:
-                    LOGGER.debug(f'│├ {member.id} SAFE')
+                    logger.debug(f'│├ {member.id} SAFE')
                     kicked = True
                     break
                 else:
                     try:
                         # await member.kick(reason="*T H E   P U R G E*")
-                        LOGGER.debug(f'│├ <@{member.id}> PURGED')
+                        logger.debug(f'│├ <@{member.id}> PURGED')
                         kicked = True
                         num_kicked += 1
                         break
                     except discord.errors.Forbidden:
-                        LOGGER.debug(f'│├ {member.id} UNABLE TO PURGE')
+                        logger.debug(f'│├ {member.id} UNABLE TO PURGE')
                         kicked = True
                         forbidden += 1
                         break
 
-        await direct_message(bot, f'Purge complete. {num_kicked} purged.', *GUARDIANS)
+        await direct_message(bot, f'Purge complete. {num_kicked} purged.', *bot_config.guardians)
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
@@ -478,12 +446,12 @@ async def stop_invite_status_message(ctx, message_id: str):
     guild_id_str = str(ctx.guild.id)
 
     if guild_id_str in message_ids:
-        LOGGER.debug("found guild")
+        logger.debug("found guild")
         for data in message_ids[guild_id_str]:
-            LOGGER.debug("found data")
+            logger.debug("found data")
             try:
                 if data["message_id"] == int(message_id):
-                    LOGGER.debug("found message")
+                    logger.debug("found message")
                     channel = bot.get_channel(data["channel_id"])
                     message = await channel.fetch_message(int(message_id))
                     await message.delete()
@@ -538,11 +506,11 @@ async def on_message(ctx: discord.Interaction):
         return
     #TODO: remove these lines later to ignore ALL bot messages
     if ctx.author.bot:
-        if len(ctx.content) > 0 and ctx.content[0] == prefix:
+        if len(ctx.content) > 0 and ctx.content[0] == bot_config.prefix:
             artfight_cog = bot.cogs['artfight']
-            if ctx.content == f'{prefix}join':
+            if ctx.content == f'{bot_config.prefix}join':
                 await artfight_cog.join(ctx)
-            if f'{prefix}score' in ctx.content:
+            if f'{bot_config.prefix}score' in ctx.content:
                 await artfight_cog.scores(ctx)
         return
 
@@ -552,4 +520,4 @@ async def on_message(ctx: discord.Interaction):
         await AntiScam.scan_message(ctx)
 
 if __name__ == '__main__':
-    bot.run(token=bot_token, log_handler=None)
+    bot.run(token=bot_config.token, log_handler=None)
