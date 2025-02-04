@@ -1,6 +1,6 @@
 import logging
 
-LOGGER = logging.getLogger('utils')
+_logger = logging.getLogger('utils')
 
 # todo: add a master prefix only applicable to you as a back door
 
@@ -70,7 +70,7 @@ async def direct_message(client, message, *user_ids):
         try:    
             user = client.get_user(int(user_id))
             if user is None:
-                LOGGER.warning(f'No user found for id: {user_id}')
+                _logger.warning(f'No user found for id: {user_id}')
             await user.send(message)
         except ValueError:
-            LOGGER.warning(f'Invalid discord id')
+            _logger.warning(f'Invalid discord id')
