@@ -2,7 +2,8 @@ import os
 
 import discord
 from discord.ext import commands
-from fileManagement import ref_path, nsfw_ref_path
+
+from util import FilePaths
 
 
 class RefManagement(commands.Cog):
@@ -21,9 +22,9 @@ class RefManagement(commands.Cog):
             command = trim.split('\n')
 
             if ctx.channel.nsfw:
-                path = nsfw_ref_path(ctx.author.id)
+                path = FilePaths.get_nsfw_ref(ctx.author.id)
             else:
-                path = ref_path(ctx.author.id)
+                path = FilePaths.get_ref(ctx.author.id)
 
             with open(path, 'w') as refs:
                 for line in command:
@@ -47,9 +48,9 @@ class RefManagement(commands.Cog):
         try:
 
             if ctx.channel.nsfw:
-                path = nsfw_ref_path(ctx.author.id)
+                path = FilePaths.get_nsfw_ref(ctx.author.id)
             else:
-                path = ref_path(ctx.author.id)
+                path = FilePaths.get_ref(ctx.author.id)
 
             with open(path, 'a') as refs:
                 for line in ctx.message.content:
@@ -84,16 +85,16 @@ class RefManagement(commands.Cog):
         try:
 
             if ctx.channel.nsfw:
-                path = nsfw_ref_path(target)
+                path = FilePaths.get_nsfw_ref(target)
             else:
-                path = ref_path(target)
+                path = FilePaths.get_ref(target)
             ref_sheet = open(path)
             await msg.edit(content='Ref Found! Uploading, Please wait!')
             await ctx.reply(content=ref_sheet.read())
         except FileNotFoundError:
             if ctx.channel.nsfw:
                 await msg.edit(content='User has not set NSFW ref. Retrieving SFW ref')
-                path = ref_path(target)
+                path = FilePaths.get_ref(target)
                 ref_sheet = open(path)
                 await msg.edit(content='Ref Found! Uploading, Please wait!')
                 await msg.edit(content=ref_sheet.read())
