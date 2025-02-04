@@ -23,7 +23,7 @@ class BotConfig:
 
         self._log_config()
 
-    def _retrieve_guardians(self) -> list:
+    def _retrieve_guardians() -> list:
         env = os.getenv('GUARDIANS', '')
         return env.split(',') if env else []
 
