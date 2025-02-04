@@ -1,25 +1,20 @@
 import discord
-import json
 import datetime
+import json
 
 from discord.ext import commands
-from discord.ui import View, Button
-
-from fileManagement import server_settings_path, resource_file_path, artfight_members_path
-from main import read_line
 from random import randint
 
+from util import FilePaths, WatchedFiles, read_line
+
+SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
+ARTIGHT_MEMBERS = WatchedFiles.get_file_data(FilePaths.artfight_members)
 
 class Artfight(commands.GroupCog, name="artfight", description="All the commands for the annual artfight"):
     artfight_role = 1317026586226331678
 
     def __init__(self, bot):
         self.bot = bot
-        self.team1 = None
-        self.team2 = None
-        self.team1_score = None
-        self.team2_score = None
-        self.channel = None
 
     def timecheck(self, startday: int = 10, endday: int = 17) -> bool:
         """
@@ -49,18 +44,16 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         """
         Attempts to load data from saved files.
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
-        Last method edit: -Autumna1Equin0x.pet V4.1.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx:
         :return:
         """
-        with open(resource_file_path + 'servers.json') as file:
-            data = json.load(file)
         try:
-            self.team1 = data[str(ctx.guild.id)]['artfight']['roles']['team1']
-            self.team2 = data[str(ctx.guild.id)]['artfight']['roles']['team2']
-            self.team1_score = data[str(ctx.guild.id)]['artfight']['scores']['team1']
-            self.team2_score = data[str(ctx.guild.id)]['artfight']['scores']['team2']
-            self.channel = data[str(ctx.guild.id)]['artfight']['channel']
+            self.team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
+            self.team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
+            self.team1_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team1']
+            self.team2_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team2']
+            self.channel = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['channel']
             await ctx.send("Data loaded successfully")
         except KeyError:
             self.team1 = None
@@ -88,9 +81,6 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :return: None
         """
         progress = None
-
-        self.team1_score = 0
-        self.team2_score = 0
 
         async def update_progress(progress=None) -> discord.Message:
             msg = "**__Assignments__**"
@@ -129,7 +119,6 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                     await ctx.reply('No roles were mentioned')
         else:
             team1 = team1.id
-        self.team1 = team1
         roleIDs['team1'] = team1
 
         if team2 is None:
@@ -149,7 +138,6 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                     await ctx.reply('No roles were mentioned')
         else:
             team2 = team2.id
-        self.team2 = team2
         roleIDs['team2'] = team2
 
         if channel is None:
@@ -169,16 +157,15 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                     await ctx.reply('No channels were mentioned')
         else:
             channel = channel.id
-        self.channel = channel
 
         artfight_data = {"roles": roleIDs, "channel": channel, "scores": {'team1': 0, 'team2': 0}}
 
-        with open(server_settings_path) as file:
+        with open(FilePaths.servers_settings) as file:
             data = json.load(file)
 
         data[str(ctx.guild.id)]['artfight'] = artfight_data
 
-        with open(server_settings_path, 'w') as file:
+        with open(FilePaths.servers_settings, 'w') as file:
             file.write(json.dumps(data, indent=4))
 
         await ctx.reply('Data saved')
@@ -194,6 +181,12 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :param team: Team to join
         :return:
         """
+        try:
+            team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
+            team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
+        except KeyError:
+            team1 = None
+            team2 = None
 
         # Ensure the artfight is going on.
         if not self.timecheck(startday=7):
@@ -207,35 +200,35 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             return
 
         # Do not assign a team if the roles are not set.
-        if self.team1 is None or self.team2 is None:
+        if team1 is None or team2 is None:
             await ctx.send('Artfight roles not set. Unable to assign team.')
             return
 
         # If no team is picked, pick for the user. Pick the smaller team to keep teams balanced. otherwise do random
-        team1size = len(ctx.guild.get_role(self.team1).members)
-        team2size = len(ctx.guild.get_role(self.team2).members)
+        team1size = len(ctx.guild.get_role(team1).members)
+        team2size = len(ctx.guild.get_role(team2).members)
         if team is None and team1size > team2size:
-            team = self.team2
+            team = team2
         elif team is None and team2size > team1size:
-            team = self.team1
+            team = team1
         elif team is None and team1size == team2size:
-            teams = [self.team1, self.team2]
+            teams = [team1, team2]
             team = teams[randint(0, 1)]
         else:
             team = team.id
 
         # Team role assignment.
 
-        if team == self.team1:
-            await ctx.author.add_roles(ctx.guild.get_role(self.team1))
-        elif team == self.team2:
-            await ctx.author.add_roles(ctx.guild.get_role(self.team2))
+        if team == team1:
+            await ctx.author.add_roles(ctx.guild.get_role(team1))
+        elif team == team2:
+            await ctx.author.add_roles(ctx.guild.get_role(team2))
         else:
             await ctx.reply(f"I have no idea what team you're trying to join. team <@&{team}> is not valid. Please try "
                             f"again")
             return
 
-        with open(artfight_members_path()) as file:
+        with open(FilePaths.artfight_members) as file:
             data = json.load(file)
 
         try:
@@ -246,7 +239,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
             print('Saved 2')
 
-        with open(artfight_members_path(), 'w') as file:
+        with open(FilePaths.artfight_members, 'w') as file:
             file.write(json.dumps(data, indent=4))
 
         await ctx.reply(f'You have been added to <@&{team}>')
@@ -270,13 +263,13 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         else:
             await ctx.send('Please check your dms to continue with your submission')
 
-        with open(server_settings_path) as file:
+        with open(FilePaths.servers_settings, 'r') as file:
             data = json.load(file)
 
         startday = 12
 
-        self.team1_score = data[str(ctx.guild.id)]['artfight']['scores']['team1']
-        self.team2_score = data[str(ctx.guild.id)]['artfight']['scores']['team2']
+        team1_score = data[str(ctx.guild.id)]['artfight']['scores']['team1']
+        team2_score = data[str(ctx.guild.id)]['artfight']['scores']['team2']
 
         dm = await ctx.author.create_dm()
         artfight_day = int(datetime.datetime.now().strftime("%d")) - startday
@@ -382,9 +375,9 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
             if response.content.lower() == 'y':
                 if team_num == 1:
-                    self.team1_score += score
+                    team1_score += score
                 elif team_num == 2:
-                    self.team2_score += score
+                    team2_score += score
             elif response.content.lower() == 'c':
                 await dm.send('Submission cancelled.')
                 return -1
@@ -392,13 +385,13 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                 await dm.send('Submission not approved. Restarting')
                 continue
 
-            data[str(ctx.guild.id)]['artfight']['scores']['team1'] = self.team1_score
-            data[str(ctx.guild.id)]['artfight']['scores']['team2'] = self.team2_score
+            data[str(ctx.guild.id)]['artfight']['scores']['team1'] = team1_score
+            data[str(ctx.guild.id)]['artfight']['scores']['team2'] = team2_score
 
-            with open(server_settings_path, 'w') as file:
+            with open(FilePaths.servers_settings, 'w') as file:
                 file.write(json.dumps(data, indent=4))
 
-            with open(artfight_members_path()) as file:
+            with open(FilePaths.artfight_members) as file:
                 data = json.load(file)
 
             # Save the score to the user data file for tracking and validation
@@ -414,7 +407,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
 
 
-            with open(artfight_members_path(), 'w') as file:
+            with open(FilePaths.servers_settings, 'w') as file:
                 file.write(json.dumps(data, indent=4))
 
             await dm.send('Score counted!\n'
@@ -435,43 +428,53 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         if self.timecheck():
             pass
 
+        try:
+            team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
+            team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
+            team1_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team1']
+            team2_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team2']
+        except KeyError:
+            team1 = None
+            team2 = None
+            team1_score = 0
+            team2_score = 0
+
         if ctx.author.guild_permissions.manage_roles:
             score_embed = discord.Embed(title='Team scores')
-            choice = 0
-            if self.team1_score == self.team2_score:
+            if team1_score == team2_score:
                 if randint(0, 1):
                     msg = (f'__Team Scores__\n'
-                           f' <@&{self.team1}> - `{self.team1_score}`\n'
-                           f' <@&{self.team2}> - `{self.team2_score}`')
-                    score_embed.color = ctx.guild.get_role(self.team2).color
-                    score_embed.add_field(name=f'{ctx.guild.get_role(self.team1)} Score', value=str(self.team1_score))
-                    score_embed.add_field(name=f'{ctx.guild.get_role(self.team2)} Score', value=str(self.team2_score))
+                           f' <@&{team1}> - `{team1_score}`\n'
+                           f' <@&{team2}> - `{team2_score}`')
+                    score_embed.color = ctx.guild.get_role(team2).color
+                    score_embed.add_field(name=f'{ctx.guild.get_role(team1)} Score', value=str(team1_score))
+                    score_embed.add_field(name=f'{ctx.guild.get_role(team2)} Score', value=str(team2_score))
                 else:
                     msg = (f'__Team Scores__\n'
-                           f' <@&{self.team2}> - `{self.team2_score}`\n'
-                           f' <@&{self.team1}> - `{self.team1_score}`')
-                    score_embed.color = ctx.guild.get_role(self.team1).color
-                    score_embed.add_field(name=f'{ctx.guild.get_role(self.team2)} Score', value=str(self.team2_score))
-                    score_embed.add_field(name=f'{ctx.guild.get_role(self.team1)} Score', value=str(self.team1_score))
+                           f' <@&{team2}> - `{team2_score}`\n'
+                           f' <@&{team1}> - `{team1_score}`')
+                    score_embed.color = ctx.guild.get_role(team1).color
+                    score_embed.add_field(name=f'{ctx.guild.get_role(team2)} Score', value=str(team2_score))
+                    score_embed.add_field(name=f'{ctx.guild.get_role(team1)} Score', value=str(team1_score))
                 score_embed.set_footer(text='Points are tied!')
-            elif self.team1_score > self.team2_score:
+            elif team1_score > team2_score:
                 msg = (f'__Team Scores__\n'
-                       f'1. <@&{self.team1}> - `{self.team1_score}`\n'
-                       f'2. <@&{self.team2}> - `{self.team2_score}`')
-                score_embed.color = ctx.guild.get_role(self.team1).color
-                score_embed.add_field(name=f'{ctx.guild.get_role(self.team1)} Score', value=str(self.team1_score))
-                score_embed.add_field(name=f'{ctx.guild.get_role(self.team2)} Score', value=str(self.team2_score))
-                score_embed.set_footer(text=f'{ctx.guild.get_role(self.team1)} is '
-                                            f'{ self.team1_score - self.team2_score} points ahead!')
-            elif self.team1_score < self.team2_score:
+                       f'1. <@&{team1}> - `{team1_score}`\n'
+                       f'2. <@&{team2}> - `{team2_score}`')
+                score_embed.color = ctx.guild.get_role(team1).color
+                score_embed.add_field(name=f'{ctx.guild.get_role(team1)} Score', value=str(team1_score))
+                score_embed.add_field(name=f'{ctx.guild.get_role(team2)} Score', value=str(team2_score))
+                score_embed.set_footer(text=f'{ctx.guild.get_role(team1)} is '
+                                            f'{team1_score - team2_score} points ahead!')
+            elif team1_score < team2_score:
                 msg = (f'__Team Scores__\n'
-                       f'1. <@&{self.team2}> - `{self.team2_score}`\n'
-                       f'2. <@&{self.team1}> - `{self.team1_score}`')
-                score_embed.color = ctx.guild.get_role(self.team2).color
-                score_embed.add_field(name=f'{ctx.guild.get_role(self.team2)} Score', value=str(self.team2_score))
-                score_embed.add_field(name=f'{ctx.guild.get_role(self.team1)} Score', value=str(self.team1_score))
-                score_embed.set_footer(text=f'{ctx.guild.get_role(self.team2)} is '
-                                            f'{ self.team2_score - self.team1_score} points ahead!')
+                       f'1. <@&{team2}> - `{team2_score}`\n'
+                       f'2. <@&{team1}> - `{team1_score}`')
+                score_embed.color = ctx.guild.get_role(team2).color
+                score_embed.add_field(name=f'{ctx.guild.get_role(team2)} Score', value=str(team2_score))
+                score_embed.add_field(name=f'{ctx.guild.get_role(team1)} Score', value=str(team1_score))
+                score_embed.set_footer(text=f'{ctx.guild.get_role(team2)} is '
+                                            f'{team2_score - team1_score} points ahead!')
 
         await ctx.reply(content=msg, embed=score_embed)
         return
@@ -489,7 +492,14 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :return:
         """
         # Do not take points if the roles are not set.
-        if self.team1 is None or self.team2 is None:
+        try:
+            team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
+            team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
+        except KeyError:
+            team1 = None
+            team2 = None
+        
+        if team1 is None or team2 is None:
             await ctx.send('Artfight roles not set. Unable to assign team.')
             return
 
@@ -498,19 +508,19 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         team = team.id
 
         if ctx.author.guild_permissions.manage_roles:
-            with open(server_settings_path) as file:
+            with open(FilePaths.servers_settings, 'r') as file:
                 data = json.load(file)
 
-            if team == self.team1:
+            if team == team1:
                 data[str(ctx.guild.id)]['artfight']['scores']['team1'] -= int(score)
-            elif team == self.team2:
+            elif team == team2:
                 data[str(ctx.guild.id)]['artfight']['scores']['team2'] -= int(score)
             else:
                 await ctx.send(f"I have no idea what team you're trying to remove points from. team <@&{team}> is not "
                                f"valid. Please try again")
                 return
 
-            with open(server_settings_path, 'w') as file:
+            with open(FilePaths.servers_settings, 'w') as file:
                 file.write(json.dumps(data, indent=4))
             await ctx.send(f'{score} ornaments removed from {name}. Data saved.')
         else:
@@ -525,14 +535,11 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :return:
         """
         if ctx.author.guild_permissions.manage_roles:
-            with open(artfight_members_path()) as file:
-                data = json.load(file)
-
             playerCount = 0
             msg = '# Player List'
-            for user in data[str(ctx.guild.id)]:
+            for user in ARTIGHT_MEMBERS[str(ctx.guild.id)]:
                 playerCount += 1
-                txt = f'{playerCount}. <@{user}> - <@&{data[str(ctx.guild.id)][str(user)]['team']}> - {data[str(ctx.guild.id)][str(user)]['points']}'
+                txt = f'{playerCount}. <@{user}> - <@&{ARTIGHT_MEMBERS[str(ctx.guild.id)][str(user)]['team']}> - {ARTIGHT_MEMBERS[str(ctx.guild.id)][str(user)]['points']}'
                 if len(f'{msg}\n{txt}') > 2000:
                     await ctx.send(msg)
                     msg = txt
@@ -555,7 +562,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         :param member: The Discord member to remove (mention or user object).
         """
         try:
-            with open(artfight_members_path(), "r") as file:
+            with open(FilePaths.artfight_members, "r") as file:
                 data = json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
             await ctx.send("The data file is missing or corrupted!")
@@ -598,7 +605,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
                         del data[str(ctx.guild.id)]
 
                     # Save the updated data
-                    with open(artfight_members_path(), "w") as file:
+                    with open(FilePaths.artfight_members, "w") as file:
                         json.dump(data, file, indent=4)
 
                     await interaction.response.send_message(f"Member {member.mention} has been removed.", ephemeral=False)
