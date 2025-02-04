@@ -28,11 +28,8 @@ import modules.Artfight as Artfight
 from config import BotConfig
 
 # Utils
-from util import FileWatcher
-
-from util.fileManagement import resource_file_path
-from util.interactions import direct_message
-from util.logger import setup_logger, logging
+from util import FilePaths, WatchedFiles
+from util import direct_message, setup_logger, logging
 
 # Keep imports in alphabetical order
 
@@ -48,7 +45,7 @@ intents.members = True
 bot = commands.Bot(command_prefix=bot_config.prefix, intents=intents)
 game = discord.Game(f'{bot_config.prefix}help for commands')
 
-DATA = FileWatcher(resource_file_path + 'servers.json')
+SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
 
 @bot.event
 async def on_ready():
@@ -310,7 +307,7 @@ async def purge(ctx: discord.Interaction, kick: bool):
     :param message: Message that called the bot
     :return: None
     """
-    unverified_role_id = DATA[str(ctx.guild.id)]["roles"]['unverified']
+    unverified_role_id = SERVERS_SETTINGS[str(ctx.guild.id)]["roles"]['unverified']
 
     if ctx.author.guild_permissions.manage_roles:
         await ctx.channel.send('├ FILTERING MEMBER LIST')
@@ -396,7 +393,7 @@ async def prune(message):
 # TODO: Remove command before merging to main
 @bot.command()
 async def filewatch_testing(ctx: discord.Interaction):
-    await ctx.send(DATA['612550152514961408']['name'])
+    await ctx.send(SERVERS_SETTINGS['612550152514961408']['name'])
 
 
 if __name__ == '__main__':
