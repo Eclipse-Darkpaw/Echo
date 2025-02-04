@@ -2,6 +2,8 @@ import logging
 import os
 import sys
 
+from util.logger import ANSI
+
 _logger = logging.getLogger('utils')
 
 class BotConfig:
@@ -21,12 +23,6 @@ class BotConfig:
 
         self._log_config()
 
-    def _log_config(self):
-        _logger.info(f'Guardians: {self._guardians}')
-        if self._is_no_notif_set:
-            _logger.info(f"{self._arg_no_notif} is set: guardians won't be DM'd about startup")
-        _logger.debug(f"{self._arg_test_bot} is set")
-
     def _retrieve_guardians(self) -> list:
         env = os.getenv('GUARDIANS', '')
         return env.split(',') if env else []
@@ -40,6 +36,28 @@ class BotConfig:
         test_prefix = 'TEST_' if self._is_test_bot_set else ''
         env_var = f"{self.botname.upper()}_{test_prefix}PREFIX"
         return os.getenv(env_var, self._default_prefix)
+    
+    def _log_config(self):
+        border = "=" * 40
+        sub_border = "-" * 40
+
+        _logger.info(ANSI.set_on_text(border, ANSI.CODES['foreground']['black']))
+        _logger.info(ANSI.set_on_text('Bot Configuration Details', ANSI.CODES['transform']['bold']))
+        _logger.info(ANSI.set_on_text(border, ANSI.CODES['foreground']['black']))
+
+        _logger.debug(f'  {'Token':<12}: {self.token}')
+        _logger.info(f'  {'Guardians':<12}: {self._guardians}')
+        _logger.info(f'  {'Prefix':<12}: {self._prefix}')
+        _logger.info(f'  {'Mode':<12}: {ANSI.set_on_text(
+            ('Test' if self._is_test_bot_set else 'Normal'),
+            (ANSI.CODES['foreground']['yellow'] if self._is_test_bot_set else ANSI.CODES['foreground']['green'])
+            )}')
+        _logger.info(f'  {'Start Notif':<12}: {ANSI.set_on_text(
+            str(self._start_notif),
+            (ANSI.CODES['foreground']['green'] if self._start_notif else ANSI.CODES['foreground']['red'])
+            )}')
+
+        _logger.info(ANSI.set_on_text(sub_border, ANSI.CODES['foreground']['black']))
 
     @property
     def token(self) -> str:
