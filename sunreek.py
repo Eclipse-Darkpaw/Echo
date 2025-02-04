@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 """
-Without a specified path, load_dotenv() loads environment variables in this order:
-1. System environment variables (highest priority, unless overridden).
+Without a specified path, load_dotenv() loads environment variables in the following order:
+1. System environment variables (highest priority, unless overwritten).
 2. .env file in the working directory (only for unset variables).
 Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv() 
 but can influence the environment before Python runs.
