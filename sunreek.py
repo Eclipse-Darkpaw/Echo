@@ -3,7 +3,6 @@ import discord
 import json
 import platform
 
-from datetime import datetime, timezone
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
@@ -29,6 +28,8 @@ import modules.Artfight as Artfight
 from config import BotConfig
 
 # Utils
+from util import FileWatcher
+
 from util.fileManagement import resource_file_path
 from util.interactions import direct_message
 from util.logger import setup_logger, logging
@@ -37,7 +38,7 @@ from util.logger import setup_logger, logging
 
 VERSION = '4.3.0'
 
-logger = setup_logger(log_file='logs/sunreek_info.log')
+logger = setup_logger(log_file='logs/sunreek_info.log', console_log_level=logging.DEBUG, ignore_discord_logs=True)
 bot_config = BotConfig(botname='sunreek')
 
 intents = discord.Intents.default()
@@ -47,8 +48,9 @@ intents.members = True
 bot = commands.Bot(command_prefix=bot_config.prefix, intents=intents)
 game = discord.Game(f'{bot_config.prefix}help for commands')
 
-with open(resource_file_path + 'servers.json') as file:
-    DATA = json.load(file)
+DATA = FileWatcher(resource_file_path + 'servers.json')
+
+logger.info(DATA['612550152514961408']["roles"]['unverified'])
 
 @bot.event
 async def on_ready():
