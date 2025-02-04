@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import discord
-import json
 import platform
 
 from discord.ext import commands, tasks
@@ -99,7 +98,7 @@ async def on_message(ctx: discord.Interaction):
 
     content = ctx.content.lower()
 
-    if not (ctx.guild is None or content.find(AntiScam.code) != -1 or ctx.channel.id in scan_ignore):
+    if not (ctx.guild is None or content.find(AntiScam.BYPASS_CODE) != -1 or ctx.channel.id in scan_ignore):
         await AntiScam.scan_message(ctx)
     
 # ---

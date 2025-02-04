@@ -93,7 +93,7 @@ async def on_message(msg: discord.Message):
 
     content = msg.content.lower()
 
-    if not (msg.guild is None or content.find(AntiScam.code) != -1 or msg.channel.id in scan_ignore):
+    if not (msg.guild is None or content.find(AntiScam.BYPASS_CODE) != -1 or msg.channel.id in scan_ignore):
         await AntiScam.scan_message(msg)
 
 @bot.event

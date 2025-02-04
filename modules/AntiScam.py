@@ -4,14 +4,13 @@ Anti-scam module.
 This code is designed to protect servers from users who attempt to scam an entire server at the same time.
 """
 import discord
-import json
 
-from fileManagement import resource_file_path, scam_log_path
+from util import FilePaths, WatchedFiles
 
-version = "1.17.0"
+VERSION = "4.3.0"
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
-whitelist = ['https://discord.gift/',  # legitimate nitro gifting
+WHITE_LIST = ['https://discord.gift/',  # legitimate nitro gifting
              # common domains that get flagged falsely
              'https://tenor.com', 'https://store.steampowered.com/app/', 'https://twitter.com',
              # not common, but aren't scams
@@ -19,7 +18,7 @@ whitelist = ['https://discord.gift/',  # legitimate nitro gifting
              'https://open.spotify.com', 'https://toyhou.se', 'https://artfight.net']
 
 # these are potential scams. It's probably a false positive if only 2 are hit, but a true positive if 3 are hit.
-blacklist = ['@everyone', '@here',  # attempting to ping the server
+BLACK_LIST = ['@everyone', '@here',  # attempting to ping the server
              'https://', 'gift', 'nitro', 'steam', 'free', 'https://discord.gg'
              # miscellaneous messages included in real scam messages
                                                            'who is first? :)', "who's first? :)", 'teen porn',
@@ -35,7 +34,7 @@ blacklist = ['@everyone', '@here',  # attempting to ping the server
              'Best nsfw content', 'onlyfans leaks']
 
 # these immediately are flagged and removed. These are part of confirmed scams and should be handled immediately.
-banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.fun', 'disordgifts.com',
+BAN_LIST = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.fun', 'disordgifts.com',
            'dlscord-app.info', 'dlscord.co.uk', 'discordgg.ga', 'discordn.gift', 'discord-niltro.com', 'vlootgift.site',
            'ethlegit.com', 't.me/davidmurray', 'discorgs.icu/login/nitro', 'steancomiunitly.com/glfts',
            'discerdapp.com', 'discorgs.icu'
@@ -55,7 +54,10 @@ banlist = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.f
            '​',
            # Standard EICARS test string
            'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*'.lower()]
-code = 'plsdontban'
+
+BYPASS_CODE = 'plsdontban'
+
+SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
 
 counter = 0
 # TODO: add an auto suspend feature
@@ -71,22 +73,21 @@ async def scan_message(msg: discord.Message):
     :param message: the message sent
     :return: None
     """
-    with open(resource_file_path + 'servers.json') as file:
-        try:
-            log_channel = json.load(file)[str(msg.guild.id)]['channels']['log']
-        except KeyError as er:
-            # send a message every 50 messages
-            if counter % 50 == 0:
-                await msg.channel.send(f'Error: Unable to locate log channel ID.')
-            counter += 1
-            return
+    try:
+        log_channel = SERVERS_SETTINGS[str(msg.guild.id)]['channels']['log']
+    except KeyError as er:
+        # send a message every 50 messages
+        if counter % 50 == 0:
+            await msg.channel.send(f'Error: Unable to locate log channel ID.')
+        counter += 1
+        return
     words = []
     flags = 0
     bans = 0
     content = msg.content.lower()
 
     # scan the banned word list first. if any appear, delete immediately.
-    for word in banlist:
+    for word in BAN_LIST:
         index = content.find(word)
         if index != -1:
             bans += 1
@@ -98,14 +99,14 @@ async def scan_message(msg: discord.Message):
                 words.append(word)
 
     # scan the plain blacklist next, count the number of blacklisted words
-    for word in blacklist:
+    for word in BLACK_LIST:
         index = content.find(word)
         if index != -1:
             flags += 1
             words.append(word)
 
     # if a word in the white list appears, remove a flag.
-    for word in whitelist:
+    for word in WHITE_LIST:
         index = content.find(word)
         if index != -1:
             flags -= 1
@@ -137,7 +138,7 @@ async def scan_message(msg: discord.Message):
         if flags < 3 and bans == 0:
             embed.add_field(name='URL', value=msg.jump_url, inline=False)
         await channel.send(embed=embed)
-        with open(scam_log_path(), 'a') as log:
+        with open(FilePaths.scam_log, 'a') as log:
             # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
             log.write(f'{msg.id},{msg.created_at},{msg.guild.id},{msg.author.id},'
                       f'{msg.id},{flags},{bans},{lst.replace(",", " - ")},"{msg.content.replace(
