@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 import discord
 import random
-import os
 import platform
-import sys
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -25,27 +23,26 @@ import modules.ServerSettings as Settings
 import modules.Verification as Verif
 import modules.refManagement as Ref
 
+# Config
+from config import BotConfig
+
 # Utils
 from util.interactions import direct_message
 from util.logger import setup_logger
 
 # Keep imports in alphabetical order
 
-VERSION_NUM = '4.3.0'
+VERSION = '4.3.0'
 
-GUARDIANS = (env := os.getenv('GUARDIANS', '')) and env.split(',') or []
-LOGGER = setup_logger(log_file='logs/luana_info.log')
-
-prefix = '>'
+logger = setup_logger(log_file='logs/luana_info.log')
+bot_config = BotConfig(botname='luana')
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = commands.Bot(command_prefix=prefix, intents=intents)
-
-game = discord.Game(f'{prefix}help for commands')
-client = bot
+bot = commands.Bot(command_prefix=bot_config.prefix, intents=intents)
+game = discord.Game(f'{bot_config.prefix}help for commands')
 
 @bot.event
 async def on_ready():
@@ -56,9 +53,9 @@ async def on_ready():
     :return: None
     """
 
-    LOGGER.info(f'We have logged in as {bot.user}')
+    logger.info(f'We have logged in as {bot.user}')
 
-    await client.change_presence(activity=game)
+    await bot.change_presence(activity=game)
     await direct_message(
         bot,
         f'Running, and active\n'
@@ -67,20 +64,19 @@ async def on_ready():
         f'version: {platform.version()}\n'
         f'python_version: {platform.python_version()}\n'
         '```',
-        *GUARDIANS
+        *bot_config.guardians
     )
 
-    LOGGER.info('loading cogs')
+    logger.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
     await bot.add_cog(modules.General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
-    LOGGER.info('Cogs loaded')
+    logger.info('Cogs loaded')
 
 
 scan_ignore = [1054172309147095130]
-
 
 @bot.event
 async def on_message(msg: discord.Message):
@@ -100,8 +96,7 @@ async def on_message(msg: discord.Message):
     if not (msg.guild is None or content.find(AntiScam.code) != -1 or msg.channel.id in scan_ignore):
         await AntiScam.scan_message(msg)
 
-
-@client.event
+@bot.event
 async def on_member_update(before, after):
     if (before.guild.id == 1054121991365468281 and
             before.guild.get_role(1054160602349703188) not in before.roles and
@@ -114,34 +109,5 @@ async def on_member_update(before, after):
             content=f"<@&1122978815744950352> {random.choice(welcome)}. Please "
                     f"remember to stop by <#1054672645527969802> for your roles.")
 
-
-def run_valebot():
-    """
-    Function allows the host to pick whether to run the live bot, or run the test bot in a closed environment, without
-    switching programs. This allows the live code to run parallel to the testing code and prevent constant restarts to
-    test new features.
-    Last docstring edit: -Autumn V1.16.3
-    Last function edit: Unknown
-    :return: None
-    """
-    global prefix
-
-    if len(sys.argv) > 1:
-        inp = int(sys.argv[1])
-    else:
-        inp = int(input('input token num\n'
-                        '1. Luana\n'
-                        '2. Testing Environment\n'))
-
-    if inp == 1:
-        # Main bot client. Do not use for tests
-        client.run(os.environ.get('Luana_Token'))  #done: must say client.run(os.environ.get('Luana_Token'))
-    elif inp == 2:
-        # Test Bot client. Allows for tests to be run in a secure environment.
-
-        client.run(os.environ.get('TESTBOT_TOKEN'))  # must say client.run(os.environ.get('TESTBOT_TOKEN')
-
-
-
 if __name__ == '__main__':
-    run_valebot()
+    bot.run(token=bot_config.token, log_handler=None)
