@@ -27,6 +27,7 @@ class DirectoryWatcher(FileSystemEventHandler):
                 instance._watchers = {}
                 instance._lock = threading.Lock()
                 instance.observer = Observer()
+                instance.observer.daemon = True
                 instance.observer.schedule(instance, path=abs_directory, recursive=recursive)
                 instance.observer.start()
 
@@ -37,7 +38,8 @@ class DirectoryWatcher(FileSystemEventHandler):
                     cls._shutdown_hooked = True
                 
                 cls._instances[abs_directory] = instance
-
+        for thread in threading.enumerate():
+            _logger.debug(f'Thread: {thread.name} isDaemon: {thread.isDaemon()}')
         return cls._instances[abs_directory]
 
     def on_modified(self, event):
