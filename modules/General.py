@@ -9,7 +9,7 @@ from config import BotConfig
 
 VERSION_NUM = '4.3.0'
 START_TIME = time.time()
-GUARDIANS = BotConfig._retrieve_guardians()
+GUARDIANS = BotConfig.retrieve_guardians()
 _Logger = logging.getLogger('modules')
 
 class General(commands.Cog):

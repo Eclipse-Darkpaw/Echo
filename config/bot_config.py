@@ -16,14 +16,15 @@ class BotConfig:
         self._is_test_bot_set = self._arg_test_bot in sys.argv
         self._is_no_notif_set = self._arg_no_notif in sys.argv
 
-        self._guardians = self._retrieve_guardians()
+        self._guardians = BotConfig.retrieve_guardians()
         self._token = self._retrieve_token()
         self._prefix = self._retrieve_prefix()
         self._start_notif = not self._is_no_notif_set
 
         self._log_config()
 
-    def _retrieve_guardians() -> list:
+    @classmethod
+    def retrieve_guardians(cls) -> list:
         env = os.getenv('GUARDIANS', '')
         return env.split(',') if env else []
 
@@ -45,7 +46,7 @@ class BotConfig:
         _logger.info(ANSI.set_on_text('Bot Configuration Details', ANSI.CODES['transform']['bold']))
         _logger.info(ANSI.set_on_text(border, ANSI.CODES['foreground']['black']))
 
-        _logger.debug(f'  {'Token':<12}: {self.token}')
+        _logger.debug(f'  {'Token':<12}: {self._token}')
         _logger.info(f'  {'Guardians':<12}: {self._guardians}')
         _logger.info(f'  {'Prefix':<12}: {self._prefix}')
         _logger.info(f'  {'Mode':<12}: {ANSI.set_on_text(
