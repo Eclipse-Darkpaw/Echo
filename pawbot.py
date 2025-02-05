@@ -15,6 +15,12 @@ Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv()
 but can influence the environment before Python runs.
 """
 
+from util import setup_logger, logging
+from config import BotConfig
+
+logger = setup_logger(log_file='logs/sunreek_info.log', console_log_level=logging.INFO, ignore_discord_logs=False)
+bot_config = BotConfig(botname='pawbot')
+
 # Modules
 import modules.AntiScam as AntiScam
 import modules.General
@@ -23,19 +29,12 @@ import modules.ServerSettings as Settings
 import modules.Verification as Verif
 import modules.RefManagement as Ref
 
-# Config
-from config import BotConfig
-
 #Utils
 from util.interactions import direct_message
-from util.logger import setup_logger
 
 # Keep imports in alphabetical order
 
 VERSION = '4.3.0'
-
-logger = setup_logger(log_file='logs/furbot_info.log')
-bot_config = BotConfig(botname='pawbot')
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -56,16 +55,21 @@ async def on_ready():
     logger.info(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    await direct_message(
-        bot,
-        f'Running, and active\n'
-        '```yml\n'
-        f'system: {platform.system()}\n'
-        f'version: {platform.version()}\n'
-        f'python_version: {platform.python_version()}\n'
-        '```',
-        *bot_config.guardians
-    )
+    if bot_config.start_notif:
+        await direct_message(
+            bot,
+            f'Running, and active\n'
+            '```yml\n'
+            f'{'bot_version':<15}: {VERSION}\n'
+            f'{'guardians':<15}: {', '.join(bot.get_user(int(guardian)).name for guardian in bot_config.guardians)}\n'
+            f'{'prefix':<15}: \'{bot_config.prefix}\'\n'
+            f'\n'
+            f'{'system':<15}: {platform.system()}\n'
+            f'{'version':<15}: {platform.version()}\n'
+            f'{'python_version':<15}: {platform.python_version()}\n'
+            '```',
+            *bot_config.guardians
+        )
 
     logger.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
