@@ -112,11 +112,11 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_di
     script_name = os.path.basename(sys.argv[0])
 
     logger = logging.getLogger(script_name)
-    modules_logger = logging.getLogger('modules')
+    config_logger = logging.getLogger('config')
     utils_logger = logging.getLogger('utils')
 
     logger.setLevel(min(file_log_level, console_log_level))
-    modules_logger.setLevel(min(file_log_level, console_log_level))
+    config_logger.setLevel(min(file_log_level, console_log_level))
     utils_logger.setLevel(min(file_log_level, console_log_level))
 
     if logger.hasHandlers():
@@ -155,7 +155,7 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_di
         file_handler.addFilter(StripAnsiCodesFilter())
 
         logger.addHandler(file_handler)
-        modules_logger.addHandler(file_handler)
+        config_logger.addHandler(file_handler)
         utils_logger.addHandler(file_handler)
 
     if ignore_discord_logs:
@@ -168,7 +168,7 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_di
 
         discord_logger.setLevel(min(file_log_level, console_log_level))
         discord_logger.addHandler(console_handler)
-        discord_logger.addHandler(file_handler)
+        if log_file: discord_logger.addHandler(file_handler)
 
         discord_http_logger.setLevel(min(file_log_level, console_log_level))
         discord_http_logger.addHandler(console_handler)
