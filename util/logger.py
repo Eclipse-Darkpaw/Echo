@@ -172,6 +172,28 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_di
 
         discord_http_logger.setLevel(min(file_log_level, console_log_level))
         discord_http_logger.addHandler(console_handler)
-        discord_http_logger.addHandler(file_handler)
+        if log_file: discord_http_logger.addHandler(file_handler)
+
+    if console_logging:
+        logger.debug(
+            ANSI.set_on_text(
+                f'Logging {logging.getLevelName(console_log_level).lower()} to console',
+                ANSI.CODES['foreground']['bright_black'], ANSI.CODES['transform']['italic']
+            )
+        )
+    if log_file:
+        logger.debug(
+            ANSI.set_on_text(
+                f'Logging {logging.getLevelName(file_log_level)} to file: {log_file}',
+                ANSI.CODES['foreground']['bright_black'], ANSI.CODES['transform']['italic']
+            )
+        )
+    if ignore_discord_logs:
+        logger.debug(
+            ANSI.set_on_text(
+                'Ignoring logs from "discord" & "discord.http"',
+                ANSI.CODES['foreground']['bright_black'], ANSI.CODES['transform']['italic']
+            )
+        )
 
     return logger
