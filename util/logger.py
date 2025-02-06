@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 import os
+import re
 import sys
 
 class ANSI:
@@ -79,6 +80,16 @@ class FancyFormatter(logging.Formatter):
         record.name = ANSI.set_on_text(record.filename, ANSI.CODES['foreground']['blue'])
 
         return super().format(record)
+    
+class StripAnsiCodesFilter(logging.Filter):
+    ANSI_ESCAPE = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+
+    def filter(self, record):
+        # Strip ANSI codes from several record attributes
+        for attr in ['msg', 'levelname', 'name', 'message']:
+            if hasattr(record, attr):
+                setattr(record, attr, self.ANSI_ESCAPE.sub('', str(getattr(record, attr))))
+        return True
 
 def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_discord_logs=False,
                  log_file=None, file_log_level=logging.INFO, max_file_size=2048, file_log_rotation_count=10):
@@ -111,6 +122,22 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_di
     if logger.hasHandlers():
         logger.handlers.clear()
 
+    if console_logging:
+        console_handler = logging.StreamHandler(sys.stdout)
+
+        console_formatter = FancyFormatter(
+            '{asctime}   [{levelname:<8} ]  {name}: {message}', 
+            datefmt='%Y-%m-%d %H:%M:%S', 
+            style='{'
+        )
+
+        console_handler.setFormatter(console_formatter)
+        console_handler.setLevel(console_log_level)
+
+        logger.addHandler(console_handler)
+        config_logger.addHandler(console_handler)
+        utils_logger.addHandler(console_handler)
+
     if log_file:
         file_handler = logging.handlers.RotatingFileHandler(
             filename=log_file,
@@ -125,26 +152,11 @@ def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_di
 
         file_handler.setFormatter(file_formatter)
         file_handler.setLevel(file_log_level)
+        file_handler.addFilter(StripAnsiCodesFilter())
 
         logger.addHandler(file_handler)
         modules_logger.addHandler(file_handler)
         utils_logger.addHandler(file_handler)
-
-    if console_logging:
-        console_handler = logging.StreamHandler(sys.stdout)
-
-        console_formatter = FancyFormatter(
-            '{asctime}   [{levelname:<8} ]  {name}: {message}', 
-            datefmt='%Y-%m-%d %H:%M:%S', 
-            style='{'
-        )
-
-        console_handler.setFormatter(console_formatter)
-        console_handler.setLevel(console_log_level)
-
-        logger.addHandler(console_handler)
-        modules_logger.addHandler(console_handler)
-        utils_logger.addHandler(console_handler)
 
     if ignore_discord_logs:
         null_handler = logging.NullHandler()
