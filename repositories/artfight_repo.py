@@ -109,6 +109,25 @@ class ArtfightRepo(JsonRepository):
     def remove_prompt(self, guild_id: int | str, day_of_artfight: int | str):
         self._remove(str(guild_id), 'prompts', str(day_of_artfight))
 
+    # teams
+
+    def get_teams(self, guild_id: int | str) -> dict[str, int]:
+        guild_data = self._get(str(guild_id))
+
+        if guild_data is None:
+            return {}
+        
+        return {
+            team_name: guild_data[team_name].get('role_id')
+            for team_name in guild_data.keys()
+            if team_name not in self.reserved_keys
+        }
+    
+    def add_team(self, guild_id: int | str, name: str, role_id: int | str):
+        self._ensure_allowed_team_name(name)
+        self.set_team_role(guild_id, name, role_id=role_id)
+        self.set_team_score(guild_id, name, 0)
+
     # team roles
 
     def get_team_role(self, guild_id: int | str, team_name: str) -> int | None:
