@@ -1,10 +1,11 @@
 import json
 import logging
 from filelock import FileLock, Timeout
+from typing import Callable
 
 _logger = logging.getLogger('utils')
 
-def modify_json_file(file_path: str, modifier: callable[[dict], None]):
+def modify_json_file(file_path: str, modifier: Callable[[dict], None]):
     """
     Modifies the provided json file, calling the modifier_fn callback to perform the preferred changes.
     This function utelises file locking to prevent race conditions, this is BLOCKING (up to 5s)!
