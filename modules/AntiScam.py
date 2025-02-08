@@ -5,7 +5,7 @@ This code is designed to protect servers from users who attempt to scam an entir
 """
 import discord
 
-from util import FilePaths, WatchedFiles
+from util import FilePaths
 
 VERSION = "4.3.0"
 
@@ -57,13 +57,11 @@ BAN_LIST = ['discorx.gift', 'disords.gift', 'dlsscord-gift.com/', 'discordnitro.
 
 BYPASS_CODE = 'plsdontban'
 
-SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
-
 counter = 0
 # TODO: add an auto suspend feature
 
 
-async def scan_message(msg: discord.Message):
+async def scan_message(msg: discord.Message, log_channel_id: int):
     global counter
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
@@ -74,7 +72,7 @@ async def scan_message(msg: discord.Message):
     :return: None
     """
     try:
-        log_channel = SERVERS_SETTINGS[str(msg.guild.id)]['channels']['log']
+        log_channel = log_channel_id
     except KeyError as er:
         # send a message every 50 messages
         if counter % 50 == 0:

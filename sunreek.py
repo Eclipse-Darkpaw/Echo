@@ -108,7 +108,10 @@ async def on_message(ctx: discord.Interaction):
     content = ctx.content.lower()
 
     if not (ctx.guild is None or content.find(AntiScam.BYPASS_CODE) != -1 or ctx.channel.id in scan_ignore):
-        await AntiScam.scan_message(ctx)
+        await AntiScam.scan_message(
+            ctx.message,
+            bot.repositories['servers_settings_repo'].get_guild_channel(ctx.guild.id, 'log'),
+        )
     
 # ---
 # Commands
