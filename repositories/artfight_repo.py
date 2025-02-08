@@ -14,6 +14,8 @@ class ArtfightRepo(JsonRepository):
     def __init__(self):
         if self.__class__._watched_artfight_json is None:
             self.__class__._watched_artfight_json = FileWatcher(FilePaths.artfight)
+        
+        self.reserved_keys = ['channel', 'start_date', 'end_date', 'next_prompt_hour', 'prompts']
     
     def _get(self, *keys: str) -> any:
         return super()._get(self.__class__._watched_artfight_json, *keys)
@@ -29,6 +31,10 @@ class ArtfightRepo(JsonRepository):
             FilePaths.artfight,
             lambda data: super()._remove(data, *keys)
         )
+
+    def _ensure_allowed_team_name(self, team_name: str) -> None:
+        if team_name in self.reserved_keys:
+            raise ValueError(f'Team name cannot be in: {self.reserved_keys}')
 
     # channels
 
@@ -105,8 +111,8 @@ class ArtfightRepo(JsonRepository):
 
     # team roles
 
-    def get_team_role(self, guild_id: int | str, team: str) -> int | None:
-        return self._get(str(guild_id), team, 'role')
+    def get_team_role(self, guild_id: int | str, team_name: str) -> int | None:
+        return self._get(str(guild_id), team_name, 'role')
 
     def get_team_of_role_id(self, guild_id: int | str, role_id: int | str) -> str | None:
         guild_data = self._get(str(guild_id))
@@ -114,89 +120,96 @@ class ArtfightRepo(JsonRepository):
         if not isinstance(guild_data, dict):
             return None
         
-        for team, data in guild_data.items():
+        for team_name, data in guild_data.items():
             if isinstance(data, dict) and data.get('role') == int(role_id):
-                return team
+                return team_name
         return None
     
-    def set_team_role(self, guild_id: int | str, team: str, role_id: int | str):
-        self._set(str(guild_id), team, 'role', value=int(role_id))
+    def set_team_role(self, guild_id: int | str, team_name: str, role_id: int | str):
+        self._ensure_allowed_team_name(team_name)
+        self._set(str(guild_id), team_name, 'role', value=int(role_id))
 
     # team score
     
-    def get_team_score(self, guild_id: int | str, team: str) -> int | None:
-        return self._get(str(guild_id), team, 'score')
+    def get_team_score(self, guild_id: int | str, team_name: str) -> int | None:
+        return self._get(str(guild_id), team_name, 'score')
     
-    def set_team_score(self, guild_id: int | str, team: str, score: int):
-        self._set(str(guild_id), team, 'score', value=score)
+    def set_team_score(self, guild_id: int | str, team_name: str, score: int):
+        self._ensure_allowed_team_name(team_name)
+        self._set(str(guild_id), team_name, 'score', value=score)
 
-    def add_to_team_score(self, guild_id: int | str, team: str, score: int):
+    def add_to_team_score(self, guild_id: int | str, team_name: str, score: int):
         self.set_team_score(
-            str(guild_id), team,
-            value=max(0, ((current := self.get_team_score(guild_id, team)) if current is not None else 0) + score)
+            str(guild_id), team_name,
+            value=max(0, ((current := self.get_team_score(guild_id, team_name)) if current is not None else 0) + score)
         )
 
-    def subtract_from_team_score(self, guild_id: int | str, team: str, score: int):
+    def subtract_from_team_score(self, guild_id: int | str, team_name: str, score: int):
         self.set_team_score(
-            str(guild_id), team,
-            value=max(0, ((current := self.get_team_score(guild_id, team)) if current is not None else 0) - score)
+            str(guild_id), team_name,
+            value=max(0, ((current := self.get_team_score(guild_id, team_name)) if current is not None else 0) - score)
         )
 
     # team members
     
-    def get_team_members(self, guild_id: int | str, team: str) -> dict[str, dict[str, int | dict[str, dict[str, int | str]]]] | None:
-        return self._get(str(guild_id), team, 'members')
+    def get_team_members(self, guild_id: int | str, team_name: str) -> dict[str, dict[str, int | dict[str, dict[str, int | str]]]] | None:
+        return self._get(str(guild_id), team_name, 'members')
     
-    def get_team_member(self, guild_id: int | str, team: str, user_id: int | str) -> dict[str, int | dict[str, dict[str, int | str]]] | None:
-        return self._get(str(guild_id), team, 'members', str(user_id))
+    def get_team_member(self, guild_id: int | str, team_name: str, user_id: int | str) -> dict[str, int | dict[str, dict[str, int | str]]] | None:
+        return self._get(str(guild_id), team_name, 'members', str(user_id))
     
-    def add_team_member(self, guild_id: int | str, team: str, user_id: int | str):
-        self._set(str(guild_id), team, 'members', str(user_id), value={'points': 0, 'submissions': {}})
+    def add_team_member(self, guild_id: int | str, team_name: str, user_id: int | str):
+        self._ensure_allowed_team_name(team_name)
+        self._set(str(guild_id), team_name, 'members', str(user_id), value={'points': 0, 'submissions': {}})
 
-    def remove_team_member(self, guild_id: int | str, team: str, user_id: int | str):
-        self._remove(str(guild_id), team, 'members', str(user_id))
+    def remove_team_member(self, guild_id: int | str, team_name: str, user_id: int | str):
+        self._ensure_allowed_team_name(team_name)
+        self._remove(str(guild_id), team_name, 'members', str(user_id))
 
     # team member data
     
-    def get_team_member_points(self, guild_id: int | str, team: str, user_id: int | str) -> int | None:
-        return self._get(str(guild_id), team, 'members', str(user_id), 'points')
+    def get_team_member_points(self, guild_id: int | str, team_name: str, user_id: int | str) -> int | None:
+        return self._get(str(guild_id), team_name, 'members', str(user_id), 'points')
     
-    def get_team_member_submissions(self, guild_id: int | str, team: str, user_id: int | str) -> dict[str, dict[str, int | str]] | None:
-        return self._get(str(guild_id), team, 'members', str(user_id), 'submissions')
+    def get_team_member_submissions(self, guild_id: int | str, team_name: str, user_id: int | str) -> dict[str, dict[str, int | str]] | None:
+        return self._get(str(guild_id), team_name, 'members', str(user_id), 'submissions')
     
-    def get_team_member_submission(self, guild_id: int | str, team: str, user_id: int | str, submission_url: str) -> dict[str, int | str]:
-        return self._get(str(guild_id), team, 'members', str(user_id), 'submissions', submission_url)
+    def get_team_member_submission(self, guild_id: int | str, team_name: str, user_id: int | str, submission_url: str) -> dict[str, int | str]:
+        return self._get(str(guild_id), team_name, 'members', str(user_id), 'submissions', submission_url)
     
-    def set_team_member_points(self, guild_id: int | str, team: str, user_id: int | str, points: int):
-        self._set(str(guild_id), team, 'members', str(user_id), 'points', value=points)
+    def set_team_member_points(self, guild_id: int | str, team_name: str, user_id: int | str, points: int):
+        self._ensure_allowed_team_name(team_name)
+        self._set(str(guild_id), team_name, 'members', str(user_id), 'points', value=points)
 
-    def add_to_team_member_points(self, guild_id: int | str, team: str, user_id: int | str, points: int):
+    def add_to_team_member_points(self, guild_id: int | str, team_name: str, user_id: int | str, points: int):
         self.set_team_member_points(
-            guild_id, team, user_id,
-            value=max(0, ((current := self.get_team_member_points(guild_id, team, user_id)) if current is not None else 0) + points)
+            guild_id, team_name, user_id,
+            value=max(0, ((current := self.get_team_member_points(guild_id, team_name, user_id)) if current is not None else 0) + points)
         )
-        self.add_to_team_score(guild_id, team, points)
+        self.add_to_team_score(guild_id, team_name, points)
 
-    def subtract_from_team_member_points(self, guild_id: int | str, team: str, user_id: int | str, points: int):
+    def subtract_from_team_member_points(self, guild_id: int | str, team_name: str, user_id: int | str, points: int):
         self.set_team_member_points(
-            guild_id, team, user_id,
-            value=max(0, ((current := self.get_team_member_points(guild_id, team, user_id)) if current is not None else 0) - points)
+            guild_id, team_name, user_id,
+            value=max(0, ((current := self.get_team_member_points(guild_id, team_name, user_id)) if current is not None else 0) - points)
         )
-        self.subtract_from_team_score(guild_id, team, points)
+        self.subtract_from_team_score(guild_id, team_name, points)
     
-    def add_team_member_submission(self, guild_id: int | str, team: str, user_id: int | str, submission_url: str, points: int):
+    def add_team_member_submission(self, guild_id: int | str, team_name: str, user_id: int | str, submission_url: str, points: int):
+        self._ensure_allowed_team_name(team_name)
         self._set(
-            str(guild_id), team, 'members', str(user_id), 'submissions', submission_url,
+            str(guild_id), team_name, 'members', str(user_id), 'submissions', submission_url,
             value={'points': points, 'datetime': datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()}
         )
-        self.add_to_team_member_points(guild_id, team, user_id, points)
+        self.add_to_team_member_points(guild_id, team_name, user_id, points)
 
-    def remove_team_member_submission(self, guild_id: int |str, team: str, user_id: int | str, submission_url: str):
+    def remove_team_member_submission(self, guild_id: int |str, team_name: str, user_id: int | str, submission_url: str):
+        self._ensure_allowed_team_name(team_name)
         self.subtract_from_team_member_points(
-            guild_id, team, user_id,
-            self.get_team_member_submission(guild_id, team, user_id).get('points', 0)
+            guild_id, team_name, user_id,
+            self.get_team_member_submission(guild_id, team_name, user_id).get('points', 0)
         )
-        self._remove(str(guild_id), team, 'members', str(user_id), 'submissions', submission_url)
+        self._remove(str(guild_id), team_name, 'members', str(user_id), 'submissions', submission_url)
 
     # Archiving
 
