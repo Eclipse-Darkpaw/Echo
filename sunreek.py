@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 import discord
+import logging
 import platform
 
-from discord.ext import commands
+from base_bot import EchoBot
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,36 +15,41 @@ Note: Shell config files (e.g., ~/.bashrc) are not read by load_dotenv()
 but can influence the environment before Python runs.
 """
 
-from util import setup_logger, logging
-from config import BotConfig
+from modules import (
+    AntiScam,
+    General,
+    Moderation as Mod,
+    ServerSettings as Settings,
+    Verification as Verif,
+    RefManagement as Ref,
+    Artfight
+)
 
-logger = setup_logger(log_file='logs/sunreek_info.log', console_log_level=logging.INFO, ignore_discord_logs=False)
-bot_config = BotConfig(botname='sunreek')
+from repositories import (
+    ServersSettingsRepo
+)
 
-# Modules
-import modules.AntiScam as AntiScam
-import modules.General as General
-import modules.Moderation as Mod
-import modules.ServerSettings as Settings
-import modules.Verification as Verif
-import modules.RefManagement as Ref
-import modules.Artfight as Artfight
-
-# Utils
-from util import FilePaths, WatchedFiles, direct_message
+from util import (
+    direct_message
+)
 
 # Keep imports in alphabetical order
-
-VERSION = '4.3.0'
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-bot = commands.Bot(command_prefix=bot_config.prefix, intents=intents)
-game = discord.Game(f'{bot_config.prefix}help for commands')
+bot = EchoBot(
+    name='sunreek',
+    version_num='4.3.0',
+    console_logging=True,
+    file_logging=True,
+    intents=intents
+)
 
-SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
+bot.add_repository(ServersSettingsRepo())
+
+game = discord.Game(f'{bot.config.prefix}help for commands')
 
 @bot.event
 async def on_ready():
@@ -54,33 +60,33 @@ async def on_ready():
     :return: None
     """
 
-    logger.info(f'We have logged in as {bot.user}')
+    bot.logger.info(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    if bot_config.start_notif:
+    if bot.config.start_notif:
         await direct_message(
             bot,
             f'Running, and active\n'
             '```yml\n'
-            f'{'bot_version':<15}: {VERSION}\n'
-            f'{'guardians':<15}: {', '.join(bot.get_user(int(guardian)).name for guardian in bot_config.guardians)}\n'
-            f'{'prefix':<15}: \'{bot_config.prefix}\'\n'
+            f'{'bot_version':<15}: {bot.version_num}\n'
+            f'{'guardians':<15}: {', '.join(bot.get_user(int(guardian)).name for guardian in bot.config.guardians)}\n'
+            f'{'prefix':<15}: \'{bot.config.prefix}\'\n'
             f'\n'
             f'{'system':<15}: {platform.system()}\n'
             f'{'version':<15}: {platform.version()}\n'
             f'{'python_version':<15}: {platform.python_version()}\n'
             '```',
-            *bot_config.guardians
+            *bot.config.guardians
         )
 
-    logger.info('loading cogs')
+    bot.logger.info('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
     await bot.add_cog(General.General(bot))
     await bot.add_cog(Settings.Settings(bot))
     await bot.add_cog(Ref.RefManagement(bot))
     await bot.add_cog(Verif.Verification(bot))
     #await bot.add_cog(Artfight.Artfight(bot))
-    logger.info('Cogs loaded')
+    bot.logger.info('Cogs loaded')
 
 
 scan_ignore = [688611557508513854]
@@ -309,7 +315,8 @@ async def purge(ctx: discord.Interaction, kick: bool):
     :param message: Message that called the bot
     :return: None
     """
-    unverified_role_id = SERVERS_SETTINGS[str(ctx.guild.id)]["roles"]['unverified']
+
+    unverified_role_id = bot.repositories['servers_settings_repo'].get_guild_role(ctx.guild.id, 'unverified')
 
     if ctx.author.guild_permissions.manage_roles:
         await ctx.channel.send('├ FILTERING MEMBER LIST')
@@ -337,9 +344,9 @@ async def purge(ctx: discord.Interaction, kick: bool):
         await ctx.channel.send(msg)
         await ctx.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
         if kick:
-            logger.debug(f'├ {num_kicked} MEMBERS KICKED')
+            bot.logger.debug(f'├ {num_kicked} MEMBERS KICKED')
         else:
-            logger.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
+            bot.logger.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
     else:
         await ctx.reply('Error 403: Forbidden\nInsufficient Permissions')
 
@@ -353,7 +360,7 @@ async def prune(message):
     :param message:
     :return: NoneType
     """
-    await direct_message(bot, '`STARTING PURGE`', *bot_config.guardians)
+    await direct_message(bot, '`STARTING PURGE`', *bot.config.guardians)
     if message.author.guild is not None and message.author.guild_permissions.kick_members:
         # only run if in a guild and the user could do this manually.
         members = message.guild.members
@@ -361,9 +368,9 @@ async def prune(message):
                         1199610730899578960, 1069839195553669192]
         num_kicked = 0
         forbidden = 0
-        logger.debug('├ GETTING MEMBER LIST')
-        logger.debug('├ PURGING SERVER')
-        logger.debug('├┐')
+        bot.logger.debug('├ GETTING MEMBER LIST')
+        bot.logger.debug('├ PURGING SERVER')
+        bot.logger.debug('├┐')
         for member in members:
             kicked = False
             if member.id == 815418445192888321:
@@ -372,31 +379,32 @@ async def prune(message):
                 if kicked:
                     break
                 if role.id in ignore_roles:
-                    logger.debug(f'│├ {member.id} SAFE')
+                    bot.logger.debug(f'│├ {member.id} SAFE')
                     kicked = True
                     break
                 else:
                     try:
                         # await member.kick(reason="*T H E   P U R G E*")
-                        logger.debug(f'│├ <@{member.id}> PURGED')
+                        bot.logger.debug(f'│├ <@{member.id}> PURGED')
                         kicked = True
                         num_kicked += 1
                         break
                     except discord.errors.Forbidden:
-                        logger.debug(f'│├ {member.id} UNABLE TO PURGE')
+                        bot.logger.debug(f'│├ {member.id} UNABLE TO PURGE')
                         kicked = True
                         forbidden += 1
                         break
 
-        await direct_message(bot, f'Purge complete. {num_kicked} purged.', *bot_config.guardians)
+        await direct_message(bot, f'Purge complete. {num_kicked} purged.', *bot.config.guardians)
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
+
 # TODO: Remove command before merging to main
 @bot.command()
 async def filewatch_testing(ctx: discord.Interaction):
-    await ctx.send(SERVERS_SETTINGS['612550152514961408']['name'])
+    await ctx.send(bot.repositories['servers_settings_repo'].get_guild_name(ctx.guild.id))
 
 
 if __name__ == '__main__':
-    bot.run(token=bot_config.token, log_handler=None)
+    bot.run(token=bot.config.token, log_handler=None)
