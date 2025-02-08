@@ -4,11 +4,11 @@ import sys
 
 from util.logger import ANSI
 
-_logger = logging.getLogger('utils')
+_logger = logging.getLogger('config')
 
 class BotConfig:
-    def __init__(self, botname: str):
-        self.botname = botname
+    def __init__(self, bot_name: str):
+        self._bot_name = bot_name
         self._arg_test_bot = '--test-bot'
         self._arg_no_notif = '--no-notif'
         self._default_prefix = '>'
@@ -30,12 +30,12 @@ class BotConfig:
 
     def _retrieve_token(self) -> str:
         test_prefix = 'TEST_' if self._is_test_bot_set else ''
-        env_var = f"{self.botname.upper()}_{test_prefix}TOKEN"
+        env_var = f"{self._bot_name.upper()}_{test_prefix}TOKEN"
         return os.getenv(env_var, '')
 
     def _retrieve_prefix(self) -> str:
         test_prefix = 'TEST_' if self._is_test_bot_set else ''
-        env_var = f"{self.botname.upper()}_{test_prefix}PREFIX"
+        env_var = f"{self._bot_name.upper()}_{test_prefix}PREFIX"
         return os.getenv(env_var, self._default_prefix)
     
     def _log_config(self):
