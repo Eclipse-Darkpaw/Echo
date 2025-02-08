@@ -91,8 +91,15 @@ class StripAnsiCodesFilter(logging.Filter):
                 setattr(record, attr, self.ANSI_ESCAPE.sub('', str(getattr(record, attr))))
         return True
 
-def setup_logger(console_logging=True, console_log_level=logging.INFO, ignore_discord_logs=False,
-                 log_file=None, file_log_level=logging.INFO, max_file_size=2048, file_log_rotation_count=10) -> logging.Logger:
+def setup_logger(
+        console_logging=True,
+        console_log_level=logging.INFO,
+        ignore_discord_logs=False,
+        log_file=None,
+        file_log_level=logging.INFO,
+        max_file_size=2048,
+        file_log_rotation_count=10
+    ) -> logging.Logger:
     """
     Configures a logger that captures log messages, formats them, and outputs them to specified destinations, such as console and log files.
 
