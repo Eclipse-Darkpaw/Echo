@@ -1,4 +1,7 @@
-class JsonRepository:
+class Repository:
+    pass
+
+class JsonRepository(Repository):
     def _get(self, data: dict, *keys: str) -> any:
         try:
             for key in keys:

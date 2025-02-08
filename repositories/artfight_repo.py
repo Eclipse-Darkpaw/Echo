@@ -1,7 +1,7 @@
 import datetime
 import json
 import os
-from .json_repository import JsonRepository
+from .repository import JsonRepository
 from util import (
     FileWatcher,
     FilePaths,
