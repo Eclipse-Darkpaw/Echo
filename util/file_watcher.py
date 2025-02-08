@@ -9,10 +9,11 @@ class FileWatcher:
     def __init__ (self, file_path: str):
         self.file_path = os.path.abspath(file_path)
 
+        os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
+
         if not os.path.exists(self.file_path):
-            _logger.error(f'File not found: {file_path}')
-            self.data = {}
-            return
+                with open(self.file_path, 'w', encoding="utf-8") as file:
+                    json.dump({}, file, indent=4)
 
         self.file_name = os.path.basename(file_path)
         self.data = self._load()
