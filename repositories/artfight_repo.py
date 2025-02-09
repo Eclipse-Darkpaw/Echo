@@ -15,7 +15,7 @@ class ArtfightRepo(JsonRepository):
         if self.__class__._watched_artfight_json is None:
             self.__class__._watched_artfight_json = FileWatcher(FilePaths.artfight)
         
-        self.reserved_keys = ['channel', 'start_date', 'end_date', 'next_prompt_hour', 'prompts']
+        self.reserved_keys = ['submissions_channel', 'prompts_channel', 'start_date', 'end_date', 'next_prompt_hour', 'prompts']
     
     def _get(self, *keys: str) -> any:
         return super()._get(self.__class__._watched_artfight_json, *keys)
@@ -38,11 +38,17 @@ class ArtfightRepo(JsonRepository):
 
     # channels
 
-    def get_guild_channel(self, guild_id: int | str) -> int | None:
-        return self._get(str(guild_id), 'channel')
+    def get_submissions_channel(self, guild_id: int | str) -> int | None:
+        return self._get(str(guild_id), 'submissions_channel')
     
-    def set_guild_channel(self, guild_id: int | str, channel_id: str | int):
-        return self._set(str(guild_id), 'channel', value=int(channel_id))
+    def get_prompts_channel(self, guild_id: int | str) -> int | None:
+        return self._get(str(guild_id), 'prompts_channel')
+    
+    def set_submissions_channel(self, guild_id: int | str, channel_id: str | int):
+        return self._set(str(guild_id), 'submissions_channel', value=int(channel_id))
+    
+    def set_prompts_channel(self, guild_id: int | str, channel_id: str | int):
+        return self._set(str(guild_id), 'prompts_channel', value=int(channel_id))
 
     # dates
 
