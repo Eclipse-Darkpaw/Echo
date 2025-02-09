@@ -16,13 +16,13 @@ but can influence the environment before Python runs.
 """
 
 from modules import (
-    AntiScam,
     General,
-    Moderation as Mod,
-    ServerSettings as Settings,
-    Verification as Verif,
-    RefManagement as Ref,
-    Artfight
+    Moderation,
+    Settings,
+    #Verification as Verif,
+    RefManagement,
+    Artfight,
+    scan_message
 )
 
 from repositories import (
@@ -80,12 +80,12 @@ async def on_ready():
         )
 
     bot.logger.info('loading cogs')
-    await bot.add_cog(Mod.Moderation(bot))
-    await bot.add_cog(General.General(bot))
-    await bot.add_cog(Settings.Settings(bot))
-    await bot.add_cog(Ref.RefManagement(bot))
-    await bot.add_cog(Verif.Verification(bot))
-    #await bot.add_cog(Artfight.Artfight(bot))
+    await bot.add_cog(Moderation(bot))
+    await bot.add_cog(General(bot))
+    await bot.add_cog(Settings(bot))
+    await bot.add_cog(RefManagement(bot))
+    #await bot.add_cog(Verif.Verification(bot))
+    await bot.add_cog(Artfight(bot))
     bot.logger.info('Cogs loaded')
 
 
@@ -107,8 +107,8 @@ async def on_message(ctx: discord.Interaction):
 
     content = ctx.content.lower()
 
-    if not (ctx.guild is None or content.find(AntiScam.BYPASS_CODE) != -1 or ctx.channel.id in scan_ignore):
-        await AntiScam.scan_message(
+    if not (ctx.guild is None or content.find(scan_message.BYPASS_CODE) != -1 or ctx.channel.id in scan_ignore):
+        await scan_message.scan_message(
             ctx.message,
             bot.repositories['servers_settings_repo'].get_guild_channel(ctx.guild.id, 'log'),
         )

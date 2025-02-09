@@ -17,12 +17,12 @@ but can influence the environment before Python runs.
 """
 
 from modules import (
-    AntiScam,
     General,
     Moderation as Mod,
     ServerSettings as Settings,
     Verification as Verif,
-    RefManagement as Ref
+    RefManagement as Ref,
+    scan_message
 )
 
 from repositories import (
@@ -105,8 +105,8 @@ async def on_message(msg: discord.Message):
 
     content = msg.content.lower()
 
-    if not (msg.guild is None or content.find(AntiScam.BYPASS_CODE) != -1 or msg.channel.id in scan_ignore):
-        await AntiScam.scan_message(
+    if not (msg.guild is None or content.find(scan_message.BYPASS_CODE) != -1 or msg.channel.id in scan_ignore):
+        await scan_message.scan_message(
             msg,
             bot.repositories['servers_settings_repo'].get_guild_channel(msg.guild.id, 'log')
         )
