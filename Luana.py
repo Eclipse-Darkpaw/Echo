@@ -21,8 +21,7 @@ from modules import (
     Moderation as Mod,
     ServerSettings as Settings,
     Verification as Verif,
-    RefManagement as Ref,
-    scan_message
+    RefManagement as Ref
 )
 
 from repositories import (
@@ -30,6 +29,8 @@ from repositories import (
 )
 
 from util import (
+    scan_message,
+    BYPASS_CODE,
     direct_message
 )
 
@@ -105,7 +106,7 @@ async def on_message(msg: discord.Message):
 
     content = msg.content.lower()
 
-    if not (msg.guild is None or content.find(scan_message.BYPASS_CODE) != -1 or msg.channel.id in scan_ignore):
+    if not (msg.guild is None or content.find(BYPASS_CODE) != -1 or msg.channel.id in scan_ignore):
         await scan_message.scan_message(
             msg,
             bot.repositories['servers_settings_repo'].get_guild_channel(msg.guild.id, 'log')

@@ -1,9 +1,8 @@
-from .AntiScam import AntiScam
 from .Artfight import Artfight
 from .General import General
 from .Moderation import Moderation
 from .RefManagement import RefManagement
-from .ServerSettings import ServerSettings
-from .Verification import Verification
+from .ServerSettings import Settings
+#from .Verification import Verification
 
-__all__ = ['AntiScam', 'Artfight', 'General', 'Moderation', 'RefManagement', 'ServerSettings', 'Verification']
+__all__ = ['scan_message', 'Artfight', 'General', 'Moderation', 'RefManagement', 'Settings', 'Verification']

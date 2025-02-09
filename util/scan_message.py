@@ -1,13 +1,5 @@
-"""
-Anti-scam module.
-
-This code is designed to protect servers from users who attempt to scam an entire server at the same time.
-"""
 import discord
-
 from util import FilePaths
-
-VERSION = "4.3.0"
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
 WHITE_LIST = ['https://discord.gift/',  # legitimate nitro gifting

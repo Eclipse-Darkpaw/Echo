@@ -21,8 +21,7 @@ from modules import (
     Settings,
     #Verification as Verif,
     RefManagement,
-    Artfight,
-    scan_message
+    Artfight
 )
 
 from repositories import (
@@ -30,6 +29,8 @@ from repositories import (
 )
 
 from util import (
+    scan_message,
+    BYPASS_CODE,
     direct_message
 )
 
@@ -107,7 +108,7 @@ async def on_message(ctx: discord.Interaction):
 
     content = ctx.content.lower()
 
-    if not (ctx.guild is None or content.find(scan_message.BYPASS_CODE) != -1 or ctx.channel.id in scan_ignore):
+    if not (ctx.guild is None or content.find(BYPASS_CODE) != -1 or ctx.channel.id in scan_ignore):
         await scan_message.scan_message(
             ctx.message,
             bot.repositories['servers_settings_repo'].get_guild_channel(ctx.guild.id, 'log'),
