@@ -1,3 +1,4 @@
+from .datetime_operations import date_to_utc_midnight_unix_timestamp, time_to_utc_at_epoch_timestamp
 from .directory_watcher import DirectoryWatcher
 from .file_watcher import FileWatcher
 from .file_paths import FilePaths
@@ -15,5 +16,7 @@ __all__ = [
     'get_user_id',
     'direct_message',
     'setup_logger',
-    'to_snake_case'
+    'to_snake_case',
+    'date_to_utc_midnight_unix_timestamp',
+    'time_to_utc_at_epoch_timestamp'
 ]
