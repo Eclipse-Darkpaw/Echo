@@ -23,13 +23,13 @@ class ArtfightRepo(JsonRepository):
     def _set(self, *keys: str, value: any) -> None:
         modify_json_file(
             FilePaths.artfight,
-            lambda data: super()._set(data, *keys, value=value)
+            lambda data: super(ArtfightRepo, self)._set(data, *keys, value=value)
         )
 
     def _remove(self, *keys) -> None:
         modify_json_file(
             FilePaths.artfight,
-            lambda data: super()._remove(data, *keys)
+            lambda data: super(ArtfightRepo, self)._remove(data, *keys)
         )
 
     def _ensure_allowed_team_name(self, team_name: str) -> None:
