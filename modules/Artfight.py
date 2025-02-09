@@ -2,175 +2,45 @@ import discord
 import datetime
 import json
 
+from modules.artfight_ui import (
+    artfight_configuration_message,
+    ConfigurationView   
+)
+from base_bot import EchoBot
+from config import MAX_DISCORD_MESSAGE_LEN
+from discord import app_commands
 from discord.ext import commands
 from random import randint
+from repositories import ArtfightRepo
+from util import (
+    FilePaths,
+    read_line
+)
 
-from util import FilePaths, WatchedFiles, read_line, logging
-
-SERVERS_SETTINGS = WatchedFiles.get_file_data(FilePaths.servers_settings)
-ARTIGHT_MEMBERS = WatchedFiles.get_file_data(FilePaths.artfight_members)
-
-_logger = logging.getLogger('modules')
-
-class Artfight(commands.GroupCog, name="artfight", description="All the commands for the annual artfight"):
+class Artfight(commands.GroupCog, name='artfight', description='All the commands for the annual artfight'):
     artfight_role = 1317026586226331678
 
-    def __init__(self, bot):
+    def __init__(self, bot: EchoBot):
         self.bot = bot
+        self.artfight_repo = ArtfightRepo()
 
-    def timecheck(self, startday: int = 10, endday: int = 17) -> bool:
-        """
-        returns True if between December 10 - 17. Ensures commands are run at the right time
-        Last docstring edit: -Autumna1Equin0x.pet V4.1.0
-        Last method edit: -Autumna1Equin0x.pet V4.1.0
-        :return:
-        """
-        month = int(datetime.datetime.now().strftime("%m"))
-        day = int(datetime.datetime.now().strftime("%d"))
+        self.bot.logger.info(f'✔ Artfight cog loaded')
 
-        # Ensure the artfight is going on.
-        return month == 12 and startday <= day < endday
-
-    def teamcheck(self, ctx) -> int:
-        # return 1 for team 1, 2 for team2 and 0 for no team.
-        if ctx.guild.get_role(self.team1) in ctx.author.roles:
-            return 1
-        elif ctx.guild.get_role(self.team2) in ctx.author.roles:
-            return 2
-        else:
-            return 0
-
-    @commands.hybrid_command(name='load')
+    @commands.hybrid_command(name='configuration')
     @commands.guild_only()
-    async def load(self, ctx):
+    async def configuration(self, ctx: commands.Context):
         """
-        Attempts to load data from saved files.
-        Last docstring edit: -Autumna1Equin0x.pet V4.1.0
+        Configure the artfight settings. At runtime alterations are possible, caution is advised!
+        Note: These changes will persist immediately, if you wish to archive the current configuration before overwriting, use /artfight archive
+        Last docstring edit: -FoxyHunter V4.3.0
         Last method edit: -FoxyHunter V4.3.0
-        :param ctx:
-        :return:
-        """
-        try:
-            self.team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
-            self.team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
-            self.team1_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team1']
-            self.team2_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team2']
-            self.channel = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['channel']
-            await ctx.send("Data loaded successfully")
-        except KeyError:
-            self.team1 = None
-            self.team2 = None
-            self.team1_score = 0
-            self.team2_score = 0
-            self.channel = None
-            await ctx.send("Error loading data. No data loaded.")
-        return self
-
-    @commands.hybrid_command(name='setup')
-    @commands.guild_only()
-    async def setup(self, ctx,
-                    team1: discord.Role = None,
-                    team2: discord.Role = None,
-                    channel: discord.TextChannel = None):
-        """
-        Sets up the server for Artfight. Overwrites existing save data.
-        Last docstring edit: -Autumna1Equin0x.pet V4.1.0
-        Last method edit: -Autumna1Equin0x.pet V4.1.0
         :param ctx: The context calling the command
-        :param team1: Team 1 role
-        :param team2: Team 2 Role
-        :param channel: Artfight channel
         :return: None
         """
-        progress = None
-
-        async def update_progress(progress=None) -> discord.Message:
-            msg = "**__Assignments__**"
-            for i in range(len(responses)):
-                if str(responses[i][1]).lower() == 'none':
-                    msg += f'\n**{responses[i][0]}:** {responses[i][1]}'
-                elif 2 <= i < 3:
-                    msg += f'\n**{responses[i][0]}:** <#{responses[i][1]}>'
-                elif 0 <= i < 2:
-                    msg += f'\n**{responses[i][0]}:** <@&{responses[i][1]}>'
-                else:
-                    msg += f'\n**{responses[i][0]}:** {responses[i][1]}'
-            if progress is None:
-                progress = await ctx.send(msg)
-            else:
-                await progress.edit(content=msg)
-            return progress
-
-        roleIDs = {}
-        responses = []
-
-        if team1 is None:
-            while True:
-                response = await read_line(self.bot,
-                                           ctx.channel,
-                                           f'Please tag the team 1 role.',
-                                           target=ctx.author,
-                                           delete_prompt=True,
-                                           delete_response=True)
-                try:
-                    roleIDs['team1'] = response.role_mentions[0].id
-                    responses.append((f'Team 1 Role:', response.role_mentions[0].id))
-                    progress = await update_progress(progress)
-                    break
-                except IndexError:
-                    await ctx.reply('No roles were mentioned')
-        else:
-            team1 = team1.id
-        roleIDs['team1'] = team1
-
-        if team2 is None:
-            while True:
-                response = await read_line(self.bot,
-                                           ctx.channel,
-                                           f'Please tag the team 2 role.',
-                                           target=ctx.author,
-                                           delete_prompt=True,
-                                           delete_response=True)
-                try:
-                    roleIDs['team2'] = response.role_mentions[0].id
-                    responses.append((f'Team 2 Role:', response.role_mentions[0].id))
-                    progress = await update_progress(progress)
-                    break
-                except IndexError:
-                    await ctx.reply('No roles were mentioned')
-        else:
-            team2 = team2.id
-        roleIDs['team2'] = team2
-
-        if channel is None:
-            while True:
-                response = await read_line(self.bot,
-                                           ctx.channel,
-                                           f'Please tag the artfight channel.',
-                                           target=ctx.author,
-                                           delete_prompt=True,
-                                           delete_response=True)
-                try:
-                    artfight_channel = response.channel_mentions[0].id
-                    responses.append(("channel", response.channel_mentions[0].id))
-                    progress = await update_progress(progress)
-                    break
-                except IndexError:
-                    await ctx.reply('No channels were mentioned')
-        else:
-            channel = channel.id
-
-        artfight_data = {"roles": roleIDs, "channel": channel, "scores": {'team1': 0, 'team2': 0}}
-
-        with open(FilePaths.servers_settings) as file:
-            data = json.load(file)
-
-        data[str(ctx.guild.id)]['artfight'] = artfight_data
-
-        with open(FilePaths.servers_settings, 'w') as file:
-            file.write(json.dumps(data, indent=4))
-
-        await ctx.reply('Data saved')
+        view = ConfigurationView(self.bot, self.artfight_repo, ctx.guild.id)
+        message = await ctx.reply(content='Loading configuration...')
+        await message.edit(content=artfight_configuration_message(self.artfight_repo, ctx.guild.id), view=view)
+        view.message = message
 
     @commands.hybrid_command(name='join')
     @commands.guild_only()
@@ -178,17 +48,13 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         """
         Joins a user to an Artfight team. assigns randomly if no team is chosen.
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
-        Last method edit: -Autumna1Equin0x.pet V4.1.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx:
         :param team: Team to join
         :return:
         """
-        try:
-            team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
-            team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
-        except KeyError:
-            team1 = None
-            team2 = None
+        team1 = self.artfight_repo.get_team_role(ctx.guild_id, 'team1')
+        team2 = self.bot.repositories['artfight_repo'].get_team_role(ctx.guild_id, 'team2')
 
         # Ensure the artfight is going on.
         if not self.timecheck(startday=7):
@@ -235,11 +101,11 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
         try:
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
-            _logger.debug('Saved 1')
+            self.bot.logger.debug('Saved 1')
         except KeyError:
             data[str(ctx.guild.id)] = {}
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
-            _logger.debug('Saved 2')
+            self.bot.logger.debug('Saved 2')
 
         with open(FilePaths.artfight_members, 'w') as file:
             file.write(json.dumps(data, indent=4))
@@ -431,10 +297,10 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             pass
 
         try:
-            team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
-            team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
-            team1_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team1']
-            team2_score = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['scores']['team2']
+            self.team1 = self.bot.repositories['artfight_repo'].get_team_role(ctx.guild.id, 'team1')
+            self.team2 = self.bot.repositories['artfight_repo'].get_team_role(ctx.guild.id, 'team1')
+            self.team1_score = self.bot.repositories['artfight_repo'].get_team_score(ctx.guild.id, 'team1')
+            self.team2_score = self.bot.repositories['artfight_repo'].get_team_score(ctx.guild.id, 'team2')
         except KeyError:
             team1 = None
             team2 = None
@@ -495,8 +361,8 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         """
         # Do not take points if the roles are not set.
         try:
-            team1 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team1']
-            team2 = SERVERS_SETTINGS[str(ctx.guild.id)]['artfight']['roles']['team2']
+            self.team1 = self.bot.repositories['artfight_repo'].get_team_role(ctx.guild.id, 'team1')
+            self.team2 = self.bot.repositories['artfight_repo'].get_team_role(ctx.guild.id, 'team1')
         except KeyError:
             team1 = None
             team2 = None
@@ -530,29 +396,40 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
 
     @commands.hybrid_command(name='players')
     @commands.guild_only()
-    async def players(self, ctx):
+    async def players(self, ctx: commands.Context):
         """
         Lists all the players, what team theyre on, and points contributed
         :param ctx:
         :return:
         """
-        if ctx.author.guild_permissions.manage_roles:
-            playerCount = 0
-            msg = '# Player List'
-            for user in ARTIGHT_MEMBERS[str(ctx.guild.id)]:
-                playerCount += 1
-                txt = f'{playerCount}. <@{user}> - <@&{ARTIGHT_MEMBERS[str(ctx.guild.id)][str(user)]['team']}> - {ARTIGHT_MEMBERS[str(ctx.guild.id)][str(user)]['points']}'
-                if len(f'{msg}\n{txt}') > 2000:
-                    await ctx.send(msg)
-                    msg = txt
+        await ctx.send('This command currently doesn\'t work, apolagies')
+
+        if ctx.message.author.guild_permissions.manage_roles:
+            message = ''
+            teams = self.bot.repositories['artfight_repo'].get_teams(ctx.guild.id)
+
+            for team_name, role_id in teams.items():
+                team_members = self.bot.repositories['artfight_repo'].get_team_members(ctx.guild.id, team_name)
+                team_info_txt = f'## {team_name}\n- **Role:** <@&{role_id}>\n- **Members:** {len(team_members)}\n ### Members\n'
+
+                if len(f'{message}{team_info_txt}') > MAX_DISCORD_MESSAGE_LEN:
+                    await ctx.send(message)
+                    message = team_info_txt
                 else:
-                    msg = f'{msg}\n{txt}'
-            try:
-                await ctx.send(msg)
-            except discord.errors.HTTPException:
-                await ctx.send('message too long')
+                    message += team_info_txt
+
+                for member_id_str, member_data in team_members:
+                    member_info_txt = f'<@{member_id_str}> - points: {member_data['points']}, submissions: {len(member_data['submissions'])}\n'
+
+                    if len(f'{message}{member_info_txt}') > MAX_DISCORD_MESSAGE_LEN:
+                        await ctx.send(message)
+                        message = member_info_txt
+                    else:
+                        message += member_info_txt
+
+            await ctx.send(message)
         else:
-            await ctx.send('You do not have permssion to use this.')
+            await ctx.send('You do not have permission to use this.')
 
     @commands.hybrid_command(name="removemember")
     @commands.guild_only()
@@ -575,7 +452,7 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
             return
 
         user_profile = guild_data[str(member.id)]
-        _logger.info(f'user removed: {user_profile}')
+        self.bot.logger.info(f'user removed: {user_profile}')
 
         # Confirmation embed
         embed = discord.Embed(title="Confirm User Removal", color=discord.Color.orange())
@@ -650,8 +527,8 @@ class Artfight(commands.GroupCog, name="artfight", description="All the commands
         await view.wait()
 
         if view.result == "purge":
-            _logger.info(f"Member {member.id} removed from guild {ctx.guild.id}.")
+            self.bot.logger.info(f"Member {member.id} removed from guild {ctx.guild.id}.")
         elif view.result == "cancel":
-            _logger.info(f"Member {member.id} removal canceled.")
+            self.bot.logger.info(f"Member {member.id} removal canceled.")
         elif view.result == "error":
-            _logger.info(f"Failed to remove Member {member.id} from guild {ctx.guild.id}.")
+            self.bot.logger.info(f"Failed to remove Member {member.id} from guild {ctx.guild.id}.")
