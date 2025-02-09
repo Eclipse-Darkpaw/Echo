@@ -1,19 +1,11 @@
 import discord
-import logging
-import os
 import time
 
+from base_bot import EchoBot
 from discord.ext import commands
 
-from config import BotConfig
-
-VERSION_NUM = '4.3.0'
-START_TIME = time.time()
-GUARDIANS = BotConfig.retrieve_guardians()
-_Logger = logging.getLogger('modules')
-
 class General(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: EchoBot):
         self.bot = bot
 
     @commands.hybrid_command()
@@ -40,9 +32,8 @@ class General(commands.Cog):
         :param message: message calling the bot
         :return: None
         """
-        days = int(time.strftime('%j', time.gmtime(time.time() - START_TIME)))
-        await ctx.send(time.strftime(f'Online for {days - 1} days %H:%M:%S\nStarted <t:{int(START_TIME)}:R>',
-                                          time.gmtime(time.time() - START_TIME)))
+        formatted_uptime = f'{str(self.bot.uptime).split('.')[0].replace(':', 'h', 1).replace(':', 'm', 1)}s'
+        await ctx.send(f'Online for {formatted_uptime}\n-# Started <t:{int(self.bot.start_time)}:R>')
 
     @commands.hybrid_command()
     async def sync(self, ctx: discord.Interaction):
@@ -62,8 +53,8 @@ class General(commands.Cog):
         :return: N/A. program closes
         """
 
-        if str(ctx.author.id) in GUARDIANS or ctx.author.guild_permissions.administrator:
-            _Logger.info(f'{ctx.author.name} issued quit command')
+        if str(ctx.author.id) in self.bot.bot_config.guardians or ctx.author.guild_permissions.administrator:
+            self.bot.logger.info(f'{ctx.author.name} issued quit command')
             await ctx.reply('Goodbye :wave:')
             await ctx.bot.change_presence(activity=discord.Game('Going offline'))
             await ctx.bot.close()
@@ -100,4 +91,4 @@ class General(commands.Cog):
         :param ctx: Message calling the bot
         :return: None
         """
-        await ctx.reply(f'I am currently running version {VERSION_NUM}')
+        await ctx.reply(f'I am currently running version {self.bot.version_num}')
