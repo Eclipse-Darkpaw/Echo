@@ -19,7 +19,7 @@ from modules import (
     General,
     Moderation,
     Settings,
-    #Verification as Verif,
+    Verification,
     RefManagement,
     Artfight
 )
@@ -85,7 +85,7 @@ async def on_ready():
     await bot.add_cog(General(bot))
     await bot.add_cog(Settings(bot))
     await bot.add_cog(RefManagement(bot))
-    #await bot.add_cog(Verif.Verification(bot))
+    await bot.add_cog(Verification(bot))
     await bot.add_cog(Artfight(bot))
     bot.logger.info('Cogs loaded')
 
