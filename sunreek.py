@@ -398,7 +398,7 @@ async def on_ready():
     print(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    if start_notif: bot.get_user(eclipse_id).send('Running, and active')
+    if start_notif: await bot.get_user(eclipse_id).send('Running, and active')
 
     print('loading cogs')
     await bot.add_cog(Mod.Moderation(bot))
