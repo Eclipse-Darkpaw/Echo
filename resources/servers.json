@@ -183,6 +183,7 @@
         ]
     },
     "1279487886479200326": {
+        "name": "The Sole Chamber",
         "channels": {
             "application": 1279638791761432578,
             "questioning": 1279640232714571817,
@@ -211,5 +212,17 @@
             "Link source",
             "Reason for join"
         ]
+    },
+    "1315138320262762547": {
+        "name": "JayJay's Resort",
+        "channels": {
+            "application": 1344200670663934034,
+            "log": 1344195278575636613,
+            "warn_log": 1344228061192785940
+        },
+        "roles": {
+            "member": 1315138320262762552,
+            "mod": 1315138320283471884
+        }
     }
 }

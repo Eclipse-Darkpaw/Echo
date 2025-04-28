@@ -148,7 +148,7 @@ def run_bnnuibot():
     if inp == 1:
         # Main bot client. Do not use for tests
 
-        client.run(os.environ.get('BNNUIBOT_TOKEN'))  # must say client.run(os.environ.get('SUNREEK_TOKEN'))
+        client.run(os.environ.get('bunnybot_token'))  # must say client.run(os.environ.get('SUNREEK_TOKEN'))
 
     elif inp == 2:
         # Test Bot client. Allows for tests to be run in a secure environment.
