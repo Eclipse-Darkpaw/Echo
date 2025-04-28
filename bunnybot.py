@@ -14,13 +14,14 @@ import time
 from discord.ext import commands
 from fileManagement import server_settings_path
 from main import eclipse_id
+from modules.AntiScam import scan_nickname
 
 # Keep imports in alphabetical order
 
 start_time = time.time()
 
 prefix = '>'
-version_num = '4.1.0'
+version_num = '4.2.1'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -115,16 +116,9 @@ async def on_message(ctx: discord.Interaction):
 
 
 @client.event
-async def on_member_update(before, after):
-    if (before.guild.id == 1054121991365468281 and
-            before.guild.get_role(1054160602349703188) not in before.roles and
-            before.guild.get_role(1054160602349703188) in after.roles):
-        welcome = [f"<@{after.id}> is our newest bean lover",
-                   f"<@{after.id}> has stumbled into the bean sanctuary",
-                   f"<@{after.id}> has arrived looking for beans"]
-
-        #await before.guild.get_channel(1054137434725691393).send(
-            #content=f"Please remember to stop by <#{role_channel_id}> for your roles.")
+async def on_member_update(before: discord.Member, after: discord.Member):
+    if before.nick != after.nick:
+        scan_nickname(after, before.nick)
 
 
 def run_bnnuibot():
