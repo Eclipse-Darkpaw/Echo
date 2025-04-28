@@ -142,3 +142,30 @@ async def scan_message(msg: discord.Message):
             log.write(f'{msg.id},{msg.created_at},{msg.guild.id},{msg.author.id},'
                       f'{msg.id},{flags},{bans},{lst.replace(",", " - ")},"{msg.content.replace(
                           '\n', '\\n')}"\n')
+
+names = ['everyone', 'here', 'JayJayCholo']
+
+substrings = ['#']
+
+
+async def scan_nickname(usr: discord.Member):
+    """
+    Scans a users nickname for restricted characters and strings. If restricted strings are found, we can either remove
+    the name, Set it to a designated string, or kick the user entirely
+    Last docstring edit: -Autumnn V4.2.0
+    Last method edit: -Autumn V4.2.0
+    :param: Discord Member who changed username or joined the server.
+    :return: None
+    """
+    if usr.nick in names:
+        oldname = usr.nick
+        usr.edit(nick='changeme')
+        dm = await usr.create_dm()
+        await dm.send(f'Your nickname in the server has been changed to `changeme` for being `{oldname}`')
+        return
+    for string in substrings:
+        if string in usr.nick:
+            usr.edit(nick='changeme')
+            dm = await usr.create_dm()
+            await dm.send(f'Your nickname in the server has been changed to `changeme` for containing `{string}`')
+            return
