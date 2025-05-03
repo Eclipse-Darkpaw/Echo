@@ -8,7 +8,7 @@ import json
 
 from fileManagement import resource_file_path, scam_log_path
 
-version = "1.17.0"
+version = "1.17.1"
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
 whitelist = ['https://discord.gift/',  # legitimate nitro gifting
@@ -157,14 +157,21 @@ async def scan_nickname(usr: discord.Member, replacement='changeme'):
     :param: Discord Member who changed username or joined the server.
     :return: None
     """
+    with open(resource_file_path + 'servers.json') as file:
+        log_channel = json.load(file)[str(usr.guild.id)]['channels']['log']
+    channel = usr.guild.get_channel(log_channel)
+
     if usr.nick in names:
         oldname = usr.nick
         usr.edit(nick=replacement)
         dm = await usr.create_dm()
+
         await dm.send(f'Your nickname in the server has been changed to `{replacement}` for being `{oldname}`')
+        await channel.send(f'<@{usr.id}> (`{usr.id}`) attempted to change their name to {oldname}')
         return
     for string in substrings:
         if string in usr.nick:
             usr.edit(nick=replacement)
             dm = await usr.create_kdm()
             await dm.send(f'Your nickname in the server has been changed to `{replacement}` for containing `{string}`.')
+            await channel.send(f'<@{usr.id}> (`{usr.id}`) attempted to change their name to {usr.nick}')

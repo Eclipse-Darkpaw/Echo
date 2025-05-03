@@ -21,7 +21,7 @@ from modules.AntiScam import scan_nickname
 start_time = time.time()
 
 prefix = '>'
-version_num = '4.2.1'
+version_num = '4.2.2'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -118,7 +118,7 @@ async def on_message(ctx: discord.Interaction):
 @client.event
 async def on_member_update(before: discord.Member, after: discord.Member):
     if before.nick != after.nick:
-        scan_nickname(after, before.nick)
+        await scan_nickname(after, before.nick)
 
 
 def run_bnnuibot():
