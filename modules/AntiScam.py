@@ -8,7 +8,7 @@ import json
 
 from fileManagement import resource_file_path, scam_log_path
 
-version = "1.17.1"
+version = "1.17.4"
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
 whitelist = ['https://discord.gift/',  # legitimate nitro gifting
@@ -163,15 +163,41 @@ async def scan_nickname(usr: discord.Member, replacement='changeme'):
 
     if usr.nick in names:
         oldname = usr.nick
-        usr.edit(nick=replacement)
-        dm = await usr.create_dm()
+        changed =False
+        try:
+            await usr.edit(nick=replacement)
+            changed = True
+        except discord.Forbidden:
+            await channel.send(f"Unable to change <@{usr.id}>'s name.")
 
-        await dm.send(f'Your nickname in the server has been changed to `{replacement}` for being `{oldname}`')
-        await channel.send(f'<@{usr.id}> (`{usr.id}`) attempted to change their name to {oldname}')
+        try:
+            dm = await usr.create_dm()
+            if changed:
+                await dm.send(f'Your nickname in the server has been changed to `{replacement}` for being `{oldname}`')
+            else:
+                await dm.send('You have changed your name to a banned string. Please change your name back. This '
+                                  'incident has been logged.')
+        except discord.Forbidden:
+            await channel.send('Unable to notify user')
+        await channel.send(f'<@{usr.id}> (`{usr.id}`) attempted to change their name to `{oldname}`')
         return
+
     for string in substrings:
         if string in usr.nick:
-            usr.edit(nick=replacement)
-            dm = await usr.create_kdm()
-            await dm.send(f'Your nickname in the server has been changed to `{replacement}` for containing `{string}`.')
-            await channel.send(f'<@{usr.id}> (`{usr.id}`) attempted to change their name to {usr.nick}')
+            changed = False
+            try:
+                await usr.edit(nick=replacement)
+                changed = True
+            except discord.Forbidden:
+                await channel.send(f"Unable to change <@{usr.id}>'s name.")
+
+            try:
+                dm = await usr.create_dm()
+                if changed:
+                    await dm.send(f'Your nickname in the server has been changed to `{replacement}` for containing `{string}`.')
+                else:
+                    await dm.send('You have changed your name to a banned string. Please change your name back. This '
+                                  'incident has been logged.')
+            except discord.Forbidden:
+                await channel.send('Unable to notify user')
+            await channel.send(f'<@{usr.id}> (`{usr.id}`) attempted to change their name to `{usr.nick}`')
