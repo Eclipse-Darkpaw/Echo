@@ -1,4 +1,5 @@
 [tool.poetry]
+package-mode = false
 name = "Echo"
 version = "4.1.0"
 description = "A collection of discord bots for moderation, reference sheet management, and scam prevention."
@@ -9,7 +10,7 @@ python = "^3.11"
 discord = "^2.3.2"
 python-dotenv = "^1.0.1"
 watchdog = "^6.0.0"
-filelock = "'3.17.0"
+filelock = "^3.17.0"
 
 [tool.poetry.dev-dependencies]
 

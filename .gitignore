@@ -22,3 +22,6 @@ logs/
 
 # Data
 data/
+
+# Poetry
+poetry.lock
