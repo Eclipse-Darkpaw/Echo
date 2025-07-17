@@ -88,7 +88,7 @@ async def on_ready():
     await bot.add_cog(Settings(bot))
     await bot.add_cog(RefManagement(bot))
     await bot.add_cog(Verification(bot))
-    await bot.add_cog(Artfight(bot))
+    #await bot.add_cog(Artfight(bot))
     bot.logger.info('Cogs loaded')
 
 
@@ -316,8 +316,8 @@ async def blessed_keys(message):
 @bot.hybrid_command()
 async def purge(ctx: discord.Interaction, kick: bool):
     """
-    method removes all members with the unverified role from Rikoland
-    Last docstring edit: -Autumn V1.14.4
+    🔑 manage_roles| Purge all unverified members from RikoLand
+    Last docstring edit: -Autumn V4.3.0
     Last method edit: -FoxyHunter V4.3.0
     :param message: Message that called the bot
     :return: None
@@ -406,12 +406,6 @@ async def prune(message):
     else:
         await message.reply('Unable to comply. You either are attempting to use this in a DM, lack permission, '
                             'or both.')
-
-# TODO: Remove command before merging to main
-@bot.command()
-async def filewatch_testing(ctx: discord.Interaction):
-    await ctx.send(bot.repositories['servers_settings_repo'].get_guild_name(ctx.guild.id))
-
 
 if __name__ == '__main__':
     bot.run(token=bot.config.token, log_handler=None)

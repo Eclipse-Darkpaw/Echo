@@ -1,5 +1,6 @@
 import discord
 import json
+import os
 import time
 
 from discord.ext import commands
@@ -12,6 +13,12 @@ from util import get_user_id
 class Moderation(commands.Cog):
     def __init__(self, bot: EchoBot):
         self.bot = bot
+        
+        os.makedirs(Paths.data_dir, exist_ok=True)
+        if not os.path.exists(Paths.servers_warns):
+            with open(Paths.servers_warns, 'w') as f:
+                f.write('{}')
+
         self.bot.logger.info(f'✔ Moderation cog loaded')
 
     @commands.hybrid_command()
@@ -38,7 +45,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.manage_roles or ctx.author.id in self.bot.config.guardians:
+        if ctx.author.guild_permissions.manage_roles or str(ctx.author.id) in self.bot.config.guardians:
             # check if the user has previous warns
             try:
                 warns = data[str(ctx.guild.id)][str(user.id)]
@@ -109,7 +116,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.manage_roles or ctx.author.id in self.bot.config.guardians:
+        if ctx.author.guild_permissions.manage_roles or str(ctx.author.id) in self.bot.config.guardians:
             # check if the user has previous warns
             try:
                 warns = data[str(ctx.guild.id)][str(user.id)]
@@ -199,7 +206,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.manage_roles or ctx.author.id in self.bot.config.guardians:
+        if ctx.author.guild_permissions.manage_roles or str(ctx.author.id) in self.bot.config.guardians:
             # check if the user has previous warns
             try:
                 warns = data[str(ctx.guild.id)][str(user.id)]
@@ -239,7 +246,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.kick_members or ctx.author.id in self.bot.config.guardians:
+        if ctx.author.guild_permissions.kick_members or str(ctx.author.id) in self.bot.config.guardians:
             user_id = get_user_id(ctx)
             # check if the user has previous warns
             try:
@@ -266,7 +273,7 @@ class Moderation(commands.Cog):
     @commands.hybrid_command()
     async def kick(self, ctx: commands.Context, user: discord.User, reason: str = 'No reason specified.'):
         """
-        🔑 kick_members | Kicks a user out of the server for given reason
+        🔑 kick_members | Kicks a user out of the server
         Last docstring edit: -FoxyHunter V4.3.0
         Last method edit: -FoxyHunter V4.3.0
         Method added: V1.16.0
@@ -274,7 +281,7 @@ class Moderation(commands.Cog):
         :param user: User to kick
         :param reason: Reason for kick (users will not see this)
         """
-        if ctx.author.guild_permissions.kick_members or ctx.author.id in self.bot.config.guardians:
+        if ctx.author.guild_permissions.kick_members or str(ctx.author.id) in self.bot.config.guardians:
             target = user.id
             try:
                 await ctx.guild.kick(user, reason=reason)
@@ -289,7 +296,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     async def ban(self, ctx: commands.Context, user: discord.User, reason: str):
         """
-        🔑 kick_members | Bans a user from the server for given reason
+        🔑 kick_members | Bans a user from the server
         Last docstring edit: -FoxyHunter V4.3.0
         Last method edit: -FoxyHunter V4.3.0
         Method added: V1.16.0
@@ -297,7 +304,7 @@ class Moderation(commands.Cog):
         :param user: User to ban
         :param reason: Reason for ban (users will not see this)
         """
-        if ctx.author.guild_permissions.kick_members or ctx.author.id in self.bot.config.guardians:
+        if ctx.author.guild_permissions.kick_members or str(ctx.author.id) in self.bot.config.guardians:
             target = user.id
             try:
                 await ctx.guild.ban(user, reason=reason)

@@ -27,7 +27,7 @@ class General(commands.Cog):
     @commands.hybrid_command()
     async def uptime(self, ctx: discord.Interaction):
         """
-        Displays the time the bot has been running for.
+        Displays the time the bot has been running for
         Last docstring edit: -Autumn V3.3.4
         Last method edit: -FoxyHunter V4.3.0
         :param message: message calling the bot
@@ -38,23 +38,31 @@ class General(commands.Cog):
 
     @commands.hybrid_command()
     async def sync(self, ctx: commands.Context):
-        await ctx.send('Syncing Tree', ephemeral=False)
-        guild = discord.Object(id=ctx.guild.id)
-        ctx.bot.tree.copy_global_to(guild=guild)
-        await ctx.bot.tree.sync(guild=guild)
-        await ctx.send("tree synced", ephemeral=True)
+        """
+        🔑 guardians | Sync server app cmd tree with global set
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
+        :param ctx: message that called the quit command
+        :return: N/A. program closes
+        """
+        if str(ctx.author.id) in self.bot.config.guardians:
+            await ctx.send('Syncing Tree', ephemeral=False)
+            guild = discord.Object(id=ctx.guild.id)
+            ctx.bot.tree.copy_global_to(guild=guild)
+            await ctx.bot.tree.sync(guild=guild)
+            await ctx.send("tree synced", ephemeral=True)
 
     @commands.hybrid_command()
     async def quit(self, ctx: discord.Interaction):
         """
-        Quits the active bot. Admin only.
+        🔑 guardians | Quits the active bot
         Last docstring edit: -Autumn V4.0.0
         Last method edit: -FoxyHunter V4.3.0
         :param ctx: message that called the quit command
         :return: N/A. program closes
         """
 
-        if str(ctx.author.id) in self.bot.config.guardians or ctx.author.guild_permissions.administrator:
+        if str(ctx.author.id) in self.bot.config.guardians:
             self.bot.logger.info(f'{ctx.author.name} issued quit command')
             await ctx.reply('Goodbye :wave:')
             await ctx.bot.change_presence(activity=discord.Game('Going offline'))

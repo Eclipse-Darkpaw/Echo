@@ -15,6 +15,7 @@ class Settings(commands.Cog):
         self.bot.logger.info(f'✔ Settings cog loaded')
 
     @commands.hybrid_command(name='set-channels')
+    @commands.has_permissions(manage_guild=True)
     async def channel_setup(self, ctx: commands.Context,
         application: discord.TextChannel = None,
         questioning: discord.TextChannel = None,
@@ -23,8 +24,8 @@ class Settings(commands.Cog):
         warn_log: discord.TextChannel = None
     ):
         """
-        Designates important channels
-        :param ctx: INteraction
+        🔑 manage_guild | Designates important channels
+        :param ctx: Interaction
         :param application: Where Membership applications go
         :param questioning: for quesitioning unverified applicants
         :param mailbox:
@@ -50,6 +51,7 @@ class Settings(commands.Cog):
         await ctx.send('✅ Channels set.')
 
     @commands.hybrid_command(name='set-roles')
+    @commands.has_permissions(manage_guild=True)
     async def roles_setup(self, ctx: commands.Context,
         member: discord.Role = None,
         questioning: discord.Role = None,
@@ -58,7 +60,7 @@ class Settings(commands.Cog):
         mod: discord.Role = None
     ):
         """
-        Sets roles the bot uses
+        🔑 manage_guild | Sets roles the bot uses
         :param ctx: Interaction calling the command
         :param member: Verified member role
         :param questioning: questioning unverified role
@@ -85,9 +87,20 @@ class Settings(commands.Cog):
         await ctx.send('✅ Roles set.')
 
     @commands.hybrid_command(name='set-code')
+    @commands.has_permissions(manage_guild=True)
     async def codeword_setup(self, ctx: commands.Context, 
         codeword: str
     ):
+        """
+        🔑 manage_guild | Sets guild verification codeword
+        :param ctx: Interaction calling the command
+        :param member: Verified member role
+        :param questioning: questioning unverified role
+        :param unverified: Unverified member role
+        :param suspended: Suspended member role
+        :param mod: moderator role
+        :return:
+        """
         await ctx.send('⏳ Setting code word...')
         self.servers_settings_repo.set_guild_code_word(guild_id=str(ctx.guild.id), code_word=codeword)
         await ctx.send('✅ Code word set.')

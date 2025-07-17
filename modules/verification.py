@@ -216,7 +216,7 @@ class Verification(commands.Cog):
     @commands.guild_only()
     async def verify(self, ctx: commands.Context):
         """
-        Verifiies members age and have read the rules
+        Begin user verification process (DM's user)
         Last docstring edit: -Autumn V4.0.0
         Last method edit: -Autumn V4.0.0
         :param message: Discord message calling the method

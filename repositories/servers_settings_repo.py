@@ -22,13 +22,13 @@ class ServersSettingsRepo(JsonRepository):
     def _set(self, *keys: str, value: any) -> None:
         modify_json_file(
             Paths.servers_settings,
-            lambda data: super()._set(data, *keys, value=value)
+            lambda data: super(ServersSettingsRepo, self)._set(data, *keys, value=value)
         )
 
     def _remove(self, *keys: str) -> None:
         modify_json_file(
             Paths.servers_settings,
-            lambda data: super()._remove(data, *keys)
+            lambda data: super(ServersSettingsRepo, self)._remove(data, *keys)
         )
         
     # guild_name
