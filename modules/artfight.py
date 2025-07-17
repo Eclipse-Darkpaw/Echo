@@ -8,13 +8,12 @@ from modules.artfight_ui import (
 )
 from base_bot import EchoBot
 from config import MAX_DISCORD_MESSAGE_LEN, Paths
-from discord import app_commands
 from discord.ext import commands
 from random import randint
 from repositories import ArtfightRepo
 from util import read_line
 
-class Artfight(commands.GroupCog, name='artfight', description='All the commands for the annual artfight'):
+class Artfight(commands.Cog):
     artfight_role = 1317026586226331678
 
     def __init__(self, bot: EchoBot):
@@ -27,7 +26,8 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
     @commands.guild_only()
     async def configuration(self, ctx: commands.Context):
         """
-        Configure the artfight settings. At runtime alterations are possible, caution is advised!
+        Configure the artfight settings.
+        At runtime alterations are possible, caution is advised!
         Note: These changes will persist immediately, if you wish to archive the current configuration before overwriting, use /artfight archive
         Last docstring edit: -FoxyHunter V4.3.0
         Last method edit: -FoxyHunter V4.3.0
@@ -43,7 +43,8 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
     @commands.guild_only()
     async def join(self, ctx, team: discord.Role = None):
         """
-        Joins a user to an Artfight team. assigns randomly if no team is chosen.
+        🚧 Not updated yet, untested 🚧
+        Joins a user to an Artfight team. Random if none set.
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
         Last method edit: -FoxyHunter V4.3.0
         :param ctx:
@@ -113,6 +114,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
     @commands.guild_only()
     async def submit(self, ctx) -> int:
         """
+        🚧 Not updated yet, should be functional 🚧
         Submits an image to artfight
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
         Last method edit: -Autumna1Equin0x.pet V4.1.0
@@ -284,6 +286,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
     @commands.guild_only()
     async def scores(self, ctx):
         """
+        🚧 Not updated yet, should be functional 🚧
         Shows the scores for the teams
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
         Last method edit: -Autumna1Equin0x.pet V4.1.0
@@ -298,6 +301,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
             self.team2 = self.bot.repositories['artfight_repo'].get_team_role(ctx.guild.id, 'team1')
             self.team1_score = self.bot.repositories['artfight_repo'].get_team_score(ctx.guild.id, 'team1')
             self.team2_score = self.bot.repositories['artfight_repo'].get_team_score(ctx.guild.id, 'team2')
+            # Keyerror can't happen, will be None, tho team1- & team2_score will likely be None too if not found
         except KeyError:
             team1 = None
             team2 = None
@@ -348,7 +352,8 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
     @commands.guild_only()
     async def remove(self, ctx, team: discord.Role, score: int):
         """
-        Takes score away from a team (1/2). Use negative numbers to add score. Mod only.
+        🚧 Not updated yet, should be functional 🚧
+        Deducts points from a team. Negative numbers add. Mod only.
         Last docstring edit: -Autumna1Equin0x.pet V4.1.0
         Last method edit: -Autumna1Equin0x.pet V4.1.0
         :param ctx: Context
@@ -395,7 +400,8 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
     @commands.guild_only()
     async def players(self, ctx: commands.Context):
         """
-        Lists all the players, what team theyre on, and points contributed
+        🚧 Not updated yet, broken 🚧
+        Lists all the players with their team and points.
         :param ctx:
         :return:
         """
@@ -432,7 +438,8 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
     @commands.guild_only()
     async def remove_member(self, ctx, member: discord.Member):
         """
-        Yeetus Deletus a member from artfight (purged from the botlist & gone with their roles)
+        🚧 Not updated yet, untested 🚧
+        Delete member from artfight (roles & botlist)
         :param ctx: The command context.
         :param member: The Discord member to remove (mention or user object).
         """
