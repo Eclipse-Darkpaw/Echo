@@ -37,7 +37,7 @@ class General(commands.Cog):
         await ctx.send(f'Online for {formatted_uptime}\n-# Started <t:{int(self.bot.start_time)}:R>')
 
     @commands.hybrid_command()
-    async def sync(self, ctx: discord.Interaction):
+    async def sync(self, ctx: commands.Context):
         await ctx.send('Syncing Tree', ephemeral=False)
         guild = discord.Object(id=ctx.guild.id)
         ctx.bot.tree.copy_global_to(guild=guild)

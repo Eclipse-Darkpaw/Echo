@@ -18,9 +18,9 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     async def suspend(self, ctx: commands.Context, user: discord.User, reason: str):
         """
-        Suspends a user for given reason
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        🔑 manage_roles | Suspends a user for given reason
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx:
         :param user: User to suspend
         :param reason: reason to suspend
@@ -38,7 +38,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.manage_roles:
+        if ctx.author.guild_permissions.manage_roles or ctx.author.id in self.bot.config.guardians:
             # check if the user has previous warns
             try:
                 warns = data[str(ctx.guild.id)][str(user.id)]
@@ -79,19 +79,19 @@ class Moderation(commands.Cog):
                 thread = await suspension.create_thread(name=thread_name, auto_archive_duration=1440)
                 await thread.send(f'<@{user.id}> You have been suspended by <@{ctx.author.id}> for excessive '
                                   f'infractions. If you have any questions, please send them in this thread.')
-                await ctx.reply(f'<@{user.id}> suspended.')
+                await ctx.respond(f'<@{user.id}> suspended.')
             except discord.Forbidden:
-                await ctx.reply(f'<@{user.id}> suspended. unable to create thread')
+                await ctx.respond(f'<@{user.id}> suspended. unable to create thread')
         else:
             await ctx.reply('Invalid Permissions')
 
     @commands.hybrid_command()
     @commands.guild_only()
-    async def warn(self, ctx: discord.Interaction, user: discord.User, reason: str):
+    async def warn(self, ctx: commands.Context, user: discord.User, reason: str):
         """
-        Give a user a warning
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        🔑 manage_roles | Give a user a warning
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx: Interaction calling the command
         :param user: User to warn
         :param reason: Reason for warn
@@ -109,7 +109,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.manage_roles:
+        if ctx.author.guild_permissions.manage_roles or ctx.author.id in self.bot.config.guardians:
             # check if the user has previous warns
             try:
                 warns = data[str(ctx.guild.id)][str(user.id)]
@@ -178,11 +178,11 @@ class Moderation(commands.Cog):
             await ctx.send('You are not allowed to use that command')
 
     @commands.hybrid_command()
-    async def show_warns(self, ctx: discord.Interaction, user: discord.User):
+    async def show_warns(self, ctx: commands.Context, user: discord.User):
         """
-        Lists a users warns in an embed
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        🔑 manage_roles | Lists a users warns in an embed
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx: Message calling the command
         :param user: user to list warns for
         :return:
@@ -199,7 +199,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.manage_roles:
+        if ctx.author.guild_permissions.manage_roles or ctx.author.id in self.bot.config.guardians:
             # check if the user has previous warns
             try:
                 warns = data[str(ctx.guild.id)][str(user.id)]
@@ -215,14 +215,14 @@ class Moderation(commands.Cog):
                                       f"Given by {warn['issuer_name']}(`{warn['issuer_id']}`) on <t:{warn['time']}:d>",
                                 inline=False)
                 counter += 1
-            await ctx.reply(embed=embed)
+            await ctx.respond(embed=embed)
 
     @commands.hybrid_command()
-    async def remove_warn(self, ctx: discord.Interaction, user: discord.User, warn: int):
+    async def remove_warn(self, ctx: commands.Context, user: discord.User, warn: int):
         """
-        Removes a warn from a user
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        🔑 kick_members | Removes a warn from a user
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :param ctx: Message calling the command
         :param user: user to remove a warn from
         :param warn: warn to remove
@@ -239,7 +239,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)] = {}
 
         # Check the user has permission to use the command
-        if ctx.author.guild_permissions.kick_members:
+        if ctx.author.guild_permissions.kick_members or ctx.author.id in self.bot.config.guardians:
             user_id = get_user_id(ctx)
             # check if the user has previous warns
             try:
@@ -264,46 +264,46 @@ class Moderation(commands.Cog):
             await ctx.send(f'Warn {warn} removed')
 
     @commands.hybrid_command()
-    async def kick(self, ctx: discord.Interaction, user: discord.User, reason: str = 'No reason specified.'):
+    async def kick(self, ctx: commands.Context, user: discord.User, reason: str = 'No reason specified.'):
         """
-        Kicks a user out of the server for given reason
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        🔑 kick_members | Kicks a user out of the server for given reason
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         Method added: V1.16.0
         :param ctx:The message that called the command
         :param user: User to kick
         :param reason: Reason for kick (users will not see this)
         """
-        if ctx.author.guild_permissions.kick_members:
+        if ctx.author.guild_permissions.kick_members or ctx.author.id in self.bot.config.guardians:
             target = user.id
             try:
                 await ctx.guild.kick(user, reason=reason)
                 await ctx.send(f'<@!{target}> was kicked.')
             except discord.Forbidden:
-                await ctx.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
+                await ctx.respond('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
 
         else:
-            await ctx.reply('Unauthorized usage.')
+            await ctx.respond('Unauthorized usage.')
 
     @commands.hybrid_command()
     @commands.guild_only()
-    async def ban(self, ctx: discord.Interaction, user: discord.User, reason: str):
+    async def ban(self, ctx: commands.Context, user: discord.User, reason: str):
         """
-        Bans a user from the server for given reason
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        🔑 kick_members | Bans a user from the server for given reason
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         Method added: V1.16.0
         :param ctx: The message that called the command
         :param user: User to ban
         :param reason: Reason for ban (users will not see this)
         """
-        if ctx.author.guild_permissions.kick_members:
+        if ctx.author.guild_permissions.kick_members or ctx.author.id in self.bot.config.guardians:
             target = user.id
             try:
                 await ctx.guild.ban(user, reason=reason)
                 await ctx.send(f'<@!{target}> was kicked.')
             except discord.Forbidden:
-                await ctx.reply('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
+                await ctx.respond('__**Error 403: Forbidden**__\nPlease verify I have the proper permissions.')
 
         else:
-            await ctx.reply('Unauthorized usage.')
+            await ctx.respond('Unauthorized usage.')
