@@ -102,9 +102,8 @@ async def on_message(msg: discord.Message):
     Last method edit: -FoxyHunter V4.3.0
     :param ctx: The interaction calling the function
     """
-
-    from modules.artfight import Artfight as af
     await bot.process_commands(msg)
+
     if msg.author.bot:
         return
 

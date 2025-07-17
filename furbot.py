@@ -41,7 +41,7 @@ intents.message_content = True
 intents.members = True
 
 bot = EchoBot(
-    name='cyberforcebot',
+    name='furbot',
     version_num='4.3.0',
     console_logging=True,
     file_logging=True,
@@ -89,32 +89,6 @@ async def on_ready():
     await bot.add_cog(Verification(bot))
     bot.logger.info('Cogs loaded')
 
-
-@bot.hybrid_command()
-async def mama(ctx):
-    await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
-
-
-@bot.hybrid_command()
-async def microwave(ctx):
-    """
-    Microwave Gemini
-    :param ctx:
-    :return:
-    """
-    await ctx.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug '
-                           'her')
-    await ctx.send('https://i.imgur.com/eOPKEV4.gif')
-
-
-@bot.hybrid_command()
-async def hug(ctx):
-    """
-    Hug Gemini
-    :param ctx:
-    :return:
-    """
-    await ctx.reply('You give Gemini a hug. You can smell a faint citrus scent when you do.')
 
 scan_ignore = [1054172309147095130]
 

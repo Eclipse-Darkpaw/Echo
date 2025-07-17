@@ -18,14 +18,15 @@ but can influence the environment before Python runs.
 
 from modules import (
     General,
-    Moderation as Mod,
-    RefManagement as Ref,
-    server_settings as Settings,
-    verification as Verif
+    Moderation,
+    RefManagement,
+    Settings,
+    Verification
 )
 
 from repositories import (
-    ServersSettingsRepo
+    ServersSettingsRepo,
+    ScamLogRepo
 )
 
 from util import (
@@ -49,6 +50,7 @@ bot = EchoBot(
 )
 
 bot.add_repository(ServersSettingsRepo())
+bot.add_repository(ScamLogRepo())
 
 game = discord.Game(f'{bot.config.prefix}help for commands')
 
@@ -81,11 +83,11 @@ async def on_ready():
         )
 
     bot.logger.info('loading cogs')
-    await bot.add_cog(Mod.Moderation(bot))
-    await bot.add_cog(General.General(bot))
-    await bot.add_cog(Settings.Settings(bot))
-    await bot.add_cog(Ref.RefManagement(bot))
-    await bot.add_cog(Verif.Verification(bot))
+    await bot.add_cog(Moderation(bot))
+    await bot.add_cog(General(bot))
+    await bot.add_cog(Settings(bot))
+    await bot.add_cog(RefManagement(bot))
+    await bot.add_cog(Verification(bot))
     bot.logger.info('Cogs loaded')
 
 
@@ -96,7 +98,7 @@ async def on_message(msg: discord.Message):
     """
     Calls methods for every message.
     Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.0
+    Last method edit: -FoxyHunter V4.3.0
     :param ctx: The interaction calling the function
     """
     await bot.process_commands(msg)
@@ -107,9 +109,10 @@ async def on_message(msg: discord.Message):
     content = msg.content.lower()
 
     if not (msg.guild is None or content.find(BYPASS_CODE) != -1 or msg.channel.id in scan_ignore):
-        await scan_message.scan_message(
+        await scan_message(
             msg,
-            bot.repositories['servers_settings_repo'].get_guild_channel(msg.guild.id, 'log')
+            bot.repositories['servers_settings_repo'].get_guild_channel(str(msg.guild.id), 'log'),
+            bot.repositories['scam_log_repo']
         )
 
 @bot.event
