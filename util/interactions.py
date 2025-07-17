@@ -1,3 +1,4 @@
+import discord
 import logging
 
 _logger = logging.getLogger('utils')
@@ -75,3 +76,5 @@ async def direct_message(client, message, *user_ids):
             await user.send(message)
         except ValueError:
             _logger.warning(f'Invalid discord id')
+        except discord.errors.Forbidden:
+            _logger.warning(f'Got Forbidden when trying to dm: {user_id}')
