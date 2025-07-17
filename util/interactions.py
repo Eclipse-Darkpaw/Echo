@@ -71,6 +71,7 @@ async def direct_message(client, message, *user_ids):
             user = client.get_user(int(user_id))
             if user is None:
                 _logger.warning(f'No user found for id: {user_id}')
+                return
             await user.send(message)
         except ValueError:
             _logger.warning(f'Invalid discord id')

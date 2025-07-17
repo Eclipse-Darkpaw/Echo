@@ -72,11 +72,15 @@ async def on_ready():
             f'Running, and active\n'
             '```yml\n'
             f'{'bot_version':<15}: {bot.version_num}\n'
-            f'{'guardians':<15}: {', '.join(bot.get_user(int(guardian)).name for guardian in bot.config.guardians)}\n'
+            f'{'guardians':<15}: ' + 
+            ', '.join(
+                (u.name if (u := bot.get_user(int(guardian))) else f"{guardian}")
+                for guardian in bot.config.guardians
+            ) + "\n"
             f'{'prefix':<15}: \'{bot.config.prefix}\'\n'
             f'\n'
             f'{'system':<15}: {platform.system()}\n'
-            f'{'version':<15}: {platform.version()}\n'
+            f'{'release':<15}: {platform.release()}\n'
             f'{'python_version':<15}: {platform.python_version()}\n'
             '```',
             *bot.config.guardians
