@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import discord
 import logging
+import random
 import platform
 
 from base_bot import EchoBot
@@ -41,7 +42,7 @@ intents.message_content = True
 intents.members = True
 
 bot = EchoBot(
-    name='cyberforcebot',
+    name='luana',
     version_num='4.3.0',
     console_logging=True,
     file_logging=True,
@@ -90,32 +91,6 @@ async def on_ready():
     bot.logger.info('Cogs loaded')
 
 
-@bot.hybrid_command()
-async def mama(ctx):
-    await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
-
-
-@bot.hybrid_command()
-async def microwave(ctx):
-    """
-    Microwave Gemini
-    :param ctx:
-    :return:
-    """
-    await ctx.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug '
-                           'her')
-    await ctx.send('https://i.imgur.com/eOPKEV4.gif')
-
-
-@bot.hybrid_command()
-async def hug(ctx):
-    """
-    Hug Gemini
-    :param ctx:
-    :return:
-    """
-    await ctx.reply('You give Gemini a hug. You can smell a faint citrus scent when you do.')
-
 scan_ignore = [1054172309147095130]
 
 @bot.event
@@ -139,6 +114,19 @@ async def on_message(msg: discord.Message):
             bot.repositories['servers_settings_repo'].get_guild_channel(str(msg.guild.id), 'log'),
             bot.repositories['scam_log_repo']
         )
+
+@bot.event
+async def on_member_update(before, after):
+    if (before.guild.id == 1054121991365468281 and
+            before.guild.get_role(1054160602349703188) not in before.roles and
+            before.guild.get_role(1054160602349703188) in after.roles):
+        welcome = [f"<@{after.id}> is our newest bean lover",
+                   f"<@{after.id}> has stumbled into the bean sanctuary",
+                   f"<@{after.id}> has arrived looking for beans"]
+
+        await before.guild.get_channel(1054137434725691393).send(
+            content=f"<@&1122978815744950352> {random.choice(welcome)}. Please "
+                    f"remember to stop by <#1054672645527969802> for your roles.")
 
 if __name__ == '__main__':
     bot.run(token=bot.config.token, log_handler=None)

@@ -16,3 +16,12 @@ __pycache__/
 # OS-stuff (just in case)
 .DS_Store
 Thumbs.db
+
+# Logs
+logs/
+
+# Data
+data/
+
+# Poetry
+poetry.lock

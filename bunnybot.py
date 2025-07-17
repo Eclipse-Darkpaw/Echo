@@ -30,6 +30,7 @@ from repositories import (
 
 from util import (
     scan_message,
+    scan_nickname,
     BYPASS_CODE,
     direct_message
 )
@@ -41,7 +42,7 @@ intents.message_content = True
 intents.members = True
 
 bot = EchoBot(
-    name='cyberforcebot',
+    name='bunnybot',
     version_num='4.3.0',
     console_logging=True,
     file_logging=True,
@@ -90,32 +91,6 @@ async def on_ready():
     bot.logger.info('Cogs loaded')
 
 
-@bot.hybrid_command()
-async def mama(ctx):
-    await ctx.send('Drink some water, have a snack, take your meds, and remember Mama Bruise loves you!')
-
-
-@bot.hybrid_command()
-async def microwave(ctx):
-    """
-    Microwave Gemini
-    :param ctx:
-    :return:
-    """
-    await ctx.send('You put Gemini in the microwave for 2 minutes. She comes out nice and warm when you hug '
-                           'her')
-    await ctx.send('https://i.imgur.com/eOPKEV4.gif')
-
-
-@bot.hybrid_command()
-async def hug(ctx):
-    """
-    Hug Gemini
-    :param ctx:
-    :return:
-    """
-    await ctx.reply('You give Gemini a hug. You can smell a faint citrus scent when you do.')
-
 scan_ignore = [1054172309147095130]
 
 @bot.event
@@ -138,6 +113,16 @@ async def on_message(msg: discord.Message):
             msg,
             bot.repositories['servers_settings_repo'].get_guild_channel(str(msg.guild.id), 'log'),
             bot.repositories['scam_log_repo']
+        )
+
+@bot.event
+async def on_member_update(before: discord.Member, after: discord.Member):
+    if before.nick != after.nick:
+        await scan_nickname(
+            usr=after,
+            log_channel_id=bot.repositories['servers_settings_repo'].get_guild_channel(str(before.guild.id), 'log'),
+            forbidden_names=['everyone', 'here', 'JayJayCholo'],
+            replacement=before.nick,
         )
 
 if __name__ == '__main__':
