@@ -146,6 +146,7 @@ def setup_logger(
         utils_logger.addHandler(console_handler)
 
     if log_file:
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
         file_handler = logging.handlers.RotatingFileHandler(
             filename=log_file,
             encoding='utf-8',

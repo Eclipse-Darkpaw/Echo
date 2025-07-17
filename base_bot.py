@@ -7,11 +7,11 @@ from discord.utils import MISSING
 from discord.app_commands import CommandTree, AppCommandContext, AppInstallationType
 from discord import Intents
 
-from config import BotConfig
+from config import BotConfig, Paths
 from datetime import timedelta
 from repositories import Repository, RepositoriesDict
 from typing import Optional, Type, TypeVar
-from util import setup_logger, FilePaths, to_snake_case
+from util import setup_logger, to_snake_case
 
 T = TypeVar('T', bound=Repository)
 
@@ -43,7 +43,7 @@ class EchoBot(Bot):
         self._repositories: RepositoriesDict = {}
 
         if file_logging:
-            log_file_path = custom_log_file_path or f'{FilePaths.logs_dir}/{name}_{logging.getLevelName(console_log_level)}.log'
+            log_file_path = custom_log_file_path or f'{Paths.logs_dir}/{name}_{logging.getLevelName(console_log_level)}.log'
 
         self.logger = setup_logger(
             console_logging=console_logging,

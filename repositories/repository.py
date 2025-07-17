@@ -1,3 +1,8 @@
+import os
+
+from config import Paths
+from util import add_to_file
+
 class Repository:
     pass
 
@@ -27,3 +32,13 @@ class JsonRepository(Repository):
         
         if keys[-1] in data:
             del data[keys[-1]]
+
+class LogRepository(Repository):
+    def __init__(self):
+        os.makedirs(Paths.logs_dir, exist_ok=True)
+
+    def _log(self, log_file_path: str, content: str):
+        add_to_file(file_path=log_file_path, content=content)
+    
+    def log(self, content: str):
+        raise NotImplementedError()

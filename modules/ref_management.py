@@ -1,14 +1,13 @@
-import os
-
 import discord
 from discord.ext import commands
 
-from util import FilePaths
-
+from base_bot import EchoBot
+from config import Paths
 
 class RefManagement(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: EchoBot):
         self.bot = bot
+        self.bot.logger.info(f'✔ RefManagement cog loaded')
 
     @commands.hybrid_command(name='ref-set')
     async def set_ref(self, ctx: discord.Interaction):
@@ -22,9 +21,9 @@ class RefManagement(commands.Cog):
             command = trim.split('\n')
 
             if ctx.channel.nsfw:
-                path = FilePaths.get_nsfw_ref(ctx.author.id)
+                path = Paths.get_nsfw_ref_path(ctx.author.id)
             else:
-                path = FilePaths.get_ref(ctx.author.id)
+                path = Paths.get_ref_path(ctx.author.id)
 
             with open(path, 'w') as refs:
                 for line in command:
@@ -48,9 +47,9 @@ class RefManagement(commands.Cog):
         try:
 
             if ctx.channel.nsfw:
-                path = FilePaths.get_nsfw_ref(ctx.author.id)
+                path = Paths.get_nsfw_ref_path(ctx.author.id)
             else:
-                path = FilePaths.get_ref(ctx.author.id)
+                path = Paths.get_ref_path(ctx.author.id)
 
             with open(path, 'a') as refs:
                 for line in ctx.message.content:
@@ -85,16 +84,16 @@ class RefManagement(commands.Cog):
         try:
 
             if ctx.channel.nsfw:
-                path = FilePaths.get_nsfw_ref(target)
+                path = Paths.get_nsfw_ref_path(target)
             else:
-                path = FilePaths.get_ref(target)
+                path = Paths.get_ref_path(target)
             ref_sheet = open(path)
             await msg.edit(content='Ref Found! Uploading, Please wait!')
             await ctx.reply(content=ref_sheet.read())
         except FileNotFoundError:
             if ctx.channel.nsfw:
                 await msg.edit(content='User has not set NSFW ref. Retrieving SFW ref')
-                path = FilePaths.get_ref(target)
+                path = Paths.get_ref_path(target)
                 ref_sheet = open(path)
                 await msg.edit(content='Ref Found! Uploading, Please wait!')
                 await msg.edit(content=ref_sheet.read())

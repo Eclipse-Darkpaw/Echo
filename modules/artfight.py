@@ -7,15 +7,12 @@ from modules.artfight_ui import (
     ConfigurationView   
 )
 from base_bot import EchoBot
-from config import MAX_DISCORD_MESSAGE_LEN
+from config import MAX_DISCORD_MESSAGE_LEN, Paths
 from discord import app_commands
 from discord.ext import commands
 from random import randint
 from repositories import ArtfightRepo
-from util import (
-    FilePaths,
-    read_line
-)
+from util import read_line
 
 class Artfight(commands.GroupCog, name='artfight', description='All the commands for the annual artfight'):
     artfight_role = 1317026586226331678
@@ -96,7 +93,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
                             f"again")
             return
 
-        with open(FilePaths.artfight_members) as file:
+        with open(Paths.artfight_members) as file:
             data = json.load(file)
 
         try:
@@ -107,7 +104,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
             data[str(ctx.guild.id)][ctx.author.id] = {'team': team, 'points': 0}
             self.bot.logger.debug('Saved 2')
 
-        with open(FilePaths.artfight_members, 'w') as file:
+        with open(Paths.artfight_members, 'w') as file:
             file.write(json.dumps(data, indent=4))
 
         await ctx.reply(f'You have been added to <@&{team}>')
@@ -131,7 +128,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
         else:
             await ctx.send('Please check your dms to continue with your submission')
 
-        with open(FilePaths.servers_settings, 'r') as file:
+        with open(Paths.servers_settings, 'r') as file:
             data = json.load(file)
 
         startday = 12
@@ -256,10 +253,10 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
             data[str(ctx.guild.id)]['artfight']['scores']['team1'] = team1_score
             data[str(ctx.guild.id)]['artfight']['scores']['team2'] = team2_score
 
-            with open(FilePaths.servers_settings, 'w') as file:
+            with open(Paths.servers_settings, 'w') as file:
                 file.write(json.dumps(data, indent=4))
 
-            with open(FilePaths.artfight_members) as file:
+            with open(Paths.artfight_members) as file:
                 data = json.load(file)
 
             # Save the score to the user data file for tracking and validation
@@ -275,7 +272,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
 
 
 
-            with open(FilePaths.servers_settings, 'w') as file:
+            with open(Paths.servers_settings, 'w') as file:
                 file.write(json.dumps(data, indent=4))
 
             await dm.send('Score counted!\n'
@@ -376,7 +373,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
         team = team.id
 
         if ctx.author.guild_permissions.manage_roles:
-            with open(FilePaths.servers_settings, 'r') as file:
+            with open(Paths.servers_settings, 'r') as file:
                 data = json.load(file)
 
             if team == team1:
@@ -388,7 +385,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
                                f"valid. Please try again")
                 return
 
-            with open(FilePaths.servers_settings, 'w') as file:
+            with open(Paths.servers_settings, 'w') as file:
                 file.write(json.dumps(data, indent=4))
             await ctx.send(f'{score} ornaments removed from {name}. Data saved.')
         else:
@@ -440,7 +437,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
         :param member: The Discord member to remove (mention or user object).
         """
         try:
-            with open(FilePaths.artfight_members, "r") as file:
+            with open(Paths.artfight_members, "r") as file:
                 data = json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
             await ctx.send("The data file is missing or corrupted!")
@@ -483,7 +480,7 @@ class Artfight(commands.GroupCog, name='artfight', description='All the commands
                         del data[str(ctx.guild.id)]
 
                     # Save the updated data
-                    with open(FilePaths.artfight_members, "w") as file:
+                    with open(Paths.artfight_members, "w") as file:
                         json.dump(data, file, indent=4)
 
                     await interaction.response.send_message(f"Member {member.mention} has been removed.", ephemeral=False)

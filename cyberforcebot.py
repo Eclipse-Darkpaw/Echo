@@ -18,9 +18,9 @@ but can influence the environment before Python runs.
 from modules import (
     General,
     Moderation as Mod,
-    ServerSettings as Settings,
-    Verification as Verif,
-    RefManagement as Ref
+    RefManagement as Ref,
+    server_settings as Settings,
+    verification as Verif
 )
 
 from repositories import (

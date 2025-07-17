@@ -7,6 +7,7 @@ from discord.ext import commands
 class General(commands.Cog):
     def __init__(self, bot: EchoBot):
         self.bot = bot
+        self.bot.logger.info(f'✔ General cog loaded')
 
     @commands.hybrid_command()
     async def ping(self, ctx: discord.Interaction):
@@ -53,7 +54,7 @@ class General(commands.Cog):
         :return: N/A. program closes
         """
 
-        if str(ctx.author.id) in self.bot.bot_config.guardians or ctx.author.guild_permissions.administrator:
+        if str(ctx.author.id) in self.bot.config.guardians or ctx.author.guild_permissions.administrator:
             self.bot.logger.info(f'{ctx.author.name} issued quit command')
             await ctx.reply('Goodbye :wave:')
             await ctx.bot.change_presence(activity=discord.Game('Going offline'))

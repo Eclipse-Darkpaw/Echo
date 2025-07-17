@@ -1,6 +1,6 @@
 import os
 
-class FilePaths:
+class Paths:
     _root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     data_dir = f'{_root_dir}/data'
     logs_dir = f'{_root_dir}/logs'
@@ -12,9 +12,9 @@ class FilePaths:
     scam_log = f'{logs_dir}/scam.log'
     
     @classmethod
-    def get_ref(cls, user_id):
+    def get_ref_path(cls, user_id):
         return f'{cls.data_dir}/refs/{user_id}.refs'
     
     @classmethod
-    def get_nsfw_ref(cls, user_id):
+    def get_nsfw_ref_path(cls, user_id):
         return f'{cls.data_dir}/nsfw/refs/{user_id}.nsfwref'

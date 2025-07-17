@@ -1,7 +1,9 @@
+import os
+
 from .repository import JsonRepository
+from config import Paths
 from util import (
     FileWatcher,
-    FilePaths,
     modify_json_file
 )
 
@@ -9,21 +11,23 @@ class ServersSettingsRepo(JsonRepository):
     _watched_servers_json = None
 
     def __init__(self):
+        os.makedirs(Paths.data_dir, exist_ok=True)
+
         if self.__class__._watched_servers_json is None:
-            self.__class__._watched_servers_json = FileWatcher(FilePaths.servers_settings)
+            self.__class__._watched_servers_json = FileWatcher(Paths.servers_settings)
 
     def _get(self, *keys: str) -> any:
         return super()._get(self.__class__._watched_servers_json, *keys)
 
     def _set(self, *keys: str, value: any) -> None:
         modify_json_file(
-            FilePaths.servers_settings,
+            Paths.servers_settings,
             lambda data: super()._set(data, *keys, value=value)
         )
 
     def _remove(self, *keys: str) -> None:
         modify_json_file(
-            FilePaths.servers_settings,
+            Paths.servers_settings,
             lambda data: super()._remove(data, *keys)
         )
         

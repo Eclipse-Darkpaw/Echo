@@ -19,10 +19,10 @@ but can influence the environment before Python runs.
 from modules import (
     General,
     Moderation as Mod,
-    ServerSettings as Settings,
-    Verification as Verif,
     RefManagement as Ref,
-    scan_message
+    scan_message,
+    server_settings as Settings,
+    verification as Verif
 )
 
 from repositories import (

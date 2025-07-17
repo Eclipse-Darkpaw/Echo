@@ -4,16 +4,19 @@ import time
 
 from discord.ext import commands
 
-from util import FilePaths, get_user_id
+from base_bot import EchoBot
+from config import Paths
+from util import get_user_id
 
 
 class Moderation(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: EchoBot):
         self.bot = bot
+        self.bot.logger.info(f'✔ Moderation cog loaded')
 
     @commands.hybrid_command()
     @commands.guild_only()
-    async def suspend(self, ctx: discord.Interaction, user: discord.User, reason: str):
+    async def suspend(self, ctx: commands.Context, user: discord.User, reason: str):
         """
         Suspends a user for given reason
         Last docstring edit: -Autumn V4.0.0
@@ -24,7 +27,7 @@ class Moderation(commands.Cog):
         :return:
         """
         # load the json file
-        with open(FilePaths.servers_warns) as file:
+        with open(Paths.servers_warns) as file:
             data = json.load(file)
 
         # make sure the guild has an existing log entry
@@ -51,11 +54,11 @@ class Moderation(commands.Cog):
                           'issuer_name': str(ctx.author),
                           'reason': reason,
                           })
-            with open(FilePaths.servers_warns, 'w') as file:
+            with open(Paths.servers_warns, 'w') as file:
                 file.write(json.dumps(data, indent=4))
 
             # load the json file
-            with open(FilePaths.servers_settings) as file:
+            with open(Paths.servers_settings) as file:
                 data = json.load(file)
 
             try:
@@ -95,7 +98,7 @@ class Moderation(commands.Cog):
         :return:
         """
         # load the json file
-        with open(FilePaths.servers_warns) as file:
+        with open(Paths.servers_warns) as file:
             data = json.load(file)
 
         # make sure the guild has an existing log entry
@@ -136,11 +139,11 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)][str(user.id)] = warns
 
             # save data to the file
-            with open(FilePaths.servers_warns, 'w') as file:
+            with open(Paths.servers_warns, 'w') as file:
                 file.write(json.dumps(data, indent=4))
 
             # create message and post it in the warning log
-            with open(FilePaths.servers_warns) as file:
+            with open(Paths.servers_warns) as file:
                 data = json.load(file)
 
             try:
@@ -185,7 +188,7 @@ class Moderation(commands.Cog):
         :return:
         """
         # load the json file
-        with open(FilePaths.servers_warns) as file:
+        with open(Paths.servers_warns) as file:
             data = json.load(file)
 
         # make sure the guild has an existing log entry
@@ -225,7 +228,7 @@ class Moderation(commands.Cog):
         :param warn: warn to remove
         """
         # load the json file
-        with open(FilePaths.servers_warns) as file:
+        with open(Paths.servers_warns) as file:
             data = json.load(file)
 
         # make sure the guild has an existing log entry
@@ -255,7 +258,7 @@ class Moderation(commands.Cog):
             data[str(ctx.guild.id)][str(user_id)] = warns
 
             # save data to the file
-            with open(FilePaths.servers_warns, 'w') as file:
+            with open(Paths.servers_warns, 'w') as file:
                 file.write(json.dumps(data, indent=4))
 
             await ctx.send(f'Warn {warn} removed')

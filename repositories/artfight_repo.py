@@ -2,9 +2,9 @@ import datetime
 import json
 import os
 from .repository import JsonRepository
+from config import Paths
 from util import (
     FileWatcher,
-    FilePaths,
     modify_json_file
 )
 
@@ -12,8 +12,10 @@ class ArtfightRepo(JsonRepository):
     _watched_artfight_json = None
 
     def __init__(self):
+        os.makedirs(Paths.data_dir, exist_ok=True)
+
         if self.__class__._watched_artfight_json is None:
-            self.__class__._watched_artfight_json = FileWatcher(FilePaths.artfight)
+            self.__class__._watched_artfight_json = FileWatcher(Paths.artfight)
         
         self.forbidden_team_names = ['teams']
     
@@ -22,13 +24,13 @@ class ArtfightRepo(JsonRepository):
     
     def _set(self, *keys: str, value: any) -> None:
         modify_json_file(
-            FilePaths.artfight,
+            Paths.artfight,
             lambda data: super(ArtfightRepo, self)._set(data, *keys, value=value)
         )
 
     def _remove(self, *keys) -> None:
         modify_json_file(
-            FilePaths.artfight,
+            Paths.artfight,
             lambda data: super(ArtfightRepo, self)._remove(data, *keys)
         )
 
@@ -251,7 +253,7 @@ class ArtfightRepo(JsonRepository):
         else:
             archive_name = f'{artfight_start_date.isoformat()}_{artfight_end_date.isoformat()}'
 
-        archive_file_path = f'{FilePaths.artfight_archive_dir}/{str(guild_id)}/{archive_name}.json'
+        archive_file_path = f'{Paths.artfight_archive_dir}/{str(guild_id)}/{archive_name}.json'
         os.makedirs(os.path.dirname(archive_file_path), exist_ok=True)
 
         with open(archive_file_path, 'w', encoding="utf-8") as archive_file:

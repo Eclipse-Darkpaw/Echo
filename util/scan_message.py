@@ -1,5 +1,4 @@
 import discord
-from util import FilePaths
 
 # list of legitimate messages, that commonly get flagged. These should be ignored.
 WHITE_LIST = ['https://discord.gift/',  # legitimate nitro gifting
@@ -53,7 +52,7 @@ counter = 0
 # TODO: add an auto suspend feature
 
 
-async def scan_message(msg: discord.Message, log_channel_id: int):
+async def scan_message(msg: discord.Message, log_channel_id: int, log_repo):
     global counter
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
@@ -128,8 +127,13 @@ async def scan_message(msg: discord.Message, log_channel_id: int):
         if flags < 3 and bans == 0:
             embed.add_field(name='URL', value=msg.jump_url, inline=False)
         await channel.send(embed=embed)
-        with open(FilePaths.scam_log, 'a') as log:
-            # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
-            log.write(f'{msg.id},{msg.created_at},{msg.guild.id},{msg.author.id},'
-                      f'{msg.id},{flags},{bans},{lst.replace(",", " - ")},"{msg.content.replace(
-                          '\n', '\\n')}"\n')
+
+        # Message ID,Datetime,Guild,Sender ID,Channel ID,Flags,Banned strs
+        log_repo.log(
+            content=(
+                f'{msg.id},{msg.created_at},{msg.guild.id},{msg.author.id},'
+                f'{msg.channel.id},{flags},{bans},{lst.replace(",", " - ")},'
+                f'"{msg.content.replace("\n", "\\n")}"'
+            )
+        )
+
