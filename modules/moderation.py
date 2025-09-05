@@ -13,7 +13,7 @@ from util import get_user_id
 class Moderation(commands.Cog):
     def __init__(self, bot: EchoBot):
         self.bot = bot
-        
+
         os.makedirs(Paths.data_dir, exist_ok=True)
         if not os.path.exists(Paths.servers_warns):
             with open(Paths.servers_warns, 'w') as f:
@@ -169,7 +169,7 @@ class Moderation(commands.Cog):
             if num_warns > 2:
                 await self.suspend(ctx, user=user, reason=f'{num_warns} warns in one week')
                 await ctx.guild.get_member(user.id).add_roles(ctx.guild.get_role(data[str(ctx.guild.id)][
-                                                                                             'roles']['suspended']))
+                                                                                     'roles']['suspended']))
                 await warn_log.send(f'<@{user.id}> suspended for {num_warns} warns in one week')
                 thread_name = f'{ctx.author.name} {time.strftime("%Y-%m-%d", time.gmtime(time.time()))} supsension (' \
                               f'TBD)'
@@ -314,3 +314,46 @@ class Moderation(commands.Cog):
 
         else:
             await ctx.respond('Unauthorized usage.')
+
+    @commands.hybrid_command()
+    @commands.guild_only()
+    async def export_bans(self, ctx: commands.Context, limit=2000):
+        """
+        🔑 ban_members | exports a list of banned users in
+        Last docstring edit: -Autumna1Equin0x V4.4.0
+        Last method edit: -Autumna1Equin0x V4.4.0
+        Method added: V4.4.0
+        :param ctx: The message that called the command
+        :param format: Format for the list. Txt and json available
+        """
+        bans = [entry async for entry in ctx.guild.bans(limit=limit)]
+        out = ''
+
+        for ban in bans:
+            userid = ban.user.id
+            username = ban.user.name
+            reason = ban.reason
+            out += f'{username} {userid} {reason};\n'
+        await ctx.reply(f'```\n{out}\n```')
+
+    @commands.hybrid_command()
+    @commands.guild_only()
+    async def import_bans(self, ctx: commands.Context, bans: str):
+        """
+        🔑 ban_members | imports a list of banned users in the format "username userID reason;"
+        Last docstring edit: -Autumna1Equin0x V4.4.0
+        Last method edit: -Autumna1Equin0x V4.4.0
+        Method added: V4.4.0
+        :param ctx: The message that called the command
+        :param format: Format for the list. Txt and json available
+        """
+        lines = bans.split(';')
+        for line in lines:
+            try:
+                username, userid, reason = line.split(maxsplit=2)
+            except:
+                continue
+            user = await ctx.bot.fetch_user(userid)
+            await ctx.guild.ban(user=user, reason=reason)
+        await ctx.reply(f'{len(lines)}')
+
