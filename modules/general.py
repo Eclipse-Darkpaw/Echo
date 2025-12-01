@@ -9,13 +9,15 @@ class General(commands.Cog):
         self.bot = bot
         self.bot.logger.info(f'✔ General cog loaded')
 
-    @commands.hybrid_command()
-    async def ping(self, ctx: discord.Interaction):
+    @commands.hybrid_command(brief="Get bot latency")
+    async def ping(self, ctx: commands.Context):
         """
         Returns how long it takes the bot to send a message
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
-        :param ctx: message that called the quit command
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
         :return: None
         """
         start = time.time()
@@ -24,26 +26,31 @@ class General(commands.Cog):
         edit = x.content + ' ' + str(int(ping * 1000)) + 'ms'
         await x.edit(content=edit)
 
-    @commands.hybrid_command()
-    async def uptime(self, ctx: discord.Interaction):
+    @commands.hybrid_command(brief="Get bot uptime")
+    async def uptime(self, ctx: commands.Context):
         """
         Displays the time the bot has been running for
-        Last docstring edit: -Autumn V3.3.4
-        Last method edit: -FoxyHunter V4.3.0
-        :param message: message calling the bot
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
         :return: None
         """
         formatted_uptime = f'{str(self.bot.uptime).split('.')[0].replace(':', 'h', 1).replace(':', 'm', 1)}s'
         await ctx.send(f'Online for {formatted_uptime}\n-# Started <t:{int(self.bot.start_time)}:R>')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 guardians | Sync server app cmd tree with global set")
     async def sync(self, ctx: commands.Context):
         """
-        🔑 guardians | Sync server app cmd tree with global set
-        Last docstring edit: -FoxyHunter V4.3.0
-        Last method edit: -FoxyHunter V4.3.0
-        :param ctx: message that called the quit command
-        :return: N/A. program closes
+        Copies global application commands to this guild and synchronizes them
+        with Discord. Use after adding or changing hybrid/slash commands.
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
+        :return: None
         """
         if str(ctx.author.id) in self.bot.config.guardians:
             await ctx.send('Syncing Tree', ephemeral=False)
@@ -52,13 +59,19 @@ class General(commands.Cog):
             await ctx.bot.tree.sync(guild=guild)
             await ctx.send("tree synced", ephemeral=True)
 
-    @commands.hybrid_command()
-    async def quit(self, ctx: discord.Interaction):
+    @commands.hybrid_command(brief="🔐 guardians | Quits the active bot")
+    async def quit(self, ctx: commands.Context):
         """
-        🔑 guardians | Quits the active bot
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -FoxyHunter V4.3.0
-        :param ctx: message that called the quit command
+        🔐 guardians | Quits the active bot
+
+        If the bot is run using an auto-start & lifecycle-managing
+        system such as systemd, the bot may automatically be restarted
+        by that system.
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
         :return: N/A. program closes
         """
 
@@ -70,13 +83,16 @@ class General(commands.Cog):
         else:
             await ctx.reply('You do not have permission to turn me off!')
 
-    @commands.hybrid_command(name='huh')
-    async def huh(self, ctx: discord.Interaction):
+    @commands.hybrid_command(brief="Easter egg")
+    async def huh(self, ctx: commands.Context):
         """
         Easter egg
-        Last docstring edit: -Autumn V1.14.4
-        Last method edit: -Autumn V 4.0.0
-        :param ctx: Message calling the command
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
+        :return: None
         """
         await ctx.reply("We're no Strangers to love\n"
                                "You know the rules and so do I!~\n"
@@ -91,13 +107,15 @@ class General(commands.Cog):
                                "Never gonna make you cry, Never gonna say goodbye\n"
                                "Never gonna tell a lie, and hurt you")
 
-    @commands.hybrid_command()
-    async def version(self, ctx: discord.Interaction):
+    @commands.hybrid_command(brief="Get bot version")
+    async def version(self, ctx: commands.Context):
         """
         Displays the version of the bot being used
-        Last docstring edit: -Autumn V4.0.1
-        Last method edit: -FoxyHunter V4.3.0
-        :param ctx: Message calling the bot
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
         :return: None
         """
         await ctx.reply(f'I am currently running version {self.bot.version_num}')
