@@ -21,17 +21,26 @@ class Moderation(commands.Cog):
 
         self.bot.logger.info(f'✔ Moderation cog loaded')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 manage_roles | Suspend a user for given reason")
     @commands.guild_only()
     async def suspend(self, ctx: commands.Context, user: discord.User, reason: str):
         """
-        🔑 manage_roles | Suspends a user for given reason
-        Last docstring edit: -FoxyHunter V4.3.0
+        🔐 manage_roles | Suspend a user for given reason
+
+        This command will add the reason as a new warn to
+        the user's warn list and then add the suspended role
+        of this guild to that user.
+
+        If possible a thread will be made where the suspended user
+        can ask questions if needed.
+
+        Last docstring edit: -FoxyHunter V4.4.0
         Last method edit: -FoxyHunter V4.3.0
-        :param ctx:
+
+        :param ctx: Context object for the invoked command
         :param user: User to suspend
-        :param reason: reason to suspend
-        :return:
+        :param reason: Reason to suspend
+        :return: None
         """
         # load the json file
         with open(Paths.servers_warns) as file:
@@ -92,17 +101,19 @@ class Moderation(commands.Cog):
         else:
             await ctx.reply('Invalid Permissions')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 manage_roles | Give a user a warning")
     @commands.guild_only()
     async def warn(self, ctx: commands.Context, user: discord.User, reason: str):
         """
-        🔑 manage_roles | Give a user a warning
-        Last docstring edit: -FoxyHunter V4.3.0
+        🔐 manage_roles | Give a user a warning
+        
+        Last docstring edit: -FoxyHunter V4.4.0
         Last method edit: -FoxyHunter V4.3.0
-        :param ctx: Interaction calling the command
+
+        :param ctx: Context object for the invoked command
         :param user: User to warn
         :param reason: Reason for warn
-        :return:
+        :return: None
         """
         # load the json file
         with open(Paths.servers_warns) as file:
@@ -184,15 +195,18 @@ class Moderation(commands.Cog):
             # user does not have permission to assign warns
             await ctx.send('You are not allowed to use that command')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 manage_roles | Lists a user's warns")
+    @commands.guild_only()
     async def show_warns(self, ctx: commands.Context, user: discord.User):
         """
-        🔑 manage_roles | Lists a users warns in an embed
-        Last docstring edit: -FoxyHunter V4.3.0
-        Last method edit: -FoxyHunter V4.3.0
-        :param ctx: Message calling the command
+        🔐 manage_roles | Lists a user's warns in an embed
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
         :param user: user to list warns for
-        :return:
+        :return: None
         """
         # load the json file
         with open(Paths.servers_warns) as file:
@@ -224,15 +238,19 @@ class Moderation(commands.Cog):
                 counter += 1
             await ctx.respond(embed=embed)
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 kick_members | Remove a warn from a user")
+    @commands.guild_only()
     async def remove_warn(self, ctx: commands.Context, user: discord.User, warn: int):
         """
-        🔑 kick_members | Removes a warn from a user
-        Last docstring edit: -FoxyHunter V4.3.0
-        Last method edit: -FoxyHunter V4.3.0
-        :param ctx: Message calling the command
-        :param user: user to remove a warn from
-        :param warn: warn to remove
+        🔐 kick_members | Remove a warn from a user
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+        
+        :param ctx: Context object for the invoked command
+        :param user: User to remove a warn from
+        :param warn: Warn to remove
+        :return: None
         """
         # load the json file
         with open(Paths.servers_warns) as file:
@@ -270,16 +288,19 @@ class Moderation(commands.Cog):
 
             await ctx.send(f'Warn {warn} removed')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 kick_members | Kick a server member")
+    @commands.guild_only()
     async def kick(self, ctx: commands.Context, user: discord.User, reason: str = 'No reason specified.'):
         """
-        🔑 kick_members | Kicks a user out of the server
-        Last docstring edit: -FoxyHunter V4.3.0
-        Last method edit: -FoxyHunter V4.3.0
-        Method added: V1.16.0
-        :param ctx:The message that called the command
+        🔐 kick_members | Kick a user out of the server
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+
+        :param ctx: Context object for the invoked command
         :param user: User to kick
         :param reason: Reason for kick (users will not see this)
+        :return: None
         """
         if ctx.author.guild_permissions.kick_members or str(ctx.author.id) in self.bot.config.guardians:
             target = user.id
@@ -292,17 +313,19 @@ class Moderation(commands.Cog):
         else:
             await ctx.respond('Unauthorized usage.')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 kick_members | Ban a user from the server")
     @commands.guild_only()
     async def ban(self, ctx: commands.Context, user: discord.User, reason: str):
         """
-        🔑 kick_members | Bans a user from the server
-        Last docstring edit: -FoxyHunter V4.3.0
+        🔐 kick_members | Bans a user from the server
+
+        Last docstring edit: -FoxyHunter V4.4.0
         Last method edit: -FoxyHunter V4.3.0
-        Method added: V1.16.0
-        :param ctx: The message that called the command
+
+        :param ctx: Context object for the invoked command
         :param user: User to ban
         :param reason: Reason for ban (users will not see this)
+        :return: None
         """
         if ctx.author.guild_permissions.kick_members or str(ctx.author.id) in self.bot.config.guardians:
             target = user.id
@@ -315,16 +338,18 @@ class Moderation(commands.Cog):
         else:
             await ctx.respond('Unauthorized usage.')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 ban_members | Export banned users")
     @commands.guild_only()
     async def export_bans(self, ctx: commands.Context, limit=2000):
         """
-        🔑 ban_members | exports a list of banned users in
-        Last docstring edit: -Autumna1Equin0x V4.4.0
+        🔐 ban_members | Exports a list of banned users in the server
+
+        Last docstring edit: -FoxyHunter V4.4.0
         Last method edit: -Autumna1Equin0x V4.4.0
-        Method added: V4.4.0
-        :param ctx: The message that called the command
-        :param format: Format for the list. Txt and json available
+
+        :param ctx: Context object for the invoked command
+        :param limit: Limit of bans to fetch
+        :return: None
         """
         bans = [entry async for entry in ctx.guild.bans(limit=limit)]
         out = ''
@@ -336,16 +361,18 @@ class Moderation(commands.Cog):
             out += f'{username} {userid} {reason};\n'
         await ctx.reply(f'```\n{out}\n```')
 
-    @commands.hybrid_command()
+    @commands.hybrid_command(brief="🔐 ban_members | Import banned users (from list)")
     @commands.guild_only()
     async def import_bans(self, ctx: commands.Context, bans: str):
         """
-        🔑 ban_members | imports a list of banned users in the format "username userID reason;"
-        Last docstring edit: -Autumna1Equin0x V4.4.0
+        🔐 ban_members | imports a list of banned users in the format "username userID reason;"
+
+        Last docstring edit: -FoxyHunter V4.4.0
         Last method edit: -Autumna1Equin0x V4.4.0
-        Method added: V4.4.0
-        :param ctx: The message that called the command
+
+        :param ctx: Context object for the invoked command
         :param format: Format for the list. Txt and json available
+        :return: None
         """
         lines = bans.split(';')
         for line in lines:
