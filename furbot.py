@@ -42,7 +42,7 @@ intents.members = True
 
 bot = EchoBot(
     name='furbot',
-    version_num='4.3.0',
+    version_num='4.4.0',
     console_logging=True,
     file_logging=True,
     intents=intents
