@@ -1,4 +1,5 @@
 import discord
+import io
 import json
 import os
 import time
@@ -340,18 +341,19 @@ class Moderation(commands.Cog):
 
     @commands.hybrid_command(brief="🔐 ban_members | Export banned users")
     @commands.guild_only()
-    async def export_bans(self, ctx: commands.Context, limit=2000):
+    async def export_bans(self, ctx: commands.Context, limit=1000, after=None):
         """
         🔐 ban_members | Exports a list of banned users in the server
 
         Last docstring edit: -FoxyHunter V4.4.0
-        Last method edit: -Autumna1Equin0x V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
 
         :param ctx: Context object for the invoked command
-        :param limit: Limit of bans to fetch
+        :param limit: Limit of bans to fetch (defaults tp 1000, the discord api limit)
+        :param after: User ID to start after (optional)
         :return: None
         """
-        bans = [entry async for entry in ctx.guild.bans(limit=limit)]
+        bans = [entry async for entry in ctx.guild.bans(limit=limit, after=after)]
         out = ''
 
         for ban in bans:
@@ -359,7 +361,12 @@ class Moderation(commands.Cog):
             username = ban.user.name
             reason = ban.reason
             out += f'{username} {userid} {reason};\n'
-        await ctx.reply(f'```\n{out}\n```')
+
+        file = discord.File(
+            io.BytesIO(out.encode('utf-8')),
+            filename=f'bans_{ctx.guild.id}.txt'
+        )
+        await ctx.reply(file=file)
 
     @commands.hybrid_command(brief="🔐 ban_members | Import banned users (from list)")
     @commands.guild_only()
