@@ -92,7 +92,7 @@ async def on_ready():
     await bot.add_cog(Settings(bot))
     await bot.add_cog(RefManagement(bot))
     await bot.add_cog(Verification(bot))
-    #await bot.add_cog(Artfight(bot))
+    await bot.add_cog(Artfight(bot))
     bot.logger.info('Cogs loaded')
 
 
@@ -114,11 +114,14 @@ async def on_message(msg: discord.Message):
     content = msg.content.lower()
 
     if not (msg.guild is None or content.find(BYPASS_CODE) != -1 or msg.channel.id in scan_ignore):
-        await scan_message(
-            msg,
-            bot.repositories['servers_settings_repo'].get_guild_channel(str(msg.guild.id), 'log'),
-            bot.repositories['scam_log_repo']
-        )
+        if (log_channel := bot.repositories['servers_settings_repo'].get_guild_channel(str(msg.guild.id), 'log')):
+            await scan_message(
+                msg,
+                log_channel,
+                bot.repositories['scam_log_repo']
+            )
+        else:
+            bot.logger.warning('Server log channel not configured, message scan skipped')
     
 # ---
 # Commands

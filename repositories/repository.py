@@ -10,9 +10,11 @@ class JsonRepository(Repository):
     def _get(self, data: dict, *keys: str) -> any:
         try:
             for key in keys:
+                if data is None:
+                    return None
                 data = data[key]
             return data
-        except KeyError:
+        except (KeyError, TypeError):
             return None
         
     def _set(self, data: dict, *keys: str, value: any) -> None:
