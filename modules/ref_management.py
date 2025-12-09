@@ -9,12 +9,17 @@ class RefManagement(commands.Cog):
         self.bot = bot
         self.bot.logger.info(f'✔ RefManagement cog loaded')
 
-    @commands.hybrid_command(name='ref-set')
-    async def set_ref(self, ctx: discord.Interaction):
+    @commands.hybrid_command(brief="Set your refs")
+    async def set_ref(self, ctx: commands.Context):
         """
-        sets a users ref. Overwrites existing ref. max 5 images
-        :param ctx:
-        :return:
+        Sets a user's ref
+        Overwrites existing ref, use add_ref.
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.3.0
+
+        :param ctx: Context object for the invoked command
+        :return: None
         """
         try:
             trim = ctx.message.content[8:]
@@ -37,12 +42,16 @@ class RefManagement(commands.Cog):
         except IndexError:
             await ctx.send('No ref_sheet attached!')
 
-    @commands.hybrid_command(name='ref-add')
-    async def add_ref(self, ctx):
+    @commands.hybrid_command(brief="Add a ref to your refs")
+    async def add_ref(self, ctx: commands.Context):
         """
-        Adds refs to a users list. max 5 images
-        :param ctx:
-        :return:
+        Adds refs to a user.
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.3.0
+
+        :param ctx: Context object for the invoked command
+        :return: None
         """
         try:
 
@@ -67,13 +76,17 @@ class RefManagement(commands.Cog):
         except IndexError:
             await ctx.send('No ref attached!')
 
-    @commands.hybrid_command()
-    async def ref(self, ctx: discord.Interaction, user: discord.User = None):
+    @commands.hybrid_command(brief="Get someone's refs")
+    async def ref(self, ctx: commands.Context, user: discord.User = None):
         """
-        retrieves a users ref sheet
-        :param ctx:
+        Retrieves a users refs
+
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.3.0
+
+        :param ctx: Context object for the invoked command
         :param user: User to search for
-        :return:
+        :return: None
         """
         if user is None:
             target = ctx.author.id
