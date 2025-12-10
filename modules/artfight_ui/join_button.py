@@ -41,12 +41,15 @@ class TeamChoiceView(View):
         self,
         artfight_repo: ArtfightRepo,
         guild: discord.Guild,
-        user_id: int
+        user_id: int,
+        message: discord.Message = None
     ):
-        super().__init__(timeout=60)
+        # Give users 5 minutes to decide - it's an important choice!
+        super().__init__(timeout=300)
         self.artfight_repo = artfight_repo
         self.guild = guild
         self.user_id = user_id
+        self.message = message
         
         # Dynamically add buttons for each team
         teams = artfight_repo.get_teams(guild.id)
@@ -73,11 +76,14 @@ class TeamChoiceView(View):
         role: discord.Role
     ):
         """Handle the team choice button click."""
+        # Defer immediately to avoid timeout
+        await interaction.response.defer()
+        
         # Double-check they haven't joined in the meantime
         teams = self.artfight_repo.get_teams(self.guild.id)
         for tn in teams.keys():
             if self.artfight_repo.get_team_member(self.guild.id, tn, self.user_id) is not None:
-                await interaction.response.edit_message(
+                await interaction.edit_original_response(
                     content="❌ You have already joined a team!",
                     view=None
                 )
@@ -91,7 +97,7 @@ class TeamChoiceView(View):
         try:
             self.artfight_repo.add_team_member(self.guild.id, team_name, self.user_id)
         except Exception as e:
-            await interaction.response.edit_message(
+            await interaction.edit_original_response(
                 content=f"❌ Failed to register you: {e}",
                 view=None
             )
@@ -111,7 +117,7 @@ class TeamChoiceView(View):
                 self.artfight_repo.remove_team_member(self.guild.id, team_name, self.user_id)
             except Exception:
                 pass
-            await interaction.response.edit_message(
+            await interaction.edit_original_response(
                 content="❌ I don't have permission to assign roles.",
                 view=None
             )
@@ -122,16 +128,32 @@ class TeamChoiceView(View):
                 self.artfight_repo.remove_team_member(self.guild.id, team_name, self.user_id)
             except Exception:
                 pass
-            await interaction.response.edit_message(
+            await interaction.edit_original_response(
                 content=f"❌ Failed to assign role: {e}",
                 view=None
             )
             return
 
-        await interaction.response.edit_message(
+        await interaction.edit_original_response(
             content=f"✅ You have joined **{role.name}**!",
             view=None
         )
+
+    async def on_timeout(self):
+        """Handle view timeout - disable buttons and update message."""
+        # Disable all buttons
+        for item in self.children:
+            item.disabled = True
+        
+        # Try to update the message if we have a reference
+        if self.message:
+            try:
+                await self.message.edit(
+                    content="Team selection timed out. Click the join button again to try.",
+                    view=self
+                )
+            except discord.HTTPException:
+                pass  # Message might have been deleted
 
 
 class JoinArtfightView(View):
@@ -227,10 +249,16 @@ class JoinArtfightView(View):
             # Let them choose their team
             view = TeamChoiceView(self.artfight_repo, guild, user_id)
             await interaction.response.send_message(
-                "**Choose a team!**\nSelect the team you want to fight for:",
+                "**Choose a team!**\nSelect the team you want to fight for:\n"
+                "-# You have 5 minutes to decide.",
                 view=view,
                 ephemeral=True
             )
+            # Store message reference for timeout handling
+            try:
+                view.message = await interaction.original_response()
+            except discord.HTTPException:
+                pass
         else:
             # Auto-assign to balanced team (same logic as join command)
             await self._auto_assign_team(interaction, guild, user_id, teams)

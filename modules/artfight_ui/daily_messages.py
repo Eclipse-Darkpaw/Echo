@@ -28,7 +28,7 @@ def build_warning_message(
         time_str = "in 30 minutes"
     
     if is_last_day:
-        return f"{role_ping} **FINAL DAY!** Submissions close {time_str}!\nThis is your last chance!"
+        return f"{role_ping} **TIME IS ALMOST UP!** Submissions close {time_str}!\nThis is your last chance, you **CANNOT** submit after the score is announced today. "
     else:
         return f"{role_ping} **Just 30 more minutes!!**\nNext prompt {time_str}\n-# There is a 15min grace period with 75% points"
 
@@ -201,86 +201,78 @@ def build_fancy_leaderboard_embed(
     guild: 'discord.Guild',
     guild_id: int,
     artfight_role: 'discord.Role | None' = None
-) -> discord.Embed:
+) -> str:
     """
-    Builds the fancy leaderboard embed with fun stats for the end of artfight.
+    Builds the Hall of Fame message with fun stats for the end of artfight.
+    Returns a plain text message with markdown formatting (not an embed).
     
     :param artfight_repo: The artfight repository
     :param guild: The Discord guild (for member lookups)
     :param guild_id: The guild ID
-    :param artfight_role: The artfight role (for embed color)
-    :return: The fancy leaderboard embed
+    :param artfight_role: The artfight role (unused, kept for compatibility)
+    :return: The Hall of Fame message string
     """
     import datetime
     from collections import Counter
     
-    start_date = artfight_repo.get_start_date(guild_id)
     end_date = artfight_repo.get_end_date(guild_id)
     year = end_date.year if end_date else datetime.datetime.now().year
     
-    # Use artfight role color if available
-    embed_color = artfight_role.color if artfight_role else discord.Color.gold()
-    
-    embed = discord.Embed(
-        title=f"🏆 Artfight {year} - Hall of Fame 🏆",
-        color=embed_color
-    )
-    
     teams = artfight_repo.get_teams(guild_id)
     if not teams:
-        embed.description = "No team data available."
-        return embed
+        return f"# 🏆 Artfight {year} - Hall of Fame 🏆\n\nNo team data available."
     
     # Collect comprehensive stats
-    team_stats = {}  # team_name -> {role_id, submissions, top_attacker: (user_id, count)}
-    all_submissions = []  # List of submission dicts with full data
-    victim_counts = Counter()  # user_id -> times attacked
-    prompt_counts = Counter()  # prompt_day -> submission count
+    team_stats = {}  # team_name -> {role_id, submissions, members_data}
+    all_submissions = []
+    victim_stats = {}  # user_id -> {by_count, by_score, team}
+    prompt_counts = Counter()
     biggest_collab = {'size': 0, 'members': [], 'title': ''}
     
     for team_name, role_id in teams.items():
         members = artfight_repo.get_team_members(guild_id, team_name) or {}
         team_submission_count = 0
-        top_attacker_id = None
-        top_attacker_count = 0
+        members_data = {}
         
         for user_id, user_data in members.items():
             submissions = user_data.get('submissions', {})
             submission_count = len(submissions)
+            user_points = user_data.get('points', 0)
             team_submission_count += submission_count
             
-            if submission_count > top_attacker_count:
-                top_attacker_count = submission_count
-                top_attacker_id = user_id
+            members_data[user_id] = {
+                'submissions': submission_count,
+                'points': user_points,
+                'team': team_name
+            }
             
             for sub_url, sub_data in submissions.items():
-                # Extract new fields
                 victims = sub_data.get('victims', [])
                 collaborators = sub_data.get('collaborators', [])
                 prompt_day = sub_data.get('prompt_day')
                 title = sub_data.get('title', 'Untitled')
+                points = sub_data.get('points', 0)
                 
                 all_submissions.append({
                     'user_id': user_id,
                     'team_name': team_name,
-                    'points': sub_data.get('points', 0),
-                    'url': sub_url,
+                    'points': points,
                     'victims': victims,
                     'collaborators': collaborators,
                     'prompt_day': prompt_day,
                     'title': title
                 })
                 
-                # Count victims
                 for victim_id in victims:
-                    victim_counts[victim_id] += 1
+                    if victim_id not in victim_stats:
+                        victim_stats[victim_id] = {'by_count': 0, 'by_score': 0, 'team': None}
+                    victim_stats[victim_id]['by_count'] += 1
+                    victim_stats[victim_id]['by_score'] += points
                 
-                # Count prompts
                 if prompt_day:
                     prompt_counts[prompt_day] += 1
                 
-                # Track biggest collab
-                collab_size = 1 + len(collaborators)  # Submitter + collaborators
+                collab_size = 1 + len(collaborators)
                 if collab_size > biggest_collab['size']:
                     biggest_collab = {
                         'size': collab_size,
@@ -291,106 +283,144 @@ def build_fancy_leaderboard_embed(
         team_stats[team_name] = {
             'role_id': role_id,
             'submissions': team_submission_count,
-            'top_attacker': (top_attacker_id, top_attacker_count) if top_attacker_id else None
+            'members_data': members_data
         }
     
-    # The Hardworking of {year} - Most attacks per team
-    hardworking_lines = []
-    for team_name, stats in team_stats.items():
-        if stats['top_attacker']:
-            user_id, count = stats['top_attacker']
-            hardworking_lines.append(f"<@&{stats['role_id']}>: <@{user_id}> ({count} attacks)")
+    # Determine team for each victim
+    for victim_id in victim_stats:
+        for team_name in teams.keys():
+            if artfight_repo.get_team_member(guild_id, team_name, victim_id):
+                victim_stats[victim_id]['team'] = team_name
+                break
     
-    if hardworking_lines:
-        embed.add_field(
-            name=f"The Hardworking of {year}",
-            value="\n".join(hardworking_lines),
-            inline=False
-        )
+    # Helper to format winners with tie support
+    def format_winners(entries: list[tuple], value_suffix: str = "") -> str:
+        """Format top entries, showing all ties for first place."""
+        if not entries:
+            return "None"
+        entries = sorted(entries, key=lambda x: x[1], reverse=True)
+        top_val = entries[0][1]
+        winners = [e for e in entries if e[1] == top_val]
+        if len(winners) == 1:
+            return f"<@{winners[0][0]}> ({winners[0][1]}{value_suffix})"
+        else:
+            return " / ".join(f"<@{uid}>" for uid, _ in winners) + f" ({top_val}{value_suffix})"
     
-    # The Victim of {year} - Most attacks received per team
-    if victim_counts:
-        # Group victims by team
-        team_victims = {}
-        for victim_id, count in victim_counts.most_common():
-            victim_team = None
-            for team_name in teams.keys():
-                if artfight_repo.get_team_member(guild_id, team_name, victim_id):
-                    victim_team = team_name
-                    break
-            
-            if victim_team and victim_team not in team_victims:
-                team_victims[victim_team] = (victim_id, count)
+    def format_team_winners(entries: list[tuple], value_suffix: str = "") -> str:
+        """Format top team entries with tie support."""
+        if not entries:
+            return "None"
+        entries = sorted(entries, key=lambda x: x[1], reverse=True)
+        top_val = entries[0][1]
+        winners = [e for e in entries if e[1] == top_val]
+        if len(winners) == 1:
+            return f"<@&{winners[0][2]}> ({winners[0][1]}{value_suffix})"
+        else:
+            return " / ".join(f"<@&{rid}>" for _, _, rid in winners) + f" ({top_val}{value_suffix})"
+    
+    team_names = list(teams.keys())
+    lines = [f"# 🏆 Artfight {year} - Hall of Fame 🏆", ""]
+    
+    # === 👑 The Hard-Working 👑 ===
+    lines.append("## 👑 The Hard-Working 👑")
+    
+    all_members_subs = [(uid, data['submissions']) 
+                        for stats in team_stats.values() 
+                        for uid, data in stats['members_data'].items() 
+                        if data['submissions'] > 0]
+    all_members_score = [(uid, data['points']) 
+                         for stats in team_stats.values() 
+                         for uid, data in stats['members_data'].items() 
+                         if data['points'] > 0]
+    
+    if all_members_subs:
+        lines.append(f"By submissions: {format_winners(all_members_subs)}")
+    if all_members_score:
+        lines.append(f"By score: {format_winners(all_members_score, ' pts')}")
+    lines.append("")
+    
+    # Per team
+    for team_name in team_names:
+        stats = team_stats.get(team_name, {})
+        members_data = stats.get('members_data', {})
+        role_id = stats.get('role_id')
         
-        if team_victims:
-            victim_lines = []
-            for team_name, (victim_id, count) in team_victims.items():
-                role_id = teams.get(team_name)
-                victim_lines.append(f"<@&{role_id}>: <@{victim_id}> ({count} times)")
-            
-            embed.add_field(
-                name=f"The Victim of {year}",
-                value="\n".join(victim_lines),
-                inline=False
-            )
+        team_subs = [(uid, d['submissions']) for uid, d in members_data.items() if d['submissions'] > 0]
+        team_score = [(uid, d['points']) for uid, d in members_data.items() if d['points'] > 0]
+        
+        if team_subs or team_score:
+            lines.append(f"On <@&{role_id}>:")
+            if team_subs:
+                lines.append(f"By submissions: {format_winners(team_subs)}")
+            if team_score:
+                lines.append(f"By score: {format_winners(team_score, ' pts')}")
+            lines.append("")
     
-    # Individual Attack with the highest score
-    if all_submissions:
-        top_submission = max(all_submissions, key=lambda s: s['points'])
-        embed.add_field(
-            name="Highest Scoring Attack",
-            value=f"<@{top_submission['user_id']}> with **{top_submission['points']}** points\n*\"{top_submission['title']}\"*",
-            inline=True
-        )
+    # === ☠️ The Victim ☠️ ===
+    lines.append("## ☠️ The Victims ☠️")
     
-    # Biggest collab
+    victims_by_count = [(vid, data['by_count']) for vid, data in victim_stats.items()]
+    victims_by_score = [(vid, data['by_score']) for vid, data in victim_stats.items()]
+    
+    if victims_by_count:
+        lines.append(f"By attacks: {format_winners(victims_by_count)}")
+    if victims_by_score:
+        lines.append(f"By score: {format_winners(victims_by_score, ' pts')}")
+    lines.append("")
+    
+    # Per team
+    for team_name in team_names:
+        role_id = teams.get(team_name)
+        team_victims_count = [(vid, d['by_count']) for vid, d in victim_stats.items() if d['team'] == team_name]
+        team_victims_score = [(vid, d['by_score']) for vid, d in victim_stats.items() if d['team'] == team_name]
+        
+        if team_victims_count or team_victims_score:
+            lines.append(f"On <@&{role_id}>:")
+            if team_victims_count:
+                lines.append(f"By attacks: {format_winners(team_victims_count)}")
+            if team_victims_score:
+                lines.append(f"By score: {format_winners(team_victims_score, ' pts')}")
+            lines.append("")
+    
+    # === 📝 Highest Scoring Solo Attack 📝 ===
+    solo_submissions = [s for s in all_submissions if not s.get('collaborators')]
+    if solo_submissions:
+        top_solo = max(solo_submissions, key=lambda s: s['points'])
+        title_part = f'*"{top_solo["title"]}"*' if top_solo.get('title') else ''
+        lines.append("### 📝 Highest Scoring Solo Attack 📝")
+        lines.append(f"<@{top_solo['user_id']}> with {title_part} ({top_solo['points']} pts)")
+        lines.append("")
+    
+    # === 🤝 Biggest Collab 🤝 ===
     if biggest_collab['size'] > 1:
-        collab_mentions = [f"<@{m}>" for m in biggest_collab['members']]
-        embed.add_field(
-            name="Biggest Collab",
-            value=f"{', '.join(collab_mentions)}\n*\"{biggest_collab['title']}\"*",
-            inline=True
-        )
+        title_part = f'*"{biggest_collab["title"]}"*' if biggest_collab.get('title') else 'Untitled'
+        lines.append("### 🤝 Biggest Collab 🤝")
+        lines.append(f"{title_part} with {biggest_collab['size']} people")
+        lines.append("")
     
-    # Team with the most submissions
+    # === 💥 Most Active Team 💥 ===
     if team_stats:
-        top_team = max(team_stats.items(), key=lambda t: t[1]['submissions'])
-        if top_team[1]['submissions'] > 0:
-            embed.add_field(
-                name="Most ~~Active~~ Sigma Team",
-                value=f"<@&{top_team[1]['role_id']}> with **{top_team[1]['submissions']}** submissions",
-                inline=True
-            )
+        teams_by_subs = [(name, stats['submissions'], stats['role_id']) for name, stats in team_stats.items()]
+        teams_by_subs.sort(key=lambda x: x[1], reverse=True)
+        if teams_by_subs and teams_by_subs[0][1] > 0:
+            lines.append("### 💥 Most Active Team 💥")
+            lines.append(f"{format_team_winners(teams_by_subs, ' submissions')}")
+            lines.append("")
     
-    # Most and least popular prompts
+    # === 🌸 Most Popular Prompt 🌸 ===
     prompts = artfight_repo.get_prompts(guild_id) or {}
     if prompt_counts and prompts:
         most_popular_day, most_count = prompt_counts.most_common(1)[0]
-        least_popular_day, least_count = prompt_counts.most_common()[-1]
-        
-        most_prompt_text = prompts.get(str(most_popular_day), "Unknown")[:30]
-        least_prompt_text = prompts.get(str(least_popular_day), "Unknown")[:30]
-        
-        embed.add_field(
-            name="Most Popular Prompt",
-            value=f"Day {most_popular_day}: *\"{most_prompt_text}...\"* ({most_count} submissions)",
-            inline=True
-        )
-        
-        if most_popular_day != least_popular_day:
-            embed.add_field(
-                name="Least Popular Prompt",
-                value=f"Day {least_popular_day}: *\"{least_prompt_text}...\"* ({least_count} submissions)",
-                inline=True
-            )
+        most_prompt_text = prompts.get(str(most_popular_day), "Unknown")
+        lines.append("### 🌸 Most Popular Prompt 🌸")
+        lines.append(f"Day {most_popular_day}: *\"{most_prompt_text}\"* ({most_count} submissions)")
+        lines.append("")
     
-    # The skibidest of the event - always Riko (as per OVERVIEW)
-    embed.add_field(
-        name="The Skibidest of the Event",
-        value="<@465057997190856714>",
-        inline=True
-    )
+    # === 😎 The Skibidiest 😎 ===
+    lines.append("### 😎 The Skibidiest 😎")
+    lines.append("<@465057997190856714>")
+    lines.append("")
     
-    embed.set_footer(text="sigma sigma on the wall, who's the skibidiest of them all?")
+    lines.append("-# sigma sigma on the wall, who's the skibidiest of them all?")
     
-    return embed
+    return '\n'.join(lines)

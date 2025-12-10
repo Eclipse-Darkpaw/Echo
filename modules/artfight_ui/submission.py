@@ -308,8 +308,10 @@ class CharacterCountModal(Modal):
             if count <= 0:
                 await interaction.response.send_message("❌ Please enter a number greater than 0.", ephemeral=True)
                 return
-            if count > 20:
-                await interaction.response.send_message("❌ Maximum 20 characters allowed per submission.", ephemeral=True)
+            
+            # First 9 days: max 5 characters
+            if self.parent_view.current_day <= 9 and count > 5:
+                await interaction.response.send_message("❌ Maximum 5 characters allowed during the first 9 days of artfight.", ephemeral=True)
                 return
             
             self.parent_view.character_count = count
@@ -609,44 +611,60 @@ class SubmissionFlowView(View):
         )
 
     async def show_collaborator_select(self):
-        """Show the collaborator selection - dropdown of team members or type user ID."""
+        """Show the collaborator selection - dropdown(s) of team members or type user ID."""
         view = View(timeout=300)
         
-        # Filter out already selected collaborators
-        available = [p for p in self._team_participants if p[0] not in self.data.collaborators]
+        # Filter out already selected collaborators and the submitter themselves
+        available = [p for p in self._team_participants 
+                     if p[0] not in self.data.collaborators and p[0] != self.submitter.id]
         
-        # Build options from team participants (up to 25)
-        if available and len(available) <= 25:
-            options = []
-            for user_id, display_name, team_name in available[:25]:
-                options.append(SelectOption(
-                    label=display_name[:100],
-                    value=str(user_id),
-                    description=f"User ID: {user_id}"[:100]
-                ))
+        # Callback for when a collaborator is selected from any dropdown
+        async def member_selected(interaction: discord.Interaction):
+            selected_id = int(interaction.data['values'][0])
+            if selected_id not in self.data.collaborators:
+                self.data.collaborators.append(selected_id)
             
-            if options:
-                async def member_selected(interaction: discord.Interaction):
-                    selected_id = int(interaction.data['values'][0])
-                    if selected_id not in self.data.collaborators:
-                        self.data.collaborators.append(selected_id)
-                    
-                    collab_mentions = [f"<@{c}>" for c in self.data.collaborators]
-                    await interaction.response.edit_message(
-                        content=f"Collaborators: {', '.join(collab_mentions)}",
-                        view=None
-                    )
-                    # Ask if they want to add more
-                    await self.show_add_more_collaborators()
-                
-                select = Select(
-                    placeholder="Select a teammate to add as collaborator",
-                    options=options
-                )
-                select.callback = member_selected
-                view.add_item(select)
+            collab_mentions = [f"<@{c}>" for c in self.data.collaborators]
+            await interaction.response.edit_message(
+                content=f"Collaborators: {', '.join(collab_mentions)}",
+                view=None
+            )
+            # Ask if they want to add more
+            await self.show_add_more_collaborators()
         
-        # Button to type user ID manually (always available, required if >25 participants)
+        # Create multiple dropdowns if needed (max 25 per dropdown, max 3 dropdowns to leave room for buttons)
+        if available:
+            # Sort by display name for better UX
+            sorted_available = sorted(available, key=lambda p: p[1].lower())
+            
+            # Split into chunks of 25
+            chunks = [sorted_available[i:i+25] for i in range(0, len(sorted_available), 25)]
+            
+            # Add up to 3 dropdowns (leaving room for Type ID and Done buttons)
+            for chunk_idx, chunk in enumerate(chunks[:3]):
+                options = []
+                for user_id, display_name, team_name in chunk:
+                    options.append(SelectOption(
+                        label=display_name[:100],
+                        value=str(user_id),
+                        description=f"User ID: {user_id}"[:100]
+                    ))
+                
+                if options:
+                    # Create range label for dropdown
+                    first_name = chunk[0][1][:1].upper()
+                    last_name = chunk[-1][1][:1].upper()
+                    range_label = f"{first_name}-{last_name}" if first_name != last_name else first_name
+                    
+                    select = Select(
+                        placeholder=f"Add collaborator ({range_label})" if len(chunks) > 1 else "Select a teammate to add as collaborator",
+                        options=options,
+                        row=chunk_idx
+                    )
+                    select.callback = member_selected
+                    view.add_item(select)
+        
+        # Button to type user ID manually (always available)
         async def type_id(interaction: discord.Interaction):
             await interaction.response.edit_message(
                 content="Please type the user ID of your collaborator:",
@@ -666,9 +684,9 @@ class SubmissionFlowView(View):
                 await interaction.response.edit_message(content="Solo submission", view=None)
             await self.show_confirmation()
         
-        type_btn = Button(label="Type User ID", style=discord.ButtonStyle.primary)
+        type_btn = Button(label="Type User ID", style=discord.ButtonStyle.primary, row=4)
         type_btn.callback = type_id
-        done_btn = Button(label="Done Adding" if self.data.collaborators else "Skip", style=discord.ButtonStyle.secondary)
+        done_btn = Button(label="Done Adding" if self.data.collaborators else "Skip", style=discord.ButtonStyle.secondary, row=4)
         done_btn.callback = done_collabs
         
         view.add_item(type_btn)
@@ -679,14 +697,13 @@ class SubmissionFlowView(View):
             collab_mentions = [f"<@{c}>" for c in self.data.collaborators]
             current_collabs = f"\n\n**Current collaborators:** {', '.join(collab_mentions)}"
         
-        # Show different message if too many participants for dropdown
-        if len(available) > 25:
+        # Show message - mention if there are more than 75 teammates (3 dropdowns worth)
+        if len(available) > 75:
             await self.dm_channel.send(
-                f"👥 **Type the user ID of your collaborator:**\n"
-                f"-# (Too many team members for dropdown){current_collabs}",
+                f"👥 **Select a collaborator from your team** (or type their user ID):\n"
+                f"-# (Showing first 75 teammates alphabetically){current_collabs}",
                 view=view
             )
-            self.current_step = self.STEP_COLLAB_INPUT
         else:
             await self.dm_channel.send(
                 f"👥 **Select a collaborator from your team** (or type their user ID):{current_collabs}",
@@ -932,8 +949,10 @@ class SubmissionFlowView(View):
             if count <= 0:
                 await self.dm_channel.send("❌ Please enter a number greater than 0.")
                 return True
-            if count > 20:
-                await self.dm_channel.send("❌ Maximum 20 characters allowed per submission.")
+            
+            # First 9 days: max 5 characters
+            if self.current_day <= 9 and count > 5:
+                await self.dm_channel.send("❌ Maximum 5 characters allowed during the first 9 days of artfight.")
                 return True
             
             self.character_count = count
@@ -946,44 +965,60 @@ class SubmissionFlowView(View):
             return True
 
     async def ask_character_owner(self):
-        """Ask who owns the current character using participant dropdown or ID input."""
+        """Ask who owns the current character using participant dropdown(s) or ID input."""
         view = View(timeout=300)
         
-        # Use all participants (from any team) for character owners
-        if self._all_participants and len(self._all_participants) <= 25:
-            options = []
-            for user_id, display_name, team_name in self._all_participants[:25]:
-                options.append(SelectOption(
-                    label=display_name[:100],
-                    value=str(user_id),
-                    description=f"{team_name} • ID: {user_id}"[:100]
-                ))
+        # Callback for when an owner is selected from any dropdown
+        async def owner_selected(interaction: discord.Interaction):
+            selected_id = int(interaction.data['values'][0])
+            self.data.character_owners.append(selected_id)
+            await interaction.response.edit_message(
+                content=f"Character {self.current_character}: <@{selected_id}>",
+                view=None
+            )
             
-            if options:
-                async def owner_selected(interaction: discord.Interaction):
-                    selected_id = int(interaction.data['values'][0])
-                    self.data.character_owners.append(selected_id)
-                    await interaction.response.edit_message(
-                        content=f"Character {self.current_character}: <@{selected_id}>",
-                        view=None
-                    )
-                    
-                    self.current_character += 1
-                    if self.current_character <= self.character_count:
-                        await self.ask_character_owner()
-                    else:
-                        # After all characters, ask about collaborators
-                        self.current_step = self.STEP_COLLABORATORS
-                        await self.show_collaborator_question()
-                
-                select = Select(
-                    placeholder=f"Who owns character #{self.current_character}?",
-                    options=options
-                )
-                select.callback = owner_selected
-                view.add_item(select)
+            self.current_character += 1
+            if self.current_character <= self.character_count:
+                await self.ask_character_owner()
+            else:
+                # After all characters, ask about collaborators
+                self.current_step = self.STEP_COLLABORATORS
+                await self.show_collaborator_question()
         
-        # Button to type user ID manually
+        # Use all participants (from any team) for character owners
+        # Create multiple dropdowns if needed (max 25 per dropdown, max 5 dropdowns per view)
+        if self._all_participants:
+            # Sort by display name for better UX
+            sorted_participants = sorted(self._all_participants, key=lambda p: p[1].lower())
+            
+            # Split into chunks of 25 (Discord limit per Select)
+            chunks = [sorted_participants[i:i+25] for i in range(0, len(sorted_participants), 25)]
+            
+            # Add up to 4 dropdowns (leaving room for the Type ID button)
+            for chunk_idx, chunk in enumerate(chunks[:4]):
+                options = []
+                for user_id, display_name, team_name in chunk:
+                    options.append(SelectOption(
+                        label=display_name[:100],
+                        value=str(user_id),
+                        description=f"{team_name} • ID: {user_id}"[:100]
+                    ))
+                
+                if options:
+                    # Create range label for dropdown (e.g., "A-M" or "N-Z")
+                    first_name = chunk[0][1][:1].upper()
+                    last_name = chunk[-1][1][:1].upper()
+                    range_label = f"{first_name}-{last_name}" if first_name != last_name else first_name
+                    
+                    select = Select(
+                        placeholder=f"Owner #{self.current_character} ({range_label})" if len(chunks) > 1 else f"Who owns character #{self.current_character}?",
+                        options=options,
+                        row=chunk_idx
+                    )
+                    select.callback = owner_selected
+                    view.add_item(select)
+        
+        # Button to type user ID manually (always available)
         async def type_id(interaction: discord.Interaction):
             await interaction.response.edit_message(
                 content=f"Please type the user ID of character #{self.current_character}'s owner:",
@@ -991,18 +1026,18 @@ class SubmissionFlowView(View):
             )
             self.current_step = self.STEP_CHAR_OWNER_INPUT
         
-        type_btn = Button(label="Type User ID", style=discord.ButtonStyle.primary)
+        type_btn = Button(label="Type User ID", style=discord.ButtonStyle.primary, row=4)
         type_btn.callback = type_id
         view.add_item(type_btn)
         
-        # Show appropriate message based on participant count
-        if len(self._all_participants) > 25:
+        # Show message - mention if there are more than 100 participants (4 dropdowns worth)
+        if len(self._all_participants) > 100:
             await self.dm_channel.send(
-                f"**Character #{self.current_character}**: Type the user ID of the owner.\n"
-                f"-# (Too many participants for dropdown)",
+                f"**Character #{self.current_character}**: Who owns this character?\n"
+                f"Select from the dropdowns or type their user ID.\n"
+                f"-# (Showing first 100 participants alphabetically)",
                 view=view
             )
-            self.current_step = self.STEP_CHAR_OWNER_INPUT
         else:
             await self.dm_channel.send(
                 f"**Character #{self.current_character}**: Who owns this character?\n"

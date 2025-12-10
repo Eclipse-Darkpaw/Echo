@@ -128,40 +128,38 @@ def artfight_configuration_embed(artfight_repo: ArtfightRepo, guild_id) -> disco
 
     return embed    
 
-class ChannelSelect(Select):
-    def __init__(
-        self,
-        channel_type: str,
-        placeholder: str,
-        *,
-        channels: list[discord.TextChannel],
-        current_channel_id: int | None
-    ):
-        options: list[discord.SelectOption] = []
 
-        for channel in channels[:25]:
-            label = f'#{channel.name}'
-            options.append(discord.SelectOption(
-                label=label[:100],
-                description=f'ID: {channel.id}'[:100],
-                value=str(channel.id),
-                default=(current_channel_id == channel.id)
-            ))
-
-        if not options:
-            options = [discord.SelectOption(label='No text channels available', value='noop', default=True)]
-
-        super().__init__(placeholder=placeholder, min_values=1, max_values=1, options=options, disabled=(options[0].value == 'noop'))
+class ChannelIdModal(Modal):
+    """Modal to manually enter a channel ID."""
+    def __init__(self, channel_type: str, view: 'ChannelSelectView'):
+        super().__init__(title=f'Enter {channel_type.title()} Channel ID')
         self.channel_type = channel_type
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.disabled:
-            await interaction.response.send_message('⚠ No channels available for selection.', ephemeral=True)
-            return
-
-        selected_channel_id = int(self.values[0])
-        view: 'ChannelSelectView' = self.view  # type: ignore
-        await view.handle_channel_selection(interaction, self.channel_type, selected_channel_id)
+        self.parent_view = view
+        
+        self.channel_id_input = TextInput(
+            label='Channel ID',
+            placeholder='e.g. 123456789012345678',
+            min_length=17,
+            max_length=20,
+            required=True
+        )
+        self.add_item(self.channel_id_input)
+    
+    async def on_submit(self, interaction: discord.Interaction):
+        try:
+            channel_id = int(self.channel_id_input.value.strip())
+            # Verify channel exists in the guild
+            channel = self.parent_view.guild.get_channel(channel_id)
+            if not channel or not isinstance(channel, discord.TextChannel):
+                await interaction.response.send_message(
+                    '❌ Invalid channel ID. Make sure it\'s a text channel in this server.',
+                    ephemeral=True
+                )
+                return
+            
+            await self.parent_view.handle_channel_selection(interaction, self.channel_type, channel_id)
+        except ValueError:
+            await interaction.response.send_message('❌ Please enter a valid channel ID (numbers only).', ephemeral=True)
 
 
 class ChannelSelectView(View):
@@ -170,24 +168,27 @@ class ChannelSelectView(View):
         self.repository = repository
         self.guild = guild
         self.update_callback = update_callback
-
-        available_channels = self._get_channel_candidates()
-        submission_id = repository.get_submissions_channel(guild.id)
-        prompts_id = repository.get_prompts_channel(guild.id)
-
-        self.add_item(ChannelSelect(
-            'submissions',
-            placeholder='Select submissions channel',
-            channels=available_channels,
-            current_channel_id=submission_id
-        ))
-        self.add_item(ChannelSelect(
-            'prompts',
-            placeholder='Select prompts channel',
-            channels=available_channels,
-            current_channel_id=prompts_id
-        ))
-
+        self._available_channels = self._get_channel_candidates()
+        
+        # We'll show a simpler UI: buttons to configure each channel type
+        # This is cleaner when there are many channels
+        
+        submissions_btn = discord.ui.Button(
+            label='📝 Set Submissions Channel',
+            style=discord.ButtonStyle.primary,
+            row=0
+        )
+        submissions_btn.callback = lambda i: self._show_channel_picker(i, 'submissions')
+        self.add_item(submissions_btn)
+        
+        prompts_btn = discord.ui.Button(
+            label='💡 Set Prompts Channel',
+            style=discord.ButtonStyle.primary,
+            row=0
+        )
+        prompts_btn.callback = lambda i: self._show_channel_picker(i, 'prompts')
+        self.add_item(prompts_btn)
+    
     def _get_channel_candidates(self) -> list[discord.TextChannel]:
         me = self.guild.me
         channels = [
@@ -196,6 +197,26 @@ class ChannelSelectView(View):
         ]
         channels.sort(key=lambda c: c.position)
         return channels
+    
+    async def _show_channel_picker(self, interaction: discord.Interaction, channel_type: str):
+        """Show a picker view for selecting a channel."""
+        current_id = (self.repository.get_submissions_channel(self.guild.id) 
+                      if channel_type == 'submissions' 
+                      else self.repository.get_prompts_channel(self.guild.id))
+        
+        picker_view = ChannelPickerView(
+            channel_type=channel_type,
+            channels=self._available_channels,
+            current_channel_id=current_id,
+            parent_view=self
+        )
+        
+        current_text = f"<#{current_id}>" if current_id else "Not set"
+        await interaction.response.send_message(
+            f"**Select {channel_type} channel**\nCurrent: {current_text}",
+            view=picker_view,
+            ephemeral=True
+        )
 
     async def handle_channel_selection(self, interaction: discord.Interaction, channel_type: str, channel_id: int):
         try:
@@ -207,8 +228,91 @@ class ChannelSelectView(View):
             await interaction.response.send_message(f'❌ Failed to update channel: `{exc}`', ephemeral=True)
             return
 
-        await interaction.response.send_message('✔ Channel updated', ephemeral=True)
+        await interaction.response.send_message(f'✔ {channel_type.title()} channel set to <#{channel_id}>', ephemeral=True)
         await self.update_callback(interaction)
+
+
+class ChannelPickerView(View):
+    """View for picking a channel with multiple dropdowns if needed."""
+    def __init__(
+        self,
+        channel_type: str,
+        channels: list[discord.TextChannel],
+        current_channel_id: int | None,
+        parent_view: ChannelSelectView
+    ):
+        super().__init__(timeout=120)
+        self.channel_type = channel_type
+        self.channels = channels
+        self.current_channel_id = current_channel_id
+        self.parent_view = parent_view
+        
+        if not channels:
+            # No channels available
+            self.add_item(discord.ui.Button(
+                label='No text channels available',
+                style=discord.ButtonStyle.secondary,
+                disabled=True
+            ))
+            return
+        
+        # Sort channels by name for easier finding
+        sorted_channels = sorted(channels, key=lambda c: c.name.lower())
+        
+        # Split into chunks of 25
+        chunks = [sorted_channels[i:i+25] for i in range(0, len(sorted_channels), 25)]
+        
+        # Add up to 4 dropdowns (rows 0-3)
+        for chunk_idx, chunk in enumerate(chunks[:4]):
+            options = []
+            for channel in chunk:
+                options.append(discord.SelectOption(
+                    label=f'#{channel.name}'[:100],
+                    description=f'ID: {channel.id}'[:100],
+                    value=str(channel.id),
+                    default=(current_channel_id == channel.id)
+                ))
+            
+            if options:
+                # Create range label
+                first_name = chunk[0].name[:1].upper()
+                last_name = chunk[-1].name[:1].upper()
+                range_label = f"({first_name}-{last_name})" if first_name != last_name else f"({first_name})"
+                
+                select = discord.ui.Select(
+                    placeholder=f'Select channel {range_label}' if len(chunks) > 1 else f'Select {channel_type} channel',
+                    options=options,
+                    row=chunk_idx
+                )
+                select.callback = self._make_select_callback()
+                self.add_item(select)
+        
+        # Add "Type Channel ID" button on row 4
+        type_id_btn = discord.ui.Button(
+            label='📝 Type Channel ID',
+            style=discord.ButtonStyle.secondary,
+            row=4
+        )
+        type_id_btn.callback = self._type_channel_id
+        self.add_item(type_id_btn)
+        
+        # Show note if more than 100 channels
+        if len(channels) > 100:
+            self._too_many_channels = True
+        else:
+            self._too_many_channels = False
+    
+    def _make_select_callback(self):
+        async def callback(interaction: discord.Interaction):
+            selected_id = int(interaction.data['values'][0])
+            await self.parent_view.handle_channel_selection(interaction, self.channel_type, selected_id)
+            self.stop()
+        return callback
+    
+    async def _type_channel_id(self, interaction: discord.Interaction):
+        modal = ChannelIdModal(self.channel_type, self.parent_view)
+        await interaction.response.send_modal(modal)
+        self.stop()
 
 class DateSetup(Modal):
     def __init__(self, repository: ArtfightRepo, guild_id: int, update_callback):
