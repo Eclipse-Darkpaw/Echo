@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from filelock import FileLock, Timeout
 from util import DirectoryWatcher
 
 _logger = logging.getLogger('utils')
@@ -21,15 +22,29 @@ class FileWatcher:
         _logger.info(f'registered FileWatcher for: {file_path}')
 
     def _load(self):
+        """
+        Load JSON from file, respecting the file lock to avoid reading during writes.
+        """
+        lock = FileLock(f'{self.file_path}.lock')
+        
         try:
-            with open(self.file_path, 'r') as file:
-                return json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            _logger.exception(f'Failed to load: {self.file_path}')
+            with lock.acquire(timeout=5):
+                with open(self.file_path, 'r') as file:
+                    return json.load(file)
+        except Timeout:
+            _logger.warning(f'Failed to acquire lock for reading: {self.file_path}, using cached data')
+            return self.data if hasattr(self, 'data') else {}
+        except json.JSONDecodeError:
+            _logger.exception(f'Failed to decode JSON: {self.file_path}')
+            return self.data if hasattr(self, 'data') else {}
+        except FileNotFoundError:
+            _logger.exception(f'File not found: {self.file_path}')
             return {}
     
     def reload(self):
-        self.data = self._load()
+        new_data = self._load()
+        if new_data:  # Only update if we got valid data
+            self.data = new_data
         _logger.info(f'File: {self.file_name} updated')
 
     def __getitem__(self, key):

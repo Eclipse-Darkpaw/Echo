@@ -461,9 +461,9 @@ class Artfight(commands.GroupCog, name="artfight"):
             )
             await channel.send(content=content if content else None, embed=final_scores_embed)
 
-            # Send fancy leaderboard embed
-            leaderboard_embed = build_fancy_leaderboard_embed(self.artfight_repo, guild, guild.id, artfight_role)
-            await channel.send(embed=leaderboard_embed)
+            # Send Hall of Fame message (plain text with markdown)
+            leaderboard_message = build_fancy_leaderboard_embed(self.artfight_repo, guild, guild.id, artfight_role)
+            await channel.send(content=leaderboard_message)
 
             self.bot.logger.info(f'Sent final results for guild {guild.id}')
         except discord.HTTPException as e:
@@ -760,17 +760,17 @@ class Artfight(commands.GroupCog, name="artfight"):
         end_date = self.artfight_repo.get_end_date(ctx.guild.id)
 
         if start_date is None or end_date is None:
-            await ctx.reply('Artfight is not configured for this server.')
+            await ctx.reply('Artfight is not scheduled for this server.')
             return
 
-        if not (start_date <= current_date_utc <= end_date):
-            await ctx.reply('Artfight is not happening right now.')
+        if current_date_utc > end_date:
+            await ctx.reply('Artfight has already ended.')
             return
 
         # Get configured teams
         teams = self.artfight_repo.get_teams(ctx.guild.id)
         if not teams:
-            await ctx.reply('Artfight teams are not configured.')
+            await ctx.reply('Artfight teams are not configured yet.')
             return
 
         # Check if user is already on a team (using internal data)
