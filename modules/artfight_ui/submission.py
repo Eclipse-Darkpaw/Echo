@@ -99,16 +99,11 @@ def calculate_score(
             # Old prompt, no points for enemy attacks
             prompt_multiplier = 0.0
     
-    # Calculate base score (without friendly fire)
-    base_score = ((base + shaded) * enemy_count + background) * day_multiplier
+    base_score = ((base + shaded + background) * enemy_count) * day_multiplier
     base_score = base_score * prompt_multiplier
     
-    # Add friendly fire points (always awarded, not affected by prompt/multipliers)
-    total_score = base_score + (friendly_count * SCORE_FRIENDLY_FIRE)
-    
-    # Round to nearest integer
     data.base_score = round(base_score)
-    data.final_score = round(total_score)
+    data.final_score = round(base_score + (friendly_count * SCORE_FRIENDLY_FIRE))
     
     return data.final_score
 
