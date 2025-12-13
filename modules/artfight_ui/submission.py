@@ -385,9 +385,14 @@ def build_submission_embed(
         victim_mentions = [f"<@{v}>" for v in data.victims]
         embed.add_field(name="Victims", value=", ".join(victim_mentions), inline=True)
     
-    # Friendly fire note (if any)
+    # Friendly fire (show as mentions, not just count)
     if data.friendly_count > 0:
-        embed.add_field(name="Friendly Fire", value=f"{data.friendly_count} teammate(s)", inline=True)
+        # Friendly targets are character owners from same team (excluding attackers)
+        attacker_ids = {data.submitter_id} | set(data.collaborators)
+        friendly_targets = [uid for uid in data.character_owners if uid not in attacker_ids and uid not in data.victims]
+        if friendly_targets:
+            friendly_mentions = [f"<@{uid}>" for uid in friendly_targets]
+            embed.add_field(name="Friendly Fire", value=", ".join(friendly_mentions), inline=True)
     
     # Score
     embed.add_field(name="Score", value=f"**{data.final_score}** {points_name}", inline=True)
@@ -1430,10 +1435,12 @@ class SubmissionFlowView(View):
             # Build and send the submission embed
             submission_embed = build_submission_embed(self.data, team_role, points_name, self.guild)
             
-            # Ping victims outside embed (mentions in embeds don't notify)
-            victim_pings = ", ".join(f"<@{user_id}>" for user_id in self.data.victims) if self.data.victims else None
+            # Ping all character owners (victims + friendly fire) outside embed (mentions in embeds don't notify)
+            attacker_ids = {self.data.submitter_id} | set(self.data.collaborators)
+            all_targets = [uid for uid in self.data.character_owners if uid not in attacker_ids]
+            ping_content = ", ".join(f"<@{uid}>" for uid in all_targets) if all_targets else None
             
-            await self.submissions_channel.send(content=victim_pings, embed=submission_embed)
+            await self.submissions_channel.send(content=ping_content, embed=submission_embed)
             
             # Confirm to user (show total score, not individual share)
             await self.dm_channel.send(
