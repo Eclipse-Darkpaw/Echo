@@ -8,7 +8,6 @@ from repositories import ArtfightRepo
 from typing import Callable, Awaitable
 
 
-# Scoring constants
 SCORE_BASE = {
     'bw_sketch': 5,
     'color_sketch': 10,
@@ -56,7 +55,7 @@ def calculate_score(
     """
     Calculate the score for a submission.
     
-    Formula: ((prompt * ((base + shaded) * num_enemy_chars + bg)) * day_multiplier) + num_friendly_chars
+    Formula: ((prompt * ((base + shaded + background) * num_enemy_chars)) * day_multiplier) + num_friendly_chars
     
     - If submitting for old prompt outside grace period: 0 points (but still +1 per friendly)
     - If within grace period for previous prompt: 75% of normal score
@@ -467,6 +466,9 @@ class SubmissionFlowView(View):
     STEP_COLLAB_INPUT = 9  # For typing collaborator user ID
     STEP_CONFIRM = 10
     
+    # Steps that expect a text message (not button/select)
+    MESSAGE_STEPS = {STEP_IMAGE, STEP_TITLE, STEP_CHAR_COUNT, STEP_COLLAB_INPUT, STEP_CHAR_OWNER_INPUT}
+    
     def __init__(
         self,
         artfight_repo: ArtfightRepo,
@@ -498,6 +500,7 @@ class SubmissionFlowView(View):
         # Cache participants for selection (populated in start())
         self._all_participants: list[tuple[int, str, str]] = []  # All participants (for char owners)
         self._team_participants: list[tuple[int, str, str]] = []  # Same team only (for collabs)
+        self._participants_by_team: dict[str, list[tuple[int, str, str]]] = {}  # By team (for multi-message owner selection)
         
         # Get current artfight day info for grace period calculation
         start_date = artfight_repo.get_start_date(guild.id)
@@ -541,6 +544,125 @@ class SubmissionFlowView(View):
         
         return False
 
+    def expects_message(self) -> bool:
+        """Return True if the current step expects a text message input."""
+        return self.current_step in self.MESSAGE_STEPS
+
+    async def go_back(self, interaction: discord.Interaction | None = None):
+        """
+        Go back to the previous step and undo the data set in the current step.
+        
+        Flow order: IMAGE → TITLE → TYPE → SHADED → BACKGROUND → CHAR_COUNT → CHAR_OWNERS → COLLABORATORS → CONFIRM
+        """
+        # Define what to clear and where to go for each step
+        step_actions = {
+            self.STEP_TITLE: (self.STEP_IMAGE, self._clear_image, self.ask_for_image),
+            self.STEP_TYPE: (self.STEP_TITLE, self._clear_title, self.show_title_prompt),
+            self.STEP_SHADED: (self.STEP_TYPE, self._clear_type, self.show_type_select),
+            self.STEP_BACKGROUND: (self.STEP_SHADED, self._clear_shaded, self.show_shaded_buttons),
+            self.STEP_CHAR_COUNT: (self.STEP_BACKGROUND, self._clear_background, self.show_background_buttons),
+            self.STEP_CHAR_OWNERS: (self.STEP_CHAR_COUNT, self._clear_char_count, self.ask_character_count),
+            self.STEP_CHAR_OWNER_INPUT: (self.STEP_CHAR_OWNERS, self._clear_nothing, self.ask_character_owner),  # Just re-show dropdowns
+            self.STEP_COLLABORATORS: (self.STEP_CHAR_OWNERS, self._clear_char_owners, self._go_back_to_last_char_owner),
+            self.STEP_COLLAB_INPUT: (self.STEP_COLLABORATORS, self._clear_nothing, self.show_collaborator_question),
+            self.STEP_CONFIRM: (self.STEP_COLLABORATORS, self._clear_collaborators, self.show_collaborator_question),
+        }
+        
+        if self.current_step == self.STEP_IMAGE:
+            # Can't go back from the first step
+            if interaction:
+                await interaction.response.send_message("This is the first step, can't go back further.", ephemeral=True)
+            else:
+                await self.dm_channel.send("This is the first step, can't go back further.")
+            return
+        
+        # Handle going back within character owners (multiple characters)
+        if self.current_step == self.STEP_CHAR_OWNERS and self.current_character > 1:
+            # Go back to previous character
+            self.current_character -= 1
+            if self.data.character_owners:
+                self.data.character_owners.pop()
+            if interaction:
+                await interaction.response.edit_message(content="Going back to previous character...", view=None)
+            await self._cleanup_owner_messages()
+            await self.ask_character_owner()
+            return
+        
+        action = step_actions.get(self.current_step)
+        if action:
+            prev_step, clear_func, show_func = action
+            clear_func()
+            self.current_step = prev_step
+            
+            if interaction:
+                await interaction.response.edit_message(content="⬅️ Going back...", view=None)
+            
+            await show_func()
+        else:
+            if interaction:
+                await interaction.response.send_message("Cannot go back from this step.", ephemeral=True)
+
+    def _clear_nothing(self):
+        """Placeholder for steps that don't need data clearing."""
+        pass
+
+    def _clear_image(self):
+        """Clear the image data."""
+        self.data.image_url = None
+
+    def _clear_title(self):
+        """Clear the title data."""
+        self.data.title = None
+
+    def _clear_type(self):
+        """Clear the submission type."""
+        self.data.submission_type = None
+
+    def _clear_shaded(self):
+        """Clear the shaded flag."""
+        self.data.is_shaded = False
+
+    def _clear_background(self):
+        """Clear the background flag."""
+        self.data.has_background = False
+
+    def _clear_char_count(self):
+        """Clear character count and reset character tracking."""
+        self.character_count = 0
+        self.current_character = 0
+        self.data.character_owners = []
+
+    def _clear_char_owners(self):
+        """Clear all character owners."""
+        self.data.character_owners = []
+        self.current_character = 1
+
+    def _clear_collaborators(self):
+        """Clear collaborators list."""
+        self.data.collaborators = []
+
+    async def _go_back_to_last_char_owner(self):
+        """Go back to the last character owner selection."""
+        if self.character_count > 0:
+            self.current_character = self.character_count
+            if self.data.character_owners:
+                self.data.character_owners.pop()  # Remove the last one so they can re-select
+            await self.ask_character_owner()
+        else:
+            # No characters were set, go back to char count
+            self.current_step = self.STEP_BACKGROUND
+            await self.show_background_question()
+
+    def _create_back_button(self, row: int = 4) -> Button:
+        """Create a 'Go Back' button for use in views."""
+        back_btn = Button(label="⬅️ Go Back", style=discord.ButtonStyle.secondary, row=row)
+        
+        async def back_callback(interaction: discord.Interaction):
+            await self.go_back(interaction)
+        
+        back_btn.callback = back_callback
+        return back_btn
+
     async def _check_artfight_active(self) -> bool:
         """
         Check if artfight is still active. If not, notify the user and return False.
@@ -558,13 +680,27 @@ class SubmissionFlowView(View):
 
     async def start(self):
         """Start the submission flow by asking for image upload."""
-        # Cache all participants for character owner selection (excludes self)
+        # Cache all participants for character owner selection (includes self - can attack yourself)
         self._all_participants = get_all_participants(
             self.artfight_repo,
             self.guild,
             self.guild.id,
-            exclude_user_id=self.submitter.id
+            exclude_user_id=None  # Include self - user can attack themselves
         )
+        
+        # Cache participants grouped by team for multi-message owner selection
+        self._participants_by_team: dict[str, list[tuple[int, str, str]]] = {}
+        teams = self.artfight_repo.get_teams(self.guild.id)
+        for team_name in teams.keys():
+            team_participants = get_all_participants(
+                self.artfight_repo,
+                self.guild,
+                self.guild.id,
+                exclude_user_id=None,
+                team_filter=team_name
+            )
+            if team_participants:
+                self._participants_by_team[team_name] = sorted(team_participants, key=lambda p: p[1].lower())
         
         # Cache same-team participants for collaborator selection (excludes self)
         self._team_participants = get_all_participants(
@@ -599,6 +735,7 @@ class SubmissionFlowView(View):
         
         view.add_item(yes_btn)
         view.add_item(no_btn)
+        view.add_item(self._create_back_button(row=0))
         
         await self.dm_channel.send(
             "**Did you collaborate with anyone on this piece?**",
@@ -662,7 +799,7 @@ class SubmissionFlowView(View):
         # Button to type user ID manually (always available)
         async def type_id(interaction: discord.Interaction):
             await interaction.response.edit_message(
-                content="Please type the user ID of your collaborator:",
+                content="Please type the user ID of your collaborator:\n-# Type `back` to go back",
                 view=None
             )
             self.current_step = self.STEP_COLLAB_INPUT
@@ -681,11 +818,12 @@ class SubmissionFlowView(View):
         
         type_btn = Button(label="Type User ID", style=discord.ButtonStyle.primary, row=4)
         type_btn.callback = type_id
-        done_btn = Button(label="Done Adding" if self.data.collaborators else "Skip", style=discord.ButtonStyle.secondary, row=4)
+        done_btn = Button(label="Done Adding" if self.data.collaborators else "Skip", style=discord.ButtonStyle.success, row=4)
         done_btn.callback = done_collabs
         
         view.add_item(type_btn)
         view.add_item(done_btn)
+        view.add_item(self._create_back_button(row=4))
         
         current_collabs = ""
         if self.data.collaborators:
@@ -722,13 +860,31 @@ class SubmissionFlowView(View):
             # Collaborators done, go to confirmation
             await self.show_confirmation()
         
+        async def remove_last(interaction: discord.Interaction):
+            if self.data.collaborators:
+                removed = self.data.collaborators.pop()
+                await interaction.response.edit_message(
+                    content=f"Removed <@{removed}>",
+                    view=None
+                )
+                if self.data.collaborators:
+                    await self.show_add_more_collaborators()
+                else:
+                    await self.show_collaborator_question()
+            else:
+                await interaction.response.edit_message(content="No collaborators to remove", view=None)
+                await self.show_collaborator_question()
+        
         add_btn = Button(label="Add Another", style=discord.ButtonStyle.primary)
         add_btn.callback = add_more
         done_btn = Button(label="Done Adding", style=discord.ButtonStyle.success)
         done_btn.callback = done
+        remove_btn = Button(label="⬅️ Remove Last", style=discord.ButtonStyle.secondary)
+        remove_btn.callback = remove_last
         
         view.add_item(add_btn)
         view.add_item(done_btn)
+        view.add_item(remove_btn)
         
         collab_mentions = [f"<@{c}>" for c in self.data.collaborators]
         await self.dm_channel.send(
@@ -738,6 +894,7 @@ class SubmissionFlowView(View):
 
     async def ask_for_image(self):
         """Ask for the image upload."""
+        # No back button for first step
         await self.dm_channel.send(
             "**Please upload the art you are submitting.**\n"
             "Send the image in this DM."
@@ -750,6 +907,14 @@ class SubmissionFlowView(View):
         """
         if message.author.id != self.submitter.id:
             return False
+        
+        # Check for "back" command in text input steps
+        if message.content.strip().lower() == "back" and self.current_step in self.MESSAGE_STEPS:
+            if self.current_step == self.STEP_IMAGE:
+                await self.dm_channel.send("This is the first step, can't go back further.")
+            else:
+                await self.go_back(None)
+            return True
         
         if self.current_step == self.STEP_COLLAB_INPUT:
             # User is typing a user ID for collaborator
@@ -794,11 +959,17 @@ class SubmissionFlowView(View):
                     await self.dm_channel.send("❌ This user is not registered in artfight.")
                     return True
                 
+                # Get display name for the selected user
+                member = self.guild.get_member(user_id)
+                display_name = member.display_name if member else f"User {user_id}"
+                
                 self.data.character_owners.append(user_id)
-                await self.dm_channel.send(f"Character {self.current_character}: <@{user_id}>")
+                await self.dm_channel.send(f"✅ Character {self.current_character}: <@{user_id}> ({display_name})")
                 
                 self.current_character += 1
                 if self.current_character <= self.character_count:
+                    # Go back to dropdown selection for next character
+                    self.current_step = self.STEP_CHAR_OWNERS
                     await self.ask_character_owner()
                 else:
                     # After all characters, ask about collaborators
@@ -836,7 +1007,10 @@ class SubmissionFlowView(View):
 
     async def show_title_prompt(self):
         """Ask for the title."""
-        await self.dm_channel.send("**What is the title of this piece?**")
+        await self.dm_channel.send(
+            "**What is the title of this piece?**\n"
+            "-# Type `back` to go back"
+        )
         self.current_step = self.STEP_TITLE
 
     async def handle_title_response(self, message: discord.Message) -> bool:
@@ -856,6 +1030,7 @@ class SubmissionFlowView(View):
         view = View(timeout=300)
         select = SubmissionTypeSelect()
         view.add_item(select)
+        view.add_item(self._create_back_button(row=1))
         
         # Override the select callback to use our flow
         async def new_callback(interaction: discord.Interaction):
@@ -896,6 +1071,7 @@ class SubmissionFlowView(View):
         
         view.add_item(yes_btn)
         view.add_item(no_btn)
+        view.add_item(self._create_back_button(row=0))
         
         await self.dm_channel.send("**Is this shaded?**", view=view)
 
@@ -922,6 +1098,7 @@ class SubmissionFlowView(View):
         
         view.add_item(yes_btn)
         view.add_item(no_btn)
+        view.add_item(self._create_back_button(row=0))
         
         await self.dm_channel.send("**Is there a background?**", view=view)
 
@@ -929,7 +1106,8 @@ class SubmissionFlowView(View):
         """Ask for the number of characters."""
         await self.dm_channel.send(
             "👥 **How many characters are in your attack?**\n"
-            "Please reply with a number."
+            "Please reply with a number.\n"
+            "-# Type `back` to go back"
         )
 
     async def handle_character_count(self, message: discord.Message) -> bool:
@@ -960,17 +1138,71 @@ class SubmissionFlowView(View):
             return True
 
     async def ask_character_owner(self):
-        """Ask who owns the current character using participant dropdown(s) or ID input."""
-        view = View(timeout=300)
+        """
+        Ask who owns the current character using multiple messages:
+        - One message per team (each with up to 5 dropdowns = 125 members)
+        - One message for Type ID button
+        
+        This allows supporting many more participants than the single-message approach.
+        """
+        # Track messages we send so we can clean them up after selection
+        self._owner_selection_messages: list[discord.Message] = []
         
         # Callback for when an owner is selected from any dropdown
         async def owner_selected(interaction: discord.Interaction):
             selected_id = int(interaction.data['values'][0])
+            is_self_attack = selected_id == self.submitter.id
+            
+            if is_self_attack:
+                # Ask for confirmation when attacking yourself
+                await interaction.response.edit_message(
+                    content="⚠️ **You selected yourself!** Are you sure you want to attack your own character?",
+                    view=self._build_self_attack_confirm_view(selected_id)
+                )
+            else:
+                await self._finalize_owner_selection(interaction, selected_id)
+        
+        # Build self-attack confirmation view
+        def _build_self_attack_confirm_view(selected_id: int) -> View:
+            confirm_view = View(timeout=60)
+            
+            async def confirm_self(interaction: discord.Interaction):
+                await self._finalize_owner_selection(interaction, selected_id)
+            
+            async def cancel_self(interaction: discord.Interaction):
+                await interaction.response.edit_message(
+                    content="Selection cancelled. Please select the character owner again.",
+                    view=None
+                )
+                # Clean up old messages and re-ask
+                await self._cleanup_owner_messages()
+                await self.ask_character_owner()
+            
+            yes_btn = Button(label="Yes, attack myself", style=discord.ButtonStyle.danger)
+            yes_btn.callback = confirm_self
+            no_btn = Button(label="No, go back", style=discord.ButtonStyle.secondary)
+            no_btn.callback = cancel_self
+            confirm_view.add_item(yes_btn)
+            confirm_view.add_item(no_btn)
+            return confirm_view
+        
+        self._build_self_attack_confirm_view = _build_self_attack_confirm_view
+        
+        async def _finalize_owner_selection(interaction: discord.Interaction, selected_id: int):
+            """Complete the owner selection and move to next character or step."""
             self.data.character_owners.append(selected_id)
+            
+            # Get display name for the selected user
+            member = self.guild.get_member(selected_id)
+            display_name = member.display_name if member else f"User {selected_id}"
+            
             await interaction.response.edit_message(
-                content=f"Character {self.current_character}: <@{selected_id}>",
+                content=f"✅ Character {self.current_character}: <@{selected_id}> ({display_name})",
                 view=None
             )
+            
+            # Clean up other selection messages, but keep the one we just edited
+            await self._cleanup_owner_messages(exclude_message_id=interaction.message.id)
             
             self.current_character += 1
             if self.current_character <= self.character_count:
@@ -980,65 +1212,114 @@ class SubmissionFlowView(View):
                 self.current_step = self.STEP_COLLABORATORS
                 await self.show_collaborator_question()
         
-        # Use all participants (from any team) for character owners
-        # Create multiple dropdowns if needed (max 25 per dropdown, max 5 dropdowns per view)
-        if self._all_participants:
-            # Sort by display name for better UX
-            sorted_participants = sorted(self._all_participants, key=lambda p: p[1].lower())
+        self._finalize_owner_selection = _finalize_owner_selection
+        
+        # Get team roles for display names
+        teams = self.artfight_repo.get_teams(self.guild.id)
+        
+        # Send header message
+        await self.dm_channel.send(
+            f"**Character #{self.current_character}**: Who owns this character?\n"
+            f"Select from a team below, or type their user ID."
+        )
+        
+        # Send one message per team with dropdowns
+        for team_name, participants in self._participants_by_team.items():
+            if not participants:
+                continue
             
-            # Split into chunks of 25 (Discord limit per Select)
-            chunks = [sorted_participants[i:i+25] for i in range(0, len(sorted_participants), 25)]
+            view = View(timeout=300)
             
-            # Add up to 4 dropdowns (leaving room for the Type ID button)
-            for chunk_idx, chunk in enumerate(chunks[:4]):
+            # Get team role for display
+            team_role_id = teams.get(team_name)
+            team_role = self.guild.get_role(team_role_id) if team_role_id else None
+            team_display = team_role.name if team_role else team_name
+            
+            # Split into chunks of 25 (max per Select), up to 5 dropdowns per message
+            chunks = [participants[i:i+25] for i in range(0, len(participants), 25)]
+            
+            for chunk_idx, chunk in enumerate(chunks[:5]):
                 options = []
-                for user_id, display_name, team_name in chunk:
+                for user_id, display_name, _ in chunk:
+                    # Mark if this is the submitter
+                    label = f"⭐ {display_name}" if user_id == self.submitter.id else display_name
                     options.append(SelectOption(
-                        label=display_name[:100],
+                        label=label[:100],
                         value=str(user_id),
-                        description=f"{team_name} • ID: {user_id}"[:100]
+                        description=f"ID: {user_id}"[:100]
                     ))
                 
                 if options:
                     # Create range label for dropdown (e.g., "A-M" or "N-Z")
                     first_name = chunk[0][1][:1].upper()
                     last_name = chunk[-1][1][:1].upper()
-                    range_label = f"{first_name}-{last_name}" if first_name != last_name else first_name
+                    range_label = f"({first_name}-{last_name})" if first_name != last_name else f"({first_name})"
                     
                     select = Select(
-                        placeholder=f"Owner #{self.current_character} ({range_label})" if len(chunks) > 1 else f"Who owns character #{self.current_character}?",
+                        placeholder=f"Select {range_label}" if len(chunks) > 1 else "Select member",
                         options=options,
                         row=chunk_idx
                     )
                     select.callback = owner_selected
                     view.add_item(select)
+            
+            # Note if team has more than 125 members
+            overflow_note = ""
+            if len(participants) > 125:
+                overflow_note = f"\n-# (Showing 125 of {len(participants)} members)"
+            
+            msg = await self.dm_channel.send(
+                f"**{team_display}** ({len(participants)} members){overflow_note}",
+                view=view
+            )
+            self._owner_selection_messages.append(msg)
         
-        # Button to type user ID manually (always available)
+        # Send Type ID button message with Go Back option
+        type_view = View(timeout=300)
+        
         async def type_id(interaction: discord.Interaction):
             await interaction.response.edit_message(
-                content=f"Please type the user ID of character #{self.current_character}'s owner:",
+                content="Type the user ID below:",
                 view=None
+            )
+            await self._cleanup_owner_messages()
+            await self.dm_channel.send(
+                f"Please type the **user ID** of character #{self.current_character}'s owner:\n"
+                f"-# Type `back` to go back"
             )
             self.current_step = self.STEP_CHAR_OWNER_INPUT
         
-        type_btn = Button(label="Type User ID", style=discord.ButtonStyle.primary, row=4)
-        type_btn.callback = type_id
-        view.add_item(type_btn)
+        async def go_back_char(interaction: discord.Interaction):
+            await interaction.response.edit_message(content="⬅️ Going back...", view=None)
+            await self._cleanup_owner_messages()
+            await self.go_back(None)
         
-        # Show message - mention if there are more than 100 participants (4 dropdowns worth)
-        if len(self._all_participants) > 100:
-            await self.dm_channel.send(
-                f"**Character #{self.current_character}**: Who owns this character?\n"
-                f"Select from the dropdowns or type their user ID.\n"
-                f"-# (Showing first 100 participants alphabetically)",
-                view=view
-            )
-        else:
-            await self.dm_channel.send(
-                f"**Character #{self.current_character}**: Who owns this character?\n"
-                f"Select from the dropdown or type their user ID.",
-                view=view
-            )
+        type_btn = Button(label="📝 Type User ID Instead", style=discord.ButtonStyle.secondary)
+        type_btn.callback = type_id
+        back_btn = Button(label="⬅️ Go Back", style=discord.ButtonStyle.secondary)
+        back_btn.callback = go_back_char
+        type_view.add_item(type_btn)
+        type_view.add_item(back_btn)
+        
+        msg = await self.dm_channel.send(
+            "**Can't find them?** Type their user ID instead:",
+            view=type_view
+        )
+        self._owner_selection_messages.append(msg)
+    
+    async def _cleanup_owner_messages(self, exclude_message_id: int | None = None):
+        """Remove the owner selection messages after a selection is made.
+        
+        :param exclude_message_id: Message ID to keep (the one showing the selection confirmation)
+        """
+        for msg in getattr(self, '_owner_selection_messages', []):
+            if exclude_message_id and msg.id == exclude_message_id:
+                continue  # Keep this one - it shows the selection
+            try:
+                await msg.delete()
+            except (discord.NotFound, discord.Forbidden):
+                pass
+        self._owner_selection_messages = []
 
     async def show_confirmation(self):
         """Show the final confirmation with preview."""
@@ -1073,13 +1354,20 @@ class SubmissionFlowView(View):
             await interaction.response.edit_message(content="❌ Submission cancelled.", embed=None, view=None)
             self.stop()
         
+        async def go_back_confirm(interaction: discord.Interaction):
+            await interaction.response.edit_message(content="⬅️ Going back...", embed=None, view=None)
+            await self.go_back(None)
+        
         confirm_btn = Button(label="SUBMIT", style=discord.ButtonStyle.success)
         confirm_btn.callback = confirm
         cancel_btn = Button(label="CANCEL", style=discord.ButtonStyle.danger)
         cancel_btn.callback = cancel
+        back_btn = Button(label="⬅️ Go Back", style=discord.ButtonStyle.secondary)
+        back_btn.callback = go_back_confirm
         
         view.add_item(confirm_btn)
         view.add_item(cancel_btn)
+        view.add_item(back_btn)
         
         self.current_step = self.STEP_CONFIRM
         await self.dm_channel.send(

@@ -1,3 +1,4 @@
+import asyncio
 import discord
 import datetime
 import json
@@ -1032,17 +1033,28 @@ class Artfight(commands.GroupCog, name="artfight"):
             )
         
         # Handle the submission flow
+        # Only wait_for messages when the flow expects text input (not during button steps)
+        BUTTON_TIMEOUT = 300  # 5 minutes for button steps (matches View timeout)
+        button_wait_start = None
+        
         try:
             while not flow.is_finished():
-                try:
-                    message = await self.bot.wait_for('message', check=check, timeout=600)
-                    
-                    # Let the flow handle the message
-                    await flow.handle_message(message)
-                
-                except TimeoutError:
-                    await dm_channel.send("❌ Submission timed out. Please start again with `/artfight submit`.")
-                    return
+                if flow.expects_message():
+                    button_wait_start = None  # Reset button timer
+                    try:
+                        message = await self.bot.wait_for('message', check=check, timeout=600)
+                        await flow.handle_message(message)
+                    except TimeoutError:
+                        await dm_channel.send("❌ Submission timed out. Please start again with `/artfight submit`.")
+                        return
+                else:
+                    # Button step - track how long we've been waiting
+                    if button_wait_start is None:
+                        button_wait_start = time.time()
+                    elif time.time() - button_wait_start > BUTTON_TIMEOUT:
+                        await dm_channel.send("❌ Submission timed out. Please start again with `/artfight submit`.")
+                        return
+                    await asyncio.sleep(1)
                     
         except Exception as e:
             self.bot.logger.error(f"Error in submit flow for user {ctx.author.id}: {e}")
