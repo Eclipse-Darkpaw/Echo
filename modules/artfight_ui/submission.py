@@ -1141,7 +1141,11 @@ class SubmissionFlowView(View):
             
             # Build and send the submission embed
             submission_embed = build_submission_embed(self.data, team_role, points_name, self.guild)
-            await self.submissions_channel.send(embed=submission_embed)
+            
+            # Ping victims outside embed (mentions in embeds don't notify)
+            victim_pings = ", ".join(f"<@{user_id}>" for user_id in self.data.victims) if self.data.victims else None
+            
+            await self.submissions_channel.send(content=victim_pings, embed=submission_embed)
             
             # Confirm to user (show total score, not individual share)
             await self.dm_channel.send(
