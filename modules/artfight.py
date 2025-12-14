@@ -35,7 +35,7 @@ from discord.ext import commands, tasks
 from random import randint
 from repositories import ArtfightRepo
 from typing import Optional
-from util import read_line
+from util import read_line, get_current_artfight_day
 
 
 @dataclass
@@ -881,10 +881,12 @@ class Artfight(commands.GroupCog, name="artfight"):
             return []
         
         now_utc = datetime.datetime.now(datetime.timezone.utc)
-        current_day = (now_utc.date() - start_date).days + 1
+        prompt_time = self.artfight_repo.get_next_prompt_hour(guild_id)
+        
+        # Calculate current day based on when prompts drop, not calendar date
+        current_day = get_current_artfight_day(start_date, prompt_time, now_utc)
         
         # Check if within grace period (first 15 min after prompt hour)
-        prompt_time = self.artfight_repo.get_next_prompt_hour(guild_id)
         is_within_grace = False
         if prompt_time:
             prompt_datetime = datetime.datetime.combine(now_utc.date(), prompt_time, tzinfo=datetime.timezone.utc)
@@ -947,8 +949,9 @@ class Artfight(commands.GroupCog, name="artfight"):
             await ctx.reply("❌ Artfight is not currently running.", ephemeral=True)
             return
         
-        # Calculate current artfight day
-        current_day = (current_date_utc - start_date).days + 1
+        # Calculate current artfight day (based on when prompts drop, not calendar date)
+        prompt_time = self.artfight_repo.get_next_prompt_hour(ctx.guild.id)
+        current_day = get_current_artfight_day(start_date, prompt_time)
         
         # Validate prompt_day if provided
         if prompt_day is not None:
