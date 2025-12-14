@@ -6,6 +6,7 @@ from discord.ui import View, Button, Select, Modal, TextInput
 from discord import SelectOption
 from repositories import ArtfightRepo
 from typing import Callable, Awaitable
+from util import get_current_artfight_day
 
 
 SCORE_BASE = {
@@ -55,11 +56,11 @@ def calculate_score(
     """
     Calculate the score for a submission.
     
-    Formula: ((prompt * ((base + shaded + background) * num_enemy_chars)) * day_multiplier) + num_friendly_chars
+    Formula: ((base + shaded + background) * num_enemy_chars * day_multiplier + num_friendly_chars) * prompt_multiplier
     
-    - If submitting for old prompt outside grace period: 0 points (but still +1 per friendly)
-    - If within grace period for previous prompt: 75% of normal score
-    - Friendly fire: +1 point per friendly character regardless of other modifiers
+    - If submitting for old prompt outside grace period: 0 points total
+    - If within grace period for previous prompt: 75% of total score
+    - Friendly fire: +1 point per friendly character (also affected by prompt multiplier)
     
     :return: The calculated score (rounded to nearest int)
     """
@@ -95,14 +96,17 @@ def calculate_score(
             prompt_multiplier = GRACE_PERIOD_MULTIPLIER
             data.is_grace_period = True
         else:
-            # Old prompt, no points for enemy attacks
+            # Old prompt, no points at all
             prompt_multiplier = 0.0
     
+    # Calculate base score from enemy attacks
     base_score = ((base + shaded + background) * enemy_count) * day_multiplier
-    base_score = base_score * prompt_multiplier
+    
+    # Add friendly fire points, then apply prompt multiplier to the TOTAL
+    total_before_multiplier = base_score + (friendly_count * SCORE_FRIENDLY_FIRE)
     
     data.base_score = round(base_score)
-    data.final_score = round(base_score + (friendly_count * SCORE_FRIENDLY_FIRE))
+    data.final_score = round(total_before_multiplier * prompt_multiplier)
     
     return data.final_score
 
@@ -512,8 +516,9 @@ class SubmissionFlowView(View):
         prompt_time = artfight_repo.get_next_prompt_hour(guild.id)
         now_utc = datetime.datetime.now(datetime.timezone.utc)
         
+        # Calculate current day based on when prompts drop, not calendar date
         if start_date:
-            self.current_day = (now_utc.date() - start_date).days + 1
+            self.current_day = get_current_artfight_day(start_date, prompt_time, now_utc)
         else:
             self.current_day = 1
         

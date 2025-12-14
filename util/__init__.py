@@ -1,6 +1,6 @@
 from .scan_message import scan_message, BYPASS_CODE
 from .scan_nickname import scan_nickname
-from .datetime_operations import date_to_utc_midnight_unix_timestamp, time_to_utc_at_epoch_timestamp
+from .datetime_operations import date_to_utc_midnight_unix_timestamp, time_to_utc_at_epoch_timestamp, get_current_artfight_day
 from .directory_watcher import DirectoryWatcher
 from .file_watcher import FileWatcher
 from .file_modifiers import modify_json_file, add_to_file
@@ -20,6 +20,7 @@ __all__ = [
     'to_snake_case',
     'date_to_utc_midnight_unix_timestamp',
     'time_to_utc_at_epoch_timestamp',
+    'get_current_artfight_day',
     'scan_message',
     'scan_nickname'
 ]
