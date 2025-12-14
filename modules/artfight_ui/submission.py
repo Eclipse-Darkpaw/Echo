@@ -90,7 +90,10 @@ def calculate_score(
     
     # Prompt validity check
     prompt_multiplier = 1.0
-    if data.prompt_day != current_prompt_day:
+    if data.prompt_day == 0:
+        # Unrelated art - no points
+        prompt_multiplier = 0.0
+    elif data.prompt_day != current_prompt_day:
         if data.prompt_day == current_prompt_day - 1 and is_within_grace_period:
             # Within grace period for previous day
             prompt_multiplier = GRACE_PERIOD_MULTIPLIER
@@ -378,38 +381,58 @@ def build_submission_embed(
     if data.image_url:
         embed.set_image(url=data.image_url)
     
-    # Attackers (submitter + collaborators)
-    attackers = [f"<@{data.submitter_id}>"]
+    # Helper to get display name for a user ID
+    def get_display_name(user_id: int) -> str:
+        member = guild.get_member(user_id)
+        if member:
+            return member.display_name
+        return str(user_id)
+    
+    # Attackers (submitter + collaborators) with display names
+    attacker_parts = []
+    submitter_name = get_display_name(data.submitter_id)
+    attacker_parts.append(f"<@{data.submitter_id}> ({submitter_name})")
     for collab_id in data.collaborators:
-        attackers.append(f"<@{collab_id}>")
-    embed.add_field(name="⚔️ Attack by", value=", ".join(attackers), inline=True)
+        collab_name = get_display_name(collab_id)
+        attacker_parts.append(f"<@{collab_id}> ({collab_name})")
+    embed.add_field(name="⚔️ Attack by", value=", ".join(attacker_parts), inline=True)
     
-    # Victims
+    # Victims with display names
     if data.victims:
-        victim_mentions = [f"<@{v}>" for v in data.victims]
-        embed.add_field(name="Victims", value=", ".join(victim_mentions), inline=True)
+        victim_parts = []
+        for v in data.victims:
+            victim_name = get_display_name(v)
+            victim_parts.append(f"<@{v}> ({victim_name})")
+        embed.add_field(name="Victims", value=", ".join(victim_parts), inline=True)
     
-    # Friendly fire (show as mentions, not just count)
+    # Friendly fire (show as mentions with display names)
     if data.friendly_count > 0:
         # Friendly targets are character owners from same team (excluding attackers)
         attacker_ids = {data.submitter_id} | set(data.collaborators)
         friendly_targets = [uid for uid in data.character_owners if uid not in attacker_ids and uid not in data.victims]
         if friendly_targets:
-            friendly_mentions = [f"<@{uid}>" for uid in friendly_targets]
-            embed.add_field(name="Friendly Fire", value=", ".join(friendly_mentions), inline=True)
+            friendly_parts = []
+            for uid in friendly_targets:
+                friendly_name = get_display_name(uid)
+                friendly_parts.append(f"<@{uid}> ({friendly_name})")
+            embed.add_field(name="Friendly Fire", value=", ".join(friendly_parts), inline=True)
     
     # Score
     embed.add_field(name="Score", value=f"**{data.final_score}** {points_name}", inline=True)
     
-    # Prompt - show actual text, truncated if needed
-    if data.prompt_text:
+    # Prompt - handle "No Prompt" case (prompt_day = 0)
+    if data.prompt_day == 0:
+        embed.add_field(name="Prompt", value="*Unrelated art (no prompt)*", inline=True)
+    elif data.prompt_text:
         prompt_display = data.prompt_text[:80] + "..." if len(data.prompt_text) > 80 else data.prompt_text
         embed.add_field(name=f"Prompt (Day {data.prompt_day})", value=f"*{prompt_display}*", inline=False)
     else:
         embed.add_field(name="Prompt", value=f"Day {data.prompt_day}", inline=True)
     
-    # Footer for grace period
-    if data.is_grace_period:
+    # Footer for grace period or no prompt
+    if data.prompt_day == 0:
+        embed.set_footer(text="Unrelated art submission (0 points)")
+    elif data.is_grace_period:
         embed.set_footer(text="Submitted during grace period (75% score)")
     
     return embed
@@ -903,11 +926,26 @@ class SubmissionFlowView(View):
         )
 
     async def ask_for_image(self):
-        """Ask for the image upload."""
-        # No back button for first step
+        """Ask for the image upload with a cancel option."""
+        view = View(timeout=300)
+        
+        cancel_btn = Button(label="🫷 Cancel Submission", style=discord.ButtonStyle.gray)
+        
+        async def cancel_callback(interaction: discord.Interaction):
+            await interaction.response.edit_message(
+                content="**Submission cancelled.**\nYou can start a new submission anytime with `/artfight submit`.",
+                view=None
+            )
+            self.stop()
+        
+        cancel_btn.callback = cancel_callback
+        view.add_item(cancel_btn)
+        
         await self.dm_channel.send(
             "**Please upload the art you are submitting.**\n"
-            "Send the image in this DM."
+            "Send the image in this DM.\n\n"
+            "-# If you started this by mistake, you can cancel below.",
+            view=view
         )
 
     async def handle_message(self, message: discord.Message) -> bool:

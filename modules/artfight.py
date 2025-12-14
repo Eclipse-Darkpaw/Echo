@@ -872,6 +872,7 @@ class Artfight(commands.GroupCog, name="artfight"):
         Build prompt choices for the submit command autocomplete.
         Shows current day as (Current) and previous days as (Late).
         Does not show future prompts.
+        Includes a "No Prompt" option for unrelated art submissions.
         
         Last docstring edit: -FoxyHunter V4.4.0
         Last method edit: -FoxyHunter V4.4.0
@@ -913,6 +914,9 @@ class Artfight(commands.GroupCog, name="artfight"):
             # Discord choice names limited to 100 chars
             choices.append(app_commands.Choice(name=label[:100], value=day))
         
+        # Add "No Prompt" option at the end for unrelated art (value 0)
+        choices.append(app_commands.Choice(name="(No Points) Unrelated art - not for any prompt", value=0))
+        
         return choices[:25]  # Discord limit
 
     @commands.hybrid_command(brief="Submit artwork to artfight")
@@ -953,11 +957,11 @@ class Artfight(commands.GroupCog, name="artfight"):
         prompt_time = self.artfight_repo.get_next_prompt_hour(ctx.guild.id)
         current_day = get_current_artfight_day(start_date, prompt_time)
         
-        # Validate prompt_day if provided
+        # Validate prompt_day if provided (0 = no prompt/unrelated art)
         if prompt_day is not None:
-            if prompt_day < 1 or prompt_day > current_day:
+            if prompt_day < 0 or prompt_day > current_day:
                 await ctx.reply(
-                    f"❌ Invalid prompt day. Must be between 1 and {current_day} (current day).",
+                    f"❌ Invalid prompt day. Must be between 0 and {current_day} (current day).",
                     ephemeral=True
                 )
                 return
@@ -990,18 +994,24 @@ class Artfight(commands.GroupCog, name="artfight"):
             )
             return
         
-        # Determine if this is a late submission
-        is_late = prompt_day < current_day
-        prompt_status = "(Late)" if is_late else "(Current)"
+        # Determine submission status for display
+        if prompt_day == 0:
+            prompt_status = "(No Points - Unrelated Art)"
+        elif prompt_day < current_day:
+            prompt_status = "(Late)"
+        else:
+            prompt_status = "(Current)"
+        
+        # Build the DM intro message
+        if prompt_day == 0:
+            dm_intro = "## Starting submission process!\nSubmitting: **Unrelated art** (no prompt, no points)\n---"
+        else:
+            dm_intro = f"## Starting submission process!\nSubmitting for: Day {prompt_day} {prompt_status}\n---"
         
         # Try to create DM
         try:
             dm_channel = await ctx.author.create_dm()
-            # Test if we can send to the DM - collaborator question comes first now
-            await dm_channel.send(
-                f"## Starting submission process!\n"
-                f"Submitting for: Day {prompt_day} {prompt_status}\n---"
-            )
+            await dm_channel.send(dm_intro)
         except discord.Forbidden:
             await ctx.reply(
                 "❌ I can't DM you! Please enable DMs from server members and try again.",
