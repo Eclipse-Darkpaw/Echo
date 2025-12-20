@@ -1171,6 +1171,79 @@ class Artfight(commands.GroupCog, name="artfight"):
         
         await ctx.reply(embed=score_embed)
 
+    @commands.hybrid_command(name='list_players', brief="List all artfight players with their stats")
+    @commands.guild_only()
+    async def list_players(self, ctx: commands.Context):
+        """
+        List all artfight players with their attack counts and scores.
+        Players are sorted by number of submissions (descending), with score as a tiebreaker.
+        
+        Last docstring edit: -FoxyHunter V4.4.0
+        Last method edit: -FoxyHunter V4.4.0
+        
+        :param ctx: The command context
+        """
+        teams = self.artfight_repo.get_teams(ctx.guild.id)
+        if not teams:
+            await ctx.reply("No teams are configured for this server.", ephemeral=True)
+            return
+        
+        points_name = self.artfight_repo.get_points_name(ctx.guild.id)
+        
+        # Collect all players from all teams
+        players: list[dict] = []
+        for team_name in teams.keys():
+            members = self.artfight_repo.get_team_members(ctx.guild.id, team_name)
+            if not members:
+                continue
+            
+            for user_id, member_data in members.items():
+                submissions = member_data.get('submissions', {})
+                points = member_data.get('points', 0)
+                players.append({
+                    'user_id': int(user_id),
+                    'submission_count': len(submissions),
+                    'points': points
+                })
+        
+        if not players:
+            await ctx.reply("No players are registered in artfight yet.", ephemeral=True)
+            return
+        
+        # Sort by submission count (descending), then by points (descending) as tiebreaker
+        players.sort(key=lambda p: (p['submission_count'], p['points']), reverse=True)
+        
+        # Build player lines with mentions
+        header = f"🎨 **Artfight Players** — {len(players)} registered\n\n"
+        lines = []
+        for i, player in enumerate(players, start=1):
+            lines.append(
+                f"**{i}.** <@{player['user_id']}> — "
+                f"{player['submission_count']} attack(s), "
+                f"{player['points']:,} {points_name}"
+            )
+        
+        # Split into multiple messages (keep short for markdown to render)
+        max_len = 1000
+        messages = []
+        current_msg = header
+        
+        for line in lines:
+            # +1 for the newline
+            if len(current_msg) + len(line) + 1 > max_len:
+                messages.append(current_msg)
+                current_msg = ""
+            current_msg += line + "\n"
+        
+        if current_msg:
+            messages.append(current_msg)
+        
+        # Send first message as reply, rest as follow-ups
+        first_msg = messages.pop(0) if messages else header
+        await ctx.reply(first_msg, allowed_mentions=discord.AllowedMentions.none())
+        for msg in messages:
+            await ctx.channel.send(msg, allowed_mentions=discord.AllowedMentions.none())
+
     @commands.hybrid_command(name='modify_points', brief="Modify points for a submission")
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
