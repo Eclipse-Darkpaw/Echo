@@ -218,18 +218,88 @@ def build_fancy_leaderboard_embed(
     end_date = artfight_repo.get_end_date(guild_id)
     year = end_date.year if end_date else datetime.datetime.now().year
     
-    teams = artfight_repo.get_teams(guild_id)
+    teams: dict[str, int] = artfight_repo.get_teams(guild_id)
+    """team_name: role_id"""
     if not teams:
-        return f"# 🏆 Artfight {year} - Hall of Fame 🏆\n\nNo team data available."
+        return f"# 🏆 Artfight {year} - Hall of Fame 🏆\nI got hungry and ate the data, sorry guys"
+    
+    player_most_submissions: tuple[list[int], int] = ([], 0) # member_ids, submission_count
+    player_most_points: tuple[list[int], int] = ([], 0) # member_ids, points
+    player_most_attacked_by_submissions: tuple[list[int], int] = ([], 0) # member_ids, submission_count
+    player_most_attacked_by_points: tuple[list[int], int] = ([], 0) # member_ids, points
+
+    team_rankings: dict[int, dict[str, tuple[list[int], int]]] = {}
+    # team_role_id, [stat_name, [member_ids, stat_value]] 
+
+    most_active_team: tuple[int, int] = ([], 0) # team_role_id, submission_count
+    biggest_solo_attack: dict[str: int | str] = {} # member_id, points, attack_name, image_url
+    biggest_collab: dict[str: int | str] # attack_name, image_url, member_count
+    most_popular_prompt: dict[str: int | str] # prompt_day, prompt_name, submission_count
+
+    for team_name, team_role_id in teams.items():
+        members = artfight_repo.get_team_members(guild_id=guild_id, team_name=team_name)
+
+        if team_name not in team_rankings:
+            team_rankings[team_name] = {}
+
+        for member_id_str, member_data in filter(lambda kv: kv[0].isdigit(), members.items()):
+            member_id = int(member_id_str)
+
+            points = member_data['points']
+            if points > player_most_points[1]:
+                player_most_points = ([member_id], points)
+            elif points == player_most_points[1]:
+                player_most_points[0].append(member_id)
+
+            if points > team_rankings[team_role_id]['most_points_1']:
+                team_rankings[team_role_id]['most_points_1'] = (member_id, points)
+            elif points == team_rankings[team_role_id]['most_points_1']:
+                team_rankings[team_role_id]['most_points_1'][0].append(member_id)
+            elif points > team_rankings[team_role_id]['most_points_2']:
+                team_rankings[team_role_id]['most_points_2'] = (member_id, points)
+            elif points == team_rankings[team_role_id]['most_points_2']:
+                team_rankings[team_role_id]['most_points_2'][0].append(member_id)
+            elif points > team_rankings[team_role_id]['most_points_3']:
+                team_rankings[team_role_id]['most_points_3'] = (member_id, points)
+            elif points == team_rankings[team_role_id]['most_points_3']:
+                team_rankings[team_role_id]['most_points_3'][0].append(member_id)
+            
+            submission_count = len(member_data['submissions'])
+            if submission_count > player_most_submissions[1]:
+                player_most_submissions = [member_id, submission_count]
+            elif submission_count == player_most_submissions[1]:
+                player_most_submissions[0].append(member_id)
+
+            if submission_count > team_rankings[team_role_id]['most_submissions_1']:
+                team_rankings[team_role_id]['most_submissions_1'] = (member_id, points)
+            elif submission_count == team_rankings[team_role_id]['most_submissions_1']:
+                team_rankings[team_role_id]['most_submissions_1'][0].append(member_id)
+            elif submission_count > team_rankings[team_role_id]['most_submissions_2']:
+                team_rankings[team_role_id]['most_submissions_2'] = (member_id, points)
+            elif submission_count == team_rankings[team_role_id]['most_submissions_2']:
+                team_rankings[team_role_id]['most_submissions_2'][0].append(member_id)
+            elif submission_count > team_rankings[team_role_id]['most_submissions_3']:
+                team_rankings[team_role_id]['most_submissions_3'] = (member_id, points)
+            elif submission_count == team_rankings[team_role_id]['most_submissions_3']:
+                team_rankings[team_role_id]['most_submissions_3'][0].append(member_id)
+            
+            for submission_url, submission_data in member_data['submissions'].items():
+                
+
+    
+    message = (
+        f'# 🏆 Artfight {year} - Hall of Fame 🏆'
+        f'## 👑 The Hard-Working 👑'
+        f'🏅 By submission: name - number of submission'
+    )
     
     # Collect comprehensive stats
     team_stats = {}  # team_name -> {role_id, submissions, members_data}
     all_submissions = []
     victim_stats = {}  # user_id -> {by_count, by_score, team}
     prompt_counts = Counter()
-    biggest_collab = {'size': 0, 'members': [], 'title': ''}
     
-    for team_name, role_id in teams.items():
+    for team_name, team_role_id in teams.items():
         members = artfight_repo.get_team_members(guild_id, team_name) or {}
         team_submission_count = 0
         members_data = {}
@@ -281,7 +351,7 @@ def build_fancy_leaderboard_embed(
                     }
         
         team_stats[team_name] = {
-            'role_id': role_id,
+            'role_id': team_role_id,
             'submissions': team_submission_count,
             'members_data': members_data
         }
@@ -343,13 +413,13 @@ def build_fancy_leaderboard_embed(
     for team_name in team_names:
         stats = team_stats.get(team_name, {})
         members_data = stats.get('members_data', {})
-        role_id = stats.get('role_id')
+        team_role_id = stats.get('role_id')
         
         team_subs = [(uid, d['submissions']) for uid, d in members_data.items() if d['submissions'] > 0]
         team_score = [(uid, d['points']) for uid, d in members_data.items() if d['points'] > 0]
         
         if team_subs or team_score:
-            lines.append(f"On <@&{role_id}>:")
+            lines.append(f"On <@&{team_role_id}>:")
             if team_subs:
                 lines.append(f"By submissions: {format_winners(team_subs)}")
             if team_score:
@@ -370,12 +440,12 @@ def build_fancy_leaderboard_embed(
     
     # Per team
     for team_name in team_names:
-        role_id = teams.get(team_name)
+        team_role_id = teams.get(team_name)
         team_victims_count = [(vid, d['by_count']) for vid, d in victim_stats.items() if d['team'] == team_name]
         team_victims_score = [(vid, d['by_score']) for vid, d in victim_stats.items() if d['team'] == team_name]
         
         if team_victims_count or team_victims_score:
-            lines.append(f"On <@&{role_id}>:")
+            lines.append(f"On <@&{team_role_id}>:")
             if team_victims_count:
                 lines.append(f"By attacks: {format_winners(team_victims_count)}")
             if team_victims_score:

@@ -272,7 +272,7 @@ class ArtfightRepo(JsonRepository):
 
     # team members
     
-    def get_team_members(self, guild_id: int | str, team_name: str) -> dict[str, dict[str, int | dict[str, dict[str, int | str]]]] | None:
+    def get_team_members(self, guild_id: int | str, team_name: str) -> dict[str, dict[str, int | dict[str, dict[str, int | str | list]]]] | None:
         return self._get(str(guild_id), 'teams', team_name, 'members')
     
     def get_team_member(self, guild_id: int | str, team_name: str, user_id: int | str) -> dict[str, int | dict[str, dict[str, int | str]]] | None:
