@@ -294,23 +294,30 @@ class Artfight(commands.GroupCog, name="artfight"):
         start_date = self.artfight_repo.get_start_date(guild.id)
         end_date = self.artfight_repo.get_end_date(guild.id)
 
+        self.bot.logger.debug(f'[HOF DEBUG] start_date={start_date}, end_date={end_date}, current_date_utc={current_date_utc}')
+
         if start_date is None or end_date is None:
+            self.bot.logger.debug('[HOF DEBUG] start_date or end_date is None, returning')
             return
 
         # Check if artfight is active today
         if not (start_date <= current_date_utc <= end_date):
+            self.bot.logger.debug(f'[HOF DEBUG] Not in date range, returning')
             return
 
         scheduled = self._scheduled_times.get(guild.id)
         if scheduled is None:
+            self.bot.logger.debug('[HOF DEBUG] scheduled is None, returning')
             return
 
         prompts_channel_id = self.artfight_repo.get_prompts_channel(guild.id)
         if prompts_channel_id is None:
+            self.bot.logger.debug('[HOF DEBUG] prompts_channel_id is None, returning')
             return
 
         prompts_channel = guild.get_channel(prompts_channel_id)
         if prompts_channel is None:
+            self.bot.logger.debug('[HOF DEBUG] prompts_channel is None, returning')
             return
 
         current_time = now_utc.time()
@@ -318,6 +325,8 @@ class Artfight(commands.GroupCog, name="artfight"):
         is_day_one = artfight_day == 1
         is_last_day = current_date_utc == end_date
         artfight_role_id = self.artfight_repo.get_artfight_role(guild.id)
+
+        self.bot.logger.debug(f'[HOF DEBUG] current_time={current_time}, prompt_time={scheduled.prompt_time}, is_last_day={is_last_day}, artfight_day={artfight_day}')
 
         def time_passed(target_time: datetime.time) -> bool:
             return current_time >= target_time
@@ -347,10 +356,14 @@ class Artfight(commands.GroupCog, name="artfight"):
 
         # At prompt time
         if time_passed(scheduled.prompt_time):
+            self.bot.logger.debug(f'[HOF DEBUG] Prompt time passed! is_last_day={is_last_day}')
             
             if is_last_day:
                 # Last day: Send final scores and fancy leaderboard
-                if not self.artfight_repo.has_sent_message(guild.id, artfight_day, 'hall_of_fame'):
+                has_sent = self.artfight_repo.has_sent_message(guild.id, artfight_day, 'hall_of_fame')
+                self.bot.logger.debug(f'[HOF DEBUG] is_last_day=True, has_sent_hall_of_fame={has_sent}')
+                if not has_sent:
+                    self.bot.logger.debug('[HOF DEBUG] Sending Hall of Fame!')
                     await self._send_final_results(prompts_channel, guild, artfight_role_id)
                     self.artfight_repo.mark_message_sent(guild.id, artfight_day, 'hall_of_fame')
             else:
@@ -462,9 +475,10 @@ class Artfight(commands.GroupCog, name="artfight"):
             )
             await channel.send(content=content if content else None, embed=final_scores_embed)
 
-            # Send Hall of Fame message (plain text with markdown)
-            leaderboard_message = build_fancy_leaderboard_embed(self.artfight_repo, guild, guild.id, artfight_role)
-            await channel.send(content=leaderboard_message)
+            # Send Hall of Fame messages (plain text with markdown, split to fit Discord limit)
+            leaderboard_messages = build_fancy_leaderboard_embed(self.artfight_repo, guild, guild.id, artfight_role)
+            for msg in leaderboard_messages:
+                await channel.send(content=msg)
 
             self.bot.logger.info(f'Sent final results for guild {guild.id}')
         except discord.HTTPException as e:
