@@ -201,46 +201,66 @@ def build_fancy_leaderboard_embed(
     guild: 'discord.Guild',
     guild_id: int,
     artfight_role: 'discord.Role | None' = None
-) -> str:
+) -> list[str]:
     """
-    Builds the Hall of Fame message with fun stats for the end of artfight.
-    Returns a plain text message with markdown formatting (not an embed).
+    Builds the Hall of Fame messages with fun stats for the end of artfight.
+    Returns a list of plain text messages with markdown formatting (not embeds).
+    Split to respect Discord's 2000 character limit.
     
     :param artfight_repo: The artfight repository
     :param guild: The Discord guild (for member lookups)
     :param guild_id: The guild ID
     :param artfight_role: The artfight role (unused, kept for compatibility)
-    :return: The Hall of Fame message string
+    :return: List of Hall of Fame message strings
     """
     import datetime
     from collections import Counter
     
     end_date = artfight_repo.get_end_date(guild_id)
     year = end_date.year if end_date else datetime.datetime.now().year
+
+    def get_display_name(member_id: int) -> str:
+        """Get member's display name or fallback to 'Unknown (id)'"""
+        member = guild.get_member(member_id)
+        return member.display_name if member else f"Unknown ({member_id})"
     
     teams: dict[str, int] = artfight_repo.get_teams(guild_id)
     """team_name: role_id"""
     if not teams:
-        return f"# 🏆 Artfight {year} - Hall of Fame 🏆\nI got hungry and ate the data, sorry guys"
+        return [f"# 🏆 Artfight {year} - Hall of Fame 🏆\nI got hungry and ate the data, sorry guys"]
     
     player_most_submissions: tuple[list[int], int] = ([], 0) # member_ids, submission_count
     player_most_points: tuple[list[int], int] = ([], 0) # member_ids, points
     player_most_attacked_by_submissions: tuple[list[int], int] = ([], 0) # member_ids, submission_count
     player_most_attacked_by_points: tuple[list[int], int] = ([], 0) # member_ids, points
 
-    team_rankings: dict[int, dict[str, tuple[list[int], int]]] = {}
-    # team_role_id, [stat_name, [member_ids, stat_value]] 
+    team_rankings: dict[str, dict[str, tuple[list[int], int]]] = {}
+    # team_name, [stat_name, [member_ids, stat_value]] 
 
-    most_active_team: tuple[int, int] = ([], 0) # team_role_id, submission_count
-    biggest_solo_attack: dict[str: int | str] = {} # member_id, points, attack_name, image_url
-    biggest_collab: dict[str: int | str] # attack_name, image_url, member_count
-    most_popular_prompt: dict[str: int | str] # prompt_day, prompt_name, submission_count
+    most_active_team: tuple[list[int], int] = ([], 0) # team_role_ids, submission_count
+    biggest_solo_attack: tuple[list[dict], int] = ([], 0) # [{member_id, attack_name, image_url}, ...], points
+    biggest_collab: dict[str: int | str] = {} # attack_name, image_url, member_count
+
+    prompt_day_submission_count: dict[int, int] = {} # artfight_day: count
+    seen_collab_urls: set[str] = set() # track already counted collabs
+    
+    # victim_id -> {attack_count, points_received, team_name}
+    victim_stats: dict[int, dict[str, int | str]] = {}
 
     for team_name, team_role_id in teams.items():
         members = artfight_repo.get_team_members(guild_id=guild_id, team_name=team_name)
 
         if team_name not in team_rankings:
-            team_rankings[team_name] = {}
+            team_rankings[team_name] = {
+                'most_points_1': ([], 0),
+                'most_points_2': ([], 0),
+                'most_points_3': ([], 0),
+                'most_submissions_1': ([], 0),
+                'most_submissions_2': ([], 0),
+                'most_submissions_3': ([], 0),
+            }
+
+        team_submission_count = 0
 
         for member_id_str, member_data in filter(lambda kv: kv[0].isdigit(), members.items()):
             member_id = int(member_id_str)
@@ -248,249 +268,277 @@ def build_fancy_leaderboard_embed(
             points = member_data['points']
             if points > player_most_points[1]:
                 player_most_points = ([member_id], points)
-            elif points == player_most_points[1]:
+            elif points == player_most_points[1] and points > 0:
                 player_most_points[0].append(member_id)
 
-            if points > team_rankings[team_role_id]['most_points_1']:
-                team_rankings[team_role_id]['most_points_1'] = (member_id, points)
-            elif points == team_rankings[team_role_id]['most_points_1']:
-                team_rankings[team_role_id]['most_points_1'][0].append(member_id)
-            elif points > team_rankings[team_role_id]['most_points_2']:
-                team_rankings[team_role_id]['most_points_2'] = (member_id, points)
-            elif points == team_rankings[team_role_id]['most_points_2']:
-                team_rankings[team_role_id]['most_points_2'][0].append(member_id)
-            elif points > team_rankings[team_role_id]['most_points_3']:
-                team_rankings[team_role_id]['most_points_3'] = (member_id, points)
-            elif points == team_rankings[team_role_id]['most_points_3']:
-                team_rankings[team_role_id]['most_points_3'][0].append(member_id)
+            # Team rankings - most points (with shift down)
+            if points > team_rankings[team_name]['most_points_1'][1]:
+                team_rankings[team_name]['most_points_3'] = team_rankings[team_name]['most_points_2']
+                team_rankings[team_name]['most_points_2'] = team_rankings[team_name]['most_points_1']
+                team_rankings[team_name]['most_points_1'] = ([member_id], points)
+            elif points == team_rankings[team_name]['most_points_1'][1] and points > 0:
+                team_rankings[team_name]['most_points_1'][0].append(member_id)
+            elif points > team_rankings[team_name]['most_points_2'][1]:
+                team_rankings[team_name]['most_points_3'] = team_rankings[team_name]['most_points_2']
+                team_rankings[team_name]['most_points_2'] = ([member_id], points)
+            elif points == team_rankings[team_name]['most_points_2'][1] and points > 0:
+                team_rankings[team_name]['most_points_2'][0].append(member_id)
+            elif points > team_rankings[team_name]['most_points_3'][1]:
+                team_rankings[team_name]['most_points_3'] = ([member_id], points)
+            elif points == team_rankings[team_name]['most_points_3'][1] and points > 0:
+                team_rankings[team_name]['most_points_3'][0].append(member_id)
             
             submission_count = len(member_data['submissions'])
+            team_submission_count += submission_count
+
             if submission_count > player_most_submissions[1]:
-                player_most_submissions = [member_id, submission_count]
-            elif submission_count == player_most_submissions[1]:
+                player_most_submissions = ([member_id], submission_count)
+            elif submission_count == player_most_submissions[1] and submission_count > 0:
                 player_most_submissions[0].append(member_id)
 
-            if submission_count > team_rankings[team_role_id]['most_submissions_1']:
-                team_rankings[team_role_id]['most_submissions_1'] = (member_id, points)
-            elif submission_count == team_rankings[team_role_id]['most_submissions_1']:
-                team_rankings[team_role_id]['most_submissions_1'][0].append(member_id)
-            elif submission_count > team_rankings[team_role_id]['most_submissions_2']:
-                team_rankings[team_role_id]['most_submissions_2'] = (member_id, points)
-            elif submission_count == team_rankings[team_role_id]['most_submissions_2']:
-                team_rankings[team_role_id]['most_submissions_2'][0].append(member_id)
-            elif submission_count > team_rankings[team_role_id]['most_submissions_3']:
-                team_rankings[team_role_id]['most_submissions_3'] = (member_id, points)
-            elif submission_count == team_rankings[team_role_id]['most_submissions_3']:
-                team_rankings[team_role_id]['most_submissions_3'][0].append(member_id)
+            # Team rankings - most submissions (with shift down)
+            if submission_count > team_rankings[team_name]['most_submissions_1'][1]:
+                team_rankings[team_name]['most_submissions_3'] = team_rankings[team_name]['most_submissions_2']
+                team_rankings[team_name]['most_submissions_2'] = team_rankings[team_name]['most_submissions_1']
+                team_rankings[team_name]['most_submissions_1'] = ([member_id], submission_count)
+            elif submission_count == team_rankings[team_name]['most_submissions_1'][1] and submission_count > 0:
+                team_rankings[team_name]['most_submissions_1'][0].append(member_id)
+            elif submission_count > team_rankings[team_name]['most_submissions_2'][1]:
+                team_rankings[team_name]['most_submissions_3'] = team_rankings[team_name]['most_submissions_2']
+                team_rankings[team_name]['most_submissions_2'] = ([member_id], submission_count)
+            elif submission_count == team_rankings[team_name]['most_submissions_2'][1] and submission_count > 0:
+                team_rankings[team_name]['most_submissions_2'][0].append(member_id)
+            elif submission_count > team_rankings[team_name]['most_submissions_3'][1]:
+                team_rankings[team_name]['most_submissions_3'] = ([member_id], submission_count)
+            elif submission_count == team_rankings[team_name]['most_submissions_3'][1] and submission_count > 0:
+                team_rankings[team_name]['most_submissions_3'][0].append(member_id)
             
             for submission_url, submission_data in member_data['submissions'].items():
-                
+                sub_points = submission_data.get('points', 0)
+                sub_title = submission_data.get('title', '')
+                collaborators = submission_data.get('collaborators', [])
+                prompt_day = submission_data.get('prompt_day')
 
-    
-    message = (
-        f'# 🏆 Artfight {year} - Hall of Fame 🏆'
-        f'## 👑 The Hard-Working 👑'
-        f'🏅 By submission: name - number of submission'
-    )
-    
-    # Collect comprehensive stats
-    team_stats = {}  # team_name -> {role_id, submissions, members_data}
-    all_submissions = []
-    victim_stats = {}  # user_id -> {by_count, by_score, team}
-    prompt_counts = Counter()
-    
-    for team_name, team_role_id in teams.items():
-        members = artfight_repo.get_team_members(guild_id, team_name) or {}
-        team_submission_count = 0
-        members_data = {}
-        
-        for user_id, user_data in members.items():
-            submissions = user_data.get('submissions', {})
-            submission_count = len(submissions)
-            user_points = user_data.get('points', 0)
-            team_submission_count += submission_count
-            
-            members_data[user_id] = {
-                'submissions': submission_count,
-                'points': user_points,
-                'team': team_name
-            }
-            
-            for sub_url, sub_data in submissions.items():
-                victims = sub_data.get('victims', [])
-                collaborators = sub_data.get('collaborators', [])
-                prompt_day = sub_data.get('prompt_day')
-                title = sub_data.get('title', 'Untitled')
-                points = sub_data.get('points', 0)
-                
-                all_submissions.append({
-                    'user_id': user_id,
-                    'team_name': team_name,
-                    'points': points,
-                    'victims': victims,
-                    'collaborators': collaborators,
-                    'prompt_day': prompt_day,
-                    'title': title
-                })
-                
-                for victim_id in victims:
-                    if victim_id not in victim_stats:
-                        victim_stats[victim_id] = {'by_count': 0, 'by_score': 0, 'team': None}
-                    victim_stats[victim_id]['by_count'] += 1
-                    victim_stats[victim_id]['by_score'] += points
-                
+                # Track prompt day counts
                 if prompt_day:
-                    prompt_counts[prompt_day] += 1
-                
-                collab_size = 1 + len(collaborators)
-                if collab_size > biggest_collab['size']:
-                    biggest_collab = {
-                        'size': collab_size,
-                        'members': [user_id] + collaborators,
-                        'title': title
-                    }
-        
-        team_stats[team_name] = {
-            'role_id': team_role_id,
-            'submissions': team_submission_count,
-            'members_data': members_data
+                    if prompt_day not in prompt_day_submission_count:
+                        prompt_day_submission_count[prompt_day] = 0
+                    prompt_day_submission_count[prompt_day] += 1
+
+                # Track biggest solo attack (no collaborators)
+                if not collaborators:
+                    if sub_points > biggest_solo_attack[1]:
+                        biggest_solo_attack = ([{
+                            'member_id': member_id,
+                            'attack_name': sub_title,
+                            'image_url': submission_url
+                        }], sub_points)
+                    elif sub_points == biggest_solo_attack[1] and sub_points > 0:
+                        biggest_solo_attack[0].append({
+                            'member_id': member_id,
+                            'attack_name': sub_title,
+                            'image_url': submission_url
+                        })
+
+                # Track biggest collab (check if image_url not already seen)
+                if collaborators and submission_url not in seen_collab_urls:
+                    seen_collab_urls.add(submission_url)
+                    member_count = 1 + len(collaborators)  # submitter + collaborators
+                    if not biggest_collab or member_count > biggest_collab['member_count']:
+                        biggest_collab = {
+                            'attack_name': sub_title,
+                            'image_url': submission_url,
+                            'member_count': member_count
+                        }
+
+                # Track victim stats
+                victims = submission_data.get('victims', [])
+                for victim_id in victims:
+                    if isinstance(victim_id, str) and victim_id.isdigit():
+                        victim_id = int(victim_id)
+                    if isinstance(victim_id, int):
+                        if victim_id not in victim_stats:
+                            victim_stats[victim_id] = {'attack_count': 0, 'points_received': 0, 'team_name': None}
+                        victim_stats[victim_id]['attack_count'] += 1
+                        victim_stats[victim_id]['points_received'] += sub_points
+
+        # Track most active team
+        if team_submission_count > most_active_team[1]:
+            most_active_team = ([team_role_id], team_submission_count)
+        elif team_submission_count == most_active_team[1] and team_submission_count > 0:
+            most_active_team[0].append(team_role_id)
+
+    # Calculate most popular prompt from counts
+    most_popular_prompt: dict[str: int | str] = {}  # prompt_day, prompt_name, submission_count
+    if prompt_day_submission_count:
+        prompts = artfight_repo.get_prompts(guild_id) or {}
+        max_day = max(prompt_day_submission_count, key=prompt_day_submission_count.get)
+        most_popular_prompt = {
+            'prompt_day': max_day,
+            'prompt_name': prompts.get(str(max_day), 'Unknown'),
+            'submission_count': prompt_day_submission_count[max_day]
         }
-    
-    # Determine team for each victim
+
+    # Determine team for each victim and calculate global most attacked
     for victim_id in victim_stats:
         for team_name in teams.keys():
             if artfight_repo.get_team_member(guild_id, team_name, victim_id):
-                victim_stats[victim_id]['team'] = team_name
+                victim_stats[victim_id]['team_name'] = team_name
                 break
+        
+        attack_count = victim_stats[victim_id]['attack_count']
+        points_received = victim_stats[victim_id]['points_received']
+        
+        if attack_count > player_most_attacked_by_submissions[1]:
+            player_most_attacked_by_submissions = ([victim_id], attack_count)
+        elif attack_count == player_most_attacked_by_submissions[1] and attack_count > 0:
+            player_most_attacked_by_submissions[0].append(victim_id)
+        
+        if points_received > player_most_attacked_by_points[1]:
+            player_most_attacked_by_points = ([victim_id], points_received)
+        elif points_received == player_most_attacked_by_points[1] and points_received > 0:
+            player_most_attacked_by_points[0].append(victim_id)
+
+    # Initialize victim rankings in team_rankings for each team
+    for team_name in teams.keys():
+        team_rankings[team_name]['most_attacked_1'] = ([], 0)
+        team_rankings[team_name]['most_attacked_2'] = ([], 0)
+        team_rankings[team_name]['most_attacked_3'] = ([], 0)
+        team_rankings[team_name]['most_points_received_1'] = ([], 0)
+        team_rankings[team_name]['most_points_received_2'] = ([], 0)
+        team_rankings[team_name]['most_points_received_3'] = ([], 0)
+
+    # Calculate per-team victim rankings
+    for victim_id, stats in victim_stats.items():
+        team_name = stats['team_name']
+        if not team_name:
+            continue
+        
+        attack_count = stats['attack_count']
+        points_received = stats['points_received']
+        
+        # By attack count
+        if attack_count > team_rankings[team_name]['most_attacked_1'][1]:
+            # Shift down
+            team_rankings[team_name]['most_attacked_3'] = team_rankings[team_name]['most_attacked_2']
+            team_rankings[team_name]['most_attacked_2'] = team_rankings[team_name]['most_attacked_1']
+            team_rankings[team_name]['most_attacked_1'] = ([victim_id], attack_count)
+        elif attack_count == team_rankings[team_name]['most_attacked_1'][1] and attack_count > 0:
+            team_rankings[team_name]['most_attacked_1'][0].append(victim_id)
+        elif attack_count > team_rankings[team_name]['most_attacked_2'][1]:
+            team_rankings[team_name]['most_attacked_3'] = team_rankings[team_name]['most_attacked_2']
+            team_rankings[team_name]['most_attacked_2'] = ([victim_id], attack_count)
+        elif attack_count == team_rankings[team_name]['most_attacked_2'][1] and attack_count > 0:
+            team_rankings[team_name]['most_attacked_2'][0].append(victim_id)
+        elif attack_count > team_rankings[team_name]['most_attacked_3'][1]:
+            team_rankings[team_name]['most_attacked_3'] = ([victim_id], attack_count)
+        elif attack_count == team_rankings[team_name]['most_attacked_3'][1] and attack_count > 0:
+            team_rankings[team_name]['most_attacked_3'][0].append(victim_id)
+        
+        # By points received
+        if points_received > team_rankings[team_name]['most_points_received_1'][1]:
+            team_rankings[team_name]['most_points_received_3'] = team_rankings[team_name]['most_points_received_2']
+            team_rankings[team_name]['most_points_received_2'] = team_rankings[team_name]['most_points_received_1']
+            team_rankings[team_name]['most_points_received_1'] = ([victim_id], points_received)
+        elif points_received == team_rankings[team_name]['most_points_received_1'][1] and points_received > 0:
+            team_rankings[team_name]['most_points_received_1'][0].append(victim_id)
+        elif points_received > team_rankings[team_name]['most_points_received_2'][1]:
+            team_rankings[team_name]['most_points_received_3'] = team_rankings[team_name]['most_points_received_2']
+            team_rankings[team_name]['most_points_received_2'] = ([victim_id], points_received)
+        elif points_received == team_rankings[team_name]['most_points_received_2'][1] and points_received > 0:
+            team_rankings[team_name]['most_points_received_2'][0].append(victim_id)
+        elif points_received > team_rankings[team_name]['most_points_received_3'][1]:
+            team_rankings[team_name]['most_points_received_3'] = ([victim_id], points_received)
+        elif points_received == team_rankings[team_name]['most_points_received_3'][1] and points_received > 0:
+            team_rankings[team_name]['most_points_received_3'][0].append(victim_id)
     
-    # Helper to format winners with tie support
-    def format_winners(entries: list[tuple], value_suffix: str = "") -> str:
-        """Format top entries, showing all ties for first place."""
-        if not entries:
-            return "None"
-        entries = sorted(entries, key=lambda x: x[1], reverse=True)
-        top_val = entries[0][1]
-        winners = [e for e in entries if e[1] == top_val]
-        if len(winners) == 1:
-            return f"<@{winners[0][0]}> ({winners[0][1]}{value_suffix})"
+    hardworking_team_parts = []
+    victems_team_parts = []
+
+    for team_name, team_role_id in teams.items():
+        team_ranking = team_rankings[team_name]
+
+        hardworking_team_parts.append(
+            f'On team <@&{team_role_id}> ({team_name})\n'
+            'By submissions:\n'
+            f'🥇 {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking['most_submissions_1'][0])} - {team_ranking['most_submissions_1'][1]}\n'
+            f'🥈 {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking['most_submissions_2'][0])} - {team_ranking['most_submissions_2'][1]}\n'
+            f'🥉 {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking['most_submissions_3'][0])} - {team_ranking['most_submissions_3'][1]}\n'
+            '\n'
+            'By score:\n'
+            f'🥇 {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking['most_points_1'][0])} - {team_ranking['most_points_1'][1]}\n'
+            f'🥈 {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking['most_points_2'][0])} - {team_ranking['most_points_2'][1]}\n'
+            f'🥉 {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking['most_points_3'][0])} - {team_ranking['most_points_3'][1]}\n'
+        )
+
+        victems_team_parts.append(
+            f'On team <@&{team_role_id}> ({team_name})\n'
+            'By attacks:\n'
+            f'🥀 {", ".join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking["most_attacked_1"][0])} - {team_ranking["most_attacked_1"][1]}\n'
+            f'🥀 {", ".join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking["most_attacked_2"][0])} - {team_ranking["most_attacked_2"][1]}\n'
+            f'🥀 {", ".join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking["most_attacked_3"][0])} - {team_ranking["most_attacked_3"][1]}\n'
+            '\n'
+            'By points received:\n'
+            f'🥀 {", ".join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking["most_points_received_1"][0])} - {team_ranking["most_points_received_1"][1]}\n'
+            f'🥀 {", ".join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking["most_points_received_2"][0])} - {team_ranking["most_points_received_2"][1]}\n'
+            f'🥀 {", ".join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in team_ranking["most_points_received_3"][0])} - {team_ranking["most_points_received_3"][1]}\n'
+        )
+    
+    # Build sections as a list, then combine with smart splitting
+    sections = [
+        f'# 🏆 Artfight {year} - Hall of Fame 🏆\n',
+        
+        '## 👑 The Hard-Working 👑\n'
+        f'🏅 By submission: {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in player_most_submissions[0])} - {player_most_submissions[1]}\n'
+        f'🏅 By score: {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in player_most_points[0])} - {player_most_points[1]}\n',
+    ]
+    
+    for team_part in hardworking_team_parts:
+        sections.append(team_part)
+    
+    sections.append(
+        '## ☠️ The Victims ☠️\n'
+        f'⚰️ By attacks: {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in player_most_attacked_by_submissions[0])} - {player_most_attacked_by_submissions[1]}\n'
+        f'⚰️ By score: {', '.join(f"<@{member_id}> ({get_display_name(member_id)})" for member_id in player_most_attacked_by_points[0])} - {player_most_attacked_by_points[1]}\n'
+    )
+    
+    for team_part in victems_team_parts:
+        sections.append(team_part)
+    
+    sections.extend([
+        '## 💥 Most Active Team 💥\n'
+        f'{", ".join(f"<@&{team_id}>" for team_id in most_active_team[0])} - {most_active_team[1]} submissions\n',
+        
+        '## ✍️ Highest Scoring Solo Attack ✍️\n'
+        f'{'\n'.join(f"[{attack['attack_name']}]({attack['image_url']}) by <@{attack['member_id']}> ({get_display_name(attack['member_id'])}) - {biggest_solo_attack[1]}" for attack in biggest_solo_attack[0])}\n',
+        
+        '## 🤝 Biggest Collab 🤝\n'
+        f'[{biggest_collab.get("attack_name", "N/A")}]({biggest_collab.get("image_url", "")}) - {biggest_collab.get("member_count", 0)} members\n',
+        
+        '## 🌸 Most Popular Prompt 🌸\n'
+        f'Day {most_popular_prompt.get("prompt_day", "N/A")}: {most_popular_prompt.get("prompt_name", "N/A")} - {most_popular_prompt.get("submission_count", 0)} submissions\n',
+        
+        '## 😎 The Skibidiest 😎\n'
+        'Riko Sakari\n'
+        '\n'
+        '-# sigma sigma on the wall, who\'s the skibidiest of them all? - me heh'
+    ])
+
+    # Split into messages respecting Discord's 2000 char limit
+    messages = []
+    current_message = ""
+    
+    for section in sections:
+        # If adding this section would exceed the limit, start a new message
+        if len(current_message) + len(section) + 1 > 2000:
+            if current_message:
+                messages.append(current_message.strip())
+            current_message = section
         else:
-            return " / ".join(f"<@{uid}>" for uid, _ in winners) + f" ({top_val}{value_suffix})"
+            current_message += '\n' + section if current_message else section
     
-    def format_team_winners(entries: list[tuple], value_suffix: str = "") -> str:
-        """Format top team entries with tie support."""
-        if not entries:
-            return "None"
-        entries = sorted(entries, key=lambda x: x[1], reverse=True)
-        top_val = entries[0][1]
-        winners = [e for e in entries if e[1] == top_val]
-        if len(winners) == 1:
-            return f"<@&{winners[0][2]}> ({winners[0][1]}{value_suffix})"
-        else:
-            return " / ".join(f"<@&{rid}>" for _, _, rid in winners) + f" ({top_val}{value_suffix})"
-    
-    team_names = list(teams.keys())
-    lines = [f"# 🏆 Artfight {year} - Hall of Fame 🏆", ""]
-    
-    # === 👑 The Hard-Working 👑 ===
-    lines.append("## 👑 The Hard-Working 👑")
-    
-    all_members_subs = [(uid, data['submissions']) 
-                        for stats in team_stats.values() 
-                        for uid, data in stats['members_data'].items() 
-                        if data['submissions'] > 0]
-    all_members_score = [(uid, data['points']) 
-                         for stats in team_stats.values() 
-                         for uid, data in stats['members_data'].items() 
-                         if data['points'] > 0]
-    
-    if all_members_subs:
-        lines.append(f"By submissions: {format_winners(all_members_subs)}")
-    if all_members_score:
-        lines.append(f"By score: {format_winners(all_members_score, ' pts')}")
-    lines.append("")
-    
-    # Per team
-    for team_name in team_names:
-        stats = team_stats.get(team_name, {})
-        members_data = stats.get('members_data', {})
-        team_role_id = stats.get('role_id')
-        
-        team_subs = [(uid, d['submissions']) for uid, d in members_data.items() if d['submissions'] > 0]
-        team_score = [(uid, d['points']) for uid, d in members_data.items() if d['points'] > 0]
-        
-        if team_subs or team_score:
-            lines.append(f"On <@&{team_role_id}>:")
-            if team_subs:
-                lines.append(f"By submissions: {format_winners(team_subs)}")
-            if team_score:
-                lines.append(f"By score: {format_winners(team_score, ' pts')}")
-            lines.append("")
-    
-    # === ☠️ The Victim ☠️ ===
-    lines.append("## ☠️ The Victims ☠️")
-    
-    victims_by_count = [(vid, data['by_count']) for vid, data in victim_stats.items()]
-    victims_by_score = [(vid, data['by_score']) for vid, data in victim_stats.items()]
-    
-    if victims_by_count:
-        lines.append(f"By attacks: {format_winners(victims_by_count)}")
-    if victims_by_score:
-        lines.append(f"By score: {format_winners(victims_by_score, ' pts')}")
-    lines.append("")
-    
-    # Per team
-    for team_name in team_names:
-        team_role_id = teams.get(team_name)
-        team_victims_count = [(vid, d['by_count']) for vid, d in victim_stats.items() if d['team'] == team_name]
-        team_victims_score = [(vid, d['by_score']) for vid, d in victim_stats.items() if d['team'] == team_name]
-        
-        if team_victims_count or team_victims_score:
-            lines.append(f"On <@&{team_role_id}>:")
-            if team_victims_count:
-                lines.append(f"By attacks: {format_winners(team_victims_count)}")
-            if team_victims_score:
-                lines.append(f"By score: {format_winners(team_victims_score, ' pts')}")
-            lines.append("")
-    
-    # === 📝 Highest Scoring Solo Attack 📝 ===
-    solo_submissions = [s for s in all_submissions if not s.get('collaborators')]
-    if solo_submissions:
-        top_solo = max(solo_submissions, key=lambda s: s['points'])
-        title_part = f'*"{top_solo["title"]}"*' if top_solo.get('title') else ''
-        lines.append("### 📝 Highest Scoring Solo Attack 📝")
-        lines.append(f"<@{top_solo['user_id']}> with {title_part} ({top_solo['points']} pts)")
-        lines.append("")
-    
-    # === 🤝 Biggest Collab 🤝 ===
-    if biggest_collab['size'] > 1:
-        title_part = f'*"{biggest_collab["title"]}"*' if biggest_collab.get('title') else 'Untitled'
-        lines.append("### 🤝 Biggest Collab 🤝")
-        lines.append(f"{title_part} with {biggest_collab['size']} people")
-        lines.append("")
-    
-    # === 💥 Most Active Team 💥 ===
-    if team_stats:
-        teams_by_subs = [(name, stats['submissions'], stats['role_id']) for name, stats in team_stats.items()]
-        teams_by_subs.sort(key=lambda x: x[1], reverse=True)
-        if teams_by_subs and teams_by_subs[0][1] > 0:
-            lines.append("### 💥 Most Active Team 💥")
-            lines.append(f"{format_team_winners(teams_by_subs, ' submissions')}")
-            lines.append("")
-    
-    # === 🌸 Most Popular Prompt 🌸 ===
-    prompts = artfight_repo.get_prompts(guild_id) or {}
-    if prompt_counts and prompts:
-        most_popular_day, most_count = prompt_counts.most_common(1)[0]
-        most_prompt_text = prompts.get(str(most_popular_day), "Unknown")
-        lines.append("### 🌸 Most Popular Prompt 🌸")
-        lines.append(f"Day {most_popular_day}: *\"{most_prompt_text}\"* ({most_count} submissions)")
-        lines.append("")
-    
-    # === 😎 The Skibidiest 😎 ===
-    lines.append("### 😎 The Skibidiest 😎")
-    lines.append("<@465057997190856714>")
-    lines.append("")
-    
-    lines.append("-# sigma sigma on the wall, who's the skibidiest of them all?")
-    
-    return '\n'.join(lines)
+    # Don't forget the last message
+    if current_message:
+        messages.append(current_message.strip())
+
+    return messages
