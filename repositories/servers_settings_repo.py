@@ -110,3 +110,23 @@ class ServersSettingsRepo(JsonRepository):
     
     def remove_guild_question_displays(self, guild_id: str):
         self._remove(guild_id, 'questions_display')
+
+    # Purge Settings
+
+    def get_purge_ignored_members(self, guild_id: str) -> list[int] | None:
+        return self._get(guild_id, 'purge', 'ignored_members')
+    
+    def set_purge_ignored_members(self, guild_id: str, member_ids: list[int]):
+        self._set(guild_id, 'purge', 'ignored_members', value=member_ids)
+    
+    def add_purge_ignored_member(self, guild_id: str, member_id: int):
+        current = self.get_purge_ignored_members(guild_id) or []
+        if member_id not in current:
+            current.append(member_id)
+            self.set_purge_ignored_members(guild_id, current)
+    
+    def remove_purge_ignored_member(self, guild_id: str, member_id: int):
+        current = self.get_purge_ignored_members(guild_id) or []
+        if member_id in current:
+            current.remove(member_id)
+            self.set_purge_ignored_members(guild_id, current)
