@@ -6,6 +6,7 @@ from .file_watcher import FileWatcher
 from .file_modifiers import modify_json_file, add_to_file
 from .interactions import read_line, get_user_id, direct_message
 from .logger import setup_logger, ANSI,  logging
+from .progress_tracker import ProgressTracker
 from .string_operations import to_snake_case
 
 __all__ = [
@@ -22,5 +23,6 @@ __all__ = [
     'time_to_utc_at_epoch_timestamp',
     'get_current_artfight_day',
     'scan_message',
-    'scan_nickname'
+    'scan_nickname',
+    'ProgressTracker'
 ]

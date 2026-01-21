@@ -16,11 +16,12 @@ but can influence the environment before Python runs.
 """
 
 from modules import (
+    Artfight,
     General,
     Moderation,
-    Settings,
+    Purge,
     RefManagement,
-    Artfight,
+    Settings,
     Verification
 )
 
@@ -89,10 +90,11 @@ async def on_ready():
     bot.logger.info('loading cogs')
     await bot.add_cog(Moderation(bot))
     await bot.add_cog(General(bot))
+    await bot.add_cog(Purge(bot))
     await bot.add_cog(Settings(bot))
     await bot.add_cog(RefManagement(bot))
     await bot.add_cog(Verification(bot))
-    await bot.add_cog(Artfight(bot))
+    #await bot.add_cog(Artfight(bot))
     bot.logger.info('Cogs loaded')
 
 
@@ -318,50 +320,51 @@ async def blessed_keys(message):
         await message.reply(str(len(message.guild.get_role(player_role_id).members)))
 
 
-# Todo: look over and verify the purge code will work
-@bot.hybrid_command()
-async def purge(ctx: discord.Interaction, kick: bool):
-    """
-    🔑 manage_roles| Purge all unverified members from RikoLand
-    Last docstring edit: -Autumn V4.3.0
-    Last method edit: -FoxyHunter V4.3.0
-    :param message: Message that called the bot
-    :return: None
-    """
-
-    unverified_role_id = bot.repositories['servers_settings_repo'].get_guild_role(ctx.guild.id, 'unverified')
-
-    if ctx.author.guild_permissions.manage_roles:
-        await ctx.channel.send('├ FILTERING MEMBER LIST')
-        unverified_ppl = ctx.guild.get_role(unverified_role_id).members
-        await ctx.channel.send('├ BEGINNING PURGE\n├┐')
-        num_kicked = 0
-        msg = ''
-        for member in unverified_ppl:
-            if kick:
-                try:
-                    await member.kick(reason='Server purge.')
-                    num_kicked += 1
-                    add = F'│├ <@{member.id}> KICKED\n'
-                except discord.Forbidden:
-                    add = F'│├ <@{member.id}> FORBIDDEN\n'
-            else:
-                num_kicked += 1
-                add = F'│├ <@{member.id}> FOUND\n'
-
-            if len(msg) + len(add) >= 2000:
-                await ctx.channel.send(msg)
-                msg = add
-            else:
-                msg += add
-        await ctx.channel.send(msg)
-        await ctx.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
-        if kick:
-            bot.logger.debug(f'├ {num_kicked} MEMBERS KICKED')
-        else:
-            bot.logger.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
-    else:
-        await ctx.reply('Error 403: Forbidden\nInsufficient Permissions')
+## Todo: look over and verify the purge code will work
+## Too bad, commented it out for now
+#@bot.hybrid_command()
+#async def purge(ctx: discord.Interaction, kick: bool):
+#    """
+#    🔑 manage_roles| Purge all unverified members from RikoLand
+#    Last docstring edit: -Autumn V4.3.0
+#    Last method edit: -FoxyHunter V4.3.0
+#    :param message: Message that called the bot
+#    :return: None
+#    """
+#
+#    unverified_role_id = bot.repositories['servers_settings_repo'].get_guild_role(ctx.guild.id, 'unverified')
+#
+#    if ctx.author.guild_permissions.manage_roles:
+#        await ctx.channel.send('├ FILTERING MEMBER LIST')
+#        unverified_ppl = ctx.guild.get_role(unverified_role_id).members
+#        await ctx.channel.send('├ BEGINNING PURGE\n├┐')
+#        num_kicked = 0
+#        msg = ''
+#        for member in unverified_ppl:
+#            if kick:
+#                try:
+#                    await member.kick(reason='Server purge.')
+#                    num_kicked += 1
+#                    add = F'│├ <@{member.id}> KICKED\n'
+#                except discord.Forbidden:
+#                    add = F'│├ <@{member.id}> FORBIDDEN\n'
+#            else:
+#                num_kicked += 1
+#                add = F'│├ <@{member.id}> FOUND\n'
+#
+#            if len(msg) + len(add) >= 2000:
+#                await ctx.channel.send(msg)
+#                msg = add
+#            else:
+#                msg += add
+#        await ctx.channel.send(msg)
+#        await ctx.reply(str(len(unverified_ppl)) + ' members purged from Rikoland')
+#        if kick:
+#            bot.logger.debug(f'├ {num_kicked} MEMBERS KICKED')
+#        else:
+#            bot.logger.debug(f'├ {num_kicked} MEMBERS TO BE KICKED')
+#    else:
+#        await ctx.reply('Error 403: Forbidden\nInsufficient Permissions')
 
 @bot.hybrid_command()
 async def prune(message):
