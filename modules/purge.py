@@ -6,6 +6,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from base_bot import EchoBot
+from modules.purge_ui import SurvivePurgeView, build_survive_embed
 from util.progress_tracker import ProgressTracker
 
 
@@ -27,7 +28,17 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
     
     def __init__(self, bot: EchoBot):
         self.bot = bot
+        
+        # Persistent view for survive button
+        self._survive_view = SurvivePurgeView()
+        
         self.bot.logger.info(f'✔ Purge cog loaded')
+    
+    async def cog_load(self):
+        """Called when the cog is loaded. Registers persistent views."""
+        repo = self._get_repo()
+        self._survive_view.set_repo(repo)
+        self.bot.add_view(self._survive_view)
     
     def _get_repo(self):
         """Get the servers settings repository."""
@@ -84,6 +95,17 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
             )
         
         return merged
+    
+    def _get_survivors(self, guild_id: str) -> set[int]:
+        """
+        Get the set of member IDs who clicked the survive button.
+        
+        :param guild_id: The guild ID
+        :return: Set of survivor member IDs
+        """
+        repo = self._get_repo()
+        survivors = repo.get_purge_survivors(guild_id) or []
+        return set(survivors)
     
     def _get_readable_channels(self, guild: discord.Guild) -> list[discord.TextChannel]:
         """
@@ -190,6 +212,7 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
         self,
         inactive_members: list[discord.Member],
         ignored_members_in_server: list[discord.Member],
+        survivor_count: int,
         days: int,
         channels_scanned: int,
         total_members: int,
@@ -202,6 +225,7 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
         
         :param inactive_members: List of inactive members
         :param ignored_members_in_server: List of ignored members currently in server
+        :param survivor_count: Number of members who clicked the survive button
         :param days: Number of days checked
         :param channels_scanned: Number of channels scanned
         :param total_members: Total member count (excluding bots)
@@ -219,6 +243,7 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
             f"**Channels scanned:** {channels_scanned}\n"
             f"**Total server members:** {total_members} (excl. bots)\n"
             f"**Active members:** {active_count}\n"
+            f"**Survivors (button):** {survivor_count}\n"
             f"**Ignored members:** {len(ignored_members_in_server)}\n"
         )
         
@@ -261,9 +286,17 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
         name="list-inactive",
         description="🔐 manage_roles | List members inactive for X days"
     )
-    @app_commands.describe(days="Number of days to look back (default: 93, ~3 months)")
+    @app_commands.describe(
+        days="Number of days to look back (default: 93, ~3 months)",
+        exclude_survivors="Exclude members protected by the survive button (default: True)"
+    )
     @app_commands.guild_only()
-    async def list_inactive_members(self, interaction: discord.Interaction, days: int = 93):
+    async def list_inactive_members(
+        self, 
+        interaction: discord.Interaction, 
+        days: int = 93,
+        exclude_survivors: bool = True
+    ):
         """
         🔐 manage_roles | List server members who haven't sent a message in X days
         
@@ -381,15 +414,26 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
                 m for m in all_server_members if m.id not in ignored_members
             ]
             
+            # Get survivors (users who clicked the survive button)
+            guild_id = str(interaction.guild.id)
+            survivors = self._get_survivors(guild_id) if exclude_survivors else set()
+            
             # Active = considered members who sent a message
             active_members_list = [
                 m for m in considered_members if m.id in active_users
             ]
             
-            # Inactive = considered members who did NOT send a message
+            # Inactive = considered members who did NOT send a message AND are not survivors (if excluding)
             inactive_members = [
-                m for m in considered_members if m.id not in active_users
+                m for m in considered_members 
+                if m.id not in active_users and m.id not in survivors
             ]
+            
+            # Count survivors who are still in the server and would have been inactive
+            survivor_members = [
+                m for m in considered_members 
+                if m.id in survivors and m.id not in active_users
+            ] if exclude_survivors else []
             
             # Debug logging
             self.bot.logger.info(
@@ -403,6 +447,9 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
             )
             self.bot.logger.info(
                 f'Purge debug - Active: {[m.display_name for m in active_members_list]}'
+            )
+            self.bot.logger.info(
+                f'Purge debug - Survivors (button): {[m.display_name for m in survivor_members]}'
             )
             self.bot.logger.info(
                 f'Purge debug - Inactive: {[m.display_name for m in inactive_members]}'
@@ -428,7 +475,8 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
                 channels_scanned=len(channels),
                 total_members=len(considered_members),
                 active_count=active_count,
-                failed_channels=failed_channels
+                failed_channels=failed_channels,
+                survivor_count=len(survivor_members)
             )
             
             # Edit original message with first result, send rest as follow-ups
@@ -440,14 +488,15 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
             self.bot.logger.info(
                 f'Purge scan complete for {interaction.guild.name}: '
                 f'{len(inactive_members)} inactive / {len(active_members_list)} active / '
-                f'{len(ignored_members_in_server)} ignored / {len(considered_members)} considered'
+                f'{len(survivor_members)} survivors / {len(ignored_members_in_server)} ignored / '
+                f'{len(considered_members)} considered'
             )
             
-            # Sanity check: active + inactive should equal considered
-            accounted = len(inactive_members) + len(active_members_list)
+            # Sanity check: active + inactive + survivors should equal considered
+            accounted = len(inactive_members) + len(active_members_list) + len(survivor_members)
             if accounted != len(considered_members):
                 self.bot.logger.warning(
-                    f'Purge sanity check FAILED: {accounted} (active+inactive) != {len(considered_members)} considered'
+                    f'Purge sanity check FAILED: {accounted} (active+inactive+survivors) != {len(considered_members)} considered'
                 )
             
         except Exception as e:
@@ -455,6 +504,137 @@ class Purge(commands.GroupCog, name="purge", description="Commands for managing 
             await message.edit(
                 content=f"An error occurred during the scan:\n```\n{str(e)[:500]}\n```"
             )
+    
+    @app_commands.command(
+        name="send-button",
+        description="Send a 'Survive Purge' button in this channel"
+    )
+    @app_commands.default_permissions(administrator=True)
+    async def send_survive_button(
+        self,
+        interaction: discord.Interaction
+    ):
+        """Send a persistent 'Survive Purge' button in the current channel."""
+        if not isinstance(interaction.channel, discord.TextChannel):
+            await interaction.response.send_message(
+                "This command can only be used in text channels.",
+                ephemeral=True
+            )
+            return
+        
+        # Check bot permissions in channel
+        bot_permissions = interaction.channel.permissions_for(interaction.guild.me)
+        if not bot_permissions.send_messages or not bot_permissions.embed_links:
+            await interaction.response.send_message(
+                "I don't have permission to send messages or embeds here.",
+                ephemeral=True
+            )
+            return
+        
+        await interaction.response.defer(ephemeral=True)
+        
+        try:
+            from modules.purge_ui import SurvivePurgeView, build_survive_embed
+            
+            embed = build_survive_embed()
+            view = SurvivePurgeView(self._get_repo())
+            
+            await interaction.channel.send(embed=embed, view=view)
+            
+            await interaction.followup.send(
+                "✅ Survive button sent!",
+                ephemeral=True
+            )
+            
+            self.bot.logger.info(
+                f'Survive button sent in #{interaction.channel.name} ({interaction.guild.name}) '
+                f'by {interaction.user.name}'
+            )
+            
+        except Exception as e:
+            self.bot.logger.error(f'Error sending survive button: {e}', exc_info=True)
+            await interaction.followup.send(
+                f"Failed to send survive button: {str(e)[:200]}",
+                ephemeral=True
+            )
+    
+    @app_commands.command(
+        name="list-survivors",
+        description="List all members who have clicked the survive button"
+    )
+    @app_commands.default_permissions(administrator=True)
+    async def list_survivors(self, interaction: discord.Interaction):
+        """List all members who have marked themselves as survivors."""
+        await interaction.response.defer(ephemeral=True)
+        
+        guild_id = str(interaction.guild.id)
+        survivors = self._get_survivors(guild_id)
+        
+        if not survivors:
+            await interaction.followup.send(
+                "No members have clicked the survive button yet.",
+                ephemeral=True
+            )
+            return
+        
+        # Get member objects for survivors who are still in the server
+        survivor_members = []
+        left_count = 0
+        
+        for user_id in survivors:
+            member = interaction.guild.get_member(user_id)
+            if member:
+                survivor_members.append(member)
+            else:
+                left_count += 1
+        
+        if not survivor_members and left_count > 0:
+            await interaction.followup.send(
+                f"All {left_count} survivor(s) have left the server.",
+                ephemeral=True
+            )
+            return
+        
+        # Format the list
+        lines = [f"**Survivors ({len(survivor_members)})**"]
+        if left_count > 0:
+            lines.append(f"*({left_count} survivors have left the server)*")
+        lines.append("")
+        
+        for member in survivor_members:
+            lines.append(f"• {member.mention} ({member.display_name})")
+        
+        await interaction.followup.send("\n".join(lines), ephemeral=True)
+    
+    @app_commands.command(
+        name="clear-survivors",
+        description="Clear all survivors from the list"
+    )
+    @app_commands.default_permissions(administrator=True)
+    async def clear_survivors(self, interaction: discord.Interaction):
+        """Clear all members from the survivors list."""
+        guild_id = str(interaction.guild.id)
+        survivors = self._get_survivors(guild_id)
+        
+        if not survivors:
+            await interaction.response.send_message(
+                "The survivors list is already empty.",
+                ephemeral=True
+            )
+            return
+        
+        count = len(survivors)
+        self._get_repo().set_purge_survivors(guild_id, set())
+        
+        await interaction.response.send_message(
+            f"Cleared {count} member(s) from the survivors list.",
+            ephemeral=True
+        )
+        
+        self.bot.logger.info(
+            f'Survivors list cleared in {interaction.guild.name} by {interaction.user.name} '
+            f'({count} survivors removed)'
+        )
 
 
 async def setup(bot: EchoBot):
