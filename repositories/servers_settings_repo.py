@@ -130,3 +130,23 @@ class ServersSettingsRepo(JsonRepository):
         if member_id in current:
             current.remove(member_id)
             self.set_purge_ignored_members(guild_id, current)
+
+    # Purge Survivors (users who clicked the survive button)
+
+    def get_purge_survivors(self, guild_id: str) -> list[int] | None:
+        return self._get(guild_id, 'purge', 'survivors')
+    
+    def set_purge_survivors(self, guild_id: str, member_ids: list[int]):
+        self._set(guild_id, 'purge', 'survivors', value=member_ids)
+    
+    def add_purge_survivor(self, guild_id: str, member_id: int):
+        current = self.get_purge_survivors(guild_id) or []
+        if member_id not in current:
+            current.append(member_id)
+            self.set_purge_survivors(guild_id, current)
+    
+    def remove_purge_survivor(self, guild_id: str, member_id: int):
+        current = self.get_purge_survivors(guild_id) or []
+        if member_id in current:
+            current.remove(member_id)
+            self.set_purge_survivors(guild_id, current)
