@@ -94,8 +94,8 @@ class TruthOrDare(commands.Cog):
         :param dare: The dare to add
         :return: None
         """
-        await ctx.defer()
         ephemeral = ctx.interaction is not None
+        await ctx.defer(ephemeral=ephemeral)
 
         dares = self.tod_repo.get_dares(ctx.guild.id)
         if dares is not None:
