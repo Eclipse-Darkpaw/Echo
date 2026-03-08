@@ -10,8 +10,8 @@ class SemanticSimilarityChecker:
     def find_similar(self,
         input_str: str,
         compare_str_list: list[str],
-        threshold_en=0.75,
-        threshold_multi=0.7
+        threshold_en=0.95,
+        threshold_multi=0.9
     ) -> set[str]:
         """
         Returns a list of the found similar strings.
