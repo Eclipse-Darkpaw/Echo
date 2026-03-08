@@ -6,13 +6,14 @@ description = "A collection of discord bots for moderation, reference sheet mana
 authors = ["Autumn <EchoBot@Autumna1Equin0x.pet>"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.15"
 python-dotenv = "^1.0.1"
+spacy = "^3.8.11"
 watchdog = "^6.0.0"
 filelock = "^3.17.0"
 discord-py = "^2.5.2"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -4,6 +4,16 @@ from .moderation import Moderation
 from .purge import Purge
 from .ref_management import RefManagement
 from .server_settings import Settings
+from .tod import TruthOrDare
 from .verification import Verification
 
-__all__ = ['scan_message', 'artfight', 'general', 'moderation', 'purge', 'ref_management', 'Settings', 'Verification', 'Purge']
+__all__ = [
+    'Artfight',
+    'General',
+    'Moderation',
+    'RefManagement',
+    'Settings',
+    'Verification',
+    'TruthOrDare',
+    'Purge'
+]

@@ -6,6 +6,7 @@ from .file_watcher import FileWatcher
 from .file_modifiers import modify_json_file, add_to_file
 from .interactions import read_line, get_user_id, direct_message
 from .logger import setup_logger, ANSI,  logging
+from .ml_operations import SemanticSimilarityChecker
 from .progress_tracker import ProgressTracker
 from .string_operations import to_snake_case
 
@@ -24,5 +25,6 @@ __all__ = [
     'get_current_artfight_day',
     'scan_message',
     'scan_nickname',
-    'ProgressTracker'
+    'ProgressTracker',
+    'SemanticSimilarityChecker'
 ]

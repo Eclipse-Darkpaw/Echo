@@ -3,10 +3,12 @@ from .artfight_repo import ArtfightRepo
 from .repository import Repository, JsonRepository, LogRepository
 from .servers_settings_repo import ServersSettingsRepo
 from .scam_log_repo import ScamLogRepo
+from .truth_dare_repo import TruthOrDareRepo
 
-__all__ = ['ServersSettingsRepo', 'ArtfightRepo', 'Repository']
+__all__ = ['ServersSettingsRepo', 'ArtfightRepo', 'Repository', 'TruthOrDareRepo']
 
 class RepositoriesDict(TypedDict, total=True):
     servers_settings_repo: ServersSettingsRepo
     artfight_repo: ArtfightRepo
     scam_log_repo: ScamLogRepo
+    truth_or_dare_repo: TruthOrDareRepo

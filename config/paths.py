@@ -9,6 +9,7 @@ class Paths:
     servers_settings = f'{data_dir}/servers.json'
     artfight = f'{data_dir}/artfight.json'
     servers_warns = f'{data_dir}/warns.json'
+    truth_dare = f'{data_dir}/truthdare.json'
     scam_log = f'{logs_dir}/scam.log'
     
     @classmethod

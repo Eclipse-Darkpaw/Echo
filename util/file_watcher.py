@@ -50,5 +50,11 @@ class FileWatcher:
     def __getitem__(self, key):
         return self.data.get(key, None)
     
+    def __contains__(self, key):
+        return key in self.data
+    
+    def keys(self):
+        return self.data.keys()
+    
     def __repr__(self):
         return f'FileWatcher({self.file_path}) -> {self.data}'
