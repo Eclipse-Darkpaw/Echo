@@ -67,7 +67,8 @@ async def on_ready():
     bot.logger.info(f'We have logged in as {bot.user}')
 
     await bot.change_presence(activity=game)
-    if bot.config.start_notif:
+    if bot.config.start_notif and not getattr(bot, '_start_notif_sent', False):
+        bot._start_notif_sent = True
         await direct_message(
             bot,
             f'Running, and active\n'
