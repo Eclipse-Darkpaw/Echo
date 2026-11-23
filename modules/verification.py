@@ -9,7 +9,7 @@ from util import read_line
 """
 Handles all tasks related to member verification.
 Last Docstring edit: -Autumn V3.0.0
-Last File edit: -Autumn V3.4.0
+Last File edit: -FoxyHunter V4.3.0
 """
 
 counter = 0
@@ -37,8 +37,8 @@ class Application:
     def __init__(self, applicant, channel, applicant_guild, application_channel, servers_settings_repo: ServersSettingsRepo):
         """
         Stores user membership application data
-        Last docstring edit: -Autumn V3.4.0
-        Last method edit: -Autumn V3.4.0
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :param applicant: user applying
         :param channel: application channel
         :param applicant_guild: Guild applied from
@@ -68,8 +68,8 @@ class Application:
     async def question(self):
         """
         Questions the applicant
-        Last docstring edit: -Autumn V3.0.0
-        Last method edit: -Autumn V3.2.0
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :return:
         """
         global client
@@ -173,8 +173,8 @@ class Application:
     def gen_embed(self, type=0, rejected=False):
         """
         generates the embed for the application.
-        Last docstring edit: -Autumn V3.4.0
-        Last method edit: -Autumn V3.4.0
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :param type: Type of embed to generate. 0 = for mods, 1 = for users
         :return:
         """
@@ -217,8 +217,8 @@ class Verification(commands.Cog):
     async def verify(self, ctx: commands.Context):
         """
         Begin user verification process (DM's user)
-        Last docstring edit: -Autumn V4.0.0
-        Last method edit: -Autumn V4.0.0
+        Last docstring edit: -FoxyHunter V4.3.0
+        Last method edit: -FoxyHunter V4.3.0
         :param message: Discord message calling the method
         :param client_in: Bot client handling IO functions
         """

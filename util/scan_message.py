@@ -57,8 +57,8 @@ async def scan_message(msg: discord.Message, log_channel_id: int, log_repo):
     """
     The primary anti-scam method. This method is given a message, counts the number of flags in a given message, then
     does nothing if no flags, flags the message as a possible scam if 1-3, or flags and deletes the message at 3+ flags.
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -Autumn V4.0.3
+    Last docstring edit: -FoxyHunter V4.3.0
+    Last method edit: -FoxyHunter V4.3.0
     :param message: the message sent
     :return: None
     """

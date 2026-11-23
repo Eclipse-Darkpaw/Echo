@@ -1,7 +1,37 @@
 # Echo Discord bot collection
 
-The Echo project is a collection of discord bots that share code and run on the same machine. Most bots are designed 
-specifically for a server.  
+The Echo project is a collection of discord bots that share code and run on
+the same machine. Most bots are designed specifically for a server.  
+
+## Setup
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+`requirements.txt` mirrors the `dependencies` in `pyproject.toml`: whenever
+you change one, update the other to match. Copy `.env.example` to `.env`
+and fill in the guardian user IDs and the `<BOTNAME>_TOKEN` /
+`<BOTNAME>_PREFIX` values of the bots you want to run.
+
+Also fetch the used spaCy models :
+
+```bash
+.venv/bin/python -m spacy download en_core_web_md
+.venv/bin/python -m spacy download xx_sent_ud_sm
+```
+
+## Running
+
+```bash
+.venv/bin/python sunreek.py
+```
+
+Optional flags:
+
+* `--test-bot` — use the `*_TEST_TOKEN` / `*_TEST_PREFIX` variables instead
+* `--no-notif` — skip the startup DM to the guardians
 
 ## Repo modifications
 
@@ -19,12 +49,38 @@ Last method edit: -name Vx.x.x
 
 as well as adding all changes to the change log below
 
-## Important links
-
-The Pivotal tracker project link containing all the plans for the codebase
-<https://www.pivotaltracker.com/n/projects/2462509>
-
 ## Change Log
+
+### 5.0.1 / Startup guard, packaging & dependency updates
+
+* Guard startup notifications so reconnecting bots do not DM guardians repeatedly.
+* Migrate packaging from Poetry to PEP 621/`setuptools` metadata (Python 3.14+, maintainer info) and replace the poetry-exported `requirements.txt` with a minimal, hand-maintained one for plain pip installs.
+* Pin `pydantic<2.12` in `pyproject.toml` (spaCy model loading is broken on pydantic 2.12 and newer).
+* Enable the Artfight cog in Sunreek.
+* Remove the outdated Pivotal Tracker link from the README.
+* Document environment setup in the README.
+* Update dependencies: `aiohttp`, `idna`, `urllib3`, `pygments` and `requests`.
+
+### 5.0.0 / Woof, Truth or Dare & semantic matching
+
+* Add `woof.py` bot running the truth-or-dare module, with a 'do you remember' easter egg.
+* Add truth-or-dare module and repository: random `/dare`, add/remove dares with a confirmation view, periodic queue cleanup and ephemeral deferral for slash usage.
+* Add spaCy-based semantic similarity checks with tuned per-language thresholds.
+
+### 4.5.0 / Purge tooling & Artfight refinements
+
+* Add purge module for listing inactive members and managing survivors.
+* Add a `survive` button UI for members to opt out of purges.
+* Add a progress-tracker utility for long-running operations.
+* Add Artfight `list_players` command and expand the Hall of Fame leaderboards.
+* Improve Artfight submissions: early cancel, prompt-less entries, dropdown navigation, multi-user support and victim pings.
+* Fix Artfight prompt-day calculation, background bonus scoring and friendly-fire mentions.
+
+### 4.4.0 / Ban management & Artfight UI
+
+* Add ban import/export commands for moderators.
+* Rebuild the Artfight UI with configuration, join button, daily messages/status, member sync and submission flows.
+* Fix unhandled forbidden errors when DMing users and crashes on unknown guardians.
 
 ### 4.3.0 / Refactoring, Fancy Logging & File Watching/Observing
 

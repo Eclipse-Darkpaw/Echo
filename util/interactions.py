@@ -61,8 +61,8 @@ def get_user_id(message, arg=1):
 async def direct_message(client, message, *user_ids):
     """
     Sends a DM to any amount of users
-    Last docstring edit: -FoxyHunter V4.3.0
-    Last method edit: -FoxyHunter V4.3.0
+    Last docstring edit: -FoxyHunter V4.4.0
+    Last method edit: -FoxyHunter V4.4.0
     :param client: bot client
     :param message: the message to send
     :param *user_ids: any amount of user ids (as strings or ints)

@@ -42,7 +42,7 @@ intents.members = True
 
 bot = EchoBot(
     name='bedroombot',
-    version_num='4.4.0',
+    version_num='5.0.1',
     console_logging=True,
     file_logging=True,
     intents=intents
@@ -57,8 +57,8 @@ game = discord.Game(f'{bot.config.prefix}help for commands')
 async def on_ready():
     """
     Method called when the bot boots and is fully online
-    Last docstring edit: -Autumn V1.14.4
-    Last method edit: -FoxyHunter V4.3.0
+    Last docstring edit: -FoxyHunter V5.0.1
+    Last method edit: -FoxyHunter V5.0.1
     :return: None
     """
 

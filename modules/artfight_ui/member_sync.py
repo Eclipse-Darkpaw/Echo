@@ -12,8 +12,8 @@ def build_unregistered_members_embed(
     Builds an embed warning about members who have artfight team roles
     but are not registered in the bot's artfight data.
     
-    Last docstring edit: -FoxyHunter V4.3.0
-    Last method edit: -FoxyHunter V4.3.0
+    Last docstring edit: -FoxyHunter V4.4.0
+    Last method edit: -FoxyHunter V4.4.0
     
     :param guild: The Discord guild
     :param unregistered_members: Dict mapping team_name -> list of unregistered members
@@ -52,8 +52,8 @@ class UnregisteredMembersView(discord.ui.View):
     View with buttons to handle unregistered artfight members.
     Allows moderators to either remove roles or register them in the bot.
     
-    Last docstring edit: -FoxyHunter V4.3.0
-    Last method edit: -FoxyHunter V4.3.0
+    Last docstring edit: -FoxyHunter V4.4.0
+    Last method edit: -FoxyHunter V4.4.0
     """
     
     def __init__(

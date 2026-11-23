@@ -11,8 +11,8 @@ async def scan_nickname(
     """
     Scans a users nickname for restricted characters and strings. If restricted strings are found, we can either remove
     the name, Set it to a designated string, or kick the user entirely
-    Last docstring edit: -Autumnn V4.2.0
-    Last method edit: -Autumn V4.2.0
+    Last docstring edit: -FoxyHunter V4.3.0
+    Last method edit: -FoxyHunter V4.3.0
     :param: Discord Member who changed username or joined the server.
     :return: None
     """

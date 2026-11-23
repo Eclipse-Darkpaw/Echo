@@ -284,8 +284,8 @@ class Artfight(commands.GroupCog, name="artfight"):
         On last day: still sends warning (without grace period reminder).
         At prompt hour on last day: sends final scores + fancy leaderboard stats instead of new prompt.
 
-        Last docstring edit: -FoxyHunter V4.4.0
-        Last method edit: -FoxyHunter V4.4.0
+        Last docstring edit: -FoxyHunter V4.5.0
+        Last method edit: -FoxyHunter V4.5.0
         
         :param guild: The Discord guild
         :param now_utc: Current UTC datetime
@@ -457,8 +457,8 @@ class Artfight(commands.GroupCog, name="artfight"):
         Send the final scores message and fancy leaderboard at the end of artfight.
         Called at prompt hour on the last day.
 
-        Last docstring edit: -FoxyHunter V4.4.0
-        Last method edit: -FoxyHunter V4.4.0
+        Last docstring edit: -FoxyHunter V4.5.0
+        Last method edit: -FoxyHunter V4.5.0
         
         :param channel: The prompts channel
         :param guild: The Discord guild
@@ -761,8 +761,8 @@ class Artfight(commands.GroupCog, name="artfight"):
         in size, it picks the team with the least points. If still equal,
         it picks randomly.
         
-        Last docstring edit: -FoxyHunter V4.4.0
-        Last method edit: -FoxyHunter V4.4.0
+        Last docstring edit: -FoxyHunter V4.5.0
+        Last method edit: -FoxyHunter V4.5.0
         
         :param ctx: The command context
         """
@@ -888,8 +888,8 @@ class Artfight(commands.GroupCog, name="artfight"):
         Does not show future prompts.
         Includes a "No Prompt" option for unrelated art submissions.
         
-        Last docstring edit: -FoxyHunter V4.4.0
-        Last method edit: -FoxyHunter V4.4.0
+        Last docstring edit: -FoxyHunter V4.5.0
+        Last method edit: -FoxyHunter V4.5.0
         """
         start_date = self.artfight_repo.get_start_date(guild_id)
         if start_date is None:
@@ -945,8 +945,8 @@ class Artfight(commands.GroupCog, name="artfight"):
         You'll be guided through selecting collaborators (if any), uploading your art,
         and providing details about your submission.
         
-        Last docstring edit: -FoxyHunter V4.4.0
-        Last method edit: -FoxyHunter V4.4.0
+        Last docstring edit: -FoxyHunter V4.5.0
+        Last method edit: -FoxyHunter V4.5.0
         
         :param ctx: The command context
         :param prompt_day: Which prompt day this submission is for (defaults to current)
@@ -1192,8 +1192,8 @@ class Artfight(commands.GroupCog, name="artfight"):
         List all artfight players with their attack counts and scores.
         Players are sorted by number of submissions (descending), with score as a tiebreaker.
         
-        Last docstring edit: -FoxyHunter V4.4.0
-        Last method edit: -FoxyHunter V4.4.0
+        Last docstring edit: -FoxyHunter V4.5.0
+        Last method edit: -FoxyHunter V4.5.0
         
         :param ctx: The command context
         """
