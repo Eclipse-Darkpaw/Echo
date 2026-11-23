@@ -1,7 +1,6 @@
 # Mirrors the dependencies in pyproject.toml -- keep both in sync.
 python-dotenv
 spacy
-pydantic<2.12
 watchdog
 filelock
 discord-py
