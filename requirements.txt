@@ -1,4 +1,4 @@
-# Mirrors the dependencies in pyproject.toml -- keep both in sync.
+discord
 python-dotenv
 spacy
 watchdog

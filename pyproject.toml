@@ -12,6 +12,7 @@ maintainers = [
 readme = "README.md"
 requires-python = ">= 3.14"
 dependencies = [
+    'discord',
     "python-dotenv",
     "spacy",
     "watchdog",
